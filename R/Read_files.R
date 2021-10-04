@@ -7,17 +7,9 @@
 #' @import data.table
 #' @import plyr
 #' @import scales
-#' @examples
-#' \dontrun{
-#' counts <- ReadMyFile(file, TRUE)
-#' metadata <- ReadMyFile(file, FALSE)
+#' @examples \dontrun{
+#' ...
 #' }
-
-# ##FOR TESTING PURPOSES
-# library(openxlsx)
-# library(data.table)
-# library(plyr)
-# library(scales)
 
 
 ReadMyFile <- function(my.data, data.type) {

@@ -14,8 +14,6 @@
 #' }
 
 
-################
-
 DAFeature <- function(my.contrast, my.data, my.design, coLFC, coFDR, my.block=NULL) {
     if(is.null(my.block)) {
         fit3 <- eBayes(contrasts.fit(lmFit(my.data, my.design), my.contrast))

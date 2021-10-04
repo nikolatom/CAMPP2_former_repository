@@ -11,13 +11,8 @@
 #' @seealso
 #' @return clustering results and plots
 #' @examples \dontrun{
-#' EstimateKmeans(counts, n)
+#' ...
 #' }
-#
-# library("mclust")
-# df<-counts2
-# n<-3
-# kmeans<-EstimateKmeans(df,n)
 
 EstimateKmeans <- function(df, n) {
     BIC <- mclustBIC(df)

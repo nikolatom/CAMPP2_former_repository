@@ -17,7 +17,7 @@ Checking Data for NA Values.
 }
 \examples{
 \dontrun{
-ReplaceNAs (data.frame)
+...
 }
 }
 \seealso{

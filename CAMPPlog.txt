@@ -498,3 +498,39 @@ CAMPP Running Messages:
 CAMPP Running Messages:
 
 CAMPP Running Messages:
+
+CAMPP Running Messages:
+
+CAMPP Running Messages:
+
+CAMPP Running Messages:
+          used  (Mb) gc trigger  (Mb) limit (Mb) max used  (Mb)
+Ncells 5703359 304.6    8574197 458.0         NA  8574197 458.0
+Vcells 9428134  72.0   15364928 117.3      16384 12736266  97.2
+          used  (Mb) gc trigger  (Mb) limit (Mb) max used  (Mb)
+Ncells 5748716 307.1    8574197 458.0         NA  8574197 458.0
+Vcells 9508288  72.6   18517913 141.3      16384 12736266  97.2
+          used  (Mb) gc trigger  (Mb) limit (Mb) max used  (Mb)
+Ncells 5748718 307.1    8574197 458.0         NA  8574197 458.0
+Vcells 9508284  72.6   18517913 141.3      16384 12736266  97.2
+
+CAMPP RUN DONE!
+          used  (Mb) gc trigger  (Mb) limit (Mb) max used  (Mb)
+Ncells 5748737 307.1    8574197 458.0         NA  8574197 458.0
+Vcells 9508276  72.6   18517913 141.3      16384 12736266  97.2
+
+CAMPP Running Messages:
+          used  (Mb) gc trigger  (Mb) limit (Mb) max used  (Mb)
+Ncells 5759557 307.6    8574197 458.0         NA  8574197 458.0
+Vcells 9527773  72.7   18517913 141.3      16384 12736266  97.2
+          used  (Mb) gc trigger  (Mb) limit (Mb) max used  (Mb)
+Ncells 5759528 307.6    8574197 458.0         NA  8574197 458.0
+Vcells 9527700  72.7   18517913 141.3      16384 12736266  97.2
+          used  (Mb) gc trigger  (Mb) limit (Mb) max used  (Mb)
+Ncells 5759530 307.6    8574197 458.0         NA  8574197 458.0
+Vcells 9527718  72.7   18517913 141.3      16384 12736266  97.2
+
+CAMPP RUN DONE!
+          used  (Mb) gc trigger  (Mb) limit (Mb) max used  (Mb)
+Ncells 5759528 307.6    8574197 458.0         NA  8574197 458.0
+Vcells 9527700  72.7   18517913 141.3      16384 12736266  97.2

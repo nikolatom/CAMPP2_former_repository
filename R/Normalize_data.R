@@ -11,19 +11,8 @@
 #' @seealso LINK TO MANUAL (TRANSFORMATION/NORMALIZATION)
 #' @return normalized counts
 #' @examples \dontrun{
-#' NormalizeData("seq", counts, metadata[,1])
+#' ...
 #' }
-
-# library(openxlsx)
-# library(data.table)
-# library(plyr)
-# library(scales)
-# library(fitdistrplus)
-# library("edgeR")
-#
-# counts3<-NormalizeData("seq",counts2,metadata[,10])
-# counts3<-NormalizeData("seq",counts2,metadata[,9])
-# #output not usable for fiting data distribution
 
 NormalizeData <- function(my.variant, my.data, my.group, my.transform, my.standardize, my.data.original = NULL) {
     if (my.variant == "seq") {

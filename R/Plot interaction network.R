@@ -1,6 +1,6 @@
 #' @title Plot interaction network
 #' @description A function plotting interaction networks
-#' @param  my.trimmed.list a list of trimmed networks, i.e. output of the function "TrimWriteInt".
+#' @param  my.trimmed.list A list of trimmed networks, i.e. output of the function "TrimWriteInt".
 #' @export
 #' @import multiMiR
 #' @import devtools
@@ -9,8 +9,6 @@
 #' @examples \dontrun{
 #' ...
 #' }
-#'
-
 
 PlotInt <- function(my.trimmed.list) {
 

@@ -7,15 +7,8 @@
 #' @seealso
 #' @return Dataframe with replaced zeros
 #' @examples \dontrun{
-#' ReplaceZero (counts, metadata[1])
+#' ...
 #' }
-
-# #LOADING LIB ONLY FOR TESTING PURPOSES
-# library("impute")
-# counts2<-ReplaceZero(counts, metadata[,10])
-#
-# #NOTES: double check if the % of the missing values are OK
-# ##TO BE TESTED IN THE LATER STEPS
 
 
 ReplaceZero <- function(my.data, my.group) {

@@ -7,7 +7,7 @@
 PlotInt(my.trimmed.list)
 }
 \arguments{
-\item{my.trimmed.list}{a list of trimmed networks, i.e. output of the function "TrimWriteInt".}
+\item{my.trimmed.list}{A list of trimmed networks, i.e. output of the function "TrimWriteInt".}
 }
 \value{
 
@@ -19,7 +19,6 @@ A function plotting interaction networks
 \dontrun{
 ...
 }
-
 }
 \seealso{
 

@@ -6,12 +6,8 @@
 #' @seealso
 #' @return Dataframe with replaced NA-values
 #' @examples \dontrun{
-#' ReplaceNAs (data.frame)
+#' ...
 #' }
-
-#LOADING LIB ONLY FOR TESTING PURPOSES
-#library("impute")
-#NOTES: double check if the % of the missing values are OK
 
 ReplaceNAs <- function(my.data) {
     na_row <- apply(my.data, 1, function(x) (sum(is.na(x))/ncol(my.data))*100)

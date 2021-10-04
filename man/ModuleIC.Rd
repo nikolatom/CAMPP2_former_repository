@@ -15,19 +15,17 @@ ModuleIC(
 )
 }
 \arguments{
-\item{vec.of.modulecolors}{a vector of module colors}
+\item{vec.of.modulecolors}{A vector of module colors}
 
-\item{my.moduleColors}{a module color object from WGCNA}
+\item{my.moduleColors}{A module color object from WGCNA}
 
-\item{my.IC}{a interconnectivity object from WGCNA}
+\item{my.IC}{A interconnectivity object from WGCNA}
 
-\item{my.ExpData}{a dataset, features (genes, proteins ect) as columns and samples as rows.}
+\item{my.ExpData}{A dataset, features (genes, proteins ect) as columns and samples as rows.}
 
-\item{my.n}{a Number indicating top n% most interconnected features in dataset}
+\item{my.n}{A Number indicating top n% most interconnected features in dataset}
 
-\item{my.softPower}{??}
-
-\item{my.name}{a name of output plot(s)}
+\item{my.name}{A name of output plot(s)}
 }
 \value{
 
@@ -39,7 +37,6 @@ Weighted gene co-expression network analysis for describing the correlation patt
 \dontrun{
 ...
 }
-
 }
 \seealso{
 

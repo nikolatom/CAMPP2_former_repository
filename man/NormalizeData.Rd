@@ -34,7 +34,7 @@ Normalizing features' counts depending on data types and selected normalization/
 }
 \examples{
 \dontrun{
-NormalizeData("seq", counts, metadata[,1])
+...
 }
 }
 \seealso{

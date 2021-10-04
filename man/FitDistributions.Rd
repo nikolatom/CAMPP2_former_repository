@@ -17,7 +17,7 @@ A function for fitting data distribution
 }
 \examples{
 \dontrun{
-FitDistributions(counts)
+...
 }
 }
 \seealso{

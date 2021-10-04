@@ -12,16 +12,8 @@
 #' @seealso
 #' @return distribution plots
 #' @examples \dontrun{
-#' MDSPlot (counts, groups, labels, cols)
+#' ...
 #' }
-#
-# library("RColorBrewer")
-# my.cols<- brewer.pal(4,"Set1")
-# my.group<-as.factor(metadata[,10])
-# my.labels<-metadata[,1]
-# my.data<-counts2
-# mds_plot<-MDSPlot(counts2,my.group, my.labels, my.cols)
-# mds_plot
 
 MDSPlot <- function(my.data, my.group, my.labels, my.cols) {
     d<-dist(t(my.data))

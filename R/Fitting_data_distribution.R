@@ -6,13 +6,8 @@
 #' @seealso
 #' @return data for distribution plots
 #' @examples \dontrun{
-#' FitDistributions(counts)
+#' ...
 #' }
-
-# ##FOR TESTING PURPOSES ONLY
-# library("fitdistrplus")
-# counts4<-FitDistributions(counts2)
-# #counts4<-FitDistributions(counts3)
 
 
 FitDistributions <- function(my.data) {

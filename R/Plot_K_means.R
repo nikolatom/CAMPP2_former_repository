@@ -10,20 +10,8 @@
 #' @seealso
 #' @return clustering results and plots
 #' @examples \dontrun{
-#' PlotKmeans(my.data, clus.list, k, my.labels, my.name)
+#' ...
 #' }
-#
-# library("ggplot2")
-# library("mclust")
-# library("parallel")
-# library("stats")
-# plotK<-PlotKmeans(df,kmeans,3,metadata[,10],"test")
-# my.data<-df
-# clus.list<-kmeans
-# k<-8
-# my.labels<-metadata[,10]
-# my.name<-"test"
-
 
 PlotKmeans <- function(my.data, clus.list, k, my.labels, my.name) {
     res.list <- list()

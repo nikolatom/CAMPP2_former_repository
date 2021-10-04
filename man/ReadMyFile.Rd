@@ -16,7 +16,6 @@ Reading input files
 }
 \examples{
 \dontrun{
-counts <- ReadMyFile(file, TRUE)
-metadata <- ReadMyFile(file, FALSE)
+...
 }
 }
