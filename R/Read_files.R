@@ -1,6 +1,6 @@
 #' @title Read files
 #' @description Reading input files
-#' @param data.type select "counts" or "metadata" type. (Originally, this param was TRUE or FALSE defined by CAMPP.R)
+#' @param my.expr This param is set to TRUE or FALSE by CAMPP2
 #' @param my.data a dataframe of expression/abundance counts.
 #' @export
 #' @import openxlsx
@@ -11,10 +11,9 @@
 #' ...
 #' }
 
-
-ReadMyFile <- function(my.data, data.type) {
-    if(data.type == "counts") {
-        file <- try(my.data <- read.xlsx(my.data, colNames = TRUE, rowNames = FALSE), silent = TRUE)
+ReadMyFile <- function(my.data, my.expr) {
+    if(my.expr == TRUE) {
+        file <- try(my.data <- openxlsx::read.xlsx(my.data, colNames = TRUE, rowNames = FALSE), silent = TRUE)
         if (class(file) == "try-error") {
             cat("\n- Data file is not .xlsx, trying .txt\n")
             file <- try(my.data <- read.delim(my.data, header = TRUE), silent = TRUE)
@@ -25,6 +24,8 @@ ReadMyFile <- function(my.data, data.type) {
                 }
             }
         }
+
+
 
 
         # Average duplicates and get IDs

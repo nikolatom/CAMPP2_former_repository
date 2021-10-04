@@ -131,10 +131,10 @@ runCampp2 <- function (data, metadata, variant, groups){
   } else {
       sets <- SplitList(data)
       data <- sets[1]
-      data <- ReadMyFile(data, "counts")
+      data <- ReadMyFile(data, TRUE)
       if (length(sets) == 2) {
           sdata <- sets[2]
-          sdata <- ReadMyFile(sdata, "counts")
+          sdata <- ReadMyFile(sdata, TRUE)
       }
   }
 
