@@ -1,20 +1,17 @@
 #' @title CAMPP2 pipeline
 #' @description CAMPP2 is a tool for quantitative data analysis
-# @param rlib Specify if you want to re-install the newest versions of R-packages or if you want to run with the provided 'Renv' stable library. If the argument is omitted, R-packages will be installed (if nessesary) from an already specified CRAN mirror. The argument may be set to either a CRAN mirror of choice, see 'https://cran.r-project.org/mirrors.html'. If the argument it set to 'stable' (not case sensitive), the 'Renv' library freeze will be used instead.
-#' @param data A file (xlsx or txt) with expression values, rows as features (genes, miRNAs, proteins, N-features) and columns as samples.
-#' @param metadata A file (xlsx or txt) with metadata, minimum two columns one with ids (sample names matching those in the object above) and groups (diagnosis, tumor stage, ect.).(I) If the data comes from experimental batches and you want to correct for this, a column named 'batch' specifying which batch each sample belongs to (A,B,C,D, time1, time2, time3, etc.) should also be included in the metadata. N.B specifying batches by numbers alone is not allowed. (II) If you are interested in performing survival analysis a column named 'survival' must be included specifying (in a binary way) which samples have survival information (1) and which do not (0). N.B. if you have paired cancer and normal samples the column 'survival' should only have the value 1/0 for tumur samples (NA or other character values should be used for normal samples. (IV) If you want to include covariates in your analysis these should be included in the metadata file as a column(s).
-#' @param variant Data 'variant'. Current options are 'array', 'seq', 'ms' or 'other'. This argument is mandatory and depending on which option is chosen, data is transformed differently. If a second dataset is provided the option should be specified for each dataset, provided as a comma separated list (with quotes, no parenthesis etc.).
-#' @param groups Argument should be specified as a comma separated list of length two (with quotes and parenthesis!). The first element specifying the name of the column in the metadata file containing sample IDs and the second element specifying the name of the column which contains the groups for the DE/DA analysis. Distributional Checks Logical argument (TRUE/FALSE) which specifies whether Cullen-Frey graphs should be made for 10 randomly selected variables to check data distributions. This argument is per default set to TRUE.
+#' @param variant Data 'variant'. Current options are 'array', 'seq', 'ms' or 'other'. This argument is mandatory and depending on which option is chosen, data is transformed differently. If a second dataset is provided the option should be specified for each dataset, provided as a vector of strings.
+#' @param groups Argument should be specified as a vector of strings. The first element specifying the name of the column in the metadata file containing sample IDs and the second element specifying the name of the column which contains the groups for the DE/DA analysis. Distributional Checks Logical argument (TRUE/FALSE) which specifies whether Cullen-Frey graphs should be made for 10 randomly selected variables to check data distributions. This argument is per default set to TRUE.
+#' @param batches Specifies if you want to correct for experimental sample (tissue/interstitial fluid) batches. Argument takes a string of length 1 (one dataset) or 2 (two datasets), where the string(s) match a column name(s) in the metadata file(s).
 #' @param kmeans Argument for kmeans clustering. The paramenter must be specified as a character matching the name of a column in the metadata file, denoting the labeling of points on the MDS plot(s). If a parameter is empty (no column name specified) no labels will be added to the plot.
 #' @param plotheatmap Argument for heatmap specified as either; DE, DA, LASSO, EN or Consensus.
 #' @param corr Argument for correlation analysis. String specify which features should be correlated, options are: ALL, DE, DA, LASSO, EN or Consensus.
 #' @param survival Survival analysis may be performed on differentially expressed/abundant variables, variables from LASSO/EN regression or the consensus of these, e.g. argument survival must be specified as either; DE, DA, LASSO, EN or Consensus. In principal the full dataframe of variables may be used as well (if argument is set to ALL), HOWEVER this is not advisable unless the dataset is small with very few variables. Survival info must be included in the metadata excel file. The metadata file must contain at least four columns named; 'ids'(sample identifiers), 'age' (age in years at diagnosis, surgery or entry into trail), 'outcome.time' (time until end of follow-up in weeks, months or years, censuring, death) and 'outcome' (numeric 0 = censuring, 1=death). N.B. if you have (paired) normal samples the columns with survival information for these samples should contain NA values.
 #' @param survplot Arguments which specifies number of features to include per survival plot, e.g. many features requires splitting of the plot, default features per plot is 50.
-#' @param standardize Data centering. This option may be set to mean or median. If two datasets are provided the standardize option should be specified for each dataset, provided as a comma seperated list (with quotes, no paranthesis etc.). If the argument standardize is not specified and "variant" = array, then quantile normalization will be performed.
-#' @param transform Data transformation type. Current options are 'log2', 'log10' or 'logit'. If two datasets are provided the parameter should be specified for each dataset, provided as a comma seperated list (with quotes, no paranthesis etc.). If argument is left out, no transformation of data will occur.
-#' @param databatch Specifies if you want to correct for experimental sample (tissue/interstitial fluid) batches. Argument takes a string of length 1 (one dataset) or 2 (two datasets), where the string(s) match a column name(s) in the metadata file(s).
+#' @param standardize Data centering. This option may be set to mean or median. If two datasets are provided the standardize option should be specified for each dataset, provided as a vector of strings. If the argument standardize is not specified and "variant" = array, then quantile normalization will be performed.
+#' @param transform Data transformation type. Current options are 'log2', 'log10' or 'logit'. If two datasets are provided the parameter should be specified for each dataset, provided as a vector of strings. If argument is left out, no transformation of data will occur.
 #' @param filename Name of result files from analysis.
-#' @param sig Cut-offs for log fold change (logFC) and corrected p-value (fdr), defining significant hits (proteins, genes, miRNAs or N-features). If argument "filename" is set, it must be a comma separated list of length two (with quotes and parenthesis!), where the first element specifies the cut-off for logFC and the second element specifies the cut-off for corrected p-value (fdr). If omitted cutoffs will be set to -1 > logFC > 1 and corrected p-values < 0.05.
+#' @param sig Cut-offs for log fold change (logFC) and corrected p-value (fdr), defining significant hits (proteins, genes, miRNAs or N-features). If argument "filename" is set, it must be a vector of strings, where the first element specifies the cut-off for logFC and the second element specifies the cut-off for corrected p-value (fdr). If omitted cutoffs will be set to -1 > logFC > 1 and corrected p-values < 0.05.
 #' @param plotmds TRUE or FALSE specifies if a preliminary MDSplot should be made for data overview.
 #' @param covar Covariates to include in analysis. If multiple of these, they should be specified with commas as separator, i.e. Covar1,Covar2,Covar3, (with quotes and parenthesis!). The first element in this list must be either TRUE or FALSE. If TRUE is specified then covariates will be included in both DE/DA analysis and Survival Analsysis. If FALSE is specified covariates will ONLY be used for Survival Analsysis. Names of covariates should match the desired columns in the metadata file.
 #' @param stratify This argument may be used if some of the categorical (NOT continous) covariates violate the cox proportional assumption. The pipline checks for proportional hazard and will retun the covariates that fail the PH test. You may then rerun the pipeline with this argument followed by the names of the categorical covariates which failed and these will be stratified.
@@ -31,68 +28,7 @@
 #' ...
 #' }
 
-runCampp2 <- function (data, metadata, variant, groups){
-
-###REMOVE???
-  # if (is.rlib == FALSE) {
-  #     cat("\npackrat library not used. CAMPP will use available R-packages from user library and install these if needed.\n")
-  #
-  #     missing.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-  #
-  #     if (length(missing.packages) > 0) {
-  #         cat("\nThe following package(s) is(are) not installed:\n")
-  #
-  #         for (p in missing.packages) {
-  #             print(p)
-  #         }
-  #
-  #         if ("arcdiagram" %in% missing.packages) {
-  #             install_github("https://github.com/gastonstat/arcdiagram")
-  #         }
-  #
-  #         for (idx in 1:length(missing.packages)) {
-  #             install.packages.auto(as.character(missing.packages[[idx]]), rlib)
-  #         }
-  #
-  #     } else {
-  #         cat("All packages are installed.\n")
-  #     }
-  #
-  #
-  #     file <- try(lapply(list.of.packages, library, character.only=T))
-  #
-  #     if (class(file) == "try-error") {
-  #
-  #         stop("Ups! Something went wrong, one or more R-package dependencies are not installed correctly. Check the script CAMPPmissingpackages.R. Alternatively you can download and use the Packrat library freeze, see manual for specifics. Packrat library in brief:\n\n (1.) Download the Packrat library from the CAMPP repository on github (if you have not already), and make sure it is located in the same folder as CAMPP.R.\n\n (2.) set the flat -e to TRUE, and run the pipeline.")
-  #
-  #     } else {
-  #         rm(file)
-  #         cat("\nPACKAGES HAVE BEEN INSTALLED - READY TO RUN CAMPP!\n")
-  #         cat("\n---------------------------------------------------------------------------------------------\n")
-  #     }
-  #
-  # } else if (is.rlib == TRUE) {
-  #
-  #     if (!require("renv")) {
-  #         install.packages("renv", repos="https://cloud.r-project.org")
-  #     }
-  #     library("renv")
-  #     cat("\nStable 'Renv' library is being used for analysis!\n")
-  #     renv::consent(provided = TRUE)
-  #     renv::restore()
-  #     file <- try(lapply(list.of.packages, library, character.only=T))
-  #     cat("\nPACKAGES HAVE BEEN INSTALLED - READY TO RUN CAMPP!\n")
-  #     cat("\n---------------------------------------------------------------------------------------------\n")
-  # } else {
-  #     cat("\nargument -e must be either null (omitted) or TRUE or FALSE!.\n")
-  # }
-  #
-  #
-  #
-  #
-  #
-
-
+runCampp2 <- function (data, metadata, variant, groups, batches=NULL, datacheck=NULL, standardize=NULL, transform=NULL, plotmds=NULL, plotheatmap=NULL, kmeans=NULL, sig=NULL, colors=NULL, filename=NULL, heatmap=NULL, corr=NULL, lasso=NULL, WGCNA=NULL, cutoffWGCNA=NULL, survival=NULL, covar=NULL, stratify=NULL, survplot=NULL, PPint=NULL, GenemiRint=NULL){
 
 
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -119,95 +55,53 @@ runCampp2 <- function (data, metadata, variant, groups){
 
 
 
-
-
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  # Datasets
+  ### MANDATORY ARGUMENTS ###
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#
 
-  if (is.null(data)) {
-      stop("\n- Argument data is missing. Data provided must be an excel file with features (genes, proteins ect.) as rows and samples as columns.\n")
-  } else {
-      sets <- SplitList(data)
-      data <- sets[1]
-      data <- ReadMyFile(data, TRUE)
-      if (length(sets) == 2) {
-          sdata <- sets[2]
-          sdata <- ReadMyFile(sdata, TRUE)
+#      metadata<-metadata_file
+#      data<-counts
+      # Variant (datatype)
+      if (is.null(variant)){
+        stop("\n- Argument variant is missing. Variant specifies type of input data (and sdata, if included).\n")
+      } else {
+        variant <- SplitList(variant)
       }
-  }
 
-
-  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  # Missing Values (NAs)
-  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-  if (TRUE %in% unique(as.vector(is.na(data)))) {
-      data <- ReplaceNAs(data)
-
-  }
-
-  if (exists("sdata")) {
-      if (TRUE %in% unique(as.vector(is.na(sdata)))) {
-          sdata <- ReplaceNAs(sdata)
-      }
-  }
-
-
-
-    # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  # Metadata atasets
-  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-  if (is.null(metadata)){
-      stop("\n- Argument metadata is missing. Metadata provided must be an excel file with minimum two columns named 'ids' (sample names matching those in the object above) and 'group' (diagnosis, tumor stage, ect.).\n")
-  } else {
-      metasets <- SplitList(metadata)
-      metadata <- metasets[1]
-      metadata <- ReadMyFile(metadata, "metadata")
-      if (length(metasets) == 2) {
-          smetadata <- metasets[2]
-          smetadata <- ReadMyFile(smetadata, "metadata")
-      }
 
       # IDs and Groups to check user input!
       if (is.null(groups)){
-          stop("Argument groups should be specified as a comma separated list of length two (with quotes and parenthesis!). The first element specifying the name of the column in the metadata file containing sample IDs and the second element specifying the name of the column which contains the groups for the DE/DA analysis.")
+          stop("Argument groups should be specified as a vector of strings. The first element specifying the name of the column in the metadata file containing sample IDs and the second element specifying the name of the column which contains the groups for the DE/DA analysis.")
       } else {
           groups <- SplitList(groups)
           if (length(groups) < 2) {
-                  stop("Argument groups should be specified as a comma separated list of length two (with quotes and parenthesis!). The first element specifying the name of the column in the metadata file containing sample IDs and the second element specifying the name of the column which contains the groups for the DE/DA analysis.")
+                  stop("Argument groups should be specified as a vector of strings. The first element specifying the name of the column in the metadata file containing sample IDs and the second element specifying the name of the column which contains the groups for the DE/DA analysis.")
           }
       }
 
 
-
       # IDs and Groups to contrast
-      # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
       # IDs
       acall <- parse(text = paste0("metadata$", as.character(groups[[1]])))
       ids <- as.character(eval(acall))
 
       if (length(ids) <= 1) {
-          stop(paste0("No column in metadata file called ",groups[[1]]))
+          stop(paste0("No column in metadata test ids file called ",groups[[1]]))
       } else {
           metadata$ids <- ids
       }
 
 
       # Match Data and Metadata
-      metadata <- metadata[metadata$ids %in% colnames(data),]
+      metadata <- metadata[metadata$ids %in% gsub("^X","",colnames(data)),]  ###IMPORT OF XLSX adds "X" - MUST BE REMOVED (check.names cannot be deactivated)
 
       # Groups
       acall <- parse(text = paste0("metadata$", as.character(groups[[2]])))
       group <- as.factor(as.character(eval(acall)))
 
       if (length(group) <= 1) {
-          stop(paste0("No column in metadata file called ",groups[[2]]))
+          stop(paste0("No column in metadata test file called ",groups[[2]]))
       }
-
 
 
 
@@ -236,52 +130,36 @@ runCampp2 <- function (data, metadata, variant, groups){
       }
 
 
+
       # Batches
       # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
       if (is.null(batches)){
-          databatch <- FALSE
-          sdatabatch <- FALSE
+        databatch <- FALSE
+        sdatabatch <- FALSE
       } else {
-          batches <- SplitList(batches)
-          acall <- parse(text = paste0("metadata$", as.character(batches[[1]])))
-          batch <- as.factor(as.character(eval(acall)))
-          databatch <- TRUE
-          if (length(batch) <= 1) {
-              stop(paste0("No column in metadata file called ",as.character(batches[[1]])))
+        batches <- SplitList(batches)
+        acall <- parse(text = paste0("metadata$", as.character(batches[[1]])))
+        batch <- as.factor(as.character(eval(acall)))
+        databatch <- TRUE
+        if (length(batch) <= 1) {
+          stop(paste0("No column in metadata file called ",as.character(batches[[1]])))
+        }
+        if (length(batches) > 1 & exists("smetadata")) {
+          acall <- parse(text = paste0("smetadata$", as.character(batches[[2]])))
+          sbatch <- as.factor(as.character(eval(acall)))
+          sdatabatch <- TRUE
+          if (length(sbatch) <= 1) {
+            stop(paste0("No column in metadata file called ",as.character(batches[[2]])))
           }
-          if (length(batches) > 1 & exists("smetadata")) {
-              acall <- parse(text = paste0("smetadata$", as.character(batches[[2]])))
-              sbatch <- as.factor(as.character(eval(acall)))
-              sdatabatch <- TRUE
-              if (length(sbatch) <= 1) {
-                  stop(paste0("No column in metadata file called ",as.character(batches[[2]])))
-              }
-          } else {
-              sdatabatch <- FALSE
-          }
+        } else {
+          sdatabatch <- FALSE
+        }
       }
-  }
-
-
-
-
-  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
                                                                           ### ADDITIONAL ARGUMENTS ###
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-  # Variant (datatype)
-  if (is.null(variant)){
-      stop("\n- Argument variant is missing. Variant specifies type of input data (and sdata, if included).\n")
-  } else {
-      variant <- SplitList(variant)
-  }
 
 
 
@@ -353,7 +231,7 @@ runCampp2 <- function (data, metadata, variant, groups){
               sFDR <- sig[4]
           }
       } else {
-          stop("If argument sig is set, it must be a comma separated list of length 2 OR 2*2 = 4 , if two datasets are used, (with quotes and parenthesis!) where the first element specifies the cut-off for logFC and the second element specifies the cut-off for corrected p-value (fdr) for each set. If sig is not specified defaults will be used. Cutoffs will be set to -1 > logFC > 1 and corrected p-value (fdr) < 0.05.")
+          stop("If argument sig is set, it must be a vector of length 2 OR 2*2 = 4 , if two datasets are used, (with quotes and parenthesis!) where the first element specifies the cut-off for logFC and the second element specifies the cut-off for corrected p-value (fdr) for each set. If sig is not specified defaults will be used. Cutoffs will be set to -1 > logFC > 1 and corrected p-value (fdr) < 0.05.")
       }
   }
 
@@ -490,7 +368,7 @@ runCampp2 <- function (data, metadata, variant, groups){
   } else {
       PPI <- SplitList(PPint)
       if (!PPI[[1]] %in% approvedGeneIDs | !PPI[[2]] %in% genequery | length(PPI) != 2) {
-          stop(paste0("Argument x must be a comma separated list (with quote or parenthesis) of length two. First element in list must specify type of gene ID matching the type of IDs in expression file, approved options are: ", approvedGeneIDs, ".Second element must specify which PPI database to use, currently options are: ", genequery, "."))
+          stop(paste0("Argument x must be a vector of strings of legth two. First element in list must specify type of gene ID matching the type of IDs in expression file, approved options are: ", approvedGeneIDs, ".Second element must specify which PPI database to use, currently options are: ", genequery, "."))
       }
   }
 
@@ -500,7 +378,7 @@ runCampp2 <- function (data, metadata, variant, groups){
   } else {
       GmiRI <- SplitList(GenemiRint)
       if (!GmiRI[[1]] %in% approvedmiRIDs | !GmiRI[[2]] %in% miRNAquery | length(GmiRI) != 2) {
-          stop(paste0("Argument x must be a comma separated list (with quote or parenthesis) of length two. First element in lit must specify type of miRNA ID matching the type of IDs in expression file, approved options are: ", approvedmiRIDs, ".Second element must specify which miRNA-gene database to use, currently options are: ", miRNAquery, "."))
+          stop(paste0("Argument x must be a vector of strings of legth two. First element in lit must specify type of miRNA ID matching the type of IDs in expression file, approved options are: ", approvedmiRIDs, ".Second element must specify which miRNA-gene database to use, currently options are: ", miRNAquery, "."))
       }
   }
 
@@ -625,7 +503,7 @@ runCampp2 <- function (data, metadata, variant, groups){
 
       } else {
           data.batch <- data
-          cat("\n- No column names match specified batchs for dataset.\n")
+          cat("\n- No column names match specified batches for dataset.\n")
       }
   } else {
       cat("\n- No batch correction requested.\n")
@@ -645,7 +523,7 @@ runCampp2 <- function (data, metadata, variant, groups){
           }
       } else {
           sdata.batch <- sdata
-          cat("\n- No column names match specified batchs for second dataset. Continuing without batch correction.\n")
+          cat("\n- No column names match specified batches for second dataset. Continuing without batch correction.\n")
       }
   } else {
       cat("\n- No batch correction requested for second dataset.\n")

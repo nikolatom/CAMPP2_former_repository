@@ -11,8 +11,8 @@
 #' ...
 #' }
 
-ReadMyFile <- function(my.data, my.expr) {
-    if(my.expr == TRUE) {
+ReadMyFile <- function(my.data, data.type) {
+    if(data.type == "data") {
         file <- try(my.data <- openxlsx::read.xlsx(my.data, colNames = TRUE, rowNames = FALSE), silent = TRUE)
         if (class(file) == "try-error") {
             cat("\n- Data file is not .xlsx, trying .txt\n")

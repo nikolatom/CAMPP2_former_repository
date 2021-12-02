@@ -4,12 +4,12 @@
 \alias{ReadMyFile}
 \title{Read files}
 \usage{
-ReadMyFile(my.data, data.type)
+ReadMyFile(my.data, my.expr)
 }
 \arguments{
 \item{my.data}{a dataframe of expression/abundance counts.}
 
-\item{data.type}{select "counts" or "metadata" type. (Originally, this param was TRUE or FALSE defined by CAMPP.R)}
+\item{my.expr}{This param is set to TRUE or FALSE by CAMPP2}
 }
 \description{
 Reading input files

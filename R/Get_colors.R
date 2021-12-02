@@ -6,7 +6,7 @@
 #' @import heatmap.plus
 #' @import squash
 #' @importFrom viridisLite viridis
-# @import ggplot2
+#' @import ggplot2
 #' @seealso
 #' @return heatmap colors
 #' @examples \dontrun{
