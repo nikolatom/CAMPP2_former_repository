@@ -4,44 +4,82 @@
 \alias{runCampp2}
 \title{CAMPP2 pipeline}
 \usage{
-runCampp2(data, metadata, variant, groups)
+runCampp2(
+  data,
+  data2 = NULL,
+  metadata,
+  metadata2 = NULL,
+  variant,
+  groups,
+  batches = NULL,
+  datacheck = NULL,
+  standardize = NULL,
+  transform = NULL,
+  plotmds = NULL,
+  plotheatmap = NULL,
+  kmeans = NULL,
+  sig = NULL,
+  colors = NULL,
+  filename = NULL,
+  heatmap = NULL,
+  corr = NULL,
+  lasso = NULL,
+  WGCNA = NULL,
+  cutoffWGCNA = NULL,
+  survival = NULL,
+  covar = NULL,
+  stratify = NULL,
+  survplot = NULL,
+  PPint = NULL,
+  GenemiRint = NULL
+)
 }
 \arguments{
+\item{data}{Gene count matrix (genes as rows; samples as columns) should be imported using function "import_counts".}
+
+\item{data2}{Second dataset. Gene count matrix (genes as rows; samples as columns) should be imported using function "import_counts".}
+
+\item{metadata}{Samples' metadata table, should be imported using function "import_metadata".}
+
+\item{metadata2}{Seconda metadata, should be imported using function "import_metadata".}
+
 \item{variant}{Data 'variant'. Current options are 'array', 'seq', 'ms' or 'other'. This argument is mandatory and depending on which option is chosen, data is transformed differently. If a second dataset is provided the option should be specified for each dataset, provided as a vector of strings.}
 
 \item{groups}{Argument should be specified as a vector of strings. The first element specifying the name of the column in the metadata file containing sample IDs and the second element specifying the name of the column which contains the groups for the DE/DA analysis. Distributional Checks Logical argument (TRUE/FALSE) which specifies whether Cullen-Frey graphs should be made for 10 randomly selected variables to check data distributions. This argument is per default set to TRUE.}
 
-\item{kmeans}{Argument for kmeans clustering. The paramenter must be specified as a character matching the name of a column in the metadata file, denoting the labeling of points on the MDS plot(s). If a parameter is empty (no column name specified) no labels will be added to the plot.}
-
-\item{plotheatmap}{Argument for heatmap specified as either; DE, DA, LASSO, EN or Consensus.}
-
-\item{corr}{Argument for correlation analysis. String specify which features should be correlated, options are: ALL, DE, DA, LASSO, EN or Consensus.}
-
-\item{survival}{Survival analysis may be performed on differentially expressed/abundant variables, variables from LASSO/EN regression or the consensus of these, e.g. argument survival must be specified as either; DE, DA, LASSO, EN or Consensus. In principal the full dataframe of variables may be used as well (if argument is set to ALL), HOWEVER this is not advisable unless the dataset is small with very few variables. Survival info must be included in the metadata excel file. The metadata file must contain at least four columns named; 'ids'(sample identifiers), 'age' (age in years at diagnosis, surgery or entry into trail), 'outcome.time' (time until end of follow-up in weeks, months or years, censuring, death) and 'outcome' (numeric 0 = censuring, 1=death). N.B. if you have (paired) normal samples the columns with survival information for these samples should contain NA values.}
-
-\item{survplot}{Arguments which specifies number of features to include per survival plot, e.g. many features requires splitting of the plot, default features per plot is 50.}
+\item{batches}{Specifies if you want to correct for experimental sample (tissue/interstitial fluid) batches. Argument takes a string of length 1 (one dataset) or 2 (two datasets), where the string(s) match a column name(s) in the metadata file(s).}
 
 \item{standardize}{Data centering. This option may be set to mean or median. If two datasets are provided the standardize option should be specified for each dataset, provided as a vector of strings. If the argument standardize is not specified and "variant" = array, then quantile normalization will be performed.}
 
 \item{transform}{Data transformation type. Current options are 'log2', 'log10' or 'logit'. If two datasets are provided the parameter should be specified for each dataset, provided as a vector of strings. If argument is left out, no transformation of data will occur.}
 
-\item{filename}{Name of result files from analysis.}
+\item{plotmds}{TRUE or FALSE specifies if a preliminary MDSplot should be made for data overview.}
+
+\item{plotheatmap}{Argument for heatmap specified as either; DE, DA, LASSO, EN or Consensus.}
+
+\item{kmeans}{Argument for kmeans clustering. The paramenter must be specified as a character matching the name of a column in the metadata file, denoting the labeling of points on the MDS plot(s). If a parameter is empty (no column name specified) no labels will be added to the plot.}
 
 \item{sig}{Cut-offs for log fold change (logFC) and corrected p-value (fdr), defining significant hits (proteins, genes, miRNAs or N-features). If argument "filename" is set, it must be a vector of strings, where the first element specifies the cut-off for logFC and the second element specifies the cut-off for corrected p-value (fdr). If omitted cutoffs will be set to -1 > logFC > 1 and corrected p-values < 0.05.}
 
-\item{plotmds}{TRUE or FALSE specifies if a preliminary MDSplot should be made for data overview.}
-
-\item{covar}{Covariates to include in analysis. If multiple of these, they should be specified with commas as separator, i.e. Covar1,Covar2,Covar3, (with quotes and parenthesis!). The first element in this list must be either TRUE or FALSE. If TRUE is specified then covariates will be included in both DE/DA analysis and Survival Analsysis. If FALSE is specified covariates will ONLY be used for Survival Analsysis. Names of covariates should match the desired columns in the metadata file.}
-
-\item{stratify}{This argument may be used if some of the categorical (NOT continous) covariates violate the cox proportional assumption. The pipline checks for proportional hazard and will retun the covariates that fail the PH test. You may then rerun the pipeline with this argument followed by the names of the categorical covariates which failed and these will be stratified.}
-
 \item{colors}{Custom color pallet for MDS and heatmaps. Must be the same length as number of groups used for comparison (e.g. two groups = two colors) must be separted by commas, example: green,red,blue. See R site for avalibe colors http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf.}
+
+\item{filename}{Name of result files from analysis.}
+
+\item{corr}{Argument for correlation analysis. String specify which features should be correlated, options are: ALL, DE, DA, LASSO, EN or Consensus.}
 
 \item{lasso}{Argument specifying if LASSO or elestic net regression should be performed. This argument may be set to a value between 1 (LASSO) and > 0 (Elastic Net), but NOT to 0 exactly (Ridge Regression).}
 
 \item{WGCNA}{Argument specifying if Weighed Gene Co-expression Network Analysis should be performed. It takes a string, either DA, DE or ALL specifying if all variables should be included in WGCNA or only differentially expressed / abundant variables.}
 
 \item{cutoffWGCNA}{Argument specifying the cutoff values for WGCNA. The argument takes a string of three values: (I) minimum modules size, (II) maximum % dissimilarity for merging of modules, and (III) % of top most interconnected genes (or other features)to return, from each modules identified in the Weighed Gene Co-expression Network Analysis. Default values are 10,25,25.}
+
+\item{survival}{Survival analysis may be performed on differentially expressed/abundant variables, variables from LASSO/EN regression or the consensus of these, e.g. argument survival must be specified as either; DE, DA, LASSO, EN or Consensus. In principal the full dataframe of variables may be used as well (if argument is set to ALL), HOWEVER this is not advisable unless the dataset is small with very few variables. Survival info must be included in the metadata excel file. The metadata file must contain at least four columns named; 'ids'(sample identifiers), 'age' (age in years at diagnosis, surgery or entry into trail), 'outcome.time' (time until end of follow-up in weeks, months or years, censuring, death) and 'outcome' (numeric 0 = censuring, 1=death). N.B. if you have (paired) normal samples the columns with survival information for these samples should contain NA values.}
+
+\item{covar}{Covariates to include in analysis. If multiple of these, they should be specified with commas as separator, i.e. Covar1,Covar2,Covar3, (with quotes and parenthesis!). The first element in this list must be either TRUE or FALSE. If TRUE is specified then covariates will be included in both DE/DA analysis and Survival Analsysis. If FALSE is specified covariates will ONLY be used for Survival Analsysis. Names of covariates should match the desired columns in the metadata file.}
+
+\item{stratify}{This argument may be used if some of the categorical (NOT continous) covariates violate the cox proportional assumption. The pipline checks for proportional hazard and will retun the covariates that fail the PH test. You may then rerun the pipeline with this argument followed by the names of the categorical covariates which failed and these will be stratified.}
+
+\item{survplot}{Arguments which specifies number of features to include per survival plot, e.g. many features requires splitting of the plot, default features per plot is 50.}
 
 \item{PPint}{Argument specifying that protein-protein interaction networks should be generated using the results of the differential expression analysis. This argument must be a list of length two (with quotes and parenthesis!). The first element in this list must be a string specifying the type of gene identifier in the DE/DA results file provided, allowed identifiers are:ensembl_peptide_id, hgnc_symbol, ensembl_gene_id, ensembl_transcript_id, uniprotswissprot, the second element in this list must be a string specifying the version of the stringDB to use. Currently only version supported is: 11.0.}
 

@@ -1,5 +1,9 @@
 #' @title CAMPP2 pipeline
 #' @description CAMPP2 is a tool for quantitative data analysis
+#' @param data Gene count matrix (genes as rows; samples as columns) should be imported using function "import_counts".
+#' @param data2 Second dataset. Gene count matrix (genes as rows; samples as columns) should be imported using function "import_counts".
+#' @param metadata Samples' metadata table, should be imported using function "import_metadata".
+#' @param metadata2 Seconda metadata, should be imported using function "import_metadata".
 #' @param variant Data 'variant'. Current options are 'array', 'seq', 'ms' or 'other'. This argument is mandatory and depending on which option is chosen, data is transformed differently. If a second dataset is provided the option should be specified for each dataset, provided as a vector of strings.
 #' @param groups Argument should be specified as a vector of strings. The first element specifying the name of the column in the metadata file containing sample IDs and the second element specifying the name of the column which contains the groups for the DE/DA analysis. Distributional Checks Logical argument (TRUE/FALSE) which specifies whether Cullen-Frey graphs should be made for 10 randomly selected variables to check data distributions. This argument is per default set to TRUE.
 #' @param batches Specifies if you want to correct for experimental sample (tissue/interstitial fluid) batches. Argument takes a string of length 1 (one dataset) or 2 (two datasets), where the string(s) match a column name(s) in the metadata file(s).
@@ -28,7 +32,11 @@
 #' ...
 #' }
 
-runCampp2 <- function (data, metadata, variant, groups, batches=NULL, datacheck=NULL, standardize=NULL, transform=NULL, plotmds=NULL, plotheatmap=NULL, kmeans=NULL, sig=NULL, colors=NULL, filename=NULL, heatmap=NULL, corr=NULL, lasso=NULL, WGCNA=NULL, cutoffWGCNA=NULL, survival=NULL, covar=NULL, stratify=NULL, survplot=NULL, PPint=NULL, GenemiRint=NULL){
+#data=countsT
+#metadata=metadata
+#variant="seq"
+#groups=c("IDs", "groups")
+runCampp2 <- function (data, data2=NULL, metadata, metadata2=NULL, variant, groups, batches=NULL, datacheck=NULL, standardize=NULL, transform=NULL, plotmds=NULL, plotheatmap=NULL, kmeans=NULL, sig=NULL, colors=NULL, filename=NULL, heatmap=NULL, corr=NULL, lasso=NULL, WGCNA=NULL, cutoffWGCNA=NULL, survival=NULL, covar=NULL, stratify=NULL, survplot=NULL, PPint=NULL, GenemiRint=NULL){
 
 
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -715,7 +723,7 @@ runCampp2 <- function (data, metadata, variant, groups, batches=NULL, datacheck=
   # CLEAN UP AND SOURCE FUNCTIONS FROM THE FUNCTIONS SCRIPT - PART 2
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-  rm(SplitList, ReadMyFile, ReplaceNAs, ReplaceZero, NormalizeData, FitDistributions, PlotDistributions, MDSPlot, EstimateKmeans)
+  #rm(SplitList, ReadMyFile, ReplaceNAs, ReplaceZero, NormalizeData, FitDistributions, PlotDistributions, MDSPlot, EstimateKmeans)
   gc(full = TRUE)
 
 

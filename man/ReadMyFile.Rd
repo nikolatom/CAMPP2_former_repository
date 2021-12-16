@@ -4,7 +4,7 @@
 \alias{ReadMyFile}
 \title{Read files}
 \usage{
-ReadMyFile(my.data, my.expr)
+ReadMyFile(my.data, data.type)
 }
 \arguments{
 \item{my.data}{a dataframe of expression/abundance counts.}
