@@ -10,7 +10,7 @@ importCounts(my.data)
 \item{my.data}{a dataframe of expression/abundance counts.}
 }
 \description{
-Reading gene count matrix files in txt or xlsx format. Check a sample name format after the import.
+Reading gene count matrix files in txt or xlsx format. Counts must be a numeric value. Check the sample name format after the import.
 }
 \examples{
 \dontrun{

@@ -1,5 +1,5 @@
 #' @title Read gene counts
-#' @description Reading gene count matrix files in txt or xlsx format. Counts must be a numeric value. Check a sample name format after the import.
+#' @description Reading gene count matrix files in txt or xlsx format. Counts must be a numeric value. Check the sample name format after the import.
 #' @param my.data a dataframe of expression/abundance counts.
 #' @export
 #' @import openxlsx

@@ -29,6 +29,7 @@ Imports:
  gridExtra,  
  heatmap.plus,  
  plyr,  
+ dplyr,
  data.table,  
  viridis,
  squash,  
