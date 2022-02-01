@@ -5,7 +5,7 @@
 #' @export
 #' @import heatmap.plus
 #' @import squash
-#' @import viridis
+#' @importFrom viridisLite viridis
 #' @import ggplot2
 #' @seealso
 #' @return heatmap colors

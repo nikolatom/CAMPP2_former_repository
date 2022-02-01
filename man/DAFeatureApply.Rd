@@ -37,7 +37,7 @@ Apply differential abundance analysis to all the comparisons at once
 }
 \examples{
 \dontrun{
-DAFeatureApply(contrast.matrix, arg.data, arg.design, arg.logFC, arg.FDR, NULL, FALSE)
+...
 }
 }
 \seealso{

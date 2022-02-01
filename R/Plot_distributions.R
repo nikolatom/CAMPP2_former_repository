@@ -10,22 +10,8 @@
 #' @seealso
 #' @return distribution plots
 #' @examples \dontrun{
-#' PlotDistributions (counts, listOfLists)
+#' ...
 #' }
-
-
-# ##FOR TESTING PURPOSES ONLY
-# #during testing (without normalization) some of the genes/proteins were not ploted
-#
-# library("heatmap.plus")
-# library("ggplot2")
-# library("squash")
-# library("heatmap.plus")
-#
-# #plot<-PlotDistributions(counts3, counts4) #not working with normalized data because Error in apply(my.data, 1, function(x) x%%1 == 0) :
-# #dim(X) must have a positive length
-#
-# plot<-PlotDistributions(counts2, counts4)
 
 PlotDistributions <- function(my.data, list.of.lists) {
     discretetype <- unique(as.vector(apply(my.data, 1, function(x) x%%1==0)))

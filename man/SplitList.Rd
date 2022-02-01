@@ -17,6 +17,6 @@ Spliting list of files using ","
 }
 \examples{
 \dontrun{
-SplitList (my.list)
+...
 }
 }

@@ -13,9 +13,8 @@
 #' @seealso
 #' @return DA/DE features
 #' @examples \dontrun{
-#' DAFeatureApply(contrast.matrix, arg.data, arg.design, arg.logFC, arg.FDR, NULL, FALSE)
+#' ...
 #' }
-
 
 DAFeatureApply <- function(my.contrasts, my.data, my.design, coLFC, coFDR, my.block=NULL, my.vector) {
     my.features.l <- apply(my.contrasts, 2, function(x) DAFeature(x, my.data, my.design, coLFC, coFDR, my.block))

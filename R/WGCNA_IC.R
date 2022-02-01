@@ -1,12 +1,12 @@
 #' @title ModuleIC
 #' @description Weighted gene co-expression network analysis for describing the correlation patterns among genes
-#' @param vec.of.modulecolors a vector of module colors
-#' @param my.moduleColors a module color object from WGCNA
-#' @param my.IC a interconnectivity object from WGCNA
-#' @param my.ExpData a dataset, features (genes, proteins ect) as columns and samples as rows.
-#' @param my.n a Number indicating top n% most interconnected features in dataset
-#' @param my.name a name of output plot(s)
-#' @param my.softPower ??
+#' @param vec.of.modulecolors A vector of module colors
+#' @param my.moduleColors A module color object from WGCNA
+#' @param my.IC A interconnectivity object from WGCNA
+#' @param my.ExpData A dataset, features (genes, proteins ect) as columns and samples as rows.
+#' @param my.n A Number indicating top n% most interconnected features in dataset
+#' @param my.name A name of output plot(s)
+#' @param my.softPower
 #' @export
 #' @import WGCNA
 #' @seealso
@@ -14,7 +14,6 @@
 #' @examples \dontrun{
 #' ...
 #' }
-#'
 
 ModuleIC <- function(vec.of.modulecolors, my.moduleColors, my.IC, my.ExpData, my.n, my.softPower, my.name) {
     my.modules <- list()

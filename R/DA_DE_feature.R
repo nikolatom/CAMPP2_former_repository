@@ -5,6 +5,7 @@
 #' @param my.design a design matrix with all comparisons
 #' @param my.coLFC a cutoff for logFC
 #' @param my.coFDR a cutoff for FDR
+#' @export
 #' @import sva
 #' @import limma
 #' @seealso
@@ -13,8 +14,6 @@
 #' ...
 #' }
 
-
-################
 
 DAFeature <- function(my.contrast, my.data, my.design, coLFC, coFDR, my.block=NULL) {
     if(is.null(my.block)) {

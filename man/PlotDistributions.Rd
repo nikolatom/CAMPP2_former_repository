@@ -19,7 +19,7 @@ Plotting the counts' Distributions
 }
 \examples{
 \dontrun{
-PlotDistributions (counts, listOfLists)
+...
 }
 }
 \seealso{

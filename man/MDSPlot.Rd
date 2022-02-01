@@ -23,7 +23,7 @@ Data overview. The plot shows the relationship between samples (squared euclidia
 }
 \examples{
 \dontrun{
-MDSPlot (counts, groups, labels, cols)
+...
 }
 }
 \seealso{

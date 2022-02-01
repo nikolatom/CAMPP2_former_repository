@@ -23,7 +23,7 @@ Clustering may only be performed one dataset at a time!
 }
 \examples{
 \dontrun{
-EstimateKmeans(counts, n)
+...
 }
 }
 \seealso{

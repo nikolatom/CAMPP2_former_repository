@@ -25,7 +25,7 @@ Function for Plotting Kmeans clustering; A folder with MDS plots will be returne
 }
 \examples{
 \dontrun{
-PlotKmeans(my.data, clus.list, k, my.labels, my.name)
+...
 }
 }
 \seealso{

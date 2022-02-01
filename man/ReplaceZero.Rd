@@ -19,7 +19,7 @@ Checking Data for NA Values.
 }
 \examples{
 \dontrun{
-ReplaceZero (counts, metadata[1])
+...
 }
 }
 \seealso{
