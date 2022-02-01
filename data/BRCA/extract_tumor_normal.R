@@ -1,18 +1,7 @@
 library(dplyr)
 
-
-
-##This function returns list "normal_tumor_counts" of:
-##normal_counts_paired
-##tumor_counts_paired
-##normal_counts
-##tumor_counts
-##normal_duplicates
-##tumor_duplicates
-##all normal names
-##all tumor names
-
 #usage:
+    ##source function first
     load("./BRCA_dataPrep.rda")
     normal_tumor_counts<-extract_tumor_normal_samples(dataPrep)
     normal_counts_paired<-as.data.frame(normal_tumor_counts$normal_paired)
@@ -31,6 +20,27 @@ library(dplyr)
     write.table(tumor_duplicates, file="tumor_duplicates.txt", sep = "\t")
     write.table(normal_duplicates, file="normal_duplicates.txt", sep = "\t")
 
+    ###Creating test data:
+    normal_testData1<-normal_counts_paired[,1:50]
+    normal_testData2<-normal_counts_paired[,51:100]
+    tumor_testData1<-tumor_counts_paired[,1:50]
+    tumor_testData2<-tumor_counts_paired[,51:100]
+    write.table(normal_testData1, file="normal_testData1.txt", sep = "\t")
+    write.table(normal_testData2, file="normal_testData2.txt", sep = "\t")
+    write.table(tumor_testData1, file="tumor_testData1.txt", sep = "\t")
+    write.table(tumor_testData2, file="tumor_testData2.txt", sep = "\t")
+
+
+
+    ##This function returns list "normal_tumor_counts" of:
+    ##normal_counts_paired
+    ##tumor_counts_paired
+    ##normal_counts
+    ##tumor_counts
+    ##normal_duplicates
+    ##tumor_duplicates
+    ##all normal names
+    ##all tumor names
 
 extract_tumor_normal_samples <- function(gene_count_matrix, normal_sampleRegExp = '....-..-....-1[1-9].-...-....-..', tumor_sampleRegExp = '....-..-....-0[1-9].-...-....-..' ){
     #extract tumor and normal samples based on sample tag regular expression

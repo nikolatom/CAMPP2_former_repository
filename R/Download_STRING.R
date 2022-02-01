@@ -17,7 +17,7 @@ DownloadPPInt <- function(my.geneIDs, my.version = "11.0") {
     approvedGeneIDs <- c("ensembl_peptide_id", "hgnc_symbol","ensembl_gene_id","ensembl_transcript_id", "uniprotswissprot")
     setwd("..")
     file <- try(load("stringDB.Rdata"))
-    setwd("Results/")
+    setwd("./")
 
     if (class(file) == "try-error") {
         print("\nDownloading and preparing string database for protein-protein interactions - this may take a couple of minutes!\n")
@@ -45,7 +45,7 @@ DownloadPPInt <- function(my.geneIDs, my.version = "11.0") {
         stringDB <- stringDB[stringDB$combined_score > as.numeric(quantile(stringDB$combined_score)[2]),]
         setwd("..")
         save(stringDB, file = "stringDB.Rdata")
-        setwd("Results/")
+        setwd("./")
     }
 
     return(stringDB)

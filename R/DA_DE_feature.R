@@ -5,6 +5,7 @@
 #' @param my.design a design matrix with all comparisons
 #' @param my.coLFC a cutoff for logFC
 #' @param my.coFDR a cutoff for FDR
+#' @export
 #' @import sva
 #' @import limma
 #' @seealso

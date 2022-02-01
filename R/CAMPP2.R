@@ -1,30 +1,31 @@
 #' @title CAMPP2 pipeline
 #' @description CAMPP2 is a tool for quantitative data analysis
-#' @param data Gene count matrix (genes as rows; samples as columns) should be imported using function "import_counts".
-#' @param data2 Second dataset. Gene count matrix (genes as rows; samples as columns) should be imported using function "import_counts".
-#' @param metadata Samples' metadata table, should be imported using function "import_metadata".
-#' @param metadata2 Seconda metadata, should be imported using function "import_metadata".
-#' @param variant Data 'variant'. Current options are 'array', 'seq', 'ms' or 'other'. This argument is mandatory and depending on which option is chosen, data is transformed differently. If a second dataset is provided the option should be specified for each dataset, provided as a vector of strings.
-#' @param groups Argument should be specified as a vector of strings. The first element specifying the name of the column in the metadata file containing sample IDs and the second element specifying the name of the column which contains the groups for the DE/DA analysis. Distributional Checks Logical argument (TRUE/FALSE) which specifies whether Cullen-Frey graphs should be made for 10 randomly selected variables to check data distributions. This argument is per default set to TRUE.
-#' @param batches Specifies if you want to correct for experimental sample (tissue/interstitial fluid) batches. Argument takes a string of length 1 (one dataset) or 2 (two datasets), where the string(s) match a column name(s) in the metadata file(s).
-#' @param kmeans Argument for kmeans clustering. The paramenter must be specified as a character matching the name of a column in the metadata file, denoting the labeling of points on the MDS plot(s). If a parameter is empty (no column name specified) no labels will be added to the plot.
-#' @param plotheatmap Argument for heatmap specified as either; DE, DA, LASSO, EN or Consensus.
-#' @param corr Argument for correlation analysis. String specify which features should be correlated, options are: ALL, DE, DA, LASSO, EN or Consensus.
-#' @param survival Survival analysis may be performed on differentially expressed/abundant variables, variables from LASSO/EN regression or the consensus of these, e.g. argument survival must be specified as either; DE, DA, LASSO, EN or Consensus. In principal the full dataframe of variables may be used as well (if argument is set to ALL), HOWEVER this is not advisable unless the dataset is small with very few variables. Survival info must be included in the metadata excel file. The metadata file must contain at least four columns named; 'ids'(sample identifiers), 'age' (age in years at diagnosis, surgery or entry into trail), 'outcome.time' (time until end of follow-up in weeks, months or years, censuring, death) and 'outcome' (numeric 0 = censuring, 1=death). N.B. if you have (paired) normal samples the columns with survival information for these samples should contain NA values.
-#' @param survplot Arguments which specifies number of features to include per survival plot, e.g. many features requires splitting of the plot, default features per plot is 50.
-#' @param standardize Data centering. This option may be set to mean or median. If two datasets are provided the standardize option should be specified for each dataset, provided as a vector of strings. If the argument standardize is not specified and "variant" = array, then quantile normalization will be performed.
-#' @param transform Data transformation type. Current options are 'log2', 'log10' or 'logit'. If two datasets are provided the parameter should be specified for each dataset, provided as a vector of strings. If argument is left out, no transformation of data will occur.
-#' @param filename Name of result files from analysis.
-#' @param sig Cut-offs for log fold change (logFC) and corrected p-value (fdr), defining significant hits (proteins, genes, miRNAs or N-features). If argument "filename" is set, it must be a vector of strings, where the first element specifies the cut-off for logFC and the second element specifies the cut-off for corrected p-value (fdr). If omitted cutoffs will be set to -1 > logFC > 1 and corrected p-values < 0.05.
-#' @param plotmds TRUE or FALSE specifies if a preliminary MDSplot should be made for data overview.
-#' @param covar Covariates to include in analysis. If multiple of these, they should be specified with commas as separator, i.e. Covar1,Covar2,Covar3, (with quotes and parenthesis!). The first element in this list must be either TRUE or FALSE. If TRUE is specified then covariates will be included in both DE/DA analysis and Survival Analsysis. If FALSE is specified covariates will ONLY be used for Survival Analsysis. Names of covariates should match the desired columns in the metadata file.
+#' @param data Gene count matrix (genes as rows; samples as columns) should be imported using function "import_counts"; user can choose own way but has to keep gene IDs as row names and sample IDs as column names.
+#' @param sdata Gene count matrix for a second dataset. Gene count matrix (genes as rows; samples as columns) should be imported using function "import_counts".
+#' @param metadata Samples' metadata table, should be imported using function "import_metadata". Metadata must include exactly the same samples as gene counts (data) and samples must be sorted similarly.
+#' @param smetadata Metadata for a second dataset, should be imported using function "import_metadata". Metadata to the secend dataset must include exactly the same samples as sdata and samples must be sorted similarly.
+#' @param technology Technology used for the analysis of biological input. Current options are 'array', 'seq', 'ms' or 'other'. This argument is mandatory and depending on which option is chosen, data is transformed differently. If a second dataset is provided, the option should be specified for each dataset, provided as a character vector.
+#' @param groups Argument defining groups of samples should be specified as a character vector. The first element specifying the name of the column in the metadata file containing sample IDs and the second element specifying the name of the column which contains the groups for the DE/DA analysis.
+#' @param datacheck Distributional checks is defined using logical argument (TRUE/FALSE) which specifies whether Cullen-Frey graphs should be made for 10 randomly selected variables to check data distributions. This argument is per default set to TRUE.
+#' @param batches Specifies which metadata should be used for a batch correction (sequencing run/tissue/interstitial fluid/etc.). Argument takes a character vector of length 1 (one dataset) or 2 (two datasets), where the string(s) match a column name(s) in the metadata file(s).
+#' @param kmeans Argument for kmeans clustering. The parameter must be specified as a character vector matching the name of a column in the metadata file, denoting the labeling of points on the MDS plot(s). If a parameter is set to "TRUE" (no column name specified) no labels will be added to the plot. Works only for the first dataset (data).
+#' @param plotheatmap Argument for heatmap specified as either: "DE", "DA", "LASSO", "EN" or "Consensus".
+#' @param corr Argument for correlation analysis. String specify which features should be correlated, options are: "ALL", "DE", "DA", "LASSO", "EN" or "Consensus". For this type of analysis, 2 datasets must include the same samples, e.g. tumor1-normal vs tumor2-normal (3 samples from 1 patient needed).
+#' @param survival Survival analysis may be performed on differentially expressed/abundant variables, variables from LASSO/EN regression or the consensus of these. Argument "survival" must be specified as either; "DE", "DA", "LASSO", "EN" or "Consensus". The full dataframe of variables may be used (if argument is set to ALL), HOWEVER this is not advisable unless the dataset is small with very few variables. Survival info must be included in the metadata file. The metadata file must contain at least four columns named; "ids" (sample identifiers), "age" (age in years at diagnosis, surgery or entry into trail), "outcome.time" (time until end of follow-up in weeks, months or years, censuring, death) and "outcome" (numeric 0 = censuring, 1=death). N.B. in case of (paired) normal samples the columns with survival information for these samples should contain "NA" values.
+#' @param survplot Argument which specifies number of features to include per survival plot, e.g. many features requires splitting of the plot, default features per plot is 50.
+#' @param standardize Data centering. This option may be set to "mean" or "median." If two datasets are provided, the standardize option should be specified for each dataset, provided as a character vector. If the argument standardize is not specified and "technology" = "array", then quantile normalization will be performed.
+#' @param transform Data transformation type. Current options are "log2", "log10", "logit" and "voom". If two datasets are provided the parameter should be specified for each dataset, provided as a character vector. If argument is left out, no transformation of data will be performed.
+#' @param prefix Prefix for the results' files and results folder.
+#' @param signif Cut-offs for log fold change (logFC) and corrected p-value (fdr), defining significant hits (proteins, genes, miRNAs or N-features). If argument a signif is set, it must be a numeric vector, where the first element specifies the cut-off for logFC and the second element specifies the cut-off for corrected p-value (fdr).  In case of 2 datasets, vector must be of length 4. If omitted, cutoffs will be set to -1 > logFC > 1 and corrected p-values < 0.05.
+#' @param plotmds This argument specifies ("TRUE" or "FALSE") if a preliminary MDSplot should be made for data overview. Works only for the first dataset.
+#' @param covar Covariates to include in the analysis. If multiple of these, they should be specified as a character vector. The first element in this list must be either TRUE or FALSE. If TRUE is specified then covariates will be included in both DE/DA analysis and Survival Analsysis. If FALSE is specified covariates will ONLY be used for Survival Analsysis. Names of covariates should match the desired columns in the metadata file.
 #' @param stratify This argument may be used if some of the categorical (NOT continous) covariates violate the cox proportional assumption. The pipline checks for proportional hazard and will retun the covariates that fail the PH test. You may then rerun the pipeline with this argument followed by the names of the categorical covariates which failed and these will be stratified.
-#' @param colors Custom color pallet for MDS and heatmaps. Must be the same length as number of groups used for comparison (e.g. two groups = two colors) must be separted by commas, example: green,red,blue. See R site for avalibe colors http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf.
-#' @param lasso Argument specifying if LASSO or elestic net regression should be performed. This argument may be set to a value between 1 (LASSO) and > 0 (Elastic Net), but NOT to 0 exactly (Ridge Regression).
-#' @param WGCNA Argument specifying if Weighed Gene Co-expression Network Analysis should be performed. It takes a string, either DA, DE or ALL specifying if all variables should be included in WGCNA or only differentially expressed / abundant variables.
-#' @param cutoffWGCNA Argument specifying the cutoff values for WGCNA. The argument takes a string of three values: (I) minimum modules size, (II) maximum % dissimilarity for merging of modules, and (III) % of top most interconnected genes (or other features)to return, from each modules identified in the Weighed Gene Co-expression Network Analysis. Default values are 10,25,25.
-#' @param PPint Argument specifying that protein-protein interaction networks should be generated using the results of the differential expression analysis. This argument must be a list of length two (with quotes and parenthesis!). The first element in this list must be a string specifying the type of gene identifier in the DE/DA results file provided, allowed identifiers are:ensembl_peptide_id, hgnc_symbol, ensembl_gene_id, ensembl_transcript_id, uniprotswissprot, the second element in this list must be a string specifying the version of the stringDB to use. Currently only version supported is: 11.0.
-#' @param GenemiRint Argument specifying that gene-miRNA interaction networks should be generated using the results of the differential expression analysis. This argument must be a list of length three (with quotes and parenthesis!). The first element in this list must be a string specifying the type of miRNA identifier in the expression data file, allowed identifiers are:mature_mirna_ids, mature_mirna_accession.The second element in this list must be a string specifying the miRNA-gene database to use, currently options are: targetscan (validated miRNAs), mirtarbase (predicted miRNAs), tarscanbase (validated + predicted miRNAs)")
+#' @param colors Custom color pallet for MDS and heatmaps. Must be the same length as number of groups used for comparison (e.g. two groups = two colors) must be defined as character vector. See R site for avalibe colors http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf.
+#' @param lasso Argument specifying parameters for LASSO or Elastic net regression. This argument may be set to 1 for LASSO or >0 & <1 for Elastic Net, but NOT to 0 exactly (Ridge Regression).
+#' @param WGCNA Argument specifying parameter for Weighed Gene Co-expression Network Analysis. It takes a string, either "DA", "DE" or "ALL" specifying if all variables should be included in WGCNA or only differentially expressed / abundant variables.
+#' @param cutoffWGCNA Argument specifying the cutoff values for WGCNA. The argument takes a numuric vector of three values: (I) minimum modules size, (II) maximum % dissimilarity for merging of modules, and (III) % of top most interconnected genes (or other features) to return, from each modules identified in the Weighed Gene Co-expression Network Analysis. Default values are 10,25,25.
+#' @param PPint Argument specifying that protein-protein interaction networks should be generated using the results of the differential expression analysis. This argument must be a character vector of length two. The first element in this list must be a string specifying the type of gene identifier in the gene counts file provided. Allowed identifiers are: "ensembl_peptide_id", "hgnc_symbol", "ensembl_gene_id", "ensembl_transcript_id", "uniprotswissprot". The second element is a string specifying version of the stringDB to use. Currently only version supported is: 11.0.
+#' @param GenemiRint Argument specifying that gene-miRNA interaction networks should be generated using the results of the differential expression analysis. This argument must be a character vector of length two. The first element in this list must be a string specifying the type of miRNA identifier in the gene counts data file. Allowed identifiers are: "mature_mirna_ids", "mature_mirna_accession". The second element must be a string specifying the miRNA-gene database to use, currently options are: "targetscan" (validated miRNAs), "mirtarbase" (predicted miRNAs), "tarscanbase" (validated + predicted miRNAs)".
 #' @export
 #' @seealso
 #' @return CAMPP2 results
@@ -32,11 +33,39 @@
 #' ...
 #' }
 
-#data=countsT
-#metadata=metadata
-#variant="seq"
-#groups=c("IDs", "groups")
-runCampp2 <- function (data, data2=NULL, metadata, metadata2=NULL, variant, groups, batches=NULL, datacheck=NULL, standardize=NULL, transform=NULL, plotmds=NULL, plotheatmap=NULL, kmeans=NULL, sig=NULL, colors=NULL, filename=NULL, heatmap=NULL, corr=NULL, lasso=NULL, WGCNA=NULL, cutoffWGCNA=NULL, survival=NULL, covar=NULL, stratify=NULL, survplot=NULL, PPint=NULL, GenemiRint=NULL){
+# signif=c(1,1,1,1)
+# data=dataset1
+# kmeans=NULL
+# metadata=metadata1
+# technology=c("seq","seq")
+# groups=c("IDs", "diagnosis","IDs", "diagnosis")
+#
+#
+# sdata=dataset2
+# smetadata=metadata2
+#
+# batches=NULL
+# datacheck=NULL
+# standardize=NULL
+# transform=NULL
+# plotmds=NULL
+# plotheatmap=NULL
+# kmeans=NULL
+# colors=NULL
+# prefix="test_surv"
+# corr=NULL
+# lasso=NULL
+# WGCNA=NULL
+# cutoffWGCNA=NULL
+# survival="DE"
+# covar=NULL
+# stratify=NULL
+# survplot=NULL
+# PPint=NULL
+# GenemiRint=NULL
+
+
+runCampp2 <- function (data, sdata=NULL, metadata, smetadata=NULL, technology, groups, batches=NULL, datacheck=TRUE, standardize=NULL, transform=NULL, plotmds=NULL, plotheatmap=NULL, kmeans=NULL, signif=NULL, colors=NULL, prefix=NULL, corr=NULL, lasso=NULL, WGCNA=NULL, cutoffWGCNA=NULL, survival=NULL, covar=NULL, stratify=NULL, survplot=NULL, PPint=NULL, GenemiRint=NULL){
 
 
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -67,13 +96,10 @@ runCampp2 <- function (data, data2=NULL, metadata, metadata2=NULL, variant, grou
   ### MANDATORY ARGUMENTS ###
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-#      metadata<-metadata_file
-#      data<-counts
-      # Variant (datatype)
-      if (is.null(variant)){
-        stop("\n- Argument variant is missing. Variant specifies type of input data (and sdata, if included).\n")
+      if (is.null(technology)){
+        stop("\n- Argument technology is missing. Technology specifies type of input data (and sdata, if included).\n")
       } else {
-        variant <- SplitList(variant)
+        technology <- SplitList(technology)
       }
 
 
@@ -108,7 +134,7 @@ runCampp2 <- function (data, data2=NULL, metadata, metadata2=NULL, variant, grou
       group <- as.factor(as.character(eval(acall)))
 
       if (length(group) <= 1) {
-          stop(paste0("No column in metadata test file called ",groups[[2]]))
+          stop(paste0("Check the column name for groups in your metadata ",groups[[2]], " If the name matches, check the samples names."))
       }
 
 
@@ -223,23 +249,23 @@ runCampp2 <- function (data, data2=NULL, metadata, metadata2=NULL, variant, grou
 
 
   # Significance
-  if (is.null(sig)){
+  if (is.null(signif)){
      cat("\n- No cut-off for significant hits has been chosen. Cutoffs will be set to -1 > logFC > 1 and corrected p-value (fdr) < 0.05.")
      logFC <- 1
      FDR <- 0.05
      slogFC <- 1
      sFDR <- 0.05
   } else {
-      sig <- as.numeric(SplitList(sig))
-      if (length(sig) > 1) {
-          logFC <- sig[1]
-          FDR <- sig[2]
-          if (length(sig) > 3) {
-              slogFC <- sig[3]
-              sFDR <- sig[4]
+      signif <- as.numeric(SplitList(signif))
+      if (length(signif) > 1) {
+          logFC <- signif[1]
+          FDR <- signif[2]
+          if (length(signif) > 3) {
+              slogFC <- signif[3]
+              sFDR <- signif[4]
           }
       } else {
-          stop("If argument sig is set, it must be a vector of length 2 OR 2*2 = 4 , if two datasets are used, (with quotes and parenthesis!) where the first element specifies the cut-off for logFC and the second element specifies the cut-off for corrected p-value (fdr) for each set. If sig is not specified defaults will be used. Cutoffs will be set to -1 > logFC > 1 and corrected p-value (fdr) < 0.05.")
+          stop("If argument signif is set, it must be a vector of length 2 OR 2*2 = 4 , if two datasets are used, (with quotes and parenthesis!) where the first element specifies the cut-off for logFC and the second element specifies the cut-off for corrected p-value (fdr) for each set. If signif is not specified defaults will be used. Cutoffs will be set to -1 > logFC > 1 and corrected p-value (fdr) < 0.05.")
       }
   }
 
@@ -253,11 +279,11 @@ runCampp2 <- function (data, data2=NULL, metadata, metadata2=NULL, variant, grou
   }
 
 
-  # Filename
-  if (is.null(filename)){
-      filename <- "Results"
+  # Prefix
+  if (is.null(prefix)){
+      prefix <- "Results"
   } else {
-      filename <- filename
+      prefix <- prefix
   }
 
 
@@ -318,7 +344,7 @@ runCampp2 <- function (data, data2=NULL, metadata, metadata2=NULL, variant, grou
   } else {
       survival <- survival
       if ((!survival %in% must.be.type)) {
-          stop("Options for survival analysis variable sets are; DA, LASSO, EN or Consensus. Please re-run pipeline with one of these!")
+          stop("Options for survival analysis variable sets are: ALL,EN, LASSO, DA, DE, Consensus. Please re-run pipeline with one of these!")
       }
   }
 
@@ -334,14 +360,14 @@ runCampp2 <- function (data, data2=NULL, metadata, metadata2=NULL, variant, grou
       covarS <-  covar[-1]
       if (covar[1] == TRUE) {
           covarD <- covar[-1]
-          if (exists("sdata")) {
+          if (!is.null(sdata)) {
               scovarD <- covar[-1]
           }
       } else if (covar[1] == FALSE) {
           covarD <- NULL
           scovarD <- NULL
       } else {
-          stop("First argument in '-r' must be TRUE or FALSE. If TRUE, covariates will be used for both DE analysis and survival analysis. If FALSE, covariates will be used only for survival analysis.")
+          stop("First argument in 'survival' must be TRUE or FALSE. If TRUE, covariates will be used for both DE analysis and survival analysis. If FALSE, covariates will be used only for survival analysis.")
       }
   }
 
@@ -396,8 +422,8 @@ runCampp2 <- function (data, data2=NULL, metadata, metadata2=NULL, variant, grou
 
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # Create directory Results
-  dir.create(filename)
-  setwd(paste0(filename, "/"))
+  dir.create(prefix)
+  setwd(paste0(prefix, "/"))
 
 
 
@@ -421,12 +447,12 @@ runCampp2 <- function (data, data2=NULL, metadata, metadata2=NULL, variant, grou
 
 
 
-  if (exists("sdata")){
+  if (!is.null(sdata)){
       hasZeroS <- unique(as.vector(sdata == 0))
       hasNegS <- unique(as.vector(sdata < 0))
   }
 
-  if(exists("sdata") & transform[2] %in% c("log2", "log10", "logit")) {
+  if(!is.null(sdata) & transform[2] %in% c("log2", "log10", "logit")) {
       if (TRUE %in% hasNegS) {
           stop("\n- Second dataset contains negative values and cannot be log transformed. Re-run command WITHOUT argument transform  or alternatively if using two datasets, specify 'none' as the transforminput for the dataset with negative values, e.g. 'none,log2' or 'log2,none'.\n")
       } else {
@@ -455,31 +481,31 @@ runCampp2 <- function (data, data2=NULL, metadata, metadata2=NULL, variant, grou
   # Dataset
 
   if (exists("data.original")) {
-      data <- NormalizeData(variant[1], data, group, transform[1], standardize[1], data.original)
+      data <- NormalizeData(technology[1], data, group, transform[1], standardize[1], data.original)
   } else {
-      data <- NormalizeData(variant[1], data, group, transform[1], standardize[1])
+      data <- NormalizeData(technology[1], data, group, transform[1], standardize[1])
   }
 
 
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # Second Dataset
 
-  if(exists("sdata")) {
-      if (length(variant) < 2) {
-          stop("\nTwo datasets are input for correlation analysis, BUT argument variant only has length one. Length of variant must be two, see -h.\n")
+  if(!is.null(sdata)) {
+      if (length(technology) < 2) {
+          stop("\nTwo datasets are input for correlation analysis, BUT argument technology only has length one. Length of technology must be two.\n")
       }
       if (length(transform) < 2) {
-          stop("\nTwo datasets are input for correlation analysis, BUT argument transformonly has length one. Length of transformmust be two, see -h.\n")
+          stop("\nTwo datasets are input for correlation analysis, BUT argument transform only has length one. Length of transformmust be two, see.\n")
       }
   }
 
 
 
-  if (exists("sdata")) {
+  if (!is.null(sdata)) {
       if (exists("sdata.original")) {
-          sdata <- NormalizeData(variant[2], sdata, sgroup, transform[2], standardize[2], sdata.original)
+          sdata <- NormalizeData(technology[2], sdata, sgroup, transform[2], standardize[2], sdata.original)
       } else {
-          sdata <- NormalizeData(variant[2], sdata, sgroup, transform[2], standardize[2])
+          sdata <- NormalizeData(technology[2], sdata, sgroup, transform[2], standardize[2])
       }
   }
 
@@ -503,7 +529,7 @@ runCampp2 <- function (data, data2=NULL, metadata, metadata2=NULL, variant, grou
       if (length(batch) > 0) {
           design <-  model.matrix(~group)
 
-          if (variant[1] == "seq") {
+          if (technology[1] == "seq") {
               data.batch <- ComBat(as.matrix(data$E), batch, design, par.prior=TRUE,prior.plots=FALSE)
           } else {
               data.batch <- ComBat(as.matrix(data), batch, design, par.prior=TRUE,prior.plots=FALSE)
@@ -524,7 +550,7 @@ runCampp2 <- function (data, data2=NULL, metadata, metadata2=NULL, variant, grou
       if (length(sbatch) > 0) {
           sdesign <- model.matrix(~sgroup)
 
-          if (variant[2] == "seq") {
+          if (technology[2] == "seq") {
               sdata.batch <- ComBat(as.matrix(sdata$E), sbatch, sdesign, par.prior=TRUE,prior.plots=FALSE)
           } else {
               sdata.batch <- ComBat(as.matrix(sdata), sbatch, sdesign, par.prior=TRUE,prior.plots=FALSE)
@@ -554,7 +580,7 @@ runCampp2 <- function (data, data2=NULL, metadata, metadata2=NULL, variant, grou
       if (databatch == TRUE) {
           subset.data <- data.batch[sample(nrow(data.batch), 10),]
       } else {
-          if (variant[1] == "seq") {
+          if (technology[1] == "seq") {
               subset.data <- data$E[sample(nrow(data$E), 10),]
           } else {
               subset.data <- data[sample(nrow(data), 10),]
@@ -573,12 +599,12 @@ runCampp2 <- function (data, data2=NULL, metadata, metadata2=NULL, variant, grou
 
 
 
-  if (datacheck == TRUE & exists("sdata")) {
+  if (datacheck == TRUE & !is.null(sdata)) {
       if (sdatabatch == TRUE) {
           subset.data <- sdata.batch[sample(nrow(sdata.batch), 10),]
       } else {
 
-          if (variant[2] == "seq") {
+          if (technology[2] == "seq") {
               subset.data <- sdata$E[sample(nrow(sdata$E), 10),]
           } else {
               subset.data <- sdata[sample(nrow(sdata), 10),]
@@ -617,15 +643,15 @@ runCampp2 <- function (data, data2=NULL, metadata, metadata2=NULL, variant, grou
 
   if (plotmds == TRUE && databatch == TRUE){
       mdsplot <- MDSPlot(data.batch, group, ids, MDScolors)
-      ggsave(paste0(filename, "_MDSplot_batchcorr.pdf"), plot = mdsplot, dpi = 300, width = 8, height = 8)
+      ggsave(paste0(prefix, "_MDSplot_batchcorr.pdf"), plot = mdsplot, dpi = 300, width = 8, height = 8)
 
   } else if (plotmds == TRUE && databatch == FALSE){
-      if (variant[1] == "seq") {
+      if (technology[1] == "seq") {
           mdsplot <- MDSPlot(data.frame(data$E), group, ids, MDScolors)
       } else {
           mdsplot <- MDSPlot(data, group, ids, MDScolors)
       }
-      ggsave(paste0(filename, "_MDSplot.pdf"), plot = mdsplot, dpi = 300, width = 8, height = 8)
+      ggsave(paste0(prefix, "_MDSplot.pdf"), plot = mdsplot, dpi = 300, width = 8, height = 8)
 
       rm(mdsplot)
 
@@ -651,7 +677,7 @@ runCampp2 <- function (data, data2=NULL, metadata, metadata2=NULL, variant, grou
 
   if (kmeans == TRUE) {
 
-      if (variant[1] == "seq") {
+      if (technology[1] == "seq") {
           k.data <- data$E
       } else {
           k.data <- data
@@ -694,20 +720,20 @@ runCampp2 <- function (data, data2=NULL, metadata, metadata2=NULL, variant, grou
               list.of.dfs[[idx]] <- df
           }
           Kmeans.list <- lapply(list.of.dfs, function(x) EstimateKmeans(x, nsets))
-          Kmeans.Out <- PlotKmeans(data.batch, Kmeans.list, nks, labels.kmeans, filename)
+          Kmeans.Out <- PlotKmeans(data.batch, Kmeans.list, nks, labels.kmeans, prefix)
       } else {
           for (idx in 1:length(nsets)) {
               df <- t(k.data[sample(nrow(k.data), setsize), ])
               list.of.dfs[[idx]] <- df
           }
           Kmeans.list <- lapply(list.of.dfs, function(x) EstimateKmeans(x, nsets))
-          Kmeans.Out <- PlotKmeans(k.data, Kmeans.list, nks, labels.kmeans, filename)
+          Kmeans.Out <- PlotKmeans(k.data, Kmeans.list, nks, labels.kmeans, prefix)
       }
 
 
       out <- cbind(metadata, Kmeans.Out)
 
-      write.table(out, paste0(filename,"_Metadata_Kmeans.txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+      write.table(out, paste0(prefix,"_Metadata_Kmeans.txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
 
       setwd("..")
 
@@ -787,8 +813,8 @@ runCampp2 <- function (data, data2=NULL, metadata, metadata2=NULL, variant, grou
 
   # Write results out as excel file
   if (!is.null(res.DE)) {
-      #DE.out <- ExcelOutput(res.DE, paste0(filename, out.name))
-      DE.out <- TextOutput(res.DE, paste0(filename, out.name))
+      #DE.out <- ExcelOutput(res.DE, paste0(prefix, out.name))
+      DE.out <- TextOutput(res.DE, paste0(prefix, out.name))
       rownames(DE.out) <- NULL
       res.DE.names <- unique(DE.out$name)
       rm(res.DE)
@@ -801,8 +827,10 @@ runCampp2 <- function (data, data2=NULL, metadata, metadata2=NULL, variant, grou
 
 
 
-  if (variant[1] == "seq") {
+  if (technology[1] == "seq") {
+      cnames <- colnames(data$E)
       data <- data.frame(data$E)
+      colnames(data) <- cnames
   }
 
 
@@ -812,8 +840,10 @@ runCampp2 <- function (data, data2=NULL, metadata, metadata2=NULL, variant, grou
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # Second dataset
 
+##line 845 was originally "if(!is.null(arg.PPI) & !is.null(arg.GmiRI)) {"
 
-  if(!is.null(PPI) & !is.null(GmiRI)) {
+  if(!is.null(sdata) & !is.null(smetadata)) {
+      setwd("DEAAResults/")
 
       combinations <- data.frame(t(combn(paste0("sgroup", levels(sgroup)), 2)))
       combinations$contr <- apply(combinations[,colnames(combinations)], 1, paste, collapse = "-")
@@ -855,22 +885,24 @@ runCampp2 <- function (data, data2=NULL, metadata, metadata2=NULL, variant, grou
 
       # Write results out as excel file
       if (!is.null(res.sDE)) {
-          #sDE.out <- ExcelOutput(res.sDE, paste0(filename, out.name))
-          sDE.out <- TextOutput(res.sDE, paste0(filename, out.name))
+          #sDE.out <- ExcelOutput(res.sDE, paste0(prefix, out.name))
+          sDE.out <- TextOutput(res.sDE, paste0(prefix,out.name))
           rownames(sDE.out) <- NULL
           res.sDE.names <- unique(sDE.out$name)
       } else {
           cat("No signficant DE/DA hits found for analysis of second dataset. Check output file from differential expression analysis. Check your cut-off for differential expression analysis, it may be that these are too stringent.")
       }
+      setwd("..")
   }
 
 
 
 
-  if (exists("sdata") && variant[2] == "seq") {
+  if (!is.null(sdata) && technology[2] == "seq") {
+      cnames <- colnames(sdata$E)
       sdata <- data.frame(sdata$E)
+      colnames(sdata) <- cnames
   }
-
 
 
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -982,7 +1014,7 @@ runCampp2 <- function (data, data2=NULL, metadata, metadata2=NULL, variant, grou
 
 
       # Write out LASSO/EN results
-      write.table(VarsSelect, paste0(filename,"_LASSO.txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+      write.table(VarsSelect, paste0(prefix,"_LASSO.txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
 
 
       # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -990,8 +1022,8 @@ runCampp2 <- function (data, data2=NULL, metadata, metadata2=NULL, variant, grou
       consensus <- DE.out[DE.out$name %in% VarsSelect$LASSO.Var.Select,]
 
       if (nrow(consensus) > 0) {
-          write.table(consensus, paste0(filename,"_DEA_LASSO_Consensus.txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
-          pdf(paste0(filename, "_overlap_DEAA_LASSO_EN.pdf"), height=8, width=12)
+          write.table(consensus, paste0(prefix,"_DEA_LASSO_Consensus.txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+          pdf(paste0(prefix, "_overlap_DEAA_LASSO_EN.pdf"), height=8, width=12)
           if (length(levels(group)) == 2) {
               venn <- venn.diagram(list(A=unique(as.character(DE.out[DE.out$dir =="up",]$name)), B=unique(as.character(DE.out[DE.out$dir =="down",]$name)), C=as.character(VarsSelect$LASSO.Var.Select)), category.names = c("D(EA) Analysis Up", "D(EA) Analysis Down", "LASSO/EN Regression"), filename=NULL, lwd = 0.7, cat.pos=0, sub.cex = 2, cat.cex= 1.5, cex=1.5, fill=viridis(3, begin = 0.2, end = 0.8, option="cividis"))
 
@@ -1014,7 +1046,7 @@ runCampp2 <- function (data, data2=NULL, metadata, metadata2=NULL, variant, grou
       cat(paste0("\nThe average leave-one-out cross validation error for LASSO/elastic-net was: ", mean(CrossValErrormean), "% and the higest error returned from any of the 10 runs was: ", max(CrossValErrormean),"%. Generally the cross validation error should be low ~ 5.0 %, as large errors may indicate a poor model and/or very heterogeneous data. On the other hand, an error of 0 might indicate over-fitting. See CAMPP manual for specifics.\n\n"))
       pCVEM <- data.frame(cbind(CrossValErrormean, LassoRun))
       pCVEM <- ggplot(data=pCVEM, aes(x=LassoRun, y=CrossValErrormean)) + geom_bar(aes(fill = as.factor(LassoRun)), stat="identity") + theme_minimal() + scale_x_discrete(limits=c(LassoRun)) + scale_fill_viridis(begin = 0.0, end = 0.0, discrete=TRUE, option="cividis" ) + theme(legend.position="none") + ylab("CrossValErrormean in %") + theme(axis.text = element_text(size=14), axis.title = element_text(size=16))
-      ggsave(paste0(filename, "_CrossValidationPlot.pdf"), plot = pCVEM)
+      ggsave(paste0(prefix, "_CrossValidationPlot.pdf"), plot = pCVEM)
 
 
 
@@ -1053,7 +1085,7 @@ runCampp2 <- function (data, data2=NULL, metadata, metadata2=NULL, variant, grou
           roc.res <- data.frame(round(as.numeric(sub(".*: ", "", roc.res$auc)), digits = 2))
           colnames(roc.res) <- "AUC"
           cat(paste0("Are under the curve (AUC) for variables selected from 10 LASSO/EN runs was: ", roc.res$AUC))
-          write.table(roc.res, paste0(filename,"_AUC.txt"), row.names=FALSE, col.names = TRUE, quote = FALSE)
+          write.table(roc.res, paste0(prefix,"_AUC.txt"), row.names=FALSE, col.names = TRUE, quote = FALSE)
       }
 
 
@@ -1104,7 +1136,7 @@ runCampp2 <- function (data, data2=NULL, metadata, metadata2=NULL, variant, grou
       range <- c(round(min(DE.out$logFC)), round(max(DE.out$logFC)))
 
       # Heatmap as pdf
-      MakeHeatmap(hm, hm.gradient, colors.hm, colors, group, filename, range)
+      MakeHeatmap(hm, hm.gradient, colors.hm, colors, groups, paste0(prefix,name), range)
 
       rm(hm)
 
@@ -1133,7 +1165,7 @@ runCampp2 <- function (data, data2=NULL, metadata, metadata2=NULL, variant, grou
 
   # Data (TIF) and sdata correlations
 
-  if (exists("sdata") & !is.null(corrby)) {
+  if (!is.null(sdata) & !is.null(corrby)) {
 
       dir.create("CorrelationResults")
       setwd("CorrelationResults/")
@@ -1170,20 +1202,20 @@ runCampp2 <- function (data, data2=NULL, metadata, metadata2=NULL, variant, grou
           corr.out <- sdata[rownames(sdata) %in% retainedvar, colnames(sdata) %in% retainedSamp]
       }
 
-      # Perform correction analysis and generate overall correlation plot
-      res.corr <- CorrAnalysis(data.corr, corr.out, filename)
+      # Perform correlation analysis and generate overall correlation plot
+      res.corr <- CorrAnalysis(data.corr, corr.out, prefix)
 
 
       # print out significant hits in Excel
       res.corr$sig.corr <- ifelse(res.corr$fdr <= FDR, "yes", "no")
 
-      write.table(res.corr, paste0(filename,"_corr.txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+      write.table(res.corr, paste0(prefix,"_corr.txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
 
 
       # Individual correlation plots
       corr.features <- as.character(res.corr[which(res.corr$sig.corr == "yes"),]$name)
       if (length(corr.features) > 1) {
-          CorrelationPlots(data.corr, corr.out, corr.features, filename)
+          CorrelationPlots(data.corr, corr.out, corr.features, prefix)
       } else {
           cat("\n- No significant correlations, no plotting.\n")
       }
@@ -1240,7 +1272,7 @@ runCampp2 <- function (data, data2=NULL, metadata, metadata2=NULL, variant, grou
 
 
       if (survival == "ALL") {
-          cat("\nYou have chosen to use all varibles for survival analysis, this is NOT advisable! See options for survival in with the help argument -h.\n")
+          cat("\nYou have chosen to use all varibles for survival analysis, this is NOT advisable! See options for survival in with the help argument.\n")
       } else if (survival %in% c("DA", "DE")) {
           data.surv <- data.surv[rownames(data.surv) %in% res.DE.names,]
       } else {
@@ -1251,7 +1283,7 @@ runCampp2 <- function (data, data2=NULL, metadata, metadata2=NULL, variant, grou
                   data.surv <- data.surv[rownames(data.surv) %in% as.character(VarsSelect$LASSO.Var.Select),]
               }
           } else {
-              stop("You have chosen to perform survival analysis with results from LASSO/EN but this analysis has not been performed. Please re-run pipeline with parameter lasso (see Manual or help (-h))")
+              stop("You have chosen to perform survival analysis with results from LASSO/EN but this analysis has not been performed. Please re-run pipeline with parameter lasso (see Manual)")
           }
       }
 
@@ -1259,7 +1291,7 @@ runCampp2 <- function (data, data2=NULL, metadata, metadata2=NULL, variant, grou
 
 
 
-      # If user has specified covariates for survivalanalysis, extract these.
+      # If user has specified covariates for survival analysis, extract these.
       if(is.null(covarS)) {
           surv_object <- data.frame(t(data.surv), as.numeric(metadata.surv$outcome.time), metadata.surv$outcome)
           colnames(surv_object) <- c(rownames(data.surv), "outcome.time", "outcome")
@@ -1272,7 +1304,8 @@ runCampp2 <- function (data, data2=NULL, metadata, metadata2=NULL, variant, grou
 
       # datadist format for cph function with cubic splines.
       features <- rownames(data.surv)
-      dd <- datadist(surv_object); options(datadist='dd')
+      dd <- datadist(surv_object)
+      options(datadist=dd)
 
       mylist <- list(features, dd, surv_object)
 
@@ -1507,9 +1540,9 @@ runCampp2 <- function (data, data2=NULL, metadata, metadata2=NULL, variant, grou
 
 
       # Setting up data and writing out excel file with results and making HR stemplot
-      survival.data <- SurvivalCOX(survival.results, filename, survplot)
+      survival.data <- SurvivalCOX(survival.results, prefix, survplot)
 
-      write.table(survival.data, paste0(filename,"_survival.txt"), sep = "\t", row.names=TRUE, col.names=TRUE, quote=FALSE)
+      write.table(survival.data, paste0(prefix,"_survival.txt"), sep = "\t", row.names=TRUE, col.names=TRUE, quote=FALSE)
 
       setwd("..")
       rm(dd, pha_check, pha.fail.test, survival.results, features.surv, survival.data)
@@ -1559,7 +1592,7 @@ runCampp2 <- function (data, data2=NULL, metadata, metadata2=NULL, variant, grou
       # Check data
       gsg <- goodSamplesGenes(data.WGCNA)
       cat(paste0("- Data set is OK for WGCNA - ", gsg$allOK,".\n"))
-      WGCNAres <- WGCNAAnalysis(data.WGCNA, cutoffWGCNA ,filename)
+      WGCNAres <- WGCNAAnalysis(data.WGCNA, cutoffWGCNA, prefix)
       setwd("..")
 
       if (WGCNA %in% c("DA", "DE")) {
@@ -1668,7 +1701,7 @@ runCampp2 <- function (data, data2=NULL, metadata, metadata2=NULL, variant, grou
       cat("\nNo Interaction Networks requested\n.")
   }
 
-
+  setwd("../")
   cat("\nCAMPP RUN DONE!\n")
 
 }

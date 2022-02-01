@@ -5,7 +5,7 @@
 \title{Normalization}
 \usage{
 NormalizeData(
-  my.variant,
+  my.technology,
   my.data,
   my.group,
   my.transform,
@@ -14,7 +14,7 @@ NormalizeData(
 )
 }
 \arguments{
-\item{my.variant}{Possible values are: "array" (mircoarray data), "seq" (high throughput sequencing data), "ms" (mass spectrometry data) or "other" (other type).}
+\item{my.technology}{Possible values are: "array" (mircoarray data), "seq" (high throughput sequencing data), "ms" (mass spectrometry data) or "other" (other type).}
 
 \item{my.data}{a dataframe of expression/abundance counts, N.B only a subset of variables should be input, not intended for the full expression matrix!}
 

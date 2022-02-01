@@ -13,7 +13,10 @@
 #' ...
 #' }
 
-number_ticks <- function(n) {function(limits) pretty(limits, n)}
+# d1=data_normal1
+# d2=data_tumor1
+# my.filename="test_corr"
+#number_ticks <- function(n) {function(limits) pretty(limits, n)} - was set to NULL
 
 CorrAnalysis <- function(d1, d2, my.filename) {
 
@@ -34,7 +37,7 @@ CorrAnalysis <- function(d1, d2, my.filename) {
     pear_corr_full <- data.frame(my.names, pear_corr, pear_p_val, fdr, log2(1/fdr))
     colnames(pear_corr_full) <- c("name", "cor_coef", "pval", "fdr", "Inverse_Scaled_FDR")
 
-    corr.plot <- ggplot(pear_corr_full, aes(name, cor_coef)) +  geom_point(aes(colour = Inverse_Scaled_FDR), size=7, stroke = 0, shape = 16) + scale_color_viridis(begin = 0.2, end = 0.8, direction = -1, option="cividis") + scale_y_continuous(breaks=number_ticks(10)) + theme_bw() +  theme(panel.grid.major.x = element_blank()) + geom_text(aes(label=name), size=4, hjust = 0.8, vjust=-0.2, color="grey30") + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.text.y = element_text(size=14, color = "black"), axis.title = element_text(size=16, color = "black"), legend.text = element_text(size=16), legend.title = element_text(size=14)) + xlab("") + ylab("Correlation Coefficient") + geom_hline(yintercept=c(0.0, 0.5, -0.5), color=rep("grey30", 3))
+    corr.plot <- ggplot(pear_corr_full, aes(name, cor_coef)) +  geom_point(aes(colour = Inverse_Scaled_FDR), size=7, stroke = 0, shape = 16) + scale_color_viridis(begin = 0.2, end = 0.8, direction = -1, option="cividis") + scale_y_continuous(breaks=NULL) + theme_bw() +  theme(panel.grid.major.x = element_blank()) + geom_text(aes(label=name), size=4, hjust = 0.8, vjust=-0.2, color="grey30") + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.text.y = element_text(size=14, color = "black"), axis.title = element_text(size=16, color = "black"), legend.text = element_text(size=16), legend.title = element_text(size=14)) + xlab("") + ylab("Correlation Coefficient") + geom_hline(yintercept=c(0.0, 0.5, -0.5), color=rep("grey30", 3))
     ggsave(paste0(my.filename, "_corrplot.pdf"), bg = "transparent", width=12, height=6, plot = corr.plot)
     return(pear_corr_full)
 }
