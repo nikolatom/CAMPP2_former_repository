@@ -425,48 +425,12 @@ runCampp2 <- function (data, sdata=NULL, metadata, smetadata=NULL, technology, g
   dir.create(prefix)
   setwd(paste0(prefix, "/"))
 
-
-
-
-
-  # Check if data contains zeros and negative values.
-  hasZeroD <- unique(as.vector(data == 0))
-  hasNegD <- unique(as.vector(data < 0))
-
-  if(transform[1] %in% c("log2", "log10", "logit")) {
-      if (TRUE %in% hasNegD) {
-          stop("\n- Data contains negative values and cannot be log transformed. Re-run command WITHOUT argument transform  or alternatively if using two datasets, specify 'none' as the transforminput for the dataset with negative values, e.g. 'none,log2' or 'log2,none'.\n")
-      } else {
-          if (TRUE %in% hasZeroD) {
-              data.original <- data
-              data <- ReplaceZero(data, group)
-          }
-      }
-  }
-
-
-
-
-  if (!is.null(sdata)){
-      hasZeroS <- unique(as.vector(sdata == 0))
-      hasNegS <- unique(as.vector(sdata < 0))
-  }
-
-  if(!is.null(sdata) & transform[2] %in% c("log2", "log10", "logit")) {
-      if (TRUE %in% hasNegS) {
-          stop("\n- Second dataset contains negative values and cannot be log transformed. Re-run command WITHOUT argument transform  or alternatively if using two datasets, specify 'none' as the transforminput for the dataset with negative values, e.g. 'none,log2' or 'log2,none'.\n")
-      } else {
-          if (TRUE %in% hasZeroS) {
-              sdata.original <- sdata
-              sdata <- ReplaceZero(sdata, group)
-          }
-      }
-  }
-
-
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  #                                                                         ## Check if data contains zeros and negative values. ###
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+  c(data,sdata) %<-% checkZeros(data,sdata,group,transform)
+
 
 
 
