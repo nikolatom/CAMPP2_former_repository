@@ -44,7 +44,7 @@
 # sdata=dataset2
 # smetadata=metadata2
 #
-# batches=NULL
+# batches=c("tumor_stage","tumor_stage")
 # datacheck=NULL
 # standardize=NULL
 # transform=NULL
@@ -65,9 +65,9 @@
 # GenemiRint=NULL
 
 
-runCampp2 <- function (data, sdata=NULL, metadata, smetadata=NULL, technology, groups, batches=NULL, datacheck=TRUE, standardize=NULL, transform=NULL, plotmds=NULL, plotheatmap=NULL, kmeans=NULL, signif=NULL, colors=NULL, prefix=NULL, corr=NULL, lasso=NULL, WGCNA=NULL, cutoffWGCNA=NULL, survival=NULL, covar=NULL, stratify=NULL, survplot=NULL, PPint=NULL, GenemiRint=NULL){
+runCampp2 <- function (data, metadata, sdata=NULL, smetadata=NULL, technology, groups, batches=NULL, datacheck=TRUE, standardize=NULL, transform=NULL, plotmds=NULL, plotheatmap=NULL, kmeans=NULL, signif=NULL, colors=NULL, prefix=NULL, corr=NULL, lasso=NULL, WGCNA=NULL, cutoffWGCNA=NULL, survival=NULL, covar=NULL, stratify=NULL, survplot=NULL, PPint=NULL, GenemiRint=NULL){
 
-
+#WGCNA="DE", signif=c(1,1,1,1),survival="DE",corr=NULL,plotheatmap="DE",batches=c("tumor_stage","tumor_stage"),kmeans=TRUE, plotmds=TRUE,prefix="test_dual_surv_covar7", data=dataset1, sdata=dataset2, metadata=metadata1,smetadata=metadata2, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq")
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
                                                                           ### ARGUMENTS SPECIFYING DATASETS ###
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -78,18 +78,8 @@ runCampp2 <- function (data, sdata=NULL, metadata, smetadata=NULL, technology, g
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-  # For DE/DA analysis, survival analysis and correlation analysis - user input must be in list:
-  must.be.type <- c("ALL","EN", "LASSO", "DA", "DE", "Consensus")
-
-  # For survival analysis, must be in metadata file:
-  must.contain <- c("survival", "outcome", "outcome.time")
-
-  # For miRNA-gene and protein-protein network analysis - user inputs must be in lists:
-  approvedGeneIDs <- c("ensembl_peptide_id", "hgnc_symbol","ensembl_gene_id","ensembl_transcript_id", "uniprotswissprot")
-  approvedmiRIDs <- c("mature_mirna_ids", "mature_mirna_accession")
-  genequery <- c("stringdatabase")
-  miRNAquery <- c("targetscan", "mirtarbase", "tarscanbase")
-
+# parseArguments(data, sdata, metadata, smetadata, technology, groups, batches, datacheck, standardize, transform, plotmds, plotheatmap, kmeans, signif, colors, prefix, corr, lasso, WGCNA, cutoffWGCNA, survival, covar, stratify, survplot, PPint, GenemiRint)
+#can I take runCampp2 arguments easily instead of writing them all down again?
 
 
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -99,7 +89,7 @@ runCampp2 <- function (data, sdata=NULL, metadata, smetadata=NULL, technology, g
       if (is.null(technology)){
         stop("\n- Argument technology is missing. Technology specifies type of input data (and sdata, if included).\n")
       } else {
-        technology <- SplitList(technology)
+        technology <- technology
       }
 
 
@@ -107,7 +97,7 @@ runCampp2 <- function (data, sdata=NULL, metadata, smetadata=NULL, technology, g
       if (is.null(groups)){
           stop("Argument groups should be specified as a vector of strings. The first element specifying the name of the column in the metadata file containing sample IDs and the second element specifying the name of the column which contains the groups for the DE/DA analysis.")
       } else {
-          groups <- SplitList(groups)
+          groups <- groups
           if (length(groups) < 2) {
                   stop("Argument groups should be specified as a vector of strings. The first element specifying the name of the column in the metadata file containing sample IDs and the second element specifying the name of the column which contains the groups for the DE/DA analysis.")
           }
@@ -165,6 +155,13 @@ runCampp2 <- function (data, sdata=NULL, metadata, smetadata=NULL, technology, g
 
 
 
+      # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      ### ADDITIONAL ARGUMENTS ###
+      # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
       # Batches
       # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -172,7 +169,7 @@ runCampp2 <- function (data, sdata=NULL, metadata, smetadata=NULL, technology, g
         databatch <- FALSE
         sdatabatch <- FALSE
       } else {
-        batches <- SplitList(batches)
+        batches <- batches
         acall <- parse(text = paste0("metadata$", as.character(batches[[1]])))
         batch <- as.factor(as.character(eval(acall)))
         databatch <- TRUE
@@ -191,17 +188,13 @@ runCampp2 <- function (data, sdata=NULL, metadata, smetadata=NULL, technology, g
         }
       }
 
-  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-                                                                          ### ADDITIONAL ARGUMENTS ###
-  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 
 
   # Standardize data
   if (is.null(standardize)){
       standardize <- c("none", "none")
   } else {
-      standardize <- SplitList(standardize)
+      standardize <- standardize
   }
 
 
@@ -210,7 +203,7 @@ runCampp2 <- function (data, sdata=NULL, metadata, smetadata=NULL, technology, g
   if (is.null(transform)){
       transform <- c("none", "none")
   } else {
-      transform <- SplitList(transform)
+      transform <- transform
   }
 
 
@@ -256,7 +249,7 @@ runCampp2 <- function (data, sdata=NULL, metadata, smetadata=NULL, technology, g
      slogFC <- 1
      sFDR <- 0.05
   } else {
-      signif <- as.numeric(SplitList(signif))
+      signif <- as.numeric(signif)
       if (length(signif) > 1) {
           logFC <- signif[1]
           FDR <- signif[2]
@@ -275,7 +268,7 @@ runCampp2 <- function (data, sdata=NULL, metadata, smetadata=NULL, technology, g
   if (is.null(colors)){
       colors <- viridisLite::viridis(length(levels(group)), begin = 0.2, end = 0.8)
   } else {
-      colors <- SplitList(colors)
+      colors <- colors
   }
 
 
@@ -333,7 +326,7 @@ runCampp2 <- function (data, sdata=NULL, metadata, smetadata=NULL, technology, g
   if (is.null(cutoffWGCNA)){
       cutoffWGCNA <- c(min(10, nrow(data)/2), 25, 25)
   } else {
-      cutoffWGCNA <- as.numeric(SplitList(cutoffWGCNA))
+      cutoffWGCNA <- as.numeric(cutoffWGCNA)
   }
 
 
@@ -356,7 +349,7 @@ runCampp2 <- function (data, sdata=NULL, metadata, smetadata=NULL, technology, g
       scovarD <- NULL
       covarS <- NULL
   } else {
-      covar <- SplitList(covar)
+      covar <- covar
       covarS <-  covar[-1]
       if (covar[1] == TRUE) {
           covarD <- covar[-1]
@@ -373,13 +366,11 @@ runCampp2 <- function (data, sdata=NULL, metadata, smetadata=NULL, technology, g
 
 
 
-
-
   # Stratify
   if (is.null(stratify)){
       stratify <- NULL
   } else {
-      stratify <- SplitList(stratify)
+      stratify <- stratify
   }
 
 
@@ -400,7 +391,7 @@ runCampp2 <- function (data, sdata=NULL, metadata, smetadata=NULL, technology, g
   if (is.null(PPint)){
       PPI <- NULL
   } else {
-      PPI <- SplitList(PPint)
+      PPI <- PPint
       if (!PPI[[1]] %in% approvedGeneIDs | !PPI[[2]] %in% genequery | length(PPI) != 2) {
           stop(paste0("Argument x must be a vector of strings of legth two. First element in list must specify type of gene ID matching the type of IDs in expression file, approved options are: ", approvedGeneIDs, ".Second element must specify which PPI database to use, currently options are: ", genequery, "."))
       }
@@ -410,13 +401,47 @@ runCampp2 <- function (data, sdata=NULL, metadata, smetadata=NULL, technology, g
   if (is.null(GenemiRint)){
       GmiRI <- NULL
   } else {
-      GmiRI <- SplitList(GenemiRint)
+      GmiRI <- GenemiRint
       if (!GmiRI[[1]] %in% approvedmiRIDs | !GmiRI[[2]] %in% miRNAquery | length(GmiRI) != 2) {
           stop(paste0("Argument x must be a vector of strings of legth two. First element in lit must specify type of miRNA ID matching the type of IDs in expression file, approved options are: ", approvedmiRIDs, ".Second element must specify which miRNA-gene database to use, currently options are: ", miRNAquery, "."))
       }
   }
 
-
+      cat(c("\n",
+            paste0("technology: ",technology),"\n",
+            paste0("groups: ",groups),"\n",
+            paste0("group: ",group),"\n",
+            paste0("acall: ",acall),"\n",
+            #         paste0("ids: ",ids),"\n",
+            paste0("batches: ",batches),"\n",
+            paste0("databatch: ",databatch),"\n",
+            paste0("sdatabatch: ",sdatabatch),"\n",
+            paste0("standardize: ",standardize),"\n",
+            paste0("transform: ",transform),"\n",
+            paste0("datacheck: ",datacheck),"\n",
+            paste0("plotmds: ",plotmds),"\n",
+            paste0("kmeans: ",kmeans),"\n",
+            paste0("signif: ",signif),"\n",
+            paste0("logFC: ",logFC),"\n",
+            paste0("FDR: ",FDR),"\n",
+            paste0("slogFC: ",slogFC),"\n",
+            paste0("sFDR: ",sFDR),"\n",
+            paste0("colors: ",colors),"\n",
+            paste0("prefix: ",prefix),"\n",
+            paste0("plotheatmap: ",plotheatmap),"\n",
+            paste0("corrby: ",corrby),"\n",
+            paste0("lasso: ",lasso),"\n",
+            paste0("WGCNA: ",WGCNA),"\n",
+            paste0("cutoffWGCNA: ",cutoffWGCNA),"\n",
+            paste0("survival: ",survival),"\n",
+            paste0("covarD: ",covarD),"\n",
+            paste0("scovarD: ",scovarD),"\n",
+            paste0("covarS: ",covarS),"\n",
+            paste0("stratify: ",stratify),"\n",
+            paste0("survplot: ",survplot),"\n",
+            paste0("PPI: ",PPI),"\n",
+            paste0("GmiRI: ",GmiRI),"\n"
+      ))
 
 
 
@@ -426,9 +451,9 @@ runCampp2 <- function (data, sdata=NULL, metadata, smetadata=NULL, technology, g
   setwd(paste0(prefix, "/"))
 
 
+######CREATE A NEW BRANCH; ALSO ONE FOR PARSING THE ARGUMENTS!!!
 
-
-
+  print("RUN TRANSFORMATION")
   # Check if data contains zeros and negative values.
   hasZeroD <- unique(as.vector(data == 0))
   hasNegD <- unique(as.vector(data < 0))
@@ -522,7 +547,7 @@ runCampp2 <- function (data, sdata=NULL, metadata, smetadata=NULL, technology, g
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
                                                                           ### BATCH CORRECTION ###
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+###create a function "runDatabatchCorr" taking arguments (databatch, technology, sdatabatch)
 
 
   if (databatch == TRUE){
