@@ -9,5 +9,9 @@
             "ascending": false
         }
     ],
+<<<<<<< HEAD
     "path": "~/opt/campp_bioconducor/CAMPP2/CAMPP2"
+=======
+    "path": "~/opt/campp_bioconducor/CAMPP2/R"
+>>>>>>> 7f42cb7cafd8584fcc7c92e6492fda5ee415162e
 }

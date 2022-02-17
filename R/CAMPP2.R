@@ -429,7 +429,8 @@ runCampp2 <- function (data, sdata=NULL, metadata, smetadata=NULL, technology, g
   #                                                                         ## Check if data contains zeros and negative values. ###
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-  c(data,sdata) %<-% checkZeros(data,sdata,group,transform)
+
+  c(data,sdata,data.original,sdata.original) %<-% checkZeros(data,sdata)
 
 
 
