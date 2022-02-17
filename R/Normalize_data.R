@@ -24,15 +24,12 @@ NormalizeData <- function(my.technology, my.data, my.group, my.transform, my.sta
         if (!is.null(my.data.original)) {
             my.data <- my.data.original
         }
-        print(my.group)
         my.data <- DGEList(counts=my.data)
         design <- model.matrix(~0+my.group)
         str(my.data)
         keep <- filterByExpr(my.data, design)
         my.data <- my.data[keep,,keep.lib.sizes=FALSE]
         my.data <- calcNormFactors(my.data, method = "TMM")
-        str(my.data)
-        str(design)
         my.data <- voom(my.data, design, plot=TRUE)
         cat("\n Data will be filtered for lowly expressed variables, normalized and voom transformed.\n")
 

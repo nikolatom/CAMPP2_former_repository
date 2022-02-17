@@ -33,9 +33,8 @@
 #' }
 
 #Is there a better way how to create global variables?
-parseArguments <- function (data, sdata, metadata, smetadata, technology, groups, batches, datacheck, standardize, transform, plotmds, plotheatmap, kmeans, signif, colors, prefix, corr, lasso, WGCNA, cutoffWGCNA, survival, covar, stratify, survplot, PPint, GenemiRint){
-    print(technology)
-    print(groups)
+parseArguments <- function(data, sdata, metadata, smetadata, groups, technology, batches, datacheck, standardize, transform, plotmds, plotheatmap, kmeans, signif, colors, prefix, corr, lasso, WGCNA, cutoffWGCNA, survival, covar, stratify, survplot, PPint, GenemiRint){
+
     # For DE/DA analysis, survival analysis and correlation analysis - user input must be in list:
     must.be.type <- c("ALL","EN", "LASSO", "DA", "DE", "Consensus")
 
@@ -48,15 +47,14 @@ parseArguments <- function (data, sdata, metadata, smetadata, technology, groups
     genequery <- c("stringdatabase")
     miRNAquery <- c("targetscan", "mirtarbase", "tarscanbase")
 
-# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-### MANDATORY ARGUMENTS ###
-# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    ### MANDATORY ARGUMENTS ###
+    # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     if (is.null(technology)){
         stop("\n- Argument technology is missing. Technology specifies type of input data (and sdata, if included).\n")
     } else {
-        assign("technology",technology,envir = .GlobalEnv)
-#        print(paste0("technology: ", technology))
+        technology <- technology
     }
 
 
@@ -64,11 +62,10 @@ parseArguments <- function (data, sdata, metadata, smetadata, technology, groups
     if (is.null(groups)){
         stop("Argument groups should be specified as a vector of strings. The first element specifying the name of the column in the metadata file containing sample IDs and the second element specifying the name of the column which contains the groups for the DE/DA analysis.")
     } else {
-        assign("groups",groups,envir = .GlobalEnv)
+        groups <- groups
         if (length(groups) < 2) {
             stop("Argument groups should be specified as a vector of strings. The first element specifying the name of the column in the metadata file containing sample IDs and the second element specifying the name of the column which contains the groups for the DE/DA analysis.")
         }
-#        print(paste0("groups :",groups))
     }
 
 
@@ -86,19 +83,17 @@ parseArguments <- function (data, sdata, metadata, smetadata, technology, groups
 
     # Match Data and Metadata
     metadata <- metadata[metadata$ids %in% gsub("^X","",colnames(data)),]  ###IMPORT OF XLSX adds "X" - MUST BE REMOVED (check.names cannot be deactivated)
-    assign("metadata",metadata,envir = .GlobalEnv)
+
     # Groups
     acall <- parse(text = paste0("metadata$", as.character(groups[[2]])))
     group <- as.factor(as.character(eval(acall)))
-    assign("group",group,envir= .GlobalEnv)
-#    print(paste0("group: ", group))
-
 
     if (length(group) <= 1) {
         stop(paste0("Check the column name for groups in your metadata ",groups[[2]], " If the name matches, check the samples names."))
     }
 
 
+    sgroup=NULL
     if (length(groups) == 4) {
 
         # IDs
@@ -109,16 +104,14 @@ parseArguments <- function (data, sdata, metadata, smetadata, technology, groups
             stop(paste0("No column in metadata file called ",groups[[3]]))
         } else {
             smetadata$ids <- ids
-            assign("smetadata",smetadata,envir=.GlobalEnv)
         }
 
         # Match Data and Metadata
         smetadata <- smetadata[smetadata$ids %in% colnames(sdata),]
-        assign("smetadata",smetadata,envir=.GlobalEnv)
+
         # Groups
-        acall <-parse(text = paste0("smetadata$", as.character(groups[[4]])))
+        acall <- parse(text = paste0("smetadata$", as.character(groups[[4]])))
         sgroup <- as.factor(as.character(eval(acall)))
-        assign("sgroup",sgroup,envir=.GlobalEnv)
 
         if (length(sgroup) <= 1) {
             stop(paste0("No column in metadata file called ",groups[[4]]))
@@ -127,88 +120,84 @@ parseArguments <- function (data, sdata, metadata, smetadata, technology, groups
 
 
 
+    # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    ### ADDITIONAL ARGUMENTS ###
+    # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
     # Batches
     # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     if (is.null(batches)){
-        databatch <<- FALSE
-        sdatabatch <<- FALSE
+        databatch <- FALSE
+        sdatabatch <- FALSE
     } else {
-        batches <<- SplitList(batches)
-        acall <<- parse(text = paste0("metadata$", as.character(batches[[1]])))
-        batch <<- as.factor(as.character(eval(acall)))
-        databatch <<- TRUE
+        batches <- batches
+        acall <- parse(text = paste0("metadata$", as.character(batches[[1]])))
+        batch <- as.factor(as.character(eval(acall)))
+        databatch <- TRUE
         if (length(batch) <= 1) {
             stop(paste0("No column in metadata file called ",as.character(batches[[1]])))
         }
         if (length(batches) > 1 & exists("smetadata")) {
-            acall <<- parse(text = paste0("smetadata$", as.character(batches[[2]])))
-            sbatch <<- as.factor(as.character(eval(acall)))
+            acall <- parse(text = paste0("smetadata$", as.character(batches[[2]])))
+            sbatch <- as.factor(as.character(eval(acall)))
             sdatabatch <- TRUE
             if (length(sbatch) <= 1) {
                 stop(paste0("No column in metadata file called ",as.character(batches[[2]])))
             }
         } else {
-            sdatabatch <<- FALSE
+            sdatabatch <- FALSE
         }
     }
 
-# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-### ADDITIONAL ARGUMENTS ###
-# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
     # Standardize data
     if (is.null(standardize)){
-        standardize <<- c("none", "none")
+        standardize <- c("none", "none")
     } else {
-        assign("standardize",standardize,envir = .GlobalEnv)
-#        standardize <<- SplitList(standardize)
+        standardize <- standardize
     }
+
 
 
     # Transform
     if (is.null(transform)){
-        assign("transform",c("none","none"),envir = .GlobalEnv)
-#        transform <- c("none", "none")
+        transform <- c("none", "none")
     } else {
-        assign("transform",transform,envir = .GlobalEnv)
+        transform <- transform
     }
 
 
     # Check data distribution
     if (is.null(datacheck)){
-        assign("datacheck",TRUE,envir = .GlobalEnv)
-        datacheck <<- TRUE
+        datacheck <- TRUE
     } else {
-#        datacheck <<- datacheck
-        assign("datacheck",datacheck,envir = .GlobalEnv)
-
+        datacheck <- datacheck
     }
 
 
     # MDS plot
     if (is.null(plotmds)){
         plotmds <- FALSE
-        assign("plotmds",plotmds,envir = .GlobalEnv)
     } else {
-        assign("plotmds",plotmds,envir = .GlobalEnv)
-#        plotmds <<- plotmds
+        plotmds <- plotmds
     }
 
-
+    labels.kmeans=NULL
     # Kmeans
-    labels.kmeans <<- NULL
     if (is.null(kmeans)){
-        kmeans <<- FALSE
+        kmeans <- FALSE
     } else {
-        kmeans <<- TRUE
+        kmeans <- TRUE
         if (kmeans == TRUE) {
-            labels.kmeans <<- ""
+            labels.kmeans <- ""
         } else {
-            file <<- try(labels.kmeans <<- as.character(eval(parse(text = paste0("metadata$", as.character(kmeans))))))
+            file <- try(labels.kmeans <- as.character(eval(parse(text = paste0("metadata$", as.character(kmeans))))))
             if (class(file) == "try-error") {
-                labels.kmeans <<- ""
+                labels.kmeans <- ""
                 rm(file)
             }
         }
@@ -219,18 +208,18 @@ parseArguments <- function (data, sdata, metadata, smetadata, technology, groups
     # Significance
     if (is.null(signif)){
         cat("\n- No cut-off for significant hits has been chosen. Cutoffs will be set to -1 > logFC > 1 and corrected p-value (fdr) < 0.05.")
-        logFC <<- 1
-        FDR <<- 0.05
-        slogFC <<- 1
-        sFDR <<- 0.05
+        logFC <- 1
+        FDR <- 0.05
+        slogFC <- 1
+        sFDR <- 0.05
     } else {
-        signif <<- as.numeric(SplitList(signif))
+        signif <- as.numeric(signif)
         if (length(signif) > 1) {
-            logFC <<-signif[1]
-            FDR <<- signif[2]
+            logFC <- signif[1]
+            FDR <- signif[2]
             if (length(signif) > 3) {
-                slogFC <<- signif[3]
-                sFDR <<- signif[4]
+                slogFC <- signif[3]
+                sFDR <- signif[4]
             }
         } else {
             stop("If argument signif is set, it must be a vector of length 2 OR 2*2 = 4 , if two datasets are used, (with quotes and parenthesis!) where the first element specifies the cut-off for logFC and the second element specifies the cut-off for corrected p-value (fdr) for each set. If signif is not specified defaults will be used. Cutoffs will be set to -1 > logFC > 1 and corrected p-value (fdr) < 0.05.")
@@ -242,36 +231,34 @@ parseArguments <- function (data, sdata, metadata, smetadata, technology, groups
     # Colors
     if (is.null(colors)){
         colors <- viridisLite::viridis(length(levels(group)), begin = 0.2, end = 0.8)
-        assign("colors",colors, envir=.GlobalEnv)
     } else {
-        colors <- SplitList(colors)
-        assign("colors",colors, envir=.GlobalEnv)
+        colors <- colors
     }
 
 
     # Prefix
     if (is.null(prefix)){
-        prefix <<- "Results"
+        prefix <- "Results"
     } else {
-        prefix <<- prefix
+        prefix <- prefix
     }
 
 
 
     # Heatmap
     if (is.null(plotheatmap)){
-        plotheatmap <<- NULL
+        plotheatmap <- NULL
     } else {
-        plotheatmap <<- plotheatmap
+        plotheatmap <- plotheatmap
     }
 
 
 
     # Correlation
     if (is.null(corr)){
-        corrby <<- NULL
+        corrby <- NULL
     } else if (corr %in% must.be.type) {
-        corrby <<- corr
+        corrby <- corr
     } else {
         stop(paste0("Argument corr (correlation analysis) is specified. This argument takes a string denoting which set of variables to use for correlation analysis, options are: ", must.be.type,"."))
     }
@@ -280,9 +267,9 @@ parseArguments <- function (data, sdata, metadata, smetadata, technology, groups
 
     # LASSO
     if (is.null(lasso)){
-        lasso <<- NULL
+        lasso <- NULL
     } else {
-        lasso <<- lasso
+        lasso <- lasso
     }
 
 
@@ -290,9 +277,9 @@ parseArguments <- function (data, sdata, metadata, smetadata, technology, groups
     # WGCNA
 
     if (is.null(WGCNA)){
-        WGCNA <<- NULL
+        WGCNA <- NULL
     } else if (WGCNA %in% c("DA", "DE", "ALL")) {
-        WGCNA <<- WGCNA
+        WGCNA <- WGCNA
     } else {
         stop("WGCNA may be performed with either results of differential abundance / expression analysis (DA / DE) or with all variables (ALL). N.B It is not advisable to run WGCNA with all variables if n > 5000. This will make WGCNA slow and plots will be difficult to iterpret. If 'ALL' is chosen and n > 5000, NO plots will be generated, but module variable interconnectivity scores will still be computed.")
     }
@@ -301,18 +288,18 @@ parseArguments <- function (data, sdata, metadata, smetadata, technology, groups
 
     # CutoffWGCNA
     if (is.null(cutoffWGCNA)){
-        cutoffWGCNA <<- c(min(10, nrow(data)/2), 25, 25)
+        cutoffWGCNA <- c(min(10, nrow(data)/2), 25, 25)
     } else {
-        cutoffWGCNA <<- as.numeric(SplitList(cutoffWGCNA))
+        cutoffWGCNA <- as.numeric(cutoffWGCNA)
     }
 
 
 
     # Survival Analysis
     if (is.null(survival)){
-        survival <<- NULL
+        survival <- NULL
     } else {
-        survival <<- survival
+        survival <- survival
         if ((!survival %in% must.be.type)) {
             stop("Options for survival analysis variable sets are: ALL,EN, LASSO, DA, DE, Consensus. Please re-run pipeline with one of these!")
         }
@@ -322,20 +309,20 @@ parseArguments <- function (data, sdata, metadata, smetadata, technology, groups
 
     # Covariates (DEA and survival)
     if (is.null(covar)){
-        covarD <<- NULL
-        scovarD <<- NULL
-        covarS <<- NULL
+        covarD <- NULL
+        scovarD <- NULL
+        covarS <- NULL
     } else {
-        covar <<- SplitList(covar)
-        covarS <<-  covar[-1]
+        covar <- covar
+        covarS <-  covar[-1]
         if (covar[1] == TRUE) {
-            covarD <<- covar[-1]
+            covarD <- covar[-1]
             if (!is.null(sdata)) {
-                scovarD <<- covar[-1]
+                scovarD <- covar[-1]
             }
         } else if (covar[1] == FALSE) {
-            covarD <<- NULL
-            scovarD <<- NULL
+            covarD <- NULL
+            scovarD <- NULL
         } else {
             stop("First argument in 'survival' must be TRUE or FALSE. If TRUE, covariates will be used for both DE analysis and survival analysis. If FALSE, covariates will be used only for survival analysis.")
         }
@@ -343,22 +330,20 @@ parseArguments <- function (data, sdata, metadata, smetadata, technology, groups
 
 
 
-
-
     # Stratify
     if (is.null(stratify)){
-        stratify <<- NULL
+        stratify <- NULL
     } else {
-        stratify <<- SplitList(stratify)
+        stratify <- stratify
     }
 
 
 
     # Survival Plot
     if (is.null(survplot)){
-        survplot <<- 50
+        survplot <- 50
     } else {
-        survplot <<- survplot
+        survplot <- survplot
     }
 
 
@@ -368,9 +353,9 @@ parseArguments <- function (data, sdata, metadata, smetadata, technology, groups
     # Network Analysis
 
     if (is.null(PPint)){
-        PPI <<- NULL
+        PPI <- NULL
     } else {
-        PPI <<- SplitList(PPint)
+        PPI <- PPint
         if (!PPI[[1]] %in% approvedGeneIDs | !PPI[[2]] %in% genequery | length(PPI) != 2) {
             stop(paste0("Argument x must be a vector of strings of legth two. First element in list must specify type of gene ID matching the type of IDs in expression file, approved options are: ", approvedGeneIDs, ".Second element must specify which PPI database to use, currently options are: ", genequery, "."))
         }
@@ -378,21 +363,19 @@ parseArguments <- function (data, sdata, metadata, smetadata, technology, groups
 
 
     if (is.null(GenemiRint)){
-        GmiRI <<- NULL
+        GmiRI <- NULL
     } else {
-        GmiRI <<- SplitList(GenemiRint)
+        GmiRI <- GenemiRint
         if (!GmiRI[[1]] %in% approvedmiRIDs | !GmiRI[[2]] %in% miRNAquery | length(GmiRI) != 2) {
             stop(paste0("Argument x must be a vector of strings of legth two. First element in lit must specify type of miRNA ID matching the type of IDs in expression file, approved options are: ", approvedmiRIDs, ".Second element must specify which miRNA-gene database to use, currently options are: ", miRNAquery, "."))
         }
     }
 
-
-
-   cat(c("\n",
+    cat(c("\n",
          paste0("technology: ",technology),"\n",
          paste0("groups: ",groups),"\n",
-#         paste0("group: ",group),"\n",
-#         paste0("sgroup: ",sgroup),"\n",
+         paste0("group: ",group[10,]),"\n",
+         paste0("sgroup: ",sgroup),"\n",
          paste0("acall: ",acall),"\n",
 #         paste0("ids: ",ids),"\n",
          paste0("batches: ",batches),"\n",
@@ -425,5 +408,6 @@ parseArguments <- function (data, sdata, metadata, smetadata, technology, groups
          paste0("PPI: ",PPI),"\n",
          paste0("GmiRI: ",GmiRI),"\n"
      ))
-
+    my_list<-list("data"=data,"sdata"=sdata,"metadata"=metadata,"smetadata"=smetadata, "technology"=technology, "groups"=groups,"group"=group,"sgroup"=sgroup,"acall"=acall,"ids"=ids,"batches"=batches,"databatch"=databatch,"sdatabatch"=sdatabatch,"standardize"=standardize,"transform"=transform,"datacheck"=datacheck,"plotmds"=plotmds,"kmeans"=kmeans,"labels.kmeans"=labels.kmeans,"signif"=signif,"logFC"=logFC,"FDR"=FDR,"slogFC"=slogFC,"sFDR"=sFDR,"colors"=colors,"prefix"=prefix,"plotheatmap"=plotheatmap,"corrby"=corrby,"lasso"=lasso,"WGCNA"=WGCNA,"cutoffWGCNA"=cutoffWGCNA,"survival"=survival,"covarD"=covarD,"scovarD"=scovarD,"covarS"=covarS,"stratify"=stratify,"survplot"=survplot,"PPI"=PPI,"GmiRI"=GmiRI)
+    return(my_list)
 }
