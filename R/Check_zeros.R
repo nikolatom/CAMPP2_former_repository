@@ -44,7 +44,7 @@ checkZeros<-function(data,sdata=NULL){
             }
         }
     }
-    my_list<-list("data"=data,"sdata"=sdata)
+    my_list<-list("data"=data,"sdata"=sdata,"data.original"=data.original,"sdata.original"=sdata.original)
     return(my_list)
 
 }
