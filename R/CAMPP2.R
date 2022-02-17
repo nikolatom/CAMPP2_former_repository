@@ -433,6 +433,7 @@ runCampp2 <- function (data, sdata=NULL, metadata, smetadata=NULL, technology, g
   hasZeroD <- unique(as.vector(data == 0))
   hasNegD <- unique(as.vector(data < 0))
 
+  data.original=NULL
   if(transform[1] %in% c("log2", "log10", "logit")) {
       if (TRUE %in% hasNegD) {
           stop("\n- Data contains negative values and cannot be log transformed. Re-run command WITHOUT argument transform  or alternatively if using two datasets, specify 'none' as the transforminput for the dataset with negative values, e.g. 'none,log2' or 'log2,none'.\n")
@@ -452,6 +453,7 @@ runCampp2 <- function (data, sdata=NULL, metadata, smetadata=NULL, technology, g
       hasNegS <- unique(as.vector(sdata < 0))
   }
 
+  sdata.original=NULL
   if(!is.null(sdata) & transform[2] %in% c("log2", "log10", "logit")) {
       if (TRUE %in% hasNegS) {
           stop("\n- Second dataset contains negative values and cannot be log transformed. Re-run command WITHOUT argument transform  or alternatively if using two datasets, specify 'none' as the transforminput for the dataset with negative values, e.g. 'none,log2' or 'log2,none'.\n")
@@ -474,48 +476,7 @@ runCampp2 <- function (data, sdata=NULL, metadata, smetadata=NULL, technology, g
   #                                                                         ## Normalization, Filtering and Transformation ###
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-  NB <- " N.B This pipeline does not handle background correction of single-channel intensity data or within array normalization two-color intensity data. See limma manual section on array normalization for more on this. Data may be fully normalized with limma (R/Rstudio) or another software and the pipeline re-run."
-
-
-  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  # Dataset
-
-  if (exists("data.original")) {
-      data <- NormalizeData(technology[1], data, group, transform[1], standardize[1], data.original)
-  } else {
-      data <- NormalizeData(technology[1], data, group, transform[1], standardize[1])
-  }
-
-
-  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  # Second Dataset
-
-  if(!is.null(sdata)) {
-      if (length(technology) < 2) {
-          stop("\nTwo datasets are input for correlation analysis, BUT argument technology only has length one. Length of technology must be two.\n")
-      }
-      if (length(transform) < 2) {
-          stop("\nTwo datasets are input for correlation analysis, BUT argument transform only has length one. Length of transformmust be two, see.\n")
-      }
-  }
-
-
-
-  if (!is.null(sdata)) {
-      if (exists("sdata.original")) {
-          sdata <- NormalizeData(technology[2], sdata, sgroup, transform[2], standardize[2], sdata.original)
-      } else {
-          sdata <- NormalizeData(technology[2], sdata, sgroup, transform[2], standardize[2])
-      }
-  }
-
-
-
-  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
+  c(data,sdata) %<-% applyNormalization(data,sdata,data.original,sdata.original,group,sgroup,transform,standardize,technology)
 
 
 
