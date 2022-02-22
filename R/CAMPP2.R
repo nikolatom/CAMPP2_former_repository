@@ -575,52 +575,53 @@ runCampp2 <- function (data, sdata=NULL, metadata, smetadata=NULL, technology, g
                                                                                           ### Distributional Checks ###
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+  checkDistr(data,sdata,datacheck,databatch,sdatabatch,data.batch,sdata.batch)
 
-  if (datacheck == TRUE) {
-      if (databatch == TRUE) {
-          subset.data <- data.batch[sample(nrow(data.batch), 10),]
-      } else {
-          if (technology[1] == "seq") {
-              subset.data <- data$E[sample(nrow(data$E), 10),]
-          } else {
-              subset.data <- data[sample(nrow(data), 10),]
-          }
-      }
-
-      list.of.dists <- FitDistributions(subset.data)
-
-      dir.create("DataChecks")
-      setwd("DataChecks/")
-      PlotDistributions(subset.data, list.of.dists)
-      setwd("..")
-
-      rm(subset.data, list.of.dists)
-  }
-
-
-
-  if (datacheck == TRUE & !is.null(sdata)) {
-      if (sdatabatch == TRUE) {
-          subset.data <- sdata.batch[sample(nrow(sdata.batch), 10),]
-      } else {
-
-          if (technology[2] == "seq") {
-              subset.data <- sdata$E[sample(nrow(sdata$E), 10),]
-          } else {
-              subset.data <- sdata[sample(nrow(sdata), 10),]
-          }
-      }
-
-      list.of.dists <- FitDistributions(subset.data)
-
-      dir.create("SecondDataChecks")
-      setwd("SecondDataChecks/")
-      PlotDistributions(subset.data, list.of.dists)
-      setwd("..")
-
-      rm(subset.data, list.of.dists)
-  }
-
+  # if (datacheck == TRUE) {
+  #     if (databatch == TRUE) {
+  #         subset.data <- data.batch[sample(nrow(data.batch), 10),]
+  #     } else {
+  #         if (technology[1] == "seq") {
+  #             subset.data <- data$E[sample(nrow(data$E), 10),]
+  #         } else {
+  #             subset.data <- data[sample(nrow(data), 10),]
+  #         }
+  #     }
+  #
+  #     list.of.dists <- FitDistributions(subset.data)
+  #
+  #     dir.create("DataChecks")
+  #     setwd("DataChecks/")
+  #     PlotDistributions(subset.data, list.of.dists)
+  #     setwd("..")
+  #
+  #     rm(subset.data, list.of.dists)
+  # }
+  #
+  #
+  #
+  # if (datacheck == TRUE & !is.null(sdata)) {
+  #     if (sdatabatch == TRUE) {
+  #         subset.data <- sdata.batch[sample(nrow(sdata.batch), 10),]
+  #     } else {
+  #
+  #         if (technology[2] == "seq") {
+  #             subset.data <- sdata$E[sample(nrow(sdata$E), 10),]
+  #         } else {
+  #             subset.data <- sdata[sample(nrow(sdata), 10),]
+  #         }
+  #     }
+  #
+  #     list.of.dists <- FitDistributions(subset.data)
+  #
+  #     dir.create("SecondDataChecks")
+  #     setwd("SecondDataChecks/")
+  #     PlotDistributions(subset.data, list.of.dists)
+  #     setwd("..")
+  #
+  #     rm(subset.data, list.of.dists)
+  # }
+  #
 
 
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
