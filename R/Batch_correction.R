@@ -1,9 +1,14 @@
 #' @title Batch correction
 #' @description Function for batch correction
-#' @param
-#' @param
-#' @param
-#' @param
+#' @param data a gene counts matrix
+#' @param sdata a gene counts matrix for a secend dataset
+#' @param databatch TRUE/FALSE parameter for batch correction
+#' @param sdatabatch TRUE/FALSE parameter for batch correction for the second dataset
+#' @param batch batch information for each sample
+#' @param sbatch batch information for each sample from the second dataset
+#' @param group group information for each sample
+#' @param sgroup group information for each sample from the second dataset
+#' @param technology technology
 #' @import sva
 #' @export
 #' @seealso
