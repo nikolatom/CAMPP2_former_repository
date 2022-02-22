@@ -26,6 +26,7 @@
 #' @param cutoffWGCNA Argument specifying the cutoff values for WGCNA. The argument takes a numuric vector of three values: (I) minimum modules size, (II) maximum % dissimilarity for merging of modules, and (III) % of top most interconnected genes (or other features) to return, from each modules identified in the Weighed Gene Co-expression Network Analysis. Default values are 10,25,25.
 #' @param PPint Argument specifying that protein-protein interaction networks should be generated using the results of the differential expression analysis. This argument must be a character vector of length two. The first element in this list must be a string specifying the type of gene identifier in the gene counts file provided. Allowed identifiers are: "ensembl_peptide_id", "hgnc_symbol", "ensembl_gene_id", "ensembl_transcript_id", "uniprotswissprot". The second element is a string specifying version of the stringDB to use. Currently only version supported is: 11.0.
 #' @param GenemiRint Argument specifying that gene-miRNA interaction networks should be generated using the results of the differential expression analysis. This argument must be a character vector of length two. The first element in this list must be a string specifying the type of miRNA identifier in the gene counts data file. Allowed identifiers are: "mature_mirna_ids", "mature_mirna_accession". The second element must be a string specifying the miRNA-gene database to use, currently options are: "targetscan" (validated miRNAs), "mirtarbase" (predicted miRNAs), "tarscanbase" (validated + predicted miRNAs)".
+#' @import zeallot
 #' @export
 #' @seealso
 #' @return CAMPP2 results
@@ -523,46 +524,48 @@ runCampp2 <- function (data, sdata=NULL, metadata, smetadata=NULL, technology, g
                                                                           ### BATCH CORRECTION ###
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+  print(databatch)
+  c(data.batch,sdata.batch) %<-% batchCorrect(data,sdata,batch,sbatch,databatch,sdatabatch,group,sgroup,technology)
 
-
-  if (databatch == TRUE){
-      if (length(batch) > 0) {
-          design <-  model.matrix(~group)
-
-          if (technology[1] == "seq") {
-              data.batch <- ComBat(as.matrix(data$E), batch, design, par.prior=TRUE,prior.plots=FALSE)
-          } else {
-              data.batch <- ComBat(as.matrix(data), batch, design, par.prior=TRUE,prior.plots=FALSE)
-          }
-
-      } else {
-          data.batch <- data
-          cat("\n- No column names match specified batches for dataset.\n")
-      }
-  } else {
-      cat("\n- No batch correction requested.\n")
-  }
-
-
-
-
-  if (sdatabatch == TRUE){
-      if (length(sbatch) > 0) {
-          sdesign <- model.matrix(~sgroup)
-
-          if (technology[2] == "seq") {
-              sdata.batch <- ComBat(as.matrix(sdata$E), sbatch, sdesign, par.prior=TRUE,prior.plots=FALSE)
-          } else {
-              sdata.batch <- ComBat(as.matrix(sdata), sbatch, sdesign, par.prior=TRUE,prior.plots=FALSE)
-          }
-      } else {
-          sdata.batch <- sdata
-          cat("\n- No column names match specified batches for second dataset. Continuing without batch correction.\n")
-      }
-  } else {
-      cat("\n- No batch correction requested for second dataset.\n")
-  }
-
+#
+#   if (databatch == TRUE){
+#       if (length(batch) > 0) {
+#           design <-  model.matrix(~group)
+#
+#           if (technology[1] == "seq") {
+#               data.batch <- ComBat(as.matrix(data$E), batch, design, par.prior=TRUE,prior.plots=FALSE)
+#           } else {
+#               data.batch <- ComBat(as.matrix(data), batch, design, par.prior=TRUE,prior.plots=FALSE)
+#           }
+#
+#       } else {
+#           data.batch <- data
+#           cat("\n- No column names match specified batches for dataset.\n")
+#       }
+#   } else {
+#       cat("\n- No batch correction requested.\n")
+#   }
+#
+#
+#
+#
+#   if (sdatabatch == TRUE){
+#       if (length(sbatch) > 0) {
+#           sdesign <- model.matrix(~sgroup)
+#
+#           if (technology[2] == "seq") {
+#               sdata.batch <- ComBat(as.matrix(sdata$E), sbatch, sdesign, par.prior=TRUE,prior.plots=FALSE)
+#           } else {
+#               sdata.batch <- ComBat(as.matrix(sdata), sbatch, sdesign, par.prior=TRUE,prior.plots=FALSE)
+#           }
+#       } else {
+#           sdata.batch <- sdata
+#           cat("\n- No column names match specified batches for second dataset. Continuing without batch correction.\n")
+#       }
+#   } else {
+#       cat("\n- No batch correction requested for second dataset.\n")
+#   }
+#
 
 
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
