@@ -1,5 +1,5 @@
 library(dplyr)
-setwd("/Users/nikto/opt/campp_bioconducor/CAMPP2/data/BRCA")
+setwd("../data/BRCA")
 #usage:
     ##source function first
     load("./BRCA_dataPrep.rda")

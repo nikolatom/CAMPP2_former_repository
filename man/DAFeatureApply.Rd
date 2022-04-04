@@ -11,19 +11,19 @@ DAFeatureApply(
   coLFC,
   coFDR,
   my.block = NULL,
-  my.vector
+  my.vector = FALSE
 )
 }
 \arguments{
 \item{my.contrasts}{= a contrast between groups of interest}
 
-\item{my.data}{= a dataframe of expression/abundance counts}
+\item{my.data}{a dataframe of expression/abundance counts}
 
-\item{my.design}{= a design matrix with all comparisons}
+\item{my.design}{a design matrix with all comparisons}
 
 \item{my.block}{if blocking than a vector of patient IDs}
 
-\item{my.vector}{a vector of patient IDs; TRUE/FALSE statment specifying output format, if TRUE the function return a vector of feature IDs only}
+\item{my.vector}{a vector of patient IDs; TRUE/FALSE statement specifying output format, if TRUE the function return a vector of feature IDs only}
 
 \item{my.coLFC}{a cutoff for logFC}
 

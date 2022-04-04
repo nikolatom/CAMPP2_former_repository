@@ -5,6 +5,8 @@
 #' @param my.design a design matrix with all comparisons
 #' @param my.coLFC a cutoff for logFC
 #' @param my.coFDR a cutoff for FDR
+#' @param my.block if blocking than a vector of patient IDs
+#' @param my.vector a vector of patient IDs; TRUE/FALSE statement specifying output format, if TRUE the function return a vector of feature IDs only
 #' @export
 #' @import sva
 #' @import limma

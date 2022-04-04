@@ -1,5 +1,5 @@
 #' @title ReplaceZeros
-#' @description Checking Data for NA Values.
+#' @description Checking Data for zero Values.
 #' @param my.data a dataframe of expression/abundance counts.
 #' @param my.group a vector of integers specifying group; should be represented by a column in metadata file.
 #' @export
