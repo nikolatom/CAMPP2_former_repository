@@ -25,7 +25,7 @@ applyNormalization<-function(data1,data2=NULL,data1.original=NULL,data2.original
     hasZeroD <- unique(as.vector(data1 == 0))
     hasNegD <- unique(as.vector(data1 < 0))
     if (TRUE %in% hasNegD) {
-        print("data1 includes negative values.")
+        print("data1 includes negative values and cannot be log transformed.")
     }
     if (TRUE %in% hasZeroD) {
         print("data1 include zero values which might be replaced by running function ReplaceZerosApply")
@@ -39,7 +39,7 @@ applyNormalization<-function(data1,data2=NULL,data1.original=NULL,data2.original
         hasNegS <- unique(as.vector(data2 < 0))
     }
     if (TRUE %in% hasNegS) {
-        print("data2 includes negative values.")
+        print("data2 includes negative values and cannot be log transformed.")
     }
     if (TRUE %in% hasZeroS) {
         print("data2 include zero values which might be replaced by running function ReplaceZerosApply")
