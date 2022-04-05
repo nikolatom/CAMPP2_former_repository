@@ -1,4 +1,4 @@
-#' @title Normalization and Transformation
+#' @title Apply Normalization and Transformation
 #' @description Function for Normalization ("mean" or "median") and Transformation ("log2", "logit" or "log10"). This pipeline does not handle background correction of single-channel intensity data1 or within array normalization two-color intensity data. See limma manual section on array normalization for more on this. Data may be fully normalized with limma or another software and the pipeline re-run.
 #' @param data1 a dataframe with expression/abundance counts (genes as rows; samples as columns)
 #' @param group1 a dataframe with groups metadata for each sample (given from metadata table)
@@ -14,13 +14,43 @@
 #' @return Elist of normalized, filtered and transformed (gene) counts data
 #' @examples \dontrun{
 #' ...
-#' }sample(nrow(data$E), 10)
+#' }
+#'
 
 
 
-applyNormalization2<-function(data1,data2=NULL,data1.original=NULL,data2.original=NULL,group1,group2=NULL,transform,standardize,technology){
+applyNormalization<-function(data1,data2=NULL,data1.original=NULL,data2.original=NULL,group1,group2=NULL,transform,standardize,technology){
+
+    # Check if data1 contains zeros and negative values.
+    hasZeroD <- unique(as.vector(data1 == 0))
+    hasNegD <- unique(as.vector(data1 < 0))
+    if (TRUE %in% hasNegD) {
+        print("data1 includes negative values.")
+    }
+    if (TRUE %in% hasZeroD) {
+        print("data1 include zero values which might be replaced by running function ReplaceZerosApply")
+    }
+
+    # Check if data2 contains zeros and negative values.
+    hasZeroS=NULL
+    hasNegS=NULL
+    if (!is.null(data2)){
+        hasZeroS <- unique(as.vector(data2 == 0))
+        hasNegS <- unique(as.vector(data2 < 0))
+    }
+    if (TRUE %in% hasNegS) {
+        print("data2 includes negative values.")
+    }
+    if (TRUE %in% hasZeroS) {
+        print("data2 include zero values which might be replaced by running function ReplaceZerosApply")
+    }
+
+    ###Run normalization
+
+    # First Dataset
 
     data1 <- NormalizeData(data=data1, data.original=data1.original, group=group1, transform[1], standardize[1], technology[1])
+
 
     # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     # Second Dataset
