@@ -65,7 +65,7 @@
 # GenemiRint=NULL
 
 
-runCampp2 <- function (data, sdata=NULL, metadata, smetadata=NULL, technology, groups, batches=NULL, datacheck=TRUE, standardize=NULL, transform=NULL, plotmds=NULL, plotheatmap=NULL, kmeans=NULL, signif=NULL, colors=NULL, prefix=NULL, corr=NULL, lasso=NULL, WGCNA=NULL, cutoffWGCNA=NULL, survival=NULL, covar=NULL, stratify=NULL, survplot=NULL, PPint=NULL, GenemiRint=NULL){
+runCampp2_2 <- function (data, sdata=NULL, metadata, smetadata=NULL, technology, groups, batches=NULL, datacheck=TRUE, standardize=NULL, transform=NULL, plotmds=NULL, plotheatmap=NULL, kmeans=NULL, signif=NULL, colors=NULL, prefix=NULL, corr=NULL, lasso=NULL, WGCNA=NULL, cutoffWGCNA=NULL, survival=NULL, covar=NULL, stratify=NULL, survplot=NULL, PPint=NULL, GenemiRint=NULL){
 
 
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -476,8 +476,13 @@ runCampp2 <- function (data, sdata=NULL, metadata, smetadata=NULL, technology, g
   #                                                                         ## Normalization, Filtering and Transformation ###
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-  c(data,sdata) %<-% applyNormalization(data,sdata,data.original,sdata.original,group,sgroup,transform,standardize,technology)
+  print(class(data))
+  print(technology)
+  c(data1,data2) %<-% applyNormalization2(data,sdata,data.original,sdata.original,group,sgroup,transform,standardize,technology)
 
+  print("class of data2:")
+  print(class(data2))
+  print(data2)
 
 
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
