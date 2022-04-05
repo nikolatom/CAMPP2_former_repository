@@ -33,36 +33,6 @@
 #' ...
 #' }
 
-# signif=c(1,1,1,1)
-# data=dataset1
-# kmeans=NULL
-# metadata=metadata1
-# technology=c("seq","seq")
-# groups=c("IDs", "diagnosis","IDs", "diagnosis")
-#
-#
-# sdata=dataset2
-# smetadata=metadata2
-#
-# batches=NULL
-# datacheck=NULL
-# standardize=NULL
-# transform=NULL
-# plotmds=NULL
-# plotheatmap=NULL
-# kmeans=NULL
-# colors=NULL
-# prefix="test_surv"
-# corr=NULL
-# lasso=NULL
-# WGCNA=NULL
-# cutoffWGCNA=NULL
-# survival="DE"
-# covar=NULL
-# stratify=NULL
-# survplot=NULL
-# PPint=NULL
-# GenemiRint=NULL
 
 
 runCampp2 <- function (data, sdata=NULL, metadata, smetadata=NULL, technology, groups, batches=NULL, datacheck=TRUE, standardize=NULL, transform=NULL, plotmds=NULL, plotheatmap=NULL, kmeans=NULL, signif=NULL, colors=NULL, prefix=NULL, corr=NULL, lasso=NULL, WGCNA=NULL, cutoffWGCNA=NULL, survival=NULL, covar=NULL, stratify=NULL, survplot=NULL, PPint=NULL, GenemiRint=NULL){
@@ -430,7 +400,7 @@ runCampp2 <- function (data, sdata=NULL, metadata, smetadata=NULL, technology, g
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-  c(data,sdata,data.original,sdata.original) %<-% checkZeros(data,sdata)
+  c(data1,data1,data1.original,data2.original) %<-% checkZeros(data1,data2,group1,group2)
 
 
 
