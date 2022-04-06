@@ -38,7 +38,22 @@
 runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology, groups, batches=NULL, data.check=TRUE, standardize=FALSE, transform=FALSE, plot.mds=FALSE, plot.heatmap=FALSE, kmeans=FALSE, signif=NULL, colors=NULL, prefix="Results", correlation=FALSE, lasso=FALSE, WGCNA=FALSE, cutoff.WGCNA=NULL, survival=FALSE, covariates=NULL, stratify=NULL, surv.plot=50, PPint=FALSE, gene.miR.int=FALSE){
 
   ###parse input arguments and assign updated values
-  c(data1,data2,metadata1,metadata2,technology,groups,group1,group2,ids,batches,databatch1,databatch2,batch,sbatch,standardize,transform,data.check,plot.mds,kmeans,labels.kmeans,signif,logFC,FDR,slogFC,sFDR,colors,prefix,plot.heatmap,corrby,lasso,WGCNA,cutoff.WGCNA,survival,covarD,scovarD,covarS,stratify,surv.plot,PPI,GmiRI,DEA.allowed.type,survival.metadata,approved.gene.IDs,provedmiRIDs,gene.query,miR.query) %<-% parseArguments(data1=data1, metadata1=metadata1, data2=data2, metadata2=metadata2, groups=groups, technology=technology, prefix=prefix, batches=batches, data.check=data.check, standardize=standardize, transform=transform, plot.mds=plot.mds, plot.heatmap=plot.heatmap, kmeans=kmeans, signif=signif, colors=colors, correlation=correlation, lasso=lasso, WGCNA=WGCNA, cutoff.WGCNA=cutoff.WGCNA, survival=survival, covariates=covariates, stratify=stratify, surv.plot=surv.plot, PPint=PPint, gene.miR.int=gene.miR.int)
+  c(data1,data2,metadata1,metadata2,technology,groups,
+    group1,group2,ids,batches,databatch1,databatch2,
+    batch1,batch2,standardize,transform,data.check,
+    plot.mds,kmeans,labels.kmeans,signif,logFC,FDR,
+    slogFC,sFDR,colors,prefix,plot.heatmap,corrby,
+    lasso,WGCNA,cutoff.WGCNA,survival,covarD,scovarD,
+    covarS,stratify,surv.plot,PPI,GmiRI,DEA.allowed.type,
+    survival.metadata,approved.gene.IDs,provedmiRIDs,gene.query,miR.query) %<-% parseArguments(data1=data1, metadata1=metadata1, data2=data2, metadata2=metadata2,
+                                                                                               groups=groups, technology=technology, prefix=prefix, batches=batches,
+                                                                                               data.check=data.check, standardize=standardize, transform=transform,
+                                                                                               plot.mds=plot.mds, plot.heatmap=plot.heatmap, kmeans=kmeans,
+                                                                                               signif=signif, colors=colors, correlation=correlation, lasso=lasso,
+                                                                                               WGCNA=WGCNA, cutoff.WGCNA=cutoff.WGCNA, survival=survival,
+                                                                                               covariates=covariates, stratify=stratify,surv.plot=surv.plot,
+                                                                                               PPint=PPint, gene.miR.int=gene.miR.int)
+
 
 
   # Create directory Results
@@ -134,15 +149,14 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
   print("PROCESSING BATCH CORRECTION")
 
 
-  print(batch)
   if (databatch1 == TRUE){
-    if (length(batch) > 0) {
+    if (length(batch1) > 0) {
       design1 <-  model.matrix(~group1)
 
       if (technology[1] == "seq") {
-        data1.batch <- ComBat(as.matrix(data1$E), batch, design1, par.prior=TRUE,prior.plots=FALSE)
+        data1.batch <- ComBat(as.matrix(data1$E), batch1, design1, par.prior=TRUE,prior.plots=FALSE)
       } else {
-        data1.batch <- ComBat(as.matrix(data1), batch, design1, par.prior=TRUE,prior.plots=FALSE)
+        data1.batch <- ComBat(as.matrix(data1), batch1, design1, par.prior=TRUE,prior.plots=FALSE)
       }
 
     } else {
@@ -155,13 +169,13 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
 
   if (databatch2 == TRUE){
-    if (length(sbatch) > 0) {
+    if (length(batch2) > 0) {
       design2 <- model.matrix(~group2)
 
       if (technology[2] == "seq") {
-        data2.batch <- ComBat(as.matrix(data2$E), sbatch, design2, par.prior=TRUE,prior.plots=FALSE)
+        data2.batch <- ComBat(as.matrix(data2$E), batch2, design2, par.prior=TRUE,prior.plots=FALSE)
       } else {
-        data2.batch <- ComBat(as.matrix(data2), sbatch, design2, par.prior=TRUE,prior.plots=FALSE)
+        data2.batch <- ComBat(as.matrix(data2), batch2, design2, par.prior=TRUE,prior.plots=FALSE)
       }
     } else {
       data2.batch <- data2
@@ -370,8 +384,8 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
   if (databatch1 == "FALSE") {
     design1.str <- "model.matrix(~0+group1"
     out.name <- "_DE"
-  } else if (length(batch) > 0) {
-    design1.str <- "model.matrix(~0+group1+batch"
+  } else if (length(batch1) > 0) {
+    design1.str <- "model.matrix(~0+group1+batch1"
     out.name <- "_databatch_DE"
   } else {
     stop("Batch correction selected but no batches column found!") #This might be removed?
@@ -443,8 +457,8 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
     if (databatch2 == FALSE) {
       design2.str <- "model.matrix(~0+group2"
       out.name <- "_second_DE"
-    } else if (length(sbatch) > 0) {
-      design2.str <- "model.matrix(~0+group2+sbatch"
+    } else if (length(batch2) > 0) {
+      design2.str <- "model.matrix(~0+group2+batch2"
       out.name <- "_second_databatch_DE"
     } else {
       stop("Batch correction selected but no batches column found!")
@@ -504,6 +518,13 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     print("PROCESSING LASSO")
+
+  #Lasso
+
+  if (!isFALSE(lasso)) {
+    if(lasso <= 0.0 || lasso > 1.0 ) {
+      stop("\n- The input for argument lasso denotes hyperparameter alpha. This value must be set to 0.0 < x < 1.0 for Elastic Net (0.5 is default) or to 1.0 for LASSO regression. Re-run the pipeline again with correct lasso input or remove lasso all together.\n")
+    }
 
 
     # Length of each group
@@ -670,6 +691,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
     setwd("..")
     try(rm(VarsSelect, LR, venn, CrossValErrormean, mn.net, mn.pred, roc.res), silent=T)
 
+  }
 
 
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

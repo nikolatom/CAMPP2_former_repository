@@ -104,21 +104,21 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
 
     # Batches
 
-    batch=NULL
-    sbatch=NULL
+    batch1=NULL
+    batch2=NULL
     if (is.null(batches)){
         databatch1 <- FALSE
         databatch2 <- FALSE
     } else {
-        batch = as.factor(metadata1[ , batches[[1]]])
+        batch1 = as.factor(metadata1[ , batches[[1]]])
         databatch1 <- TRUE
-        if (length(batch) <= 1) {
+        if (length(batch1) <= 1) {
             stop(paste0("No column in metadata1 file called ",as.character(batches[[1]])))
         }
         if (length(batches) > 1 & exists("metadata2")) {
-            sbatch = as.factor(metadata2[ , batches[[2]]])
+            batch2 = as.factor(metadata2[ , batches[[2]]])
             databatch2 <- TRUE
-            if (length(sbatch) <= 1) {
+            if (length(batch2) <= 1) {
                 stop(paste0("No column in metadata2 file called ",as.character(batches[[2]])))
             }
         } else {
@@ -147,29 +147,18 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
     # Kmeans
 
     labels.kmeans=NULL
-    if (isFALSE(kmeans)){
-        kmeans <- kmeans
-    } else {
-        if (kmeans == TRUE) {
+    if (kmeans == TRUE) {
+        labels.kmeans <- ""
+    }
+    if (!isFALSE(kmeans)) {
+        file <- try(labels.kmeans <- as.character(eval(parse(text = paste0("metadata1$", as.character(kmeans))))))
+        if (class(file) == "try-error") {
             labels.kmeans <- ""
-        } else {
-            file <- try(labels.kmeans <- as.character(eval(parse(text = paste0("metadata1$", as.character(kmeans))))))
-            if (class(file) == "try-error") {
-                labels.kmeans <- ""
-                rm(file)
-            }
+            rm(file)
         }
     }
 
 
-
-    #Lasso
-
-    if (!isFALSE(lasso)) {
-        if(lasso <= 0.0 || lasso > 1.0 ) {
-            stop("\n- The input for argument lasso denotes hyperparameter alpha. This value must be set to 0.0 < x < 1.0 for Elastic Net (0.5 is default) or to 1.0 for LASSO regression. Re-run the pipeline again with correct lasso input or remove lasso all together.\n")
-        }
-    }
 
 
 
@@ -297,8 +286,8 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
 #         paste0("group2: ",group2),"\n",
 #         paste0("ids: ",ids),"\n",
          paste0("batches: ",batches),"\n",
-#         paste0("batch: ",batch),"\n",
-#         paste0("sbatch: ",sbatch),"\n",
+#         paste0("batch1: ",batch1),"\n",
+#         paste0("batch2: ",batch2),"\n",
          paste0("databatch1: ",databatch1),"\n",
          paste0("databatch2: ",databatch2),"\n",
          paste0("standardize: ",standardize),"\n",
@@ -328,8 +317,8 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
          paste0("PPI: ",PPI),"\n",
          paste0("GmiRI: ",GmiRI),"\n"
      ))
-    my_list<-list("data1"=data1,"data2"=data2,"metadata1"=metadata1,"metadata2"=metadata2, "technology"=technology, "groups"=groups,"group1"=group1,"group2"=group2,"ids"=ids,"batches"=batches,"databatch1"=databatch1,"databatch2"=databatch2,"batch"=batch, "sbatch"=sbatch, "standardize"=standardize,"transform"=transform,"data.check"=data.check,"plot.mds"=plot.mds,"kmeans"=kmeans,"labels.kmeans"=labels.kmeans,"signif"=signif,"logFC"=logFC,"FDR"=FDR,"slogFC"=slogFC,"sFDR"=sFDR,"colors"=colors,"prefix"=prefix,"plot.heatmap"=plot.heatmap,"corrby"=corrby,"lasso"=lasso,"WGCNA"=WGCNA,"cutoff.WGCNA"=cutoff.WGCNA,"survival"=survival,"covarD"=covarD,"scovarD"=scovarD,"covarS"=covarS,"stratify"=stratify,"surv.plot"=surv.plot,"PPI"=PPI,"GmiRI"=GmiRI,"DEA.allowed.type"=DEA.allowed.type,"survival.metadata"=survival.metadata,"approved.gene.IDs"=approved.gene.IDs,"approved.miR.IDs"=approved.miR.IDs,"gene.query"=gene.query,"miR.query"=miR.query)
-    return(my_list)
+
+    return(list("data1"=data1,"data2"=data2,"metadata1"=metadata1,"metadata2"=metadata2, "technology"=technology, "groups"=groups,"group1"=group1,"group2"=group2,"ids"=ids,"batches"=batches,"databatch1"=databatch1,"databatch2"=databatch2,"batch1"=batch1, "batch2"=batch2, "standardize"=standardize,"transform"=transform,"data.check"=data.check,"plot.mds"=plot.mds,"kmeans"=kmeans,"labels.kmeans"=labels.kmeans,"signif"=signif,"logFC"=logFC,"FDR"=FDR,"slogFC"=slogFC,"sFDR"=sFDR,"colors"=colors,"prefix"=prefix,"plot.heatmap"=plot.heatmap,"corrby"=corrby,"lasso"=lasso,"WGCNA"=WGCNA,"cutoff.WGCNA"=cutoff.WGCNA,"survival"=survival,"covarD"=covarD,"scovarD"=scovarD,"covarS"=covarS,"stratify"=stratify,"surv.plot"=surv.plot,"PPI"=PPI,"GmiRI"=GmiRI,"DEA.allowed.type"=DEA.allowed.type,"survival.metadata"=survival.metadata,"approved.gene.IDs"=approved.gene.IDs,"approved.miR.IDs"=approved.miR.IDs,"gene.query"=gene.query,"miR.query"=miR.query))
 
 }
 
