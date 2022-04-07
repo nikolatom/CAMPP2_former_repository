@@ -150,7 +150,7 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
     if (kmeans == TRUE) {
         labels.kmeans <- ""
     }
-    if (!isFALSE(kmeans)) {
+    if (!isFALSE(kmeans) | !isTRUE(kmeans)) {
         file <- try(labels.kmeans <- as.character(eval(parse(text = paste0("metadata1$", as.character(kmeans))))))
         if (class(file) == "try-error") {
             labels.kmeans <- ""
@@ -278,7 +278,7 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
         }
     }
 
-
+    print("Printing defined/processed parameters:")
     cat(c("\n",
          paste0("technology: ",technology),"\n",
          paste0("groups: ",groups),"\n",
