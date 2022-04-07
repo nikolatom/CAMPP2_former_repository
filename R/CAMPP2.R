@@ -66,7 +66,7 @@
 # GenemiRint=NULL
 
 
-runCampp2 <- function (data, sdata=NULL, metadata, smetadata=NULL, technology, groups, batches=NULL, datacheck=TRUE, standardize=NULL, transform=NULL, plotmds=NULL, plotheatmap=NULL, kmeans=NULL, signif=NULL, colors=NULL, prefix=NULL, corr=NULL, lasso=NULL, WGCNA=NULL, cutoffWGCNA=NULL, survival=NULL, covar=NULL, stratify=NULL, survplot=NULL, PPint=NULL, GenemiRint=NULL){
+runCampp2_2 <- function (data, sdata=NULL, metadata, smetadata=NULL, technology, groups, batches=NULL, datacheck=TRUE, standardize=NULL, transform=NULL, plotmds=NULL, plotheatmap=NULL, kmeans=NULL, signif=NULL, colors=NULL, prefix=NULL, corr=NULL, lasso=NULL, WGCNA=NULL, cutoffWGCNA=NULL, survival=NULL, covar=NULL, stratify=NULL, survplot=NULL, PPint=NULL, GenemiRint=NULL){
 
 
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -474,17 +474,17 @@ runCampp2 <- function (data, sdata=NULL, metadata, smetadata=NULL, technology, g
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   #                                                                         ## Normalization, Filtering and Transformation ###
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-  NB <- " N.B This pipeline does not handle background correction of single-channel intensity data or within array normalization two-color intensity data. See limma manual section on array normalization for more on this. Data may be fully normalized with limma (R/Rstudio) or another software and the pipeline re-run."
-
-
+#
+#   NB <- " N.B This pipeline does not handle background correction of single-channel intensity data or within array normalization two-color intensity data. See limma manual section on array normalization for more on this. Data may be fully normalized with limma (R/Rstudio) or another software and the pipeline re-run."
+#
+#
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # Dataset
 
   if (exists("data.original")) {
-      data <- NormalizeData(technology[1], data, group, transform[1], standardize[1], data.original)
+      data <- NormalizeData(technology, data, group, transform, standardize, data.original)
   } else {
-      data <- NormalizeData(technology[1], data, group, transform[1], standardize[1])
+      data <- NormalizeData(technology, data, group, transform, standardize)
   }
 
 
@@ -499,16 +499,16 @@ runCampp2 <- function (data, sdata=NULL, metadata, smetadata=NULL, technology, g
           stop("\nTwo datasets are input for correlation analysis, BUT argument transform only has length one. Length of transformmust be two, see.\n")
       }
   }
-
-
-
-  if (!is.null(sdata)) {
-      if (exists("sdata.original")) {
-          sdata <- NormalizeData(technology[2], sdata, sgroup, transform[2], standardize[2], sdata.original)
-      } else {
-          sdata <- NormalizeData(technology[2], sdata, sgroup, transform[2], standardize[2])
-      }
-  }
+#
+#
+#
+#   if (!is.null(sdata)) {
+#       if (exists("sdata.original")) {
+#           sdata <- NormalizeData(technology[2], sdata, sgroup, transform[2], standardize[2], sdata.original)
+#       } else {
+#           sdata <- NormalizeData(technology[2], sdata, sgroup, transform[2], standardize[2])
+#       }
+#   }
 
 
 
@@ -524,53 +524,22 @@ runCampp2 <- function (data, sdata=NULL, metadata, smetadata=NULL, technology, g
                                                                           ### BATCH CORRECTION ###
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-  print(databatch)
-  c(data.batch,sdata.batch) %<-% batchCorrect(data,sdata,batch,sbatch,databatch,sdatabatch,group,sgroup,technology)
+  if (databatch1==TRUE){
+    print("Run batch correction on the 1st dataset")
+    c(data.batch1) %<-% batchCorrect(data1,batch1,databatch1,group1,technology[1])
+    print("Batch correction of the first dataset finished")
+  }else{
+    print("Batch correction wasn't selected")
+  }
 
-#
-#   if (databatch == TRUE){
-#       if (length(batch) > 0) {
-#           design <-  model.matrix(~group)
-#
-#           if (technology[1] == "seq") {
-#               data.batch <- ComBat(as.matrix(data$E), batch, design, par.prior=TRUE,prior.plots=FALSE)
-#           } else {
-#               data.batch <- ComBat(as.matrix(data), batch, design, par.prior=TRUE,prior.plots=FALSE)
-#           }
-#
-#       } else {
-#           data.batch <- data
-#           cat("\n- No column names match specified batches for dataset.\n")
-#       }
-#   } else {
-#       cat("\n- No batch correction requested.\n")
-#   }
-#
-#
-#
-#
-#   if (sdatabatch == TRUE){
-#       if (length(sbatch) > 0) {
-#           sdesign <- model.matrix(~sgroup)
-#
-#           if (technology[2] == "seq") {
-#               sdata.batch <- ComBat(as.matrix(sdata$E), sbatch, sdesign, par.prior=TRUE,prior.plots=FALSE)
-#           } else {
-#               sdata.batch <- ComBat(as.matrix(sdata), sbatch, sdesign, par.prior=TRUE,prior.plots=FALSE)
-#           }
-#       } else {
-#           sdata.batch <- sdata
-#           cat("\n- No column names match specified batches for second dataset. Continuing without batch correction.\n")
-#       }
-#   } else {
-#       cat("\n- No batch correction requested for second dataset.\n")
-#   }
-#
+  if (databatch2==TRUE){
+    print("Run batch correction on the 2nd dataset")
+    c(data.batch2) %<-% batchCorrect(data2,batch2,databatch2,group2,technology[2])
+    print("Batch correction of the second dataset finished")
+  }else{
+    print("Batch correction wasn't selected")
+  }
 
-
-  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 

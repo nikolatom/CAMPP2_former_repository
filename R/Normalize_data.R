@@ -14,11 +14,7 @@
 #' ...
 #' }
 
-# my.technology=technology
-# my.transform=transform
-# my.data=dataset1
-# my.standardize=standardize
-# my.group=group
+
 NormalizeData <- function(my.technology, my.data, my.group, my.transform, my.standardize, my.data.original = NULL) {
     if (my.technology == "seq") {
         if (!is.null(my.data.original)) {
