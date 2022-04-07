@@ -15,7 +15,7 @@ ReplaceZero(my.data, my.group)
 Dataframe with replaced zeros
 }
 \description{
-Checking Data for NA Values.
+Checking Data for zero Values.
 }
 \examples{
 \dontrun{
