@@ -13,7 +13,7 @@
 #' ...
 #' }
 
-batchCorrect<-function(data,batch,databatch=FALSE,group,technology){
+BatchCorrect<-function(data,batch,databatch=FALSE,group,technology){
 
     data.batch=NULL
     if (databatch == TRUE){
