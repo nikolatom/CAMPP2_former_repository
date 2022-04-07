@@ -1,5 +1,5 @@
 library(dplyr)
-
+setwd("../data/BRCA")
 #usage:
     ##source function first
     load("./BRCA_dataPrep.rda")

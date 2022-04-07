@@ -13,9 +13,13 @@ DAFeature(my.contrast, my.data, my.design, coLFC, coFDR, my.block = NULL)
 
 \item{my.design}{a design matrix with all comparisons}
 
+\item{my.block}{if blocking than a vector of patient IDs}
+
 \item{my.coLFC}{a cutoff for logFC}
 
 \item{my.coFDR}{a cutoff for FDR}
+
+\item{my.vector}{a vector of patient IDs; TRUE/FALSE statement specifying output format, if TRUE the function return a vector of feature IDs only}
 }
 \value{
 DA/DE features for DAFeatureApply function
