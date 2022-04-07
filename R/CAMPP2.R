@@ -65,10 +65,18 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
   #                                                                         ## Check if data contains zeros and negative values. ###
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+  print("CAMPP2 is automatically detects negative values and replaces zeros in your data")
+  print("RUNNING DETECTION OF NEGATIVE AND ZERO VALUES")
+  print("Detecting negative values and replacing zeros in data1")
+  
+  c(data1,data1.original) %<-% ReplaceZerosApply(data1,group1)
 
-  c(data1,data1,data1.original,data2.original) %<-% checkZeros(data1,data2,group1,group2)
+  if (!is.null(data2)){
+    print("Detecting negative values and replacing zeros in data2")
+    c(data2,data2.original) %<-% ReplaceZerosApply(data2,group2)
+  }
 
-
+  print("DETECTION OF NEGATIVE AND ZERO VALUES FINISHED")
 
 
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

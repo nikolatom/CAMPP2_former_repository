@@ -1,7 +1,7 @@
 #' @title Replace zeros
-#' @description Replaces zero values in the data (counts).
-#' @param data a dataframe of expression/abundance counts.
-#' @param group a factor specifying group; should be represented by a column in metadata file.
+#' @description Replacing zero values in the data (counts).
+#' @param data a dataframe of gene/abundance counts.
+#' @param group a factor specifying group; should be represented by a column from a metadata file.
 #' @export
 #' @import impute
 #' @seealso
