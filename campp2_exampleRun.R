@@ -1,8 +1,10 @@
 library(CAMPP2)
-
+library(edgeR)
+#source("/data/user/mathilde/CAMPP2/R/CAMPP2_2.R")
+source("/data/user/mathilde/CAMPP2/R/Run_DA.R")
 
 getwd()
-setwd("/Users/nikto/opt/campp_bioconducor/CAMPP2/data/BRCA")
+setwd("/data/user/mathilde/CAMPP2/data_nik/")
 
 
 
@@ -63,10 +65,10 @@ metadata=metadata1
 groups=c("IDs", "diagnosis")
 technology=c("seq")
 sdata<-"sdata"
-prefix<-"prefix_test"
+prefix<-"Results"
 batches="tumor_stage"
 
-
+setwd("../")
 runCampp2(batches=batches,data=data, metadata=metadata, groups=groups, technology=technology, prefix=prefix)
 
 

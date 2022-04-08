@@ -758,162 +758,21 @@ runCampp2 <- function (data, sdata=NULL, metadata, smetadata=NULL, technology, g
                                                                           ### DIFFERENTIAL EXPRESSION ANALYSIS ###
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-
-
   # Differential Expression Analysis with Limma
-
-
-  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  # First dataset
-
   dir.create("DEAAResults")
   setwd("DEAAResults/")
 
+  #First dataset
+  DERes1 <- RunDA(data, metadata, databatch, batch, covarD, group, logFC, FDR)
 
-  # Make design matrix
-  if (databatch == "FALSE") {
-      design.str <- "model.matrix(~0+group"
-      out.name <- "_DE"
-  } else if (length(batch) > 0) {
-      design.str <- "model.matrix(~0+group+batch"
-      out.name <- "_databatch_DE"
-  } else {
-      stop("Batch correction selected but no batches column found!")
-  }
-
-  if(is.null(covarD)) {
-      design <- eval(parse(text=paste0(design.str, ")")))
-  } else {
-      if (length(covarD) == 1) {
-          df <- data.frame(metadata[,colnames(metadata) %in% covarD])
-          colnames(df) <- covarD
-      } else {
-          df <- metadata[,colnames(metadata) %in% covarD]
-      }
-
-      s <- lapply(split(as.matrix(df), col(df)), factor)
-      my.names <- paste0("", colnames(df))
-      list2env(setNames(s, my.names), envir=.GlobalEnv)
-      my.names <- paste0(my.names, collapse = "+")
-      design <- eval(parse(text=paste0(design.str,"+",my.names,")")))
-      rm(s)
-  }
-
-
-
-  # Making group contrasts
-  combinations <- data.frame(t(combn(paste0("group", levels(group)), 2)))
-  combinations$contr <- apply(combinations[,colnames(combinations)], 1, paste, collapse = "-")
-  contrast.matrix <- eval(as.call(c(as.symbol("makeContrasts"),as.list(as.character(combinations$contr)),levels=list(design))))
-
-
-  # Apply DE_limma function to all comparisons
-  res.DE <- DAFeatureApply(contrast.matrix, data, design, logFC, FDR, NULL, FALSE)
-
-
-  # Write results out as excel file
-  if (!is.null(res.DE)) {
-      #DE.out <- ExcelOutput(res.DE, paste0(prefix, out.name))
-      DE.out <- TextOutput(res.DE, paste0(prefix, out.name))
-      rownames(DE.out) <- NULL
-      res.DE.names <- unique(DE.out$name)
-      rm(res.DE)
-  } else {
-      cat("No signficant DE/DA hits found. Check output file from differential expression analysis. Check your cut-off for differential expression analysis, it may be that these are too stringent.")
+  #Second dataset
+  if(!is.null(sdata) & !is.null(smetadata)) {
+      DERes2 <- RunDA(sdata, smetadata, sdatabatch, sbatch, scovarD, sgroup, slogFC, sFDR)
   }
 
   setwd("..")
 
-
-
-
-  if (technology[1] == "seq") {
-      cnames <- colnames(data$E)
-      data <- data.frame(data$E)
-      colnames(data) <- cnames
-  }
-
-
-
-
-
-  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  # Second dataset
-
-##line 845 was originally "if(!is.null(arg.PPI) & !is.null(arg.GmiRI)) {"
-
-  if(!is.null(sdata) & !is.null(smetadata)) {
-      setwd("DEAAResults/")
-
-      combinations <- data.frame(t(combn(paste0("sgroup", levels(sgroup)), 2)))
-      combinations$contr <- apply(combinations[,colnames(combinations)], 1, paste, collapse = "-")
-
-
-      if (sdatabatch == FALSE) {
-          sdesign.str <- "model.matrix(~0+sgroup"
-          out.name <- "_second_DE"
-      } else if (length(sbatch) > 0) {
-          sdesign.str <- "model.matrix(~0+sgroup+sbatch"
-          out.name <- "_second_databatch_DE"
-      } else {
-          stop("Batch correction selected but no batches column found!")
-      }
-
-      if(is.null(scovarD)) {
-          sdesign <- eval(parse(text=paste0(sdesign.str, ")")))
-      } else {
-          if (length(scovarD) == 1) {
-              df <- data.frame(smetadata[,colnames(smetadata) %in% scovarD])
-              colnames(df) <- scovarD
-          } else {
-              df <- smetadata[,colnames(smetadata) %in% scovarD]
-          }
-
-          s <- lapply(split(as.matrix(df), col(df)), factor)
-          my.names <- paste0("s", colnames(df))
-          list2env(setNames(s, my.names), envir=.GlobalEnv)
-          my.names <- paste0(my.names, collapse = "+")
-          sdesign <- eval(parse(text=paste0(sdesign.str,"+",my.names,")")))
-          rm(s)
-      }
-
-      # Making group contrasts
-      contrast.matrix <- eval(as.call(c(as.symbol("makeContrasts"),as.list(as.character(combinations$contr)),levels=list(sdesign))))
-
-      # Apply DE_limma function to all comparisons
-      res.sDE <- DAFeatureApply(contrast.matrix, sdata, sdesign, slogFC, sFDR, NULL, FALSE)
-
-      # Write results out as excel file
-      if (!is.null(res.sDE)) {
-          #sDE.out <- ExcelOutput(res.sDE, paste0(prefix, out.name))
-          sDE.out <- TextOutput(res.sDE, paste0(prefix,out.name))
-          rownames(sDE.out) <- NULL
-          res.sDE.names <- unique(sDE.out$name)
-      } else {
-          cat("No signficant DE/DA hits found for analysis of second dataset. Check output file from differential expression analysis. Check your cut-off for differential expression analysis, it may be that these are too stringent.")
-      }
-      setwd("..")
-  }
-
-
-
-
-  if (!is.null(sdata) && technology[2] == "seq") {
-      cnames <- colnames(sdata$E)
-      sdata <- data.frame(sdata$E)
-      colnames(sdata) <- cnames
-  }
-
-
-  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  # -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-
-
-
-  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   #                                                                                       ## LASSO Regression ###
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -1705,4 +1564,3 @@ runCampp2 <- function (data, sdata=NULL, metadata, smetadata=NULL, technology, g
   cat("\nCAMPP RUN DONE!\n")
 
 }
-
