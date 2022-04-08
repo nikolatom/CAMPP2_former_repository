@@ -5,8 +5,7 @@ library(pROC)
 library(VennDiagram)
 
 getwd()
-setwd("/Users/nikto/opt/campp_bioconducor/CAMPP2/data/BRCA")
-
+setwd("./data/BRCA")
 
 
 data_normal1<-as.data.frame(importCounts("normal_testData1.txt"))

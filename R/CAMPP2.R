@@ -372,165 +372,22 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
   print("PROCESSING DIFFERENTIAL EXPRESSION")
 
   # Differential Expression Analysis with Limma
-
-
-  # First dataset
-
   dir.create("DEA_results")
   setwd("DEA_results/")
 
+  #First dataset
+  DERes1 <- RunDA(data1, metadata1, databatch1, batch1, covarD, group1, logFC1, FDR1)
 
-  # Make design matrix
-  if (databatch1 == "FALSE") {
-    design1.str <- "model.matrix(~0+group1"
-    out.name <- "_DE"
-  } else if (length(batch1) > 0) {
-    design1.str <- "model.matrix(~0+group1+batch1"
-    out.name <- "_databatch_DE"
-  } else {
-    stop("Batch correction selected but no batches column found!") #This might be removed?
-  }
-
-
-  if(is.null(covarD)) {
-    design1 <- eval(parse(text=paste0(design1.str, ")")))
-  } else {
-    if (length(covarD) == 1) {
-      df <- data.frame(metadata1[,colnames(metadata1) %in% covarD])
-      colnames(df) <- covarD
-    } else {
-      df <- metadata1[,colnames(metadata1) %in% covarD]
-    }
-
-    s <- lapply(split(as.matrix(df), col(df)), factor)
-    my.names <- paste0("", colnames(df))
-    list2env(setNames(s, my.names), envir=.GlobalEnv)
-    my.names <- paste0(my.names, collapse = "+")
-    design1 <- eval(parse(text=paste0(design1.str,"+",my.names,")")))
-    rm(s)
-  }
-
-
-  # Making group1 contrasts
-  combinations <- data.frame(t(combn(paste0("group1", levels(group1)), 2)))
-  combinations$contr <- apply(combinations[,colnames(combinations)], 1, paste, collapse = "-")
-  contrast.matrix <- eval(as.call(c(as.symbol("makeContrasts"),as.list(as.character(combinations$contr)),levels=list(design1))))
-
-
-  # Apply DE_limma function to all comparisons
-  print("PROCESSING DE for the 1st DATASET")
-
-
-  res.DE <- DAFeatureApply(contrast.matrix, data1, design1, logFC1, FDR1)
-
-
-  # Write results out as excel file
-  if (!is.null(res.DE)) {
-    DE.out <- TextOutput(res.DE, paste0(prefix, out.name))
-    rownames(DE.out) <- NULL
-    res.DE.names <- unique(DE.out$name)
-    rm(res.DE)
-  } else {
-    cat("No signficant DE/DA hits found. Check output file from differential expression analysis. Check your cut-off for differential expression analysis, it may be that these are too stringent.")
+  #Second dataset
+  if(!is.null(data2) & !is.null(metadata2)) {
+      DERes2 <- RunDA(data2, metadata2, databatch2, batch2, scovarD, group2, logFC2, FDR2)
   }
 
   setwd("..")
 
-
-  if (technology[1] == "seq") {
-    cnames <- colnames(data1$E)
-    data1 <- data.frame(data1$E)
-    colnames(data1) <- cnames
-  }
-
-
-  # Second dataset
-
-
-  if(!is.null(data2) & !is.null(metadata2)) {
-    setwd("DEA_results/")
-
-    combinations <- data.frame(t(combn(paste0("group2", levels(group2)), 2)))
-    combinations$contr <- apply(combinations[,colnames(combinations)], 1, paste, collapse = "-")
-
-
-    if (databatch2 == FALSE) {
-      design2.str <- "model.matrix(~0+group2"
-      out.name <- "_second_DE"
-    } else if (length(batch2) > 0) {
-      design2.str <- "model.matrix(~0+group2+batch2"
-      out.name <- "_second_databatch_DE"
-    } else {
-      stop("Batch correction selected but no batches column found!")
-    }
-
-    if(is.null(scovarD)) {
-      design2 <- eval(parse(text=paste0(design2.str, ")")))
-    } else {
-      if (length(scovarD) == 1) {
-        df <- data.frame(metadata2[,colnames(metadata2) %in% scovarD])
-        colnames(df) <- scovarD
-      } else {
-        df <- metadata2[,colnames(metadata2) %in% scovarD]
-      }
-
-      s <- lapply(split(as.matrix(df), col(df)), factor)
-      my.names <- paste0("s", colnames(df))
-      list2env(setNames(s, my.names), envir=.GlobalEnv)
-      my.names <- paste0(my.names, collapse = "+")
-      design2 <- eval(parse(text=paste0(design2.str,"+",my.names,")")))
-      rm(s)
-    }
-
-    # Making group1 contrasts
-    contrast.matrix <- eval(as.call(c(as.symbol("makeContrasts"),as.list(as.character(combinations$contr)),levels=list(design2))))
-
-    # Apply DE_limma function to all comparisons
-    print("PROCESSING DE for the 2nd DATASET")
-    res.sDE <- DAFeatureApply(contrast.matrix, data2, design2, logFC2, FDR2)
-
-    # Write results out as excel file
-    if (!is.null(res.sDE)) {
-      sDE.out <- TextOutput(res.sDE, paste0(prefix,out.name))
-      rownames(sDE.out) <- NULL
-      res.sDE.names <- unique(sDE.out$name)
-    } else {
-      cat("No signficant DE/DA hits found for analysis of second dataset. Check output file from differential expression analysis. Check your cut-off for differential expression analysis, it may be that these are too stringent.")
-    }
-    setwd("..")
-  }
-
-
-
-
-  if (!is.null(data2) && technology[2] == "seq") {
-    cnames <- colnames(data2$E)
-    data2 <- data.frame(data2$E)
-    colnames(data2) <- cnames
-  }
-
-  print("DIFFERENTIAL EXPRESSION PART FINISHED")
-
-
-
-  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   #                                                                                       ## LASSO Regression ###
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-    print("PROCESSING LASSO")
-
-  #Lasso
-
-  if (!isFALSE(lasso)) {
-    if(lasso <= 0.0 || lasso > 1.0 ) {
-      stop("\n- The input for argument lasso denotes hyperparameter alpha. This value must be set to 0.0 < x < 1.0 for Elastic Net (0.5 is default) or to 1.0 for LASSO regression. Re-run the pipeline again with correct lasso input or remove lasso all together.\n")
-    }
-
-
-    # Length of each group
-    len <- as.numeric(table(group1))
-    test.train <- unique(len >= 19)
-    too.few <- unique(len < 9)
 
 
     # Stop Lasso if too few samples
@@ -1256,4 +1113,3 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
   cat("\nCAMPP RUN DONE!\n")
 
 }
-
