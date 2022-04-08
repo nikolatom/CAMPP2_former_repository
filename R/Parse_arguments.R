@@ -150,7 +150,7 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
     if (kmeans == TRUE) {
         labels.kmeans <- ""
     }
-    if (!isFALSE(kmeans) | !isTRUE(kmeans)) {
+    if (!isFALSE(kmeans) && !isTRUE(kmeans)) {
         file <- try(labels.kmeans <- as.character(eval(parse(text = paste0("metadata1$", as.character(kmeans))))))
         if (class(file) == "try-error") {
             labels.kmeans <- ""

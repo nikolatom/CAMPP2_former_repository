@@ -41,8 +41,8 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
   c(data1,data2,metadata1,metadata2,technology,groups,
     group1,group2,ids,batches,databatch1,databatch2,
     batch1,batch2,standardize,transform,data.check,
-    plot.mds,kmeans,labels.kmeans,signif,logFC,FDR,
-    slogFC,sFDR,colors,prefix,plot.heatmap,corrby,
+    plot.mds,kmeans,labels.kmeans,signif,logFC1,FDR1,
+    logFC2,FDR2,colors,prefix,plot.heatmap,corrby,
     lasso,WGCNA,cutoff.WGCNA,survival,covarD,scovarD,
     covarS,stratify,surv.plot,PPI,GmiRI,DEA.allowed.type,
     survival.metadata,approved.gene.IDs,provedmiRIDs,gene.query,miR.query) %<-% parseArguments(data1=data1, metadata1=metadata1, data2=data2, metadata2=metadata2,
@@ -421,7 +421,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
   print("PROCESSING DE for the 1st DATASET")
 
 
-  res.DE <- DAFeatureApply(contrast.matrix, data1, design1, logFC, FDR)
+  res.DE <- DAFeatureApply(contrast.matrix, data1, design1, logFC1, FDR1)
 
 
   # Write results out as excel file
@@ -487,7 +487,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
     # Apply DE_limma function to all comparisons
     print("PROCESSING DE for the 2nd DATASET")
-    res.sDE <- DAFeatureApply(contrast.matrix, data2, design2, slogFC, sFDR)
+    res.sDE <- DAFeatureApply(contrast.matrix, data2, design2, logFC2, FDR2)
 
     # Write results out as excel file
     if (!is.null(res.sDE)) {
@@ -732,7 +732,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
     # heatmap colors in blue
     hm.gradient <- viridis(300, option="cividis")
-    range <- c(round(min(DE.out$logFC)), round(max(DE.out$logFC)))
+    range <- c(round(min(DE.out$logFC1)), round(max(DE.out$logFC1)))
 
     # Heatmap as pdf
     MakeHeatmap(hm, hm.gradient, colors.hm, colors, groups, paste0(prefix,name), range)
@@ -797,7 +797,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
 
     # print out significant hits in Excel
-    res.corr$sig.corr <- ifelse(res.corr$fdr <= FDR, "yes", "no")
+    res.corr$sig.corr <- ifelse(res.corr$fdr <= FDR1, "yes", "no")
 
     write.table(res.corr, paste0(prefix,"_corr.txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
 
