@@ -2,49 +2,47 @@
 % Please edit documentation in R/apply_normalization.R
 \name{applyNormalization}
 \alias{applyNormalization}
-\title{Normalization, Filtering and Transformation}
+\title{Apply Normalization and Transformation}
 \usage{
 applyNormalization(
   data,
-  sdata = NULL,
-  data.original,
-  sdata.original = NULL,
+  data.original = NULL,
   group,
-  sgroup = NULL,
   transform,
   standardize,
   technology
 )
 }
 \arguments{
-\item{data}{a dataframe with expression/abundance counts}
+\item{transform}{a string vector of length 1 (or two in case of 2 datasets) defining transformation type for each dataset ("log2", "logit", "log10" or voom).}
 
-\item{sdata}{a dataframe with expression/abundance counts for second dataset}
+\item{standardize}{a string vector of length 1 (or two in case of 2 datasets) defining standardization method  ("mean" or "median"); By default, data from "seq" technology are normalized by "TMM"; "array" technology is standardized using "quantile"}
 
-\item{data.original}{a original data}
+\item{technology}{a string vector of length 1 (or two in case of 2 datasets) defining technology used for generating the data. Allowed types are: 'array', 'seq', 'ms' or 'other'.}
 
-\item{sdata.original}{a original data for second dataset}
+\item{data1}{a dataframe with expression/abundance counts (genes as rows; samples as columns)}
 
-\item{group}{a dataframe with samples groups}
+\item{group1}{a dataframe with groups metadata for each sample (given from metadata table)}
 
-\item{sgroup}{a dataframe with samples groups for second dataset}
+\item{group2}{a dataframe with groups metadata for each sample from a second dataset}
 
-\item{transform}{a transformation type}
+\item{data1.original}{a original data1 including zero values}
 
-\item{standardize}{a standardization type}
+\item{data2}{a dataframe with expression/abundance counts for a second dataset}
 
-\item{technology}{a technology}
+\item{data2.original}{a original data2 including zero values}
 }
 \value{
-normalized, filtered and transformed data
+Elist of normalized, filtered and transformed (gene) counts data
 }
 \description{
-Function for Normalization, Filtering and Transformation. This pipeline does not handle background correction of single-channel intensity data or within array normalization two-color intensity data. See limma manual section on array normalization for more on this. Data may be fully normalized with limma (R/Rstudio) or another software and the pipeline re-run.
+A function for applying Normalization ("mean" or "median") and Transformation ("log2", "logit", "log10" or voom). This pipeline does not handle background correction of single-channel intensity data1 or within array normalization two-color intensity data. See limma manual section on array normalization for more on this. Data may be fully normalized with limma or another software and the pipeline re-run.
 }
 \examples{
 \dontrun{
 ...
 }
+
 }
 \seealso{
 

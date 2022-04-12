@@ -62,11 +62,11 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
   setwd(paste0(prefix, "/"))
 
 
-  print("PROCESSING TRANSFORMATION")
+  print("PROCESSING DETECTION OF ZEROS AND NEGATIVE VALUES")
   hasZeroD <- unique(as.vector(data1 == 0))
   hasNegD <- unique(as.vector(data1 < 0))
 
-  data.original=NULL
+  data1.original=NULL
   if(transform[1] %in% c("log2", "log10", "logit")) {
     if (TRUE %in% hasNegD) {
       stop("\n- Data contains negative values and cannot be log transformed. Re-run command WITHOUT argument transform or alternatively if using two datasets, specify 'none' as the transform input for the dataset with negative values, e.g. c('none', 'log2') or c('log2', 'none').\n")
@@ -84,6 +84,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
     hasNegS <- unique(as.vector(data2 < 0))
   }
 
+  data2.original=NULL
   if(!is.null(data2) & transform[2] %in% c("log2", "log10", "logit")) {
     if (TRUE %in% hasNegS) {
       stop("\n- Second dataset contains negative values and cannot be log transformed. Re-run command WITHOUT argument transform  or alternatively if using two datasets, specify 'none' as the transforminput for the dataset with negative values, e.g. 'none,log2' or 'log2,none'.\n")
@@ -96,21 +97,38 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
   }
 
 
-  print("TRANSFORMATION PART FINISHED")
-
+  print("PROCESSING DETECTION OF ZEROS AND NEGATIVE VALUES FINISHED")
+  
 
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   #                                                                         ## Normalization, Filtering and Transformation ###
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  print("PROCESSING NORMALIZATION")
+  print("CAMPP2 automatically performs data normalization and transformation depending on technology from which data are derived.")
+  print("PROCESSING NORMALIZATION AND TRANSFORMATION")
+  print("Normalizing and tranforming data1")
+  
+  data1 %<-% applyNormalization(data1, data1.original, group1, transform[1], standardize[1], technology[1])
+  
+  if(!is.null(data2)) {
+    print("Normalizing and tranforming data2")
+    if (length(technology) != 2 || length(technology) == 1) {
+      stop("\nTwo datasets are defined in the analysis, BUT argument technology has defined only one. Technology must be defined as string vector of length two.\n")
+    }
+    if (length(transform) != 2 || length(transform) == 1) {
+      stop("\nTwo datasets are defined in the analysis, BUT argument transform has defined only one. Transform must be defined as string vector of length two.\n")
+    }
+    
+    data2 <- NormalizeData(data2, data2.original, group2, transform[2], standardize[2], technology[2])
 
-  c(data1,data2) %<-% applyNormalization(data1,data2,data.original,data2.original,group,group2,transform,standardize,technology)
+  }
 
-
+  print("PROCESSING NORMALIZATION AND TRANSFORMATION FINISHED")
+  
+  
+  
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   ### BATCH CORRECTION ###
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  ###create a function "runDatabatchCorr" taking arguments (databatch1, technology, databatch2)
 
   print("PROCESSING BATCH CORRECTION")
 

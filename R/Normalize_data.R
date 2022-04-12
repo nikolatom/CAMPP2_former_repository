@@ -1,11 +1,11 @@
-#' @title Normalization
-#' @description Normalizing features' counts depending on data types and selected normalization/standardization methods.
+#' @title Normalization and Transformation
+#' @description This function normalizes and transforms feature counts depending on data types and selected normalization/standardization methods.
 #' @param data a dataframe with expression/abundance counts (genes as rows; samples as columns), N.B only a subset of variables should be input, not intended for the full expression matrix!
 #' @param technology a string vector of length 1 (or two in case of 2 datasets) defining technology used for generating the data. Allowed types are: 'array', 'seq', 'ms' or 'other'.
 #' @param group a dataframe with groups metadata for each sample (given from metadata table)
-#' @param transform a string vector of length 1 (or two in case of 2 datasets) defining transformation type for each dataset ("log2", "logit" or "log10").
+#' @param transform a string vector of length 1 (or two in case of 2 datasets) defining transformation type for each dataset ("log2", "logit", "log10"). voom transform is automatically applied on "seq" data.
 #' @param standardize a string vector of length 1 (or two in case of 2 datasets) defining standardization method  ("mean" or "median"); By default, data from "seq" technology are normalized by "TMM"; "array" technology is standardized using "quantile"
-#' @param data.original a original data1 including zero values
+#' @param data.original an original data1 (data.frame) including zero values
 #' @export
 #' @import fitdistrplus
 #' @seealso

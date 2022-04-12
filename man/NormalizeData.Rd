@@ -2,41 +2,35 @@
 % Please edit documentation in R/Normalize_data.R
 \name{NormalizeData}
 \alias{NormalizeData}
-\title{Normalization}
+\title{Normalization and Transformation}
 \usage{
-NormalizeData(
-  my.technology,
-  my.data,
-  my.group,
-  my.transform,
-  my.standardize,
-  my.data.original = NULL
-)
+NormalizeData(data, data.original, group, transform, standardize, technology)
 }
 \arguments{
-\item{my.technology}{Possible values are: "array" (mircoarray data), "seq" (high throughput sequencing data), "ms" (mass spectrometry data) or "other" (other type).}
+\item{data}{a dataframe with expression/abundance counts (genes as rows; samples as columns), N.B only a subset of variables should be input, not intended for the full expression matrix!}
 
-\item{my.data}{a dataframe of expression/abundance counts, N.B only a subset of variables should be input, not intended for the full expression matrix!}
+\item{data.original}{an original data1 (data.frame) including zero values}
 
-\item{my.group}{a vector of integers specifying group; should be represented by a column in metadata file.}
+\item{group}{a dataframe with groups metadata for each sample (given from metadata table)}
 
-\item{my.transform}{a normalization type - "log2", "logit" or "log10"}
+\item{transform}{a string vector of length 1 (or two in case of 2 datasets) defining transformation type for each dataset ("log2", "logit", "log10" or voom).}
 
-\item{my.standardize}{a standardization method - "mean" or "median"}
+\item{standardize}{a string vector of length 1 (or two in case of 2 datasets) defining standardization method  ("mean" or "median"); By default, data from "seq" technology are normalized by "TMM"; "array" technology is standardized using "quantile"}
 
-\item{my.data.original}{= NULL}
+\item{technology}{a string vector of length 1 (or two in case of 2 datasets) defining technology used for generating the data. Allowed types are: 'array', 'seq', 'ms' or 'other'.}
 }
 \value{
-normalized counts
+Elist of normalized, filtered and transformed (gene) counts data
 }
 \description{
-Normalizing features' counts depending on data types and selected normalization/standardization methods
+This function normalizes and transforms feature counts depending on data types and selected normalization/standardization methods.
 }
 \examples{
 \dontrun{
 ...
 }
+
 }
 \seealso{
-LINK TO MANUAL (TRANSFORMATION/NORMALIZATION)
+
 }
