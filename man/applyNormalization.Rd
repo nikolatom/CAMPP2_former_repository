@@ -14,6 +14,7 @@ applyNormalization(
 )
 }
 \arguments{
+<<<<<<< HEAD
 \item{transform}{a string vector of length 1 (or two in case of 2 datasets) defining transformation type for each dataset ("log2", "logit", "log10" or voom).}
 
 \item{standardize}{a string vector of length 1 (or two in case of 2 datasets) defining standardization method  ("mean" or "median"); By default, data from "seq" technology are normalized by "TMM"; "array" technology is standardized using "quantile"}
@@ -37,12 +38,40 @@ Elist of normalized, filtered and transformed (gene) counts data
 }
 \description{
 A function for applying Normalization ("mean" or "median") and Transformation ("log2", "logit", "log10" or voom). This pipeline does not handle background correction of single-channel intensity data1 or within array normalization two-color intensity data. See limma manual section on array normalization for more on this. Data may be fully normalized with limma or another software and the pipeline re-run.
+=======
+\item{data}{a dataframe with expression/abundance counts}
+
+\item{sdata}{a dataframe with expression/abundance counts for second dataset}
+
+\item{data.original}{a original data}
+
+\item{sdata.original}{a original data for second dataset}
+
+\item{group}{a dataframe with samples groups}
+
+\item{sgroup}{a dataframe with samples groups for second dataset}
+
+\item{transform}{a transformation type}
+
+\item{standardize}{a standardization type}
+
+\item{technology}{a technology}
+}
+\value{
+normalized, filtered and transformed data
+}
+\description{
+Function for Normalization, Filtering and Transformation. This pipeline does not handle background correction of single-channel intensity data or within array normalization two-color intensity data. See limma manual section on array normalization for more on this. Data may be fully normalized with limma (R/Rstudio) or another software and the pipeline re-run.
+>>>>>>> 1a689e79f6f30203fc2c74f09d5cfff608f9f569
 }
 \examples{
 \dontrun{
 ...
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1a689e79f6f30203fc2c74f09d5cfff608f9f569
 }
 \seealso{
 
