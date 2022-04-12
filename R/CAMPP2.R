@@ -66,6 +66,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
   hasZeroD <- unique(as.vector(data1 == 0))
   hasNegD <- unique(as.vector(data1 < 0))
 
+  data1.original=NULL
   if(transform[1] %in% c("log2", "log10", "logit")) {
     if (TRUE %in% hasNegD) {
       stop("\n- Data contains negative values and cannot be log transformed. Re-run command WITHOUT argument transform or alternatively if using two datasets, specify 'none' as the transform input for the dataset with negative values, e.g. c('none', 'log2') or c('log2', 'none').\n")
@@ -83,6 +84,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
     hasNegS <- unique(as.vector(data2 < 0))
   }
 
+  data2.original=NULL
   if(!is.null(data2) & transform[2] %in% c("log2", "log10", "logit")) {
     if (TRUE %in% hasNegS) {
       stop("\n- Second dataset contains negative values and cannot be log transformed. Re-run command WITHOUT argument transform  or alternatively if using two datasets, specify 'none' as the transforminput for the dataset with negative values, e.g. 'none,log2' or 'log2,none'.\n")
@@ -102,43 +104,27 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
   #                                                                         ## Normalization, Filtering and Transformation ###
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #
-#   NB <- " N.B This pipeline does not handle background correction of single-channel intensity data or within array normalization two-color intensity data. See limma manual section on array normalization for more on this. Data may be fully normalized with limma (R/Rstudio) or another software and the pipeline re-run."
-#
-#
-  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  # Dataset
-
-  if (exists("data.original")) {
-      data <- NormalizeData(technology, data, group, transform, standardize, data.original)
-  } else {
-      data <- NormalizeData(technology, data, group, transform, standardize)
-  }
-
-
-  # Second Dataset
-
+  print("CAMPP2 automatically performs data normalization and transformation depending on technology from which data are derived.")
+  print("PROCESSING NORMALIZATION AND TRANSFORMATION")
+  print("Normalizing and tranforming data1")
+  
+  data1 %<-% applyNormalization(data1, data1.original, group1, transform[1], standardize[1], technology[1])
+  
   if(!is.null(data2)) {
-    if (length(technology) < 2) {
-      stop("\nTwo datasets are input for correlation analysis, BUT argument technology only has length one. Length of technology must be two.\n")
+    print("Normalizing and tranforming data2")
+    if (length(technology) != 2 || length(technology) == 1) {
+      stop("\nTwo datasets are defined in the analysis, BUT argument technology has defined only one. Technology must be defined as string vector of length two.\n")
     }
-    if (length(transform) < 2) {
-      stop("\nTwo datasets are input for correlation analysis, BUT argument transform only has length one. Length of transformmust be two, see.\n")
+    if (length(transform) != 2 || length(transform) == 1) {
+      stop("\nTwo datasets are defined in the analysis, BUT argument transform has defined only one. Transform must be defined as string vector of length two.\n")
     }
+    
+    data2 <- NormalizeData(data2, data2.original, group2, transform[2], standardize[2], technology[2])
+    
   }
-
-
-
-  if (!is.null(data2)) {
-    if (exists("data2.original")) {
-      data2 <- NormalizeData(technology[2], data2, group2, transform[2], standardize[2], data2.original)
-    } else {
-      data2 <- NormalizeData(technology[2], data2, group2, transform[2], standardize[2])
-    }
-  }
-
-  print("NORMALIZATION PART FINISHED")
-
-
+  
+  print("PROCESSING NORMALIZATION AND TRANSFORMATION FINISHED")
+  
 
 
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -150,7 +136,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
   if (databatch1==TRUE){
     print("Run batch correction on the 1st dataset")
-    c(data.batch1) %<-% batchCorrect(data1,batch1,databatch1,group1,technology[1])
+    data1.batch %<-% BatchCorrect(data1,batch1,databatch1,group1,technology[1])
     print("Batch correction of the first dataset finished")
   }else{
     print("Batch correction wasn't selected")
@@ -158,7 +144,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
   if (databatch2==TRUE){
     print("Run batch correction on the 2nd dataset")
-    c(data.batch2) %<-% batchCorrect(data2,batch2,databatch2,group2,technology[2])
+    data2.batch %<-% BatchCorrect(data2,batch2,databatch2,group2,technology[2])
     print("Batch correction of the second dataset finished")
   }else{
     print("Batch correction wasn't selected")
