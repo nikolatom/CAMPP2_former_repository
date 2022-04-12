@@ -18,12 +18,13 @@ ReplaceZerosApply<-function(data=NULL,group=NULL){
 
     data.original=NULL
     if (TRUE %in% hasNeg) {
-        print("Dataset includes negative values which might cause zeros to be replaced into negative values")
+        print("Dataset includes negative values which might cause zeros to be replaced into negative values.")
     }
     if (TRUE %in% hasZero) {
-        print("Dataset include zero values which are being replaced")
+        print("Dataset include zero values which are being replaced.")
         data.original <- data
         data <- ReplaceZero(data, group)
+        print("Zeros were replaced.")
     }
 
 
