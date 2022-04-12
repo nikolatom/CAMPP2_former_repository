@@ -66,6 +66,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
   hasZeroD <- unique(as.vector(data1 == 0))
   hasNegD <- unique(as.vector(data1 < 0))
 
+  data.original=NULL
   if(transform[1] %in% c("log2", "log10", "logit")) {
     if (TRUE %in% hasNegD) {
       stop("\n- Data contains negative values and cannot be log transformed. Re-run command WITHOUT argument transform or alternatively if using two datasets, specify 'none' as the transform input for the dataset with negative values, e.g. c('none', 'log2') or c('log2', 'none').\n")
@@ -103,41 +104,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   print("PROCESSING NORMALIZATION")
 
-  NB <- " N.B This pipeline does not handle background correction of single-channel intensity data or within array normalization two-color intensity data. See limma manual section on array normalization for more on this. Data may be fully normalized with limma (R/Rstudio) or another software and the pipeline re-run."
-
-
-  # First Dataset
-
-  if (exists("data1.original")) {
-    data1 <- NormalizeData(technology[1], data1, group1, transform[1], standardize[1], data1.original)
-  } else {
-    data1 <- NormalizeData(technology[1], data1, group1, transform[1], standardize[1])
-  }
-
-
-  # Second Dataset
-
-  if(!is.null(data2)) {
-    if (length(technology) < 2) {
-      stop("\nTwo datasets are input for correlation analysis, BUT argument technology only has length one. Length of technology must be two.\n")
-    }
-    if (length(transform) < 2) {
-      stop("\nTwo datasets are input for correlation analysis, BUT argument transform only has length one. Length of transformmust be two, see.\n")
-    }
-  }
-
-
-
-  if (!is.null(data2)) {
-    if (exists("data2.original")) {
-      data2 <- NormalizeData(technology[2], data2, group2, transform[2], standardize[2], data2.original)
-    } else {
-      data2 <- NormalizeData(technology[2], data2, group2, transform[2], standardize[2])
-    }
-  }
-
-  print("NORMALIZATION PART FINISHED")
-
+  c(data1,data2) %<-% applyNormalization(data1,data2,data.original,data2.original,group,group2,transform,standardize,technology)
 
 
 
