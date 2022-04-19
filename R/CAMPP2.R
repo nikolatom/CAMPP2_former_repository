@@ -60,8 +60,17 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
   dir.create(prefix)
   setwd(paste0(prefix, "/"))
-
-
+  
+  
+  print("RUNNING MISSING VALUE IMPUTATIONS")
+  
+  data1<-ReplaceNAs(data1)
+  data2<-ReplaceNAs(data2)
+  
+  print("MISSING VALUE IMPUTATIONS FINISHED")
+  
+  
+  
   print("PROCESSING TRANSFORMATION")
   hasZeroD <- unique(as.vector(data1 == 0))
   hasNegD <- unique(as.vector(data1 < 0))

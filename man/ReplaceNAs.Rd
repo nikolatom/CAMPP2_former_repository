@@ -2,18 +2,18 @@
 % Please edit documentation in R/Replace_NAs.R
 \name{ReplaceNAs}
 \alias{ReplaceNAs}
-\title{ReplaceNAs}
+\title{Replace "NA" values}
 \usage{
-ReplaceNAs(my.data)
+ReplaceNAs(data)
 }
 \arguments{
-\item{my.data}{a dataframe of expression/abundance counts.}
+\item{data}{a dataframe of gene/abundance counts.}
 }
 \value{
-Dataframe with replaced NA-values
+Data frame with replaced "NA" values
 }
 \description{
-Checking Data for NA Values.
+Replacing "NA" values in the data (counts).
 }
 \examples{
 \dontrun{
