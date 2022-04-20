@@ -1,16 +1,14 @@
-#' @title Export the results into file
-#' @description Function to export the results into an .txt (excel?)
-#' @param my.list a list of dataframes from DA_feature_apply with p-values, FDRs, logFC ect.
-#' @param my.filename a name of output txt file
+#' @title Text Output Function
+#' @description Function to export results into a .txt file
+#' @param my.list A list of dataframes from DA_feature_apply with p-values, FDRs, logFC ect.
+#' @param my.filename The name of output txt file
 #' @export
-#' @import openxlsx
+#' @import
 #' @seealso
-#' @return excel table
+#' @return .txt table
 #' @examples \dontrun{
 #' ...
 #' }
-
-##does this function really export excel? seems like .txt file
 
 TextOutput <- function(my.list, my.filename) {
     if (is.null(my.list)) {
@@ -27,3 +25,4 @@ TextOutput <- function(my.list, my.filename) {
     }
     return(my.list)
 }
+
