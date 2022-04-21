@@ -1,15 +1,15 @@
 #' @title Normalization and Transformation
 #' @description This function normalizes and transforms feature counts depending on data types and selected normalization/standardization methods.
-#' @param data a dataframe with expression/abundance counts (genes as rows; samples as columns), N.B only a subset of variables should be input, not intended for the full expression matrix!
-#' @param technology a string vector of length 1 (or two in case of 2 datasets) defining technology used for generating the data. Allowed types are: 'array', 'seq', 'ms' or 'other'.
-#' @param group a dataframe with groups metadata for each sample (given from metadata table)
+#' @param data a dataframe of expression/abundance counts
+#' @param group a factor specifying sample group from metadata
+#' @param data.original a original data (before removal of zeros)
 #' @param transform a string vector of length 1 (or two in case of 2 datasets) defining transformation type for each dataset ("log2", "logit", "log10"). voom transform is automatically applied on "seq" data.
 #' @param standardize a string vector of length 1 (or two in case of 2 datasets) defining standardization method  ("mean" or "median"); By default, data from "seq" technology are normalized by "TMM"; "array" technology is standardized using "quantile"
-#' @param data.original an original data1 (data.frame) including zero values
+#' @param technology a string vector of length 1 (or two in case of 2 datasets) defining technology used for generating the data. Allowed types are: 'array', 'seq', 'ms' or 'other'.
 #' @export
 #' @import fitdistrplus
 #' @seealso
-#' @return Elist of normalized, filtered and transformed (gene) counts data
+#' @return Elist (seq technology) or array (array, ms, other technologies) of normalized, filtered and transformed (gene) counts data
 #' @examples \dontrun{
 #' ...
 #' }
@@ -17,50 +17,59 @@
 
 
 NormalizeData <- function(data,data.original,group,transform,standardize,technology) {
+  
+    if (is.null(technology)){
+        stop("\n- Mandatory parameter technology is not defined for a given dataset.\n")
+    }
+    
     if (technology == "seq") {
         if (!is.null(data.original)) {
-            data <- data.original
+            data <- data.original #takes the original data (before removing zeros)
         }
+        cat("\n Data are being filtered for lowly expressed variables, normalized using TMM and voom transformed without any other option for normalization and transformation.\n")
         data <- DGEList(counts=data)
         design <- model.matrix(~0+group)
         keep <- filterByExpr(data, design)
         data <- data[keep,,keep.lib.sizes=FALSE]
         data <- calcNormFactors(data, method = "TMM")
         data <- voom(data, design, plot=TRUE)
-        cat("\n Data will be filtered for lowly expressed variables, normalized and voom transformed.\n")
+        }
 
-
-    } else if (technology %in% c("array", "ms", "other")) {
+    ##Should we support also another normalization types for "seq" technology?
+    
+     else if (technology %in% c("array", "ms", "other")) {
         if (transform == "log2") {
+            cat("\n Data are being log2 transformed.\n")
             data <- log2(data)
         } else if (transform == "logit") {
+            cat("\n Data are being logit transformed.\n")
             data <- logit(data)
         } else if (transform == "log10"){
+            cat("\n Data are being log10 transformed.\n")
             data <- log10(data)
-        } else {
-            cat("\n transform is not specified for data, log transformation will NOT be performed.\n")
+        } else if (is.null(transform)){
+            cat("\n Transformation is not specified and will NOT be performed.\n")
             data <- data
-        }
+        } 
+        
         if (standardize == "mean") {
+            cat("\n Data will be mean centered test. \n")
             data <- scale(data, scale = FALSE)
-            NB <- " N.B This pipeline does not handle background correction of single-channel intensity data or within array normalization two-color intensity data. See limma manual section on array normalization for more on this. Data may be fully normalized with limma (R/Rstudio) or another software and the pipeline re-run."
-            cat(paste0("\n technology = array and standardize = mean. Data will be mean centered.", NB, "\n"))
-
         } else if (standardize == "median") {
+            cat("\n Data will be median centered. \n")
             rowmed <- apply(data,1,median)
             data <- data - rowmed
-            NB <- " N.B This pipeline does not handle background correction of single-channel intensity data or within array normalization two-color intensity data. See limma manual section on array normalization for more on this. Data may be fully normalized with limma (R/Rstudio) or another software and the pipeline re-run."
-            cat(paste0("\n technology = array and standardize = median. Data will be median centered.", NB, "\n"))
         } else if (!(standardize %in% c("mean", "median")) & technology == "array") {
+            cat("\n Data will be normalized on the quantiles (default for microarray technology). \n")
             data <- normalizeBetweenArrays(data, method="quantile")
-            NB <- " N.B This pipeline does not handle background correction of single-channel intensity data or within array normalization two-color intensity data. See limma manual section on array normalization for more on this. Data may be fully normalized with limma (R/Rstudio) or another software and the pipeline re-run."
-            cat(paste0("\n technology = array. Data will be normalized on the quantiles.",NB, "\n"))
         } else {
-            cat("\n- No standardization requested. If argument technology is 'array', data will be normalized on quantile (NormalizeBetweenArrays), otherwise no normalization will be performed.\n")
-        }
-    } else {
-        stop("\n- Option technology is mandatory and specifies data type (technology). Options are; array, seq, ms or other. See user manual for specifics.\n")
-    }
-    return(data)
-}
+            cat("\n Given standardization is not supported or there are no standardization defaults for a given technology.\n")
+        } 
+         
+     } else if (!(technology) %in% c("seq","array","ms","other")){
+         stop("Defined technology is not supported.")
+     }
 
+    return(data)
+
+}

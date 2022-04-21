@@ -49,8 +49,7 @@ metadata2<-metadata2[order(metadata2$IDs),]
 dataset3<-cbind(dataset1,dataset2)
 metadata3<-rbind(metadata1,metadata2)
 
-#runCampp2(prefix="results_test1", data=dataset1, metadata=metadata1, groups=c("IDs", "diagnosis"), technology=c("seq"))
 
-runCampp2(WGCNA="DE", signif=c(1,1,1,1),survival="DE",plot.heatmap="DE",batches=c("tumor_stage","tumor_stage"),kmeans=TRUE, plot.mds=TRUE,prefix="test_dual_surv_covar7", data1=dataset1, data2=dataset2, metadata1=metadata1,metadata2=metadata2, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"))
+runCampp2_2(data1=dataset1, data2=dataset2, metadata1=metadata1,metadata2=metadata2, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"))
 
 
