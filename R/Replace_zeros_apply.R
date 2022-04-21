@@ -1,6 +1,6 @@
-#' @title Detection of negative values and zeros and replacement of zero values in the data
+#' @title Check of negative values and zeros
 #' @description Checking the presence of negative and zero values in the data and replacing zeros.
-#' @param data a dataframe of expression/abundance counts, N.B only a subset of variables should be input, not intended for the full expression matrix!
+#' @param data a dataframe of expression/abundance counts
 #' @param group a factor specifying sample group from metadata
 #' @export
 #' @seealso
@@ -9,6 +9,8 @@
 #' ...
 #' }
 
+##note which was added in the data parameter description: N.B only a subset of variables should be input, not intended for the full expression matrix! 
+##WHY?
 
 ReplaceZerosApply<-function(data=NULL,group=NULL){
 
@@ -18,12 +20,12 @@ ReplaceZerosApply<-function(data=NULL,group=NULL){
 
     data.original=NULL
     if (TRUE %in% hasNeg) {
-        print("Dataset includes negative values which might cause zeros to be replaced into negative values.")
+        print("Warning: Dataset includes negative values which might cause zeros to be replaced into negative values.")
     }
     if (TRUE %in% hasZero) {
         print("Dataset include zero values which are being replaced.")
         data.original <- data
-        data <- ReplaceZero(data, group)
+        data <- ReplaceZero2(data, group)
         print("Zeros were replaced.")
     }
 
