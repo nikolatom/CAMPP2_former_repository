@@ -8,7 +8,7 @@
 #' @param technology a string vector of length 1 (or two in case of 2 datasets) defining technology used for generating the data. Allowed types are: 'array', 'seq', 'ms' or 'other'.
 #' @export
 #' @seealso
-#' @return Elist of normalized, filtered and transformed (gene) counts data
+#' @return Elist (seq technology) or array (array, ms, other technologies) of normalized, filtered and transformed (gene) counts data
 #' @examples \dontrun{
 #' ...
 #' }
