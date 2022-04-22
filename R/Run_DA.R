@@ -18,65 +18,72 @@
 #' }
 
 
-RunDA <- function(data, metadata, databatch, batch, covarD, group, logFC, FDR) {
+RunDA <- function(data, metadata, technology, databatch, batch, covarD, group, logFC, FDR, prefix) {
 
-  # Make design matrix
-  if (databatch == "FALSE") {
-      design.str <- "model.matrix(~0+group"
-      out.name <- "_DE"
-  } else if (length(batch) > 0) {
-      design.str <- "model.matrix(~0+group+batch"
-      out.name <- "_databatch_DE"
-  } else {
-      stop("Batch correction selected but no batches column found!")
-  }
+    # Make design matrix
+    if (databatch == "FALSE") {
+        design.str <- "model.matrix(~0+group"
+        out.name <- "_DE"
+    } else if (length(batch) > 0) {
+        design.str <- "model.matrix(~0+group+batch"
+        out.name <- "_databatch_DE"
+    } else {
+        stop("Batch correction selected but no batches column found!")
+    }
 
-  if(is.null(covarD)) {
-      design <- eval(parse(text=paste0(design.str, ")")))
-  } else {
-      if (length(covarD) == 1) {
-          df <- data.frame(metadata[,colnames(metadata) %in% covarD])
-          colnames(df) <- covarD
-      } else {
-          df <- metadata[,colnames(metadata) %in% covarD]
-      }
+    if(is.null(covarD)) {
+        design <- eval(parse(text=paste0(design.str, ")")))
+    } else {
+        if (length(covarD) == 1) {
+            df <- data.frame(metadata[,colnames(metadata) %in% covarD])
+            colnames(df) <- covarD
+        } else {
+            df <- metadata[,colnames(metadata) %in% covarD]
+        }
 
-      s <- lapply(split(as.matrix(df), col(df)), factor)
-      my.names <- paste0("", colnames(df))
-      list2env(setNames(s, my.names), envir=.GlobalEnv)
-      my.names <- paste0(my.names, collapse = "+")
-      design <- eval(parse(text=paste0(design.str,"+",my.names,")")))
-      rm(s)
-  }
-
+        s <- lapply(split(as.matrix(df), col(df)), factor)
+        my.names <- paste0("", colnames(df))
+        list2env(setNames(s, my.names), envir=.GlobalEnv)
+        my.names <- paste0(my.names, collapse = "+")
+        design <- eval(parse(text=paste0(design.str,"+",my.names,")")))
+    }
 
 
-  # Making group contrasts
-  combinations <- data.frame(t(combn(paste0("group", levels(group)), 2)))
-  combinations$contr <- apply(combinations[,colnames(combinations)], 1, paste, collapse = "-")
-  contrast.matrix <- eval(as.call(c(as.symbol("makeContrasts"),as.list(as.character(combinations$contr)),levels=list(design))))
+
+    # Making group contrasts
+    combinations <- data.frame(t(combn(paste0("group", levels(group)), 2)))
+    combinations$contr <- apply(combinations[,colnames(combinations)], 1, paste, collapse = "-")
+    contrast.matrix <- eval(as.call(c(as.symbol("makeContrasts"),as.list(as.character(combinations$contr)),levels=list(design))))
 
 
-  # Apply DE_limma function to all comparisons
-  res.DE <- DAFeatureApply(contrast.matrix, data, design, logFC, FDR, NULL, FALSE)
+    # Apply DE_limma function to all comparisons
+    res.DE <- DAFeatureApply(contrast.matrix, data, design, logFC, FDR, NULL, FALSE)
 
 
-  # Write results out as excel file
-  if (!is.null(res.DE)) {
-      DE.out <- TextOutput(res.DE, paste0(prefix, out.name))
-      rownames(DE.out) <- NULL
-      res.DE.names <- unique(DE.out$name)
-      rm(res.DE)
-  } else {
-      cat("No signficant DE/DA hits found. Check output file from differential expression analysis. Check your cut-off for differential expression analysis, it may be that these are too stringent.")
-  }
+    # Write results out as excel file
+    if (!is.null(res.DE)) {
+        DE.out <- TextOutput(res.DE, paste0(prefix, out.name))
+        rownames(DE.out) <- NULL
+        res.DE.names <- unique(DE.out$name)
+    } else {
+        cat("No signficant DE/DA hits found. Check output file from differential expression analysis. Check your cut-off for differential expression analysis, it may be that these are too stringent.")
+    }
 
-  if (technology[1] == "seq") {
-      cnames <- colnames(data$E)
-      data <- data.frame(data$E)
-      colnames(data) <- cnames
-  }
+    if (technology[1] == "seq") {
+        cnames <- colnames(data$E)
+        data <- data.frame(data$E)
+        colnames(data) <- cnames
+    }
 
-  return(DE.out)
+    print(class(data))
+    print(class(metadata))
+    print(class(databatch))
+    print(class(batch))
+    print(class(covarD))
+    print(class(group))
+    print(class(logFC))
+    print(class(FDR))
+
+    return(DE.out)
 
 }
