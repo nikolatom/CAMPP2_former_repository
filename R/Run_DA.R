@@ -31,8 +31,10 @@ RunDA <- function(data, metadata, technology, databatch, batch, covarD, group, l
         stop("Batch correction selected but no batches column found!")
     }
 
+
     if(is.null(covarD)) {
         design <- eval(parse(text=paste0(design.str, ")")))
+
     } else {
         if (length(covarD) == 1) {
             df <- data.frame(metadata[,colnames(metadata) %in% covarD])
@@ -56,7 +58,7 @@ RunDA <- function(data, metadata, technology, databatch, batch, covarD, group, l
     contrast.matrix <- eval(as.call(c(as.symbol("makeContrasts"),as.list(as.character(combinations$contr)),levels=list(design))))
 
 
-    # Apply DE_limma function to all comparisons
+    # Apply differential abundance analysis to all comparisons
     res.DE <- DAFeatureApply(contrast.matrix, data, design, logFC, FDR, NULL, FALSE)
 
 
@@ -75,15 +77,5 @@ RunDA <- function(data, metadata, technology, databatch, batch, covarD, group, l
         colnames(data) <- cnames
     }
 
-    print(class(data))
-    print(class(metadata))
-    print(class(databatch))
-    print(class(batch))
-    print(class(covarD))
-    print(class(group))
-    print(class(logFC))
-    print(class(FDR))
-
-    return(DE.out)
-
+    return(list("DE.out"=DE.out,"res.DE"=res.DE,"res.DE.names"=res.DE.names))
 }

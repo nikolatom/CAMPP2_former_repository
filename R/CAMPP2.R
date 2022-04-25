@@ -378,10 +378,18 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
   #First dataset
   DERes1 <- RunDA(data1, metadata1, technology, databatch1, batch1, covarD, group1, logFC1, FDR1, prefix)
 
+  DE.out<-DERes1$DE.out
+  res.DE<-DERes1$res.DE
+  res.DE.names<-DERes1$res.DE.names
+
   #Second dataset
   if(!is.null(data2) & !is.null(metadata2)) {
       DERes2 <- RunDA(data2, metadata2, technology, databatch2, batch2, scovarD, group2, logFC2, FDR2, prefix)
   }
+
+  sDE.out<-DERes1$DE.out
+  res.sDE<-DERes1$res.DE
+  res.sDE.names<-DERes1$res.DE.names
 
   setwd("..")
 
@@ -513,56 +521,59 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
       }
 
 
-    # Cross Validation errors
-    LassoRun <- paste0(rep("Run", 10), 1:10)
-    CrossValErrormean <- round(unlist(lapply(LASSO.res, '[[', 2)), digits = 4)
-    cat(paste0("\nThe average leave-one-out cross validation error for LASSO/elastic-net was: ", mean(CrossValErrormean), "% and the higest error returned from any of the 10 runs was: ", max(CrossValErrormean),"%. Generally the cross validation error should be low ~ 5.0 %, as large errors may indicate a poor model and/or very heterogeneous data. On the other hand, an error of 0 might indicate over-fitting. See CAMPP manual for specifics.\n\n"))
-    pCVEM <- data.frame(cbind(CrossValErrormean, LassoRun))
-    pCVEM <- ggplot(data=pCVEM, aes(x=LassoRun, y=CrossValErrormean)) + geom_bar(aes(fill = as.factor(LassoRun)), stat="identity") + theme_minimal() + scale_x_discrete(limits=c(LassoRun)) + scale_fill_viridis(begin = 0.0, end = 0.0, discrete=TRUE, option="cividis" ) + theme(legend.position="none") + ylab("CrossValErrormean in %") + theme(axis.text = element_text(size=14), axis.title = element_text(size=16))
-    ggsave(paste0(prefix, "_CrossValidationPlot.pdf"), plot = pCVEM)
 
-    # Area under the curve AUC
-    if(TRUE %in% test.train) {
+      # Cross Validation errors
+      LassoRun <- paste0(rep("Run", 10), 1:10)
+      CrossValErrormean <- round(unlist(lapply(LASSO.res, '[[', 2)), digits = 4)
+      cat(paste0("\nThe average leave-one-out cross validation error for LASSO/elastic-net was: ", mean(CrossValErrormean), "% and the higest error returned from any of the 10 runs was: ", max(CrossValErrormean),"%. Generally the cross validation error should be low ~ 5.0 %, as large errors may indicate a poor model and/or very heterogeneous data. On the other hand, an error of 0 might indicate over-fitting. See CAMPP manual for specifics.\n\n"))
+      pCVEM <- data.frame(cbind(CrossValErrormean, LassoRun))
+      pCVEM <- ggplot(data=pCVEM, aes(x=LassoRun, y=CrossValErrormean)) + geom_bar(aes(fill = as.factor(LassoRun)), stat="identity") + theme_minimal() + scale_x_discrete(limits=c(LassoRun)) + scale_fill_viridis(begin = 0.0, end = 0.0, discrete=TRUE, option="cividis" ) + theme(legend.position="none") + ylab("CrossValErrormean in %") + theme(axis.text = element_text(size=14), axis.title = element_text(size=16))
+      ggsave(paste0(prefix, "_CrossValidationPlot.pdf"), plot = pCVEM)
 
-      ll <- list()
-      llev <- levels(as.factor(group1.LASSO))
 
-      for (idx in 1:length(llev)) {
-        pos <- which(group1.LASSO == as.character(llev[idx]))
-        ll[[idx]] <- pos
+
+
+      # Area under the curve AUC
+      if(TRUE %in% test.train) {
+
+          ll <- list()
+          llev <- levels(as.factor(group1.LASSO))
+
+          for (idx in 1:length(llev)) {
+              pos <- which(group1.LASSO == as.character(llev[idx]))
+              ll[[idx]] <- pos
+          }
+
+          my.samp <- unlist(lapply(ll, function(x) sample(x, ceiling((length(x)/4)))))
+
+
+          if (databatch1 == TRUE) {
+              LASSO.data1 <- data1.batch
+          } else {
+              LASSO.data1 <- data1
+          }
+
+
+          testD <- data.frame(t(LASSO.data1[rownames(LASSO.data1) %in% as.character(VarsSelect$LASSO.Var.Select), my.samp]))
+          testG <- as.integer(group1.LASSO[my.samp])
+
+          trainD <- data.frame(t(LASSO.data1[rownames(LASSO.data1) %in% as.character(VarsSelect$LASSO.Var.Select), -my.samp]))
+          trainG <- as.integer(group1.LASSO[-my.samp])
+
+          mn.net <- nnet::multinom(trainG ~ ., data=trainD)
+          mn.pred <- predict(mn.net, newdata=testD, type="prob")
+          roc.res <- multiclass.roc(testG, mn.pred)
+          roc.res <- data.frame(round(as.numeric(sub(".*: ", "", roc.res$auc)), digits = 2))
+          colnames(roc.res) <- "AUC"
+          cat(paste0("Are under the curve (AUC) for variables selected from 10 LASSO/EN runs was: ", roc.res$AUC))
+          write.table(roc.res, paste0(prefix,"_AUC.txt"), row.names=FALSE, col.names = TRUE, quote = FALSE)
       }
 
-      my.samp <- unlist(lapply(ll, function(x) sample(x, ceiling((length(x)/4)))))
 
-
-      if (databatch1 == TRUE) {
-        LASSO.data1 <- data1.batch
-      } else {
-        LASSO.data1 <- data1
-      }
-
-
-      testD <- data.frame(t(LASSO.data1[rownames(LASSO.data1) %in% as.character(VarsSelect$LASSO.Var.Select), my.samp]))
-      testG <- as.integer(group1.LASSO[my.samp])
-
-      trainD <- data.frame(t(LASSO.data1[rownames(LASSO.data1) %in% as.character(VarsSelect$LASSO.Var.Select), -my.samp]))
-      trainG <- as.integer(group1.LASSO[-my.samp])
-
-      mn.net <- nnet::multinom(trainG ~ ., data=trainD)
-      mn.pred <- predict(mn.net, newdata=testD, type="prob")
-      roc.res <- multiclass.roc(testG, mn.pred)
-      roc.res <- data.frame(round(as.numeric(sub(".*: ", "", roc.res$auc)), digits = 2))
-      colnames(roc.res) <- "AUC"
-      cat(paste0("Are under the curve (AUC) for variables selected from 10 LASSO/EN runs was: ", roc.res$AUC))
-      write.table(roc.res, paste0(prefix,"_AUC.txt"), row.names=FALSE, col.names = TRUE, quote = FALSE)
-    }
-
-
-    setwd("..")
-    try(rm(VarsSelect, LR, venn, CrossValErrormean, mn.net, mn.pred, roc.res), silent=T)
+      setwd("..")
+      try(rm(VarsSelect, LR, venn, CrossValErrormean, mn.net, mn.pred, roc.res), silent=T)
 
   }
-
 
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   ### Plotting Results Heatmap ###
@@ -585,7 +596,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
     if (plot.heatmap == "ALL") {
       stop("\nOption ALL is not allowed for heatmap, too heavy! Pick either 'DE', 'DA', 'LASSO', 'EN' or 'Consensus'.\n")
     } else if (plot.heatmap %in% c("DA", "DE")) {
-      hm <- hm[rownames(hm) %in% res.DE.names,]
+      hm <- hm[rownames(hm) %in% DERes1$res.DE.names,]
     } else {
       if(!is.null(lasso)) {
         if (plot.heatmap == "Consensus") {
