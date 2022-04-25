@@ -376,20 +376,20 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
     setwd("Results_DEA/")
 
     #First dataset
-    DERes1 <- RunDA(data1, metadata1, technology, databatch1, batch1, covarD, group1, logFC1, FDR1, prefix)
+    DEARes1 <- RunDEA(data1, metadata1, technology, databatch1, batch1, covarD, group1, logFC1, FDR1, prefix)
 
-    DE1.out<-DERes1$DE.out
-    res.DE1<-DERes1$res.DE
-    res.DE1.names<-DERes1$res.DE.names
+    DEA1.out<-DEARes1$DE.out
+    res.DEA1<-DEARes1$res.DE
+    res.DEA1.names<-DEARes1$res.DE.names
 
     #Second dataset
     if(!is.null(data2) & !is.null(metadata2)) {
-        DERes2 <- RunDA(data2, metadata2, technology, databatch2, batch2, scovarD, group2, logFC2, FDR2, prefix)
+        DEARes2 <- RunDEA(data2, metadata2, technology, databatch2, batch2, scovarD, group2, logFC2, FDR2, prefix)
     }
 
-    DE2.out<-DERes2$DE.out
-    res.DE2<-DERes2$res.DE
-    res.DE2.names<-DERes2$res.DE.names
+    DEA2.out<-DEARes2$DE.out
+    res.DEA2<-DEARes2$res.DE
+    res.DEA2.names<-DEARes2$res.DE.names
 
     setwd("..")
 
@@ -502,16 +502,16 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
 
         # Consensus DEA and LASSO
-        consensus <- DE1.out[DE1.out$name %in% VarsSelect$LASSO.Var.Select,]
+        consensus <- DEA1.out[DEA1.out$name %in% VarsSelect$LASSO.Var.Select,]
 
         if (nrow(consensus) > 0) {
             write.table(consensus, paste0(prefix,"_DEA_LASSO_Consensus.txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
             pdf(paste0(prefix, "_overlap_DEAA_LASSO_EN.pdf"), height=8, width=12)
             if (length(levels(group1)) == 2) {
-                venn <- venn.diagram(list(A=unique(as.character(DE1.out[DE1.out$dir =="up",]$name)), B=unique(as.character(DE1.out[DE1.out$dir =="down",]$name)), C=as.character(VarsSelect$LASSO.Var.Select)), category.names = c("D(EA) Analysis Up", "D(EA) Analysis Down", "LASSO/EN Regression"), filename=NULL, lwd = 0.7, cat.pos=0, sub.cex = 2, cat.cex= 1.5, cex=1.5, fill=viridis(3, begin = 0.2, end = 0.8, option="cividis"))
+                venn <- venn.diagram(list(A=unique(as.character(DEA1.out[DEA1.out$dir =="up",]$name)), B=unique(as.character(DEA1.out[DEA1.out$dir =="down",]$name)), C=as.character(VarsSelect$LASSO.Var.Select)), category.names = c("D(EA) Analysis Up", "D(EA) Analysis Down", "LASSO/EN Regression"), filename=NULL, lwd = 0.7, cat.pos=0, sub.cex = 2, cat.cex= 1.5, cex=1.5, fill=viridis(3, begin = 0.2, end = 0.8, option="cividis"))
 
             } else {
-                venn <- venn.diagram(list(A=unique(as.character(DE1.out$name)), B=as.character(VarsSelect$LASSO.Var.Select)), category.names = c("D(EA) Analysis All", "LASSO/EN Regression"), filename=NULL, lwd = 0.7, cat.pos=0, sub.cex = 2, cat.cex= 1.5, cex=1.5, fill=viridis(2, begin = 0.2, end = 0.8, option="cividis"))
+                venn <- venn.diagram(list(A=unique(as.character(DEA1.out$name)), B=as.character(VarsSelect$LASSO.Var.Select)), category.names = c("D(EA) Analysis All", "LASSO/EN Regression"), filename=NULL, lwd = 0.7, cat.pos=0, sub.cex = 2, cat.cex= 1.5, cex=1.5, fill=viridis(2, begin = 0.2, end = 0.8, option="cividis"))
 
             }
             grid.draw(venn)
@@ -596,7 +596,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
         if (plot.heatmap == "ALL") {
             stop("\nOption ALL is not allowed for heatmap, too heavy! Pick either 'DE', 'DA', 'LASSO', 'EN' or 'Consensus'.\n")
         } else if (plot.heatmap %in% c("DA", "DE")) {
-            hm <- hm[rownames(hm) %in% res.DE1.names,]
+            hm <- hm[rownames(hm) %in% res.DEA1.names,]
         } else {
             if(!is.null(lasso)) {
                 if (plot.heatmap == "Consensus") {
@@ -613,7 +613,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
         # heatmap colors in blue
         hm.gradient <- viridis(300, option="cividis")
-        range <- c(round(min(DE1.out$logFC1)), round(max(DE1.out$logFC1)))
+        range <- c(round(min(DEA1.out$logFC1)), round(max(DEA1.out$logFC1)))
 
         # Heatmap as pdf
         MakeHeatmap(hm, hm.gradient, colors.hm, colors, groups, paste0(prefix,name), range)
@@ -647,7 +647,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
         if (corrby == "ALL") {
             retainedvar <- intersect(rownames(data1), rownames(data2))
         } else if (corrby %in% c("DA", "DE")) {
-            retainedvar <- intersect(res.DE1.names, rownames(data2))
+            retainedvar <- intersect(res.DEA1.names, rownames(data2))
         } else {
             if(!is.null(lasso)) {
                 if (survival == "Consensus" ) {
@@ -736,7 +736,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
         if (survival == "ALL") {
             cat("\nYou have chosen to use all varibles for survival analysis, this is NOT advisable! See options for survival in with the help argument.\n")
         } else if (survival %in% c("DA", "DE")) {
-            data1.surv <- data1.surv[rownames(data1.surv) %in% res.DE1.names,]
+            data1.surv <- data1.surv[rownames(data1.surv) %in% res.DEA1.names,]
         } else {
             if(!is.null(lasso)) {
                 if (survival == "Consensus" ) {
@@ -1022,7 +1022,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
         }
 
         if (WGCNA %in% c("DA", "DE")) {
-            data1.WGCNA <- data1.WGCNA[,colnames(data1.WGCNA) %in% res.DE1.names]
+            data1.WGCNA <- data1.WGCNA[,colnames(data1.WGCNA) %in% res.DEA1.names]
         }
 
         dir.create("WGCNAPlots")
@@ -1034,8 +1034,8 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
         setwd("..")
 
         if (WGCNA %in% c("DA", "DE")) {
-            logFCs <- DE1.out
-            logFCs$gene <- DE1.out$name
+            logFCs <- DEA1.out
+            logFCs$gene <- DEA1.out$name
             WGCNAres <- lapply(WGCNAres, function(x) merge(x, logFCs, by = "gene"))
             WGCNAres <- lapply(WGCNAres, function(x) x[with(x, order(comparison, Module)),])
         }
@@ -1074,17 +1074,17 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
         setwd("InteractionResults/")
         dir.create("InteractionPlots")
 
-        DE1.out$name <- gsub("_", "-", DE1.out$name)
+        DEA1.out$name <- gsub("_", "-", DEA1.out$name)
 
-        PPIs <- GetDeaPPInt(DB, DE1.out)
+        PPIs <- GetDeaPPInt(DB, DEA1.out)
 
 
         if (!is.null(GmiRI)) {
 
-            DE2.out$name <- gsub("_", "-", DE2.out$name)
+            DEA2.out$name <- gsub("_", "-", DEA2.out$name)
 
             cat("\nSearching for miRNA-gene interaction - this may take up to 10 min!\n")
-            GmiRIs <- GetGeneMiRNAInt(GmiRI[[2]], DE2.out, DE1.out)
+            GmiRIs <- GetGeneMiRNAInt(GmiRI[[2]], DEA2.out, DEA1.out)
 
             PPGmiRIs <- MatchPPGmiRInt(GmiRIs, PPIs)
             PPGmiRTrim <- TrimWriteInt(PPGmiRIs)
@@ -1115,10 +1115,10 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
         setwd("InteractionResults/")
         dir.create("InteractionPlots")
 
-        DE1.out$name <- gsub("_", "-", DE1.out$name)
+        DEA1.out$name <- gsub("_", "-", DEA1.out$name)
 
         cat("\nSearching for miRNA-gene interaction - this may take up to 10 min!\n")
-        GmiRIs <- GetGeneMiRNAInt(GmiRI[[2]], DE1.out)
+        GmiRIs <- GetGeneMiRNAInt(GmiRI[[2]], DEA1.out)
         GmiRTrim <- TrimWriteInt(GmiRIs)
 
         setwd("InteractionPlots/")

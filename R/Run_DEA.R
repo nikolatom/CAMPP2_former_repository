@@ -14,13 +14,13 @@
 #' @import limma
 #' @import sva
 #' @seealso
-#' @return
+#' @return differential expression/abundance data
 #' @examples \dontrun{
 #' ...
 #' }
 
 
-RunDA <- function(data, metadata, technology, databatch, batch, covarD, group, logFC, FDR, prefix) {
+RunDEA <- function(data, metadata, technology, databatch, batch, covarD, group, logFC, FDR, prefix) {
 
     # Make design matrix
     if (databatch == "FALSE") {
@@ -61,14 +61,14 @@ RunDA <- function(data, metadata, technology, databatch, batch, covarD, group, l
 
 
     # Apply differential abundance analysis to all comparisons
-    res.DE <- DAFeatureApply(contrast.matrix, data, design, logFC, FDR, NULL, FALSE)
+    res.DEA <- DAFeatureApply(contrast.matrix, data, design, logFC, FDR, NULL, FALSE)
 
 
     # Write results out as excel file
-    if (!is.null(res.DE)) {
-        DE.out <- TextOutput(res.DE, paste0(prefix, out.name))
-        rownames(DE.out) <- NULL
-        res.DE.names <- unique(DE.out$name)
+    if (!is.null(res.DEA)) {
+        DEA.out <- TextOutput(res.DEA, paste0(prefix, out.name))
+        rownames(DEA.out) <- NULL
+        res.DEA.names <- unique(DEA.out$name)
     } else {
         cat("No signficant DE/DA hits found. Check output file from differential expression analysis. Check your cut-off for differential expression analysis, it may be that these are too stringent.")
     }
@@ -79,5 +79,5 @@ RunDA <- function(data, metadata, technology, databatch, batch, covarD, group, l
         colnames(data) <- cnames
     }
 
-    return(list("DE.out"=DE.out,"res.DE"=res.DE,"res.DE.names"=res.DE.names))
+    return(list("DEA.out"=DEA.out,"res.DEA"=res.DEA,"res.DEA.names"=res.DEA.names))
 }
