@@ -2,12 +2,14 @@
 #' @description Running differential gene expression analysis on a matrix data sample using limma
 #' @param data Gene count matrix (gene IDs as row names and sample IDs as columns). It's recommended to import gene counts using function "import_counts".
 #' @param metadata Samples' metadata table should be imported using function "import_metadata". Metadata must include exactly the same samples as gene counts (data1) and samples must be sorted similarly.
-#' @param databatch Defines whether experimental batches are present
-#' @param batch List of batches in the sample
+#' @param technology a string vector of length 1 (or two in case of 2 datasets) defining technology used for generating the data. Allowed types are: 'array', 'seq', 'ms' or 'other'.
+#' @param databatch TRUE/FALSE value indicating activation/deactivation of batch correction. Boolean value is automatically set based on the definition of the "batches" parameter.
+#' @param batch a factor derived from metadata column including information about a batch for each sample from data
 #' @param covarD Covariates to include in the analysis
-#' @param group A vector of integers specifying the group
+#' @param group a factor derived from metadata column selected as a sample group (e.g. diagnosis)
 #' @param logFC The logarithmic Fold Change (the ratio of changes in expression data)
 #' @param FDR The false discovery rate calculated as the corrected p-value
+#' @param prefix a character defining the result folder name and prefix of output file names.
 #' @export
 #' @import limma
 #' @import sva
