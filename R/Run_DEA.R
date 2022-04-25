@@ -61,7 +61,7 @@ RunDEA <- function(data, metadata, technology, databatch, batch, covarD, group, 
 
 
     # Apply differential abundance analysis to all comparisons
-    res.DEA <- DAFeatureApply(contrast.matrix, data, design, logFC, FDR, NULL, FALSE)
+    res.DEA <- DEAFeatureApply(contrast.matrix, data, design, logFC, FDR, NULL, FALSE)
 
 
     # Write results out as excel file

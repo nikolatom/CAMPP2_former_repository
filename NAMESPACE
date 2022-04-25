@@ -2,8 +2,8 @@
 
 export(CorrAnalysis)
 export(CorrelationPlots)
-export(DAFeature)
-export(DAFeatureApply)
+export(DEAFeature)
+export(DEAFeatureApply)
 export(DFtoList)
 export(DownloadPPInt)
 export(EstimateKmeans)
