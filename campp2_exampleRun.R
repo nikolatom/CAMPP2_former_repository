@@ -5,7 +5,7 @@ library(pROC)
 library(VennDiagram)
 
 getwd()
-setwd("/Users/nikto/opt/campp_bioconducor/CAMPP2/data/BRCA")
+setwd("../data_nik")
 
 
 
@@ -50,6 +50,6 @@ dataset3<-cbind(dataset1,dataset2)
 metadata3<-rbind(metadata1,metadata2)
 
 
-runCampp2_2(data1=dataset1, data2=dataset2, metadata1=metadata1,metadata2=metadata2, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"))
+runCampp2(prefix="test_normalization", data1=dataset1, data2=dataset2, metadata1=metadata1,metadata2=metadata2, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"))
 
 
