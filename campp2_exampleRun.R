@@ -52,4 +52,3 @@ metadata3<-rbind(metadata1,metadata2)
 
 runCampp2(prefix="test_normalization", data1=dataset1, data2=dataset2, metadata1=metadata1,metadata2=metadata2, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"))
 
-
