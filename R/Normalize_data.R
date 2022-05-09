@@ -3,9 +3,9 @@
 #' @param data a dataframe of expression/abundance counts
 #' @param group a factor specifying sample group from metadata
 #' @param data.original a original data (before removal of zeros)
-#' @param transform a string vector of length 1 defining transformation type for each dataset ("log2", "logit", "log10", NULL for no transformation). If technology is "seq", this option is ignored an Voom transform is applied instead.
-#' @param standardize a string vector of length 1 defining standardization method  ("mean" or "median"). If technology is "seq" or "array", this option is ignored, instead, seq data is normalized by "TMM"; array data is normalized by "quantile" standardization
-#' @param technology a string vector of length 1 (or two in case of 2 datasets) defining technology used for generating the data. Allowed types are: 'array', 'seq', 'ms' or 'other'.
+#' @param transform a string vector of length 1 defining transformation type for each dataset ("log2", "logit", "log10"). If technology is "seq", this option is ignored an Voom transform is applied instead.
+#' @param standardize a string vector of length 1 defining standardization method ("mean" or "median"). If technology is "seq" or "array", this option is ignored, instead, seq data is normalized by "TMM"; array data is normalized by "quantile" standardization.
+#' @param technology a string vector of length 1 defining technology used for generating the data. Allowed types are: 'array', 'seq', 'ms' or 'other'.
 #' @export
 #' @import fitdistrplus
 #' @seealso
@@ -15,21 +15,21 @@
 #' }
 #'
 
-NormalizeData <- function(data,data.original,group,transform,standardize,technology) {
- 
+NormalizeData <- function(data,data.original,group,transform,standardize,technology){
+
     # section in which we define correctness of input parameters
     if (!(technology) %in% c("seq", "array", "ms", "other")) {
         stop("Defined technology is not supported.")
     }
 
-    if ((technology != "seq") {
-        if (!(transform) %in% c("log2", "logit", "log10", NULL)) {
+    if (technology != "seq") {
+        if (!(transform) %in% c("log2", "logit", "log10")) {
             stop("Defined transformation is not supported")
-	}
+    	}
     }
 
     if (!(technology) %in% c("seq", "array")){
-        if ( !(standardize) %in% c("mean", "median", NULL)) {
+        if ( !(standardize) %in% c("mean", "median")) {
             stop("Defined normalization is not supported.")
         }
     }
@@ -49,7 +49,7 @@ NormalizeData <- function(data,data.original,group,transform,standardize,technol
         data <- calcNormFactors(data, method = "TMM")
         data <- voom(data, design, plot=TRUE)
 
-	return(data)	
+	return(data)
     # this else is not strictly necessary but good for clarity
     } else {
 
@@ -67,7 +67,7 @@ NormalizeData <- function(data,data.original,group,transform,standardize,technol
             cat("\n Transformation will NOT be performed.\n")
         }
     }
-        
+
     if (technology == "array") {
         cat("\n Data will be normalized on the quantiles (default for microarray technology). Option standardize will be ignored.\n")
         data <- normalizeBetweenArrays(data, method="quantile")
