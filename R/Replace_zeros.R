@@ -5,7 +5,7 @@
 #' @export
 #' @import impute
 #' @seealso
-#' @return Data frame with replaced zeros
+#' @return a data frame with replaced zeros
 #' @examples \dontrun{
 #' ...
 #' }
@@ -13,7 +13,7 @@
 
 ReplaceZero <- function(data, group) {
 
-    smallestGr <- min(as.numeric(table(group))) #size of the smallest group
+    smallestGr <- min(as.numeric(table(group))) # a size of the smallest group of samples
     greaterthanBG <- apply(data, 1, function(x) sum(x > 0)) #rows with sum>0
     lessthanBG  <- which(as.numeric(greaterthanBG) < smallestGr)
 
