@@ -35,7 +35,7 @@
 #' }
 
 
-runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology, groups, batches=NULL, data.check=TRUE, standardize=FALSE, transform=FALSE, plot.mds=FALSE, plot.heatmap=FALSE, kmeans=FALSE, signif=NULL, colors=NULL, prefix="Results", correlation=FALSE, lasso=FALSE, WGCNA=FALSE, cutoff.WGCNA=NULL, survival=FALSE, covariates=NULL, stratify=NULL, surv.plot=50, PPint=FALSE, gene.miR.int=FALSE){
+runCampp2_2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology, groups, batches=NULL, data.check=TRUE, standardize=FALSE, transform=FALSE, plot.mds=FALSE, plot.heatmap=FALSE, kmeans=FALSE, signif=NULL, colors=NULL, prefix="Results", correlation=FALSE, lasso=FALSE, WGCNA=FALSE, cutoff.WGCNA=NULL, survival=FALSE, covariates=NULL, stratify=NULL, surv.plot=50, PPint=FALSE, gene.miR.int=FALSE){
 
   ###parse input arguments and assign updated values
   c(data1,data2,metadata1,metadata2,technology,groups,
@@ -60,17 +60,22 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
   dir.create(prefix)
   setwd(paste0(prefix, "/"))
-  
-  
+
+
   print("RUNNING MISSING VALUE IMPUTATIONS")
-  
+
+  print("Running missing values imputation on data1")
   data1<-ReplaceNAs(data1)
+  print("Missing values imputation on data1 has finished")
+
+  print("Running missing values imputation on data1")
   data2<-ReplaceNAs(data2)
-  
+  print("Missing values imputation on data2 has finished")
+
   print("MISSING VALUE IMPUTATIONS FINISHED")
-  
-  
-  
+
+
+
   print("PROCESSING TRANSFORMATION")
   hasZeroD <- unique(as.vector(data1 == 0))
   hasNegD <- unique(as.vector(data1 < 0))

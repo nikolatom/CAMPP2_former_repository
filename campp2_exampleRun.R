@@ -5,7 +5,7 @@ library(pROC)
 library(VennDiagram)
 
 getwd()
-setwd("../data_nik")
+setwd("../data/BRCA")
 
 
 
