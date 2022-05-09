@@ -107,9 +107,9 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
   print("CAMPP2 automatically performs data normalization and transformation depending on technology from which data are derived.")
   print("PROCESSING NORMALIZATION AND TRANSFORMATION")
   print("Normalizing and tranforming data1")
-  
-  data1 %<-% applyNormalization(data1, data1.original, group1, transform[1], standardize[1], technology[1])
-  
+
+  data1 %<-% NormalizeData(data1, data1.original, group1, transform[1], standardize[1], technology[1])
+
   if(!is.null(data2)) {
     print("Normalizing and tranforming data2")
     if (length(technology) != 2 || length(technology) == 1) {
@@ -118,25 +118,25 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
     if (length(transform) != 2 || length(transform) == 1) {
       stop("\nTwo datasets are defined in the analysis, BUT argument transform has defined only one. Transform must be defined as string vector of length two.\n")
     }
-    
+
     data2 <- NormalizeData(data2, data2.original, group2, transform[2], standardize[2], technology[2])
-    
+
   }
-  
+
   print("PROCESSING NORMALIZATION AND TRANSFORMATION FINISHED")
-  
+
 
 
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   ### BATCH CORRECTION ###
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  
+
   print("RUNNING BATCH CORRECTION")
 
 
   if (databatch1==TRUE){
     print("Run batch correction on the 1st dataset")
-    data1.batch %<-% BatchCorrect(data1,batch1,databatch1,group1,technology[1])
+    data1.batch %<-% BatchCorrect(data1,batch1,group1,technology[1])
     print("Batch correction of the first dataset finished")
   }else{
     print("Batch correction wasn't selected")
@@ -144,7 +144,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
   if (databatch2==TRUE){
     print("Run batch correction on the 2nd dataset")
-    data2.batch %<-% BatchCorrect(data2,batch2,databatch2,group2,technology[2])
+    data2.batch %<-% BatchCorrect(data2,batch2,group2,technology[2])
     print("Batch correction of the second dataset finished")
   }else{
     print("Batch correction wasn't selected")

@@ -7,20 +7,20 @@
 NormalizeData(data, data.original, group, transform, standardize, technology)
 }
 \arguments{
-\item{data}{a dataframe with expression/abundance counts (genes as rows; samples as columns), N.B only a subset of variables should be input, not intended for the full expression matrix!}
+\item{data}{a dataframe of expression/abundance counts}
 
-\item{data.original}{an original data1 (data.frame) including zero values}
+\item{data.original}{a original data (before removal of zeros)}
 
-\item{group}{a dataframe with groups metadata for each sample (given from metadata table)}
+\item{group}{a factor specifying sample group from metadata}
 
-\item{transform}{a string vector of length 1 (or two in case of 2 datasets) defining transformation type for each dataset ("log2", "logit", "log10"). voom transform is automatically applied on "seq" data.}
+\item{transform}{a string vector of length 1 defining transformation type for each dataset ("log2", "logit", "log10"). If technology is "seq", this option is ignored an Voom transform is applied instead.}
 
-\item{standardize}{a string vector of length 1 (or two in case of 2 datasets) defining standardization method  ("mean" or "median"); By default, data from "seq" technology are normalized by "TMM"; "array" technology is standardized using "quantile"}
+\item{standardize}{a string vector of length 1 defining standardization method ("mean" or "median"). If technology is "seq" or "array", this option is ignored, instead, seq data is normalized by "TMM"; array data is normalized by "quantile" standardization.}
 
-\item{technology}{a string vector of length 1 (or two in case of 2 datasets) defining technology used for generating the data. Allowed types are: 'array', 'seq', 'ms' or 'other'.}
+\item{technology}{a string vector of length 1 defining technology used for generating the data. Allowed types are: 'array', 'seq', 'ms' or 'other'.}
 }
 \value{
-Elist of normalized, filtered and transformed (gene) counts data
+Elist (seq technology) or array (array, ms, other technologies) of normalized, filtered and transformed (gene) counts data
 }
 \description{
 This function normalizes and transforms feature counts depending on data types and selected normalization/standardization methods.
