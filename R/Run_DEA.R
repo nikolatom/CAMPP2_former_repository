@@ -2,7 +2,7 @@
 #' @descriptionA A function for running differential expression/abundance analysis on a matrix data sample using limma
 #' @param data A raw gene count matrix from seq, array, ms or other technology (with gene IDs as row names and sample IDs as columns). It's recommended to import gene counts using function "import_counts".
 #' @param metadata Samples' metadata table is recommended to be imported using function "import_metadata". Metadata must include exactly the same samples sorted in the same order as in a gene counts matrix (data).
-#' @param technology a string vector of length 1 (or two in case of 2 data sets) defining technology used for generating the data. Allowed types are: 'array', 'seq', 'ms' or 'other'.
+#' @param technology a string vector of length 1 defining technology used for generating the data. Allowed types are: 'array', 'seq', 'ms' or 'other'.
 #' @param databatch TRUE/FALSE value indicating activation/deactivation of batch correction. Boolean value is automatically set based on the definition of the "batches" parameter.
 #' @param batch The batch covariate for each data sample (only one batch per sample allowed), derived from metadata column.
 #' @param covarDEA Covariates to include in the analysis If multiple of these, they should be specified as a character vector.
@@ -78,12 +78,6 @@ RunDEA <- function(data, metadata, technology, databatch, batch, covarDEA, group
         data <- data.frame(data$E)
         colnames(data) <- cnames
     }
-
-    cat(typeof(batch))
-    cat(typeof(covarDEA))
-    cat(typeof(group))
-    cat(typeof(logFC))
-    cat(typeof(FDR))
 
     return(list("DEA.out"=DEA.out,"res.DEA"=res.DEA,"res.DEA.names"=res.DEA.names))
 }

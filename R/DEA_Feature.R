@@ -1,6 +1,6 @@
 #' @title DEA_feature
 #' @description A function for returning DEA features for DEAFeatureApply function.
-#' @param contrast an array containing contrasts between group.regs of interest.
+#' @param contrast an array containing contrasts between groups of interest.
 #' @param data A raw gene count matrix from seq, array, ms or other technology (with gene IDs as row names and sample IDs as columns). It's recommended to import gene counts using function "import_counts".
 #' @param design a design matrix with all comparisons.
 #' @param coLFC a number specifying the cutoff for LogFC.
