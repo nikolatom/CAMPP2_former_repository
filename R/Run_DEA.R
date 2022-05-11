@@ -4,7 +4,7 @@
 #' @param metadata Samples' metadata table is recommended to be imported using function "import_metadata". Metadata must include exactly the same samples sorted in the same order as in a gene counts matrix (data).
 #' @param technology a string vector of length 1 defining technology used for generating the data. Allowed types are: 'array', 'seq', 'ms' or 'other'.
 #' @param databatch TRUE/FALSE value indicating activation/deactivation of batch correction. Boolean value is automatically set based on the definition of the "batches" parameter.
-#' @param batch The batch covariate for each data sample (only one batch per sample allowed), derived from metadata column.
+#' @param batch The batch covariate for each data sample, derived from metadata column.
 #' @param covarDEA Covariates to include in the analysis If multiple of these, they should be specified as a character vector.
 #' @param group An array of specific sample groups derived from metadata column (e.g. diagnosis)
 #' @param logFC The logarithmic Fold Change for each data sample (ratio of changes in expression data)
