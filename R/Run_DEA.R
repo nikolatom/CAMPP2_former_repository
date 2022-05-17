@@ -1,5 +1,5 @@
 #' @title Run differential expression/abundance analysis
-#' @descriptionA A function for running differential expression/abundance analysis on a matrix data sample using limma
+#' @descriptionA A function for running differential expression/abundance analysis on a matrix data sample using limma.
 #' @param data A raw gene count matrix from seq, array, ms or other technology (with gene IDs as row names and sample IDs as columns). It's recommended to import gene counts using function "import_counts".
 #' @param metadata Samples' metadata table is recommended to be imported using function "import_metadata". Metadata must include exactly the same samples sorted in the same order as in a gene counts matrix (data).
 #' @param technology a string vector of length 1 defining technology used for generating the data. Allowed types are: 'array', 'seq', 'ms' or 'other'.
