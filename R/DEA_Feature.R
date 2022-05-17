@@ -22,7 +22,7 @@ DEAFeature <- function(contrast, data, design, coLFC, coFDR, block=NULL) {
         fit3 <- eBayes(contrasts.fit(lmFit(data, design), contrast))
     }
     else {
-        corfit <- dup.reglicateCorrelation(data, design, block=block)
+        corfit <- duplicateCorrelation(data, design, block=block)
         fit3 <- eBayes(contrasts.fit(lmFit(data, design, block = block, correlation=corfit$consensus), contrast))
     }
     DEA.table <- topTable(fit3, coef=1, adjust='fdr', number=nrow(data))
