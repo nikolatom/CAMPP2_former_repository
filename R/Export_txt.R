@@ -12,7 +12,7 @@
 
 TextOutput <- function(res.DEA, filename) {
     if (is.null(res.DEA)) {
-        cat("\nDifferential Expression/Abundance Analysis yielded no results. Is your logFC or FDR cut-offs too strict?\n")
+        cat("\nDEA yielded no results. Aren't your logFC or FDR cut-offs too strict?\n")
     } else {
         res.DEA <- do.call(rbind, unlist(res.DE, recursive=FALSE))
         my.names <- gsub("1[.](.*)|2[.](.*)", "", rownames(res.DEA))
