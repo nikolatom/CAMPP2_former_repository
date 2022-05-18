@@ -3,7 +3,6 @@
 #' @param data A raw gene count matrix from seq, array, ms or other technology (with gene IDs as row names and sample IDs as columns). It's recommended to import gene counts using function "import_counts".
 #' @param metadata Samples' metadata table is recommended to be imported using function "import_metadata". Metadata must include exactly the same samples sorted in the same order as in a gene counts matrix (data).
 #' @param technology a string vector of length 1 defining technology used for generating the data. Allowed types are: 'array', 'seq', 'ms' or 'other'.
-#' @param databatch TRUE/FALSE value indicating activation/deactivation of batch correction. Boolean value is automatically set based on the definition of the "batches" parameter.
 #' @param batch The batch covariate for each data sample, derived from metadata column.
 #' @param covarDEA Covariates to include in the analysis If multiple of these, they should be specified as a character vector.
 #' @param group An array of specific sample groups derived from metadata column (e.g. diagnosis)
@@ -20,7 +19,7 @@
 #' }
 
 
-RunDEA <- function(data, metadata, technology, databatch, batch, covarDEA, group, logFC, FDR, prefix) {
+RunDEA <- function(data, metadata, technology, batch, covarDEA, group, logFC, FDR, prefix) {
 
     if (!(technology) %in% c("seq", "array", "ms", "other")) {
         stop("Defined technology is not supported.")
@@ -28,7 +27,7 @@ RunDEA <- function(data, metadata, technology, databatch, batch, covarDEA, group
 
     # Make design matrix
     if(is.null(covarDEA)) {
-        if (databatch == "FALSE") {
+        if (is.null(batch)) {
             design <- model.matrix(~0+group)
             out.name <- "_DE"
         } else if (length(batch) != ncol(data)) {
@@ -38,7 +37,7 @@ RunDEA <- function(data, metadata, technology, databatch, batch, covarDEA, group
             out.name <- "_databatch_DE"
         }
     } else {
-        if (databatch == "FALSE") {
+        if (is.null(batch)) {
             design.str <- "model.matrix(~0+group"
             out.name <- "_DE"
         }
