@@ -28,15 +28,15 @@ RunDEA <- function(data, metadata, technology, databatch, batch, covarDEA, group
 
     # Make design matrix
     if(is.null(covarDEA)) {
-    if (databatch == "FALSE") {
-        design <- model.matrix(~0+group)
-        out.name <- "_DE"
-    } else if (length(batch) != ncol(data)) {
-        stop("Batch correction selected, but batches column does not match the samples!")
-    } else {
-        design <- model.matrix(~0+group+batch)
-        out.name <- "_databatch_DE"
-    }
+        if (databatch == "FALSE") {
+            design <- model.matrix(~0+group)
+            out.name <- "_DE"
+        } else if (length(batch) != ncol(data)) {
+            stop("Batch correction selected, but batches column does not match the samples!")
+        } else {
+            design <- model.matrix(~0+group+batch)
+            out.name <- "_databatch_DE"
+        }
     } else {
         if (databatch == "FALSE") {
             design.str <- "model.matrix(~0+group"
