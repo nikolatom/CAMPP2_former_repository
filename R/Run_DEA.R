@@ -27,24 +27,20 @@ RunDEA <- function(data, metadata, technology, databatch, batch, covarDEA, group
     }
 
     # Make design matrix
+    if(is.null(covarDEA)) {
     if (databatch == "FALSE") {
-        design.str <- "model.matrix(~0+group"
+        design <- model.matrix(~0+group)
         out.name <- "_DE"
     } else if (length(batch) != ncol(data)) {
         stop("Batch correction selected, but batches column does not match the samples!")
     } else {
-        design.str <- "model.matrix(~0+group+batch"
+        design <- model.matrix(~0+group+batch)
         out.name <- "_databatch_DE"
     }
-
-
-    if(is.null(covarDEA)) {
-        design <- eval(parse(text=paste0(design.str, ")")))
-
     } else {
-        if (length(covarDEA) > 0) {
-            df <- data.frame(metadata[,colnames(metadata) %in% covarDEA])
-            colnames(df) <- covarDEA
+        if (databatch == "FALSE") {
+            design.str <- "model.matrix(~0+group"
+            out.name <- "_DE"
         }
 
         s <- lapply(split(as.matrix(df), col(df)), factor)
@@ -52,7 +48,6 @@ RunDEA <- function(data, metadata, technology, databatch, batch, covarDEA, group
         my.names <- paste0(my.names, collapse = "+")
         design <- eval(parse(text=paste0(design.str,"+",my.names,")")))
     }
-
 
 
     # Making group contrasts
