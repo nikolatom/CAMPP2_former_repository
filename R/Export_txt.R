@@ -1,7 +1,7 @@
 #' @title Text Output Function
-#' @description Function to export results from differential expression analysis into a .txt file
+#' @description Function to export results from differential expression analysis into a .txt file.
 #' @param res.DE A list of data frames from DA_feature_apply containing gene counts, p-values, FDRs and logFC.
-#' @param filename The name of the output file
+#' @param filename The name of the output file.
 #' @export
 #' @import
 #' @seealso
