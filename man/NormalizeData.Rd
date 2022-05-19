@@ -4,12 +4,10 @@
 \alias{NormalizeData}
 \title{Normalization and Transformation}
 \usage{
-NormalizeData(data, data.original, group, transform, standardize, technology)
+NormalizeData(data, group, transform, standardize, technology)
 }
 \arguments{
 \item{data}{a dataframe of expression/abundance counts}
-
-\item{data.original}{a original data (before removal of zeros)}
 
 \item{group}{a factor specifying sample group from metadata}
 
