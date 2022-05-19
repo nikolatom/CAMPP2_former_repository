@@ -387,6 +387,117 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
   #                                                                                       ## LASSO Regression ###
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+  print("PROCESSING LASSO")
+
+  #Lasso
+
+  if (!isFALSE(lasso)) {
+      if(lasso <= 0.0 || lasso > 1.0 ) {
+          stop("\n- The input for argument lasso denotes hyperparameter alpha. This value must be set to 0.0 < x < 1.0 for Elastic Net (0.5 is default) or to 1.0 for LASSO regression. Re-run the pipeline again with correct lasso input or remove lasso all together.\n")
+      }
+
+
+      # Length of each group
+      len <- as.numeric(table(group1))
+      test.train <- unique(len >= 19)
+      too.few <- unique(len < 9)
+
+
+      # Stop Lasso if too few samples
+      if (TRUE %in% too.few) {
+          stop("\n- LASSO cannot be performed, too few samples per group, minimum is 10!\n")
+      }
+
+
+      dir.create("LASSOResults")
+      setwd("LASSOResults/")
+
+      group1.LASSO <- group1
+      seeds <- sample(1:1000, 10)
+      LASSO.res <- list()
+
+      cat("Cross-validation for grouped multinomial LASSO is running with 10 random seeds, this will take some minutes...")
+
+      if(FALSE %in% test.train) {
+          if (databatch1 == TRUE) {
+              if (length(levels(as.factor(group1.LASSO))) > 2) {
+                  for (idx in 1:length(seeds)) {
+                      LR <- LASSOFeature(seeds[[idx]], data1.batch, group1.LASSO, lasso, FALSE ,TRUE)
+                      LASSO.res[[idx]] <-  LR
+                  }
+              } else {
+                  for (idx in 1:length(seeds)) {
+                      LR <- LASSOFeature(seeds[[idx]], data1.batch, group1.LASSO, lasso, FALSE, FALSE)
+                      LASSO.res[[idx]] <-  LR
+                  }
+              }
+          } else {
+              if (length(levels(as.factor(group1.LASSO))) > 2) {
+                  for (idx in 1:length(seeds)) {
+                      LR <- LASSOFeature(seeds[[idx]], data1, group1.LASSO, lasso, FALSE ,TRUE)
+                      LASSO.res[[idx]] <-  LR
+                  }
+              } else {
+                  for (idx in 1:length(seeds)) {
+                      LR <- LASSOFeature(seeds[[idx]], data1, group1.LASSO, lasso, FALSE ,FALSE)
+                      LASSO.res[[idx]] <-  LR
+                  }
+              }
+          }
+      } else {
+          if (databatch1 == TRUE) {
+              if (length(levels(as.factor(group1.LASSO))) > 2) {
+                  for (idx in 1:length(seeds)) {
+                      LR <- LASSOFeature(seeds[[idx]], data1.batch, group1.LASSO, lasso, TRUE ,TRUE)
+                      LASSO.res[[idx]] <-  LR
+                  }
+              } else {
+                  for (idx in 1:length(seeds)) {
+                      LR <- LASSOFeature(seeds[[idx]], data1.batch, group1.LASSO, lasso, TRUE, FALSE)
+                      LASSO.res[[idx]] <-  LR
+                  }
+              }
+          } else {
+              if (length(levels(as.factor(group1.LASSO))) > 2) {
+                  for (idx in 1:length(seeds)) {
+                      LR <- LASSOFeature(seeds[[idx]], data1, group1.LASSO, lasso, TRUE ,TRUE)
+                      LASSO.res[[idx]] <-  LR
+                  }
+              } else {
+                  for (idx in 1:length(seeds)) {
+                      LR <- LASSOFeature(seeds[[idx]], data1, group1.LASSO, lasso, TRUE ,FALSE)
+                      LASSO.res[[idx]] <-  LR
+                  }
+              }
+          }
+      }
+
+
+      # Extract results of 10 runs - Write out and plot results
+      VarsSelect <- Reduce(intersect, lapply(LASSO.res, '[[', 1))
+
+      if (length(VarsSelect) < 2) {
+          stop("\n- There is no overlap in 10 elastic net runs. If you ran LASSO (lasso was et to 1.0) you can try and relax alpha and perform elastic net instead (0.0 < lasso < 1.0). Otherwise you data may have to high of a noise ratio to sample size, LASSO should not be performed.\n")
+      }
+
+
+      VarsSelect <- data.frame(VarsSelect[-1])
+      colnames(VarsSelect) <- c("LASSO.Var.Select")
+
+
+      # Write out LASSO/EN results
+      write.table(VarsSelect, paste0(prefix,"_LASSO.txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+
+
+      # Consensus DEA and LASSO
+      consensus <- DE.out[DE.out$name %in% VarsSelect$LASSO.Var.Select,]
+
+      if (nrow(consensus) > 0) {
+          write.table(consensus, paste0(prefix,"_DEA_LASSO_Consensus.txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+          pdf(paste0(prefix, "_overlap_DEAA_LASSO_EN.pdf"), height=8, width=12)
+          if (length(levels(group1)) == 2) {
+              venn <- venn.diagram(list(A=unique(as.character(DE.out[DE.out$dir =="up",]$name)), B=unique(as.character(DE.out[DE.out$dir =="down",]$name)), C=as.character(VarsSelect$LASSO.Var.Select)), category.names = c("D(EA) Analysis Up", "D(EA) Analysis Down", "LASSO/EN Regression"), filename=NULL, lwd = 0.7, cat.pos=0, sub.cex = 2, cat.cex= 1.5, cex=1.5, fill=viridis(3, begin = 0.2, end = 0.8, option="cividis"))
+
       } else {
         venn <- venn.diagram(list(A=unique(as.character(DE.out$name)), B=as.character(VarsSelect$LASSO.Var.Select)), category.names = c("D(EA) Analysis All", "LASSO/EN Regression"), filename=NULL, lwd = 0.7, cat.pos=0, sub.cex = 2, cat.cex= 1.5, cex=1.5, fill=viridis(2, begin = 0.2, end = 0.8, option="cividis"))
 
