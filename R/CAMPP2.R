@@ -76,7 +76,6 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
     c(data2,data2.original) %<-% ReplaceZeros(data2,group2)
   }
 
-  print(data1.original)
   print("DETECTION OF NEGATIVE AND ZERO VALUES FINISHED")
 
 
