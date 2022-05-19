@@ -5,7 +5,7 @@
 #' @export
 #' @import
 #' @seealso
-#' @return .txt table
+#' @return DEA results as .txt table
 #' @examples \dontrun{
 #' ...
 #' }
