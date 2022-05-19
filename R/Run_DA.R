@@ -63,7 +63,7 @@ RunDA <- function(data, metadata, databatch, batch, covarD, group, logFC, FDR) {
 
   # Write results out as excel file
   if (!is.null(res.DE)) {
-      DE.out <- TextOutput(res.DE, paste0(prefix, out.name))
+      DE.out <- ExportDEA(res.DE, paste0(prefix, out.name))
       rownames(DE.out) <- NULL
       res.DE.names <- unique(DE.out$name)
       rm(res.DE)
