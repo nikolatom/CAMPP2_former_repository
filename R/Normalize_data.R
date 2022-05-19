@@ -33,7 +33,14 @@ NormalizeData <- function(data,group,transform,standardize,technology){
         }
     }
 
-
+    #check for negative values
+    hasNeg <- unique(as.vector(data < 0))
+    hasZero <- unique(as.vector(data == 0))
+    if(transform %in% c("log2", "log10", "logit")) {
+        if (TRUE %in% hasNeg || TRUE %in% hasZero) {
+            stop("\n- Data contains zero/negative values and cannot be log transformed. Re-run command WITHOUT argument transform or alternatively if using two datasets, specify 'none' as the transform input for the dataset with negative values, e.g. c('none', 'log2') or c('log2', 'none').\n")
+        }
+    }
 
     # for RNAseq, perform Voom transform and normalize by TMM
     if (technology == "seq") {
