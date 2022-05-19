@@ -10,18 +10,15 @@
 #' ...
 #' }
 
-TextOutput <- function(res.DEA, filename) {
+ExportDEA <- function(res.DEA, filename) {
     if (is.null(res.DEA)) {
         cat("\nDEA yielded no results. Aren't your logFC or FDR cut-offs too strict?\n")
     } else {
-        res.DEA <- do.call(rbind, unlist(res.DE, recursive=FALSE))
-        my.names <- gsub("1[.](.*)|2[.](.*)", "", rownames(res.DEA))
-        my.names <- gsub("group1|group2", "", my.names)
-        res.DEA$comparison <- my.names
-        file <- try(write.table(res.DEA, paste0(filename,".txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE), silent = TRUE)
-        if (class(file) == "try-error") {
-            stop("\n- DEA yielded no results. Aren't your logFC or FDR cut-offs too strict?")
-        }
+        res.DEA <- do.call(rbind, unlist(res.DEA, recursive=FALSE))
+        group.names <- gsub("1[.](.*)|2[.](.*)", "", rownames(res.DEA))
+        group.names <- gsub("group1|group2", "", group.names)
+        res.DEA$comparison <- group.names
+        file <- write.table(res.DEA, paste0(filename,".txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE), silent = TRUE
     }
     return(res.DEA)
 }
