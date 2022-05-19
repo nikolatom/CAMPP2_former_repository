@@ -62,42 +62,42 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
   setwd(paste0(prefix, "/"))
 
 
-  print("PROCESSING DETECTION OF ZEROS AND NEGATIVE VALUES FINISHED")
+  print("PROCESSING DETECTION OF ZEROS AND NEGATIVE VALUES")
+  hasZeroD <- unique(as.vector(data1 == 0))
+  hasNegD <- unique(as.vector(data1 < 0))
 
-
-  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  #                                                                         ## Normalization, Filtering and Transformation ###
-  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  print("CAMPP2 automatically performs data normalization and transformation depending on technology from which data are derived.")
-  print("PROCESSING NORMALIZATION AND TRANSFORMATION")
-  print("Normalizing and tranforming data1")
-
-  if(!is.null(data1.original) && technology[1] == "seq"){    ###Only sequencing data could be normalized with 0-values
-      print("Original data1 including 0-values are being normalized")
-      data1 <- NormalizeData(data1.original, group1, transform[1], standardize[1], technology[1])
-  } else {
-      print("data1 without 0-values are being normalized")
-      data1 <- NormalizeData(data1, group1, transform[1], standardize[1], technology[1])
-  }
-
-  if(!is.null(data2) || !is.null(data2.original)) {
-      print("Normalizing and tranforming data2")
-      if (length(technology) != 2 || length(technology) == 1) {
-          stop("\nTwo datasets are defined in the analysis, BUT argument technology has defined only one. Technology must be defined as string vector of length two.\n")
-      } else if (length(transform) != 2 || length(transform) == 1) {
-          stop("\nTwo datasets are defined in the analysis, BUT argument transform has defined only one. Transform must be defined as string vector of length two.\n")
-      }
-
-      if(!is.null(data2.original) && technology[2] == "seq"){       ###Only sequencing data could be normalized with 0-values
-          print("Original data2 including 0-values are being normalized")
-          data2 <- NormalizeData(data2.original, group2, transform[2], standardize[2], technology[2])
+  data1.original=NULL
+  if(transform[1] %in% c("log2", "log10", "logit")) {
+      if (TRUE %in% hasNegD) {
+          stop("\n- Data contains negative values and cannot be log transformed. Re-run command WITHOUT argument transform or alternatively if using two datasets, specify 'none' as the transform input for the dataset with negative values, e.g. c('none', 'log2') or c('log2', 'none').\n")
       } else {
-          print("data2 without 0-values are being normalized")
-          data2 <- NormalizeData(data2, group2, transform[2], standardize[2], technology[2])
+          if (TRUE %in% hasZeroD) {
+              data1.original <- data1
+              data1 <- ReplaceZero(data1, group1)
+          }
       }
   }
 
-  print("PROCESSING NORMALIZATION AND TRANSFORMATION FINISHED")
+
+  if (!is.null(data2)){
+      hasZeroS <- unique(as.vector(data2 == 0))
+      hasNegS <- unique(as.vector(data2 < 0))
+  }
+
+  data2.original=NULL
+  if(!is.null(data2) & transform[2] %in% c("log2", "log10", "logit")) {
+      if (TRUE %in% hasNegS) {
+          stop("\n- Second dataset contains negative values and cannot be log transformed. Re-run command WITHOUT argument transform  or alternatively if using two datasets, specify 'none' as the transforminput for the dataset with negative values, e.g. 'none,log2' or 'log2,none'.\n")
+      } else {
+          if (TRUE %in% hasZeroS) {
+              data2.original <- data2
+              data2 <- ReplaceZero(data2, group2)
+          }
+      }
+  }
+
+
+  print("PROCESSING DETECTION OF ZEROS AND NEGATIVE VALUES FINISHED")
 
 
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
