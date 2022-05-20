@@ -14,13 +14,10 @@ MakeVolcano <- function(data) {
 
     data <- data[order(data$adj.P.Val),]
 
-    # add a column of NAs
     data$diffexpressed <- "NO"
-    # Get all significantly differentially expressed genes
     data$diffexpressed[data$logFC > 1.4 & data$adj.P.Val < 0.05] <- "UP"
     data$diffexpressed[data$logFC < -1.4 & data$adj.P.Val < 0.05] <- "DOWN"
 
-    # Create a new column "delabel" to de, that will contain the name of genes differentially expressed (NA in case they are not)
     data$DEAlabel <- NA
     data[1:10,]$DEAlabel[data[1:10,]$diffexpressed != "NO"] <- data[1:10,]$"Gene name"[data[1:10,]$diffexpressed != "NO"]
 
