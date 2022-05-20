@@ -32,7 +32,7 @@ ReplaceNAs <- function(data,pct.NA.row=70,pct.NA.column=80) {
         cat(paste0(length(removeNA),"columns will be removed because of a high percentage of NAs"))
         data <- data[,-removeNA]
     } else {
-        print("All columns fill requirement of maximum percentage of NAs in to rows and columns.")
+        print("All columns fill requirement of maximum percentage of NAs in the rows and columns.")
     }
 
     still.NA <- c(unique(as.vector(is.na(data))))
