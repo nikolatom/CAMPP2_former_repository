@@ -1,5 +1,5 @@
 #' @title Replace "NA" values
-#' @description Replacing "NA" values in the data (counts) using llsImpute (1st round) and impute.knn (if 1st round wasn't successful or resulted in negative values). Rows with more than 50% missing values will be imputed using the overall mean per sample.
+#' @description The features (rows) and samples (columns) with high proportion of "NAs" will be removed based on defined thresholds (70% for rows and 80% for columns by default). Remaining "NA" values will be replaced by imputed values. Missing value imputation is done using llsImpute (1st round). If 1st round wasn't successful or resulted in negative values, impute.knn algorithm is applied (rows with more than 50% missing values will be imputed using the overall mean per sample).
 #' @param data a dataframe of gene/abundance counts.
 #' @param pct.NA.row a number defining maximal percentage of NA values per row (feature). Rows with a higher percentage of NA values will be removed (70 by default).
 #' @param pct.NA.column a number defining maximal percentage of NA values per column (sample). Columns with a higher percentage of NA values will be removed (80 by default).
@@ -37,7 +37,7 @@ ReplaceNAs <- function(data,pct.NA.row=70,pct.NA.column=80) {
 
     still.NA <- c(unique(as.vector(is.na(data))))
     if (TRUE %in% still.NA) {
-        print("Dataset still consists NA values which will be replaced")
+        print("Dataset still contains NA values which will be replaced.")
         varnames <- rownames(data)
 
         if (checkData(as.matrix(data))[1] == FALSE) {
@@ -47,7 +47,7 @@ ReplaceNAs <- function(data,pct.NA.row=70,pct.NA.column=80) {
         data.lls=NULL
         do_knn=FALSE
 
-        print("Running Missing value estimation using local least squares (llsImpute); k=10, correlation=spearman")
+        print("Running Missing value estimation using local least squares (llsImpute); k=10, correlation=spearman.")
 
         file <- try(data.lls <- data.frame(completeObs(llsImpute(as.matrix(data), k = 10, correlation="spearman", allVariables=TRUE))), silent =TRUE)
 
