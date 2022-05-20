@@ -37,94 +37,106 @@
 
 runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology, groups, batches=NULL, data.check=TRUE, standardize=FALSE, transform=FALSE, plot.mds=FALSE, plot.heatmap=FALSE, kmeans=FALSE, signif=NULL, colors=NULL, prefix="Results", correlation=FALSE, lasso=FALSE, WGCNA=FALSE, cutoff.WGCNA=NULL, survival=FALSE, covariates=NULL, stratify=NULL, surv.plot=50, PPint=FALSE, gene.miR.int=FALSE){
 
-  ###parse input arguments and assign updated values
-  c(data1,data2,metadata1,metadata2,technology,groups,
-    group1,group2,ids,batches,databatch1,databatch2,
-    batch1,batch2,standardize,transform,data.check,
-    plot.mds,kmeans,labels.kmeans,signif,logFC1,FDR1,
-    logFC2,FDR2,colors,prefix,plot.heatmap,corrby,
-    lasso,WGCNA,cutoff.WGCNA,survival,covarD,scovarD,
-    covarS,stratify,surv.plot,PPI,GmiRI,DEA.allowed.type,
-    survival.metadata,approved.gene.IDs,provedmiRIDs,gene.query,miR.query) %<-% parseArguments(data1=data1, metadata1=metadata1, data2=data2, metadata2=metadata2,
-                                                                                               groups=groups, technology=technology, prefix=prefix, batches=batches,
-                                                                                               data.check=data.check, standardize=standardize, transform=transform,
-                                                                                               plot.mds=plot.mds, plot.heatmap=plot.heatmap, kmeans=kmeans,
-                                                                                               signif=signif, colors=colors, correlation=correlation, lasso=lasso,
-                                                                                               WGCNA=WGCNA, cutoff.WGCNA=cutoff.WGCNA, survival=survival,
-                                                                                               covariates=covariates, stratify=stratify,surv.plot=surv.plot,
-                                                                                               PPint=PPint, gene.miR.int=gene.miR.int)
+    ###parse input arguments and assign updated values
+    c(data1,data2,metadata1,metadata2,technology,groups,
+      group1,group2,ids,batches,databatch1,databatch2,
+      batch1,batch2,standardize,transform,data.check,
+      plot.mds,kmeans,labels.kmeans,signif,logFC1,FDR1,
+      logFC2,FDR2,colors,prefix,plot.heatmap,corrby,
+      lasso,WGCNA,cutoff.WGCNA,survival,covarD,scovarD,
+      covarS,stratify,surv.plot,PPI,GmiRI,DEA.allowed.type,
+      survival.metadata,approved.gene.IDs,provedmiRIDs,gene.query,miR.query) %<-% parseArguments(data1=data1, metadata1=metadata1, data2=data2, metadata2=metadata2,
+                                                                                                 groups=groups, technology=technology, prefix=prefix, batches=batches,
+                                                                                                 data.check=data.check, standardize=standardize, transform=transform,
+                                                                                                 plot.mds=plot.mds, plot.heatmap=plot.heatmap, kmeans=kmeans,
+                                                                                                 signif=signif, colors=colors, correlation=correlation, lasso=lasso,
+                                                                                                 WGCNA=WGCNA, cutoff.WGCNA=cutoff.WGCNA, survival=survival,
+                                                                                                 covariates=covariates, stratify=stratify,surv.plot=surv.plot,
+                                                                                                 PPint=PPint, gene.miR.int=gene.miR.int)
 
 
 
-  # Create directory Results
+    # Create directory Results
 
-  dir.create(prefix)
-  setwd(paste0(prefix, "/"))
+    dir.create(prefix)
+    setwd(paste0(prefix, "/"))
 
 
-  print("PROCESSING TRANSFORMATION")
-  hasZeroD <- unique(as.vector(data1 == 0))
-  hasNegD <- unique(as.vector(data1 < 0))
+    print("PROCESSING TRANSFORMATION")
+    hasZeroD <- unique(as.vector(data1 == 0))
+    hasNegD <- unique(as.vector(data1 < 0))
 
-  data1.original=NULL
-  if(transform[1] %in% c("log2", "log10", "logit")) {
-    if (TRUE %in% hasNegD) {
-      stop("\n- Data contains negative values and cannot be log transformed. Re-run command WITHOUT argument transform or alternatively if using two datasets, specify 'none' as the transform input for the dataset with negative values, e.g. c('none', 'log2') or c('log2', 'none').\n")
+    if(transform[1] %in% c("log2", "log10", "logit")) {
+        if (TRUE %in% hasNegD) {
+            stop("\n- Data contains negative values and cannot be log transformed. Re-run command WITHOUT argument transform or alternatively if using two datasets, specify 'none' as the transform input for the dataset with negative values, e.g. c('none', 'log2') or c('log2', 'none').\n")
+        } else {
+            if (TRUE %in% hasZeroD) {
+                data1.original <- data1
+                data1 <- ReplaceZero(data1, group1)
+            }
+        }
+    }
+
+
+    if (!is.null(data2)){
+        hasZeroS <- unique(as.vector(data2 == 0))
+        hasNegS <- unique(as.vector(data2 < 0))
+    }
+
+    if(!is.null(data2) & transform[2] %in% c("log2", "log10", "logit")) {
+        if (TRUE %in% hasNegS) {
+            stop("\n- Second dataset contains negative values and cannot be log transformed. Re-run command WITHOUT argument transform  or alternatively if using two datasets, specify 'none' as the transforminput for the dataset with negative values, e.g. 'none,log2' or 'log2,none'.\n")
+        } else {
+            if (TRUE %in% hasZeroS) {
+                data2.original <- data2
+                data2 <- ReplaceZero(data2, group2)
+            }
+        }
+    }
+
+
+    print("TRANSFORMATION PART FINISHED")
+
+
+    # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    #                                                                         ## Normalization, Filtering and Transformation ###
+    # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    print("PROCESSING NORMALIZATION")
+
+    NB <- " N.B This pipeline does not handle background correction of single-channel intensity data or within array normalization two-color intensity data. See limma manual section on array normalization for more on this. Data may be fully normalized with limma (R/Rstudio) or another software and the pipeline re-run."
+
+
+    # First Dataset
+
+    if (exists("data1.original")) {
+        data1 <- NormalizeData(technology[1], data1, group1, transform[1], standardize[1], data1.original)
     } else {
-      if (TRUE %in% hasZeroD) {
-        data1.original <- data1
-        data1 <- ReplaceZero(data1, group1)
-      }
-    }
-  }
-
-
-  if (!is.null(data2)){
-    hasZeroS <- unique(as.vector(data2 == 0))
-    hasNegS <- unique(as.vector(data2 < 0))
-  }
-
-  data2.original=NULL
-  if(!is.null(data2) & transform[2] %in% c("log2", "log10", "logit")) {
-    if (TRUE %in% hasNegS) {
-      stop("\n- Second dataset contains negative values and cannot be log transformed. Re-run command WITHOUT argument transform  or alternatively if using two datasets, specify 'none' as the transforminput for the dataset with negative values, e.g. 'none,log2' or 'log2,none'.\n")
-    } else {
-      if (TRUE %in% hasZeroS) {
-        data2.original <- data2
-        data2 <- ReplaceZero(data2, group2)
-      }
-    }
-  }
-
-
-  print("TRANSFORMATION PART FINISHED")
-
-
-  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  #                                                                         ## Normalization, Filtering and Transformation ###
-  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#
-  print("CAMPP2 automatically performs data normalization and transformation depending on technology from which data are derived.")
-  print("PROCESSING NORMALIZATION AND TRANSFORMATION")
-  print("Normalizing and tranforming data1")
-
-  data1 %<-% NormalizeData(data1, data1.original, group1, transform[1], standardize[1], technology[1])
-
-  if(!is.null(data2)) {
-    print("Normalizing and tranforming data2")
-    if (length(technology) != 2 || length(technology) == 1) {
-      stop("\nTwo datasets are defined in the analysis, BUT argument technology has defined only one. Technology must be defined as string vector of length two.\n")
-    }
-    if (length(transform) != 2 || length(transform) == 1) {
-      stop("\nTwo datasets are defined in the analysis, BUT argument transform has defined only one. Transform must be defined as string vector of length two.\n")
+        data1 <- NormalizeData(technology[1], data1, group1, transform[1], standardize[1])
     }
 
-    data2 <- NormalizeData(data2, data2.original, group2, transform[2], standardize[2], technology[2])
 
-  }
+    # Second Dataset
 
-  print("PROCESSING NORMALIZATION AND TRANSFORMATION FINISHED")
+    if(!is.null(data2)) {
+        if (length(technology) < 2) {
+            stop("\nTwo datasets are input for correlation analysis, BUT argument technology only has length one. Length of technology must be two.\n")
+        }
+        if (length(transform) < 2) {
+            stop("\nTwo datasets are input for correlation analysis, BUT argument transform only has length one. Length of transformmust be two, see.\n")
+        }
+    }
 
+
+
+    if (!is.null(data2)) {
+        if (exists("data2.original")) {
+            data2 <- NormalizeData(technology[2], data2, group2, transform[2], standardize[2], data2.original)
+        } else {
+            data2 <- NormalizeData(technology[2], data2, group2, transform[2], standardize[2])
+        }
+    }
+
+    print("NORMALIZATION PART FINISHED")
 
 
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
