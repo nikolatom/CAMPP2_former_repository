@@ -7,7 +7,7 @@ library(rms)
 library(dynamicTreeCut)
 
 getwd()
-setwd("./data/BRCA")
+setwd("/data/user/mathilde/CAMPP2/data_nik")
 
 
 data_normal1<-as.data.frame(importCounts("normal_testData1.txt"))
@@ -50,7 +50,8 @@ metadata2<-metadata2[order(metadata2$IDs),]
 dataset3<-cbind(dataset1,dataset2)
 metadata3<-rbind(metadata1,metadata2)
 
+setwd("../")
 
-runCampp2(WGCNA="DE", signif=c(1,1,1,1),survival="DE",plot.heatmap=FALSE,batches=c("tumor_stage","tumor_stage"),kmeans=TRUE, plot.mds=TRUE,prefix="test_main_functon", data1=dataset1, data2=dataset2, metadata1=metadata1,metadata2=metadata2, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"))
+runCampp2(prefix="DEA_Export", data1=dataset1, data2=dataset2, metadata1=metadata1,metadata2=metadata2, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"))
 
 

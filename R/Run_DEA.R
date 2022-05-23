@@ -57,10 +57,9 @@ RunDEA <- function(data, metadata, technology, batch, covarDEA, group, logFC, FD
     # Apply DEA to all comparisons
     res.DEA <- DEAFeatureApply(contrast.matrix, data, design, logFC, FDR, NULL, FALSE)
 
-
     # Write results out as .txt file
     if (!is.null(res.DEA)) {
-        DEA.out <- TextOutput(res.DEA, paste0(prefix, out.name))
+        DEA.out <- ExportDEA(res.DEA, paste0(prefix, out.name))
         rownames(DEA.out) <- NULL
         res.DEA.names <- unique(DEA.out$name)
     } else {
