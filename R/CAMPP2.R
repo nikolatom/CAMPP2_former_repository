@@ -376,7 +376,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
     setwd("Results_DEA/")
 
     #First dataset
-    DEARes1 <- RunDEA(data1, metadata1, technology[1], databatch1, batch1, covarDEA1, group1, logFC1, FDR1, prefix)
+    DEARes1 <- RunDEA(data1, metadata1, technology[1], batch1, covarDEA1, group1, logFC1, FDR1, prefix)
 
     DEA1.out<-DEARes1$DE.out
     res.DEA1<-DEARes1$res.DE
@@ -384,7 +384,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
     #Second dataset
     if(!is.null(data2) & !is.null(metadata2)) {
-        DEARes2 <- RunDEA(data2, metadata2, technology[2], databatch2, batch2, covarDEA2, group2, logFC2, FDR2, prefix)
+        DEARes2 <- RunDEA(data2, metadata2, technology[2], batch2, covarDEA2, group2, logFC2, FDR2, prefix)
 
         DEA2.out<-DEARes2$DE.out
         res.DEA2<-DEARes2$res.DE
@@ -576,6 +576,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
         try(rm(VarsSelect, LR, venn, CrossValErrormean, mn.net, mn.pred, roc.res), silent=T)
 
     }
+
 
     # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     ### Plotting Results Heatmap ###
@@ -1137,5 +1138,4 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
     setwd("../")
     cat("\nCAMPP RUN DONE!\n")
-
 }
