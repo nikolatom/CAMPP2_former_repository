@@ -89,114 +89,90 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
         data1 <- ReplaceZero(data1, group1)
       }
     }
-  }
 
 
-  if (!is.null(data2)){
-    hasZeroS <- unique(as.vector(data2 == 0))
-    hasNegS <- unique(as.vector(data2 < 0))
-  }
+    if (!is.null(data2)){
+        hasZeroS <- unique(as.vector(data2 == 0))
+        hasNegS <- unique(as.vector(data2 < 0))
+    }
 
-  if(!is.null(data2) & transform[2] %in% c("log2", "log10", "logit")) {
-    if (TRUE %in% hasNegS) {
-      stop("\n- Second dataset contains negative values and cannot be log transformed. Re-run command WITHOUT argument transform  or alternatively if using two datasets, specify 'none' as the transforminput for the dataset with negative values, e.g. 'none,log2' or 'log2,none'.\n")
+    if(!is.null(data2) & transform[2] %in% c("log2", "log10", "logit")) {
+        if (TRUE %in% hasNegS) {
+            stop("\n- Second dataset contains negative values and cannot be log transformed. Re-run command WITHOUT argument transform  or alternatively if using two datasets, specify 'none' as the transforminput for the dataset with negative values, e.g. 'none,log2' or 'log2,none'.\n")
+        } else {
+            if (TRUE %in% hasZeroS) {
+                data2.original <- data2
+                data2 <- ReplaceZero(data2, group2)
+            }
+        }
+    }
+
+
+    print("TRANSFORMATION PART FINISHED")
+
+
+    # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    #                                                                         ## Normalization, Filtering and Transformation ###
+    # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    print("PROCESSING NORMALIZATION")
+
+    NB <- " N.B This pipeline does not handle background correction of single-channel intensity data or within array normalization two-color intensity data. See limma manual section on array normalization for more on this. Data may be fully normalized with limma (R/Rstudio) or another software and the pipeline re-run."
+
+
+    # First Dataset
+
+    if (exists("data1.original")) {
+        data1 <- NormalizeData(technology[1], data1, group1, transform[1], standardize[1], data1.original)
     } else {
-      if (TRUE %in% hasZeroS) {
-        data2.original <- data2
-        data2 <- ReplaceZero(data2, group2)
-      }
+        data1 <- NormalizeData(technology[1], data1, group1, transform[1], standardize[1])
     }
-  }
 
 
-  print("TRANSFORMATION PART FINISHED")
+    # Second Dataset
 
-
-  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  #                                                                         ## Normalization, Filtering and Transformation ###
-  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  print("PROCESSING NORMALIZATION")
-
-  NB <- " N.B This pipeline does not handle background correction of single-channel intensity data or within array normalization two-color intensity data. See limma manual section on array normalization for more on this. Data may be fully normalized with limma (R/Rstudio) or another software and the pipeline re-run."
-
-
-  # First Dataset
-
-  if (exists("data1.original")) {
-    data1 <- NormalizeData(technology[1], data1, group1, transform[1], standardize[1], data1.original)
-  } else {
-    data1 <- NormalizeData(technology[1], data1, group1, transform[1], standardize[1])
-  }
-
-
-  # Second Dataset
-
-  if(!is.null(data2)) {
-    if (length(technology) < 2) {
-      stop("\nTwo datasets are input for correlation analysis, BUT argument technology only has length one. Length of technology must be two.\n")
+    if(!is.null(data2)) {
+        if (length(technology) < 2) {
+            stop("\nTwo datasets are input for correlation analysis, BUT argument technology only has length one. Length of technology must be two.\n")
+        }
+        if (length(transform) < 2) {
+            stop("\nTwo datasets are input for correlation analysis, BUT argument transform only has length one. Length of transformmust be two, see.\n")
+        }
     }
-    if (length(transform) < 2) {
-      stop("\nTwo datasets are input for correlation analysis, BUT argument transform only has length one. Length of transformmust be two, see.\n")
+
+
+
+    if (!is.null(data2)) {
+        if (exists("data2.original")) {
+            data2 <- NormalizeData(technology[2], data2, group2, transform[2], standardize[2], data2.original)
+        } else {
+            data2 <- NormalizeData(technology[2], data2, group2, transform[2], standardize[2])
+        }
     }
-  }
 
-
-
-  if (!is.null(data2)) {
-    if (exists("data2.original")) {
-      data2 <- NormalizeData(technology[2], data2, group2, transform[2], standardize[2], data2.original)
-    } else {
-      data2 <- NormalizeData(technology[2], data2, group2, transform[2], standardize[2])
-    }
-  }
-
-  print("NORMALIZATION PART FINISHED")
-
-
+    print("NORMALIZATION PART FINISHED")
 
 
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   ### BATCH CORRECTION ###
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  ###create a function "runDatabatchCorr" taking arguments (databatch1, technology, databatch2)
 
-  print("PROCESSING BATCH CORRECTION")
+  print("RUNNING BATCH CORRECTION")
 
 
-  if (databatch1 == TRUE){
-    if (length(batch1) > 0) {
-      design1 <-  model.matrix(~group1)
-
-      if (technology[1] == "seq") {
-        data1.batch <- ComBat(as.matrix(data1$E), batch1, design1, par.prior=TRUE,prior.plots=FALSE)
-      } else {
-        data1.batch <- ComBat(as.matrix(data1), batch1, design1, par.prior=TRUE,prior.plots=FALSE)
-      }
-
-    } else {
-      data1.batch <- data1
-      cat("\n- No column names match specified batches for dataset.\n")
-    }
-  } else {
-    cat("\n- No batch correction requested.\n")
+  if (databatch1==TRUE){
+    print("Run batch correction on the 1st dataset")
+    data1.batch %<-% BatchCorrect(data1,batch1,group1,technology[1])
+    print("Batch correction of the first dataset finished")
+  }else{
+    print("Batch correction wasn't selected")
   }
 
-
-  if (databatch2 == TRUE){
-    if (length(batch2) > 0) {
-      design2 <- model.matrix(~group2)
-
-      if (technology[2] == "seq") {
-        data2.batch <- ComBat(as.matrix(data2$E), batch2, design2, par.prior=TRUE,prior.plots=FALSE)
-      } else {
-        data2.batch <- ComBat(as.matrix(data2), batch2, design2, par.prior=TRUE,prior.plots=FALSE)
-      }
-    } else {
-      data2.batch <- data2
-      cat("\n- No column names match specified batches for second dataset. Continuing without batch correction.\n")
-    }
-  } else {
-    cat("\n- No batch correction requested for second dataset.\n")
+  if (databatch2==TRUE){
+    print("Run batch correction on the 2nd dataset")
+    data2.batch %<-% BatchCorrect(data2,batch2,group2,technology[2])
+    print("Batch correction of the second dataset finished")
+  }else{
+    print("Batch correction wasn't selected")
   }
 
   print("BATCH CORRECTION PART FINISHED")

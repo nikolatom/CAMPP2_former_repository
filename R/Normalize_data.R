@@ -65,4 +65,3 @@ NormalizeData <- function(my.technology, my.data, my.group, my.transform, my.sta
     }
     return(my.data)
 }
-
