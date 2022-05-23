@@ -37,44 +37,57 @@
 
 runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology, groups, batches=NULL, data.check=TRUE, standardize=FALSE, transform=FALSE, plot.mds=FALSE, plot.heatmap=FALSE, kmeans=FALSE, signif=NULL, colors=NULL, prefix="Results", correlation=FALSE, lasso=FALSE, WGCNA=FALSE, cutoff.WGCNA=NULL, survival=FALSE, covariates=NULL, stratify=NULL, surv.plot=50, PPint=FALSE, gene.miR.int=FALSE){
 
-    ###parse input arguments and assign updated values
-    c(data1,data2,metadata1,metadata2,technology,groups,
-      group1,group2,ids,batches,databatch1,databatch2,
-      batch1,batch2,standardize,transform,data.check,
-      plot.mds,kmeans,labels.kmeans,signif,logFC1,FDR1,
-      logFC2,FDR2,colors,prefix,plot.heatmap,corrby,
-      lasso,WGCNA,cutoff.WGCNA,survival,covarD,scovarD,
-      covarS,stratify,surv.plot,PPI,GmiRI,DEA.allowed.type,
-      survival.metadata,approved.gene.IDs,provedmiRIDs,gene.query,miR.query) %<-% parseArguments(data1=data1, metadata1=metadata1, data2=data2, metadata2=metadata2,
-                                                                                                 groups=groups, technology=technology, prefix=prefix, batches=batches,
-                                                                                                 data.check=data.check, standardize=standardize, transform=transform,
-                                                                                                 plot.mds=plot.mds, plot.heatmap=plot.heatmap, kmeans=kmeans,
-                                                                                                 signif=signif, colors=colors, correlation=correlation, lasso=lasso,
-                                                                                                 WGCNA=WGCNA, cutoff.WGCNA=cutoff.WGCNA, survival=survival,
-                                                                                                 covariates=covariates, stratify=stratify,surv.plot=surv.plot,
-                                                                                                 PPint=PPint, gene.miR.int=gene.miR.int)
+  ###parse input arguments and assign updated values
+  c(data1,data2,metadata1,metadata2,technology,groups,
+    group1,group2,ids,batches,databatch1,databatch2,
+    batch1,batch2,standardize,transform,data.check,
+    plot.mds,kmeans,labels.kmeans,signif,logFC1,FDR1,
+    logFC2,FDR2,colors,prefix,plot.heatmap,corrby,
+    lasso,WGCNA,cutoff.WGCNA,survival,covarD,scovarD,
+    covarS,stratify,surv.plot,PPI,GmiRI,DEA.allowed.type,
+    survival.metadata,approved.gene.IDs,provedmiRIDs,gene.query,miR.query) %<-% parseArguments(data1=data1, metadata1=metadata1, data2=data2, metadata2=metadata2,
+                                                                                               groups=groups, technology=technology, prefix=prefix, batches=batches,
+                                                                                               data.check=data.check, standardize=standardize, transform=transform,
+                                                                                               plot.mds=plot.mds, plot.heatmap=plot.heatmap, kmeans=kmeans,
+                                                                                               signif=signif, colors=colors, correlation=correlation, lasso=lasso,
+                                                                                               WGCNA=WGCNA, cutoff.WGCNA=cutoff.WGCNA, survival=survival,
+                                                                                               covariates=covariates, stratify=stratify,surv.plot=surv.plot,
+                                                                                               PPint=PPint, gene.miR.int=gene.miR.int)
 
 
 
-    # Create directory Results
+  # Create directory Results
 
-    dir.create(prefix)
-    setwd(paste0(prefix, "/"))
+  dir.create(prefix)
+  setwd(paste0(prefix, "/"))
 
 
-    print("PROCESSING TRANSFORMATION")
-    hasZeroD <- unique(as.vector(data1 == 0))
-    hasNegD <- unique(as.vector(data1 < 0))
+  print("RUNNING MISSING VALUE IMPUTATIONS")
 
-    if(transform[1] %in% c("log2", "log10", "logit")) {
-        if (TRUE %in% hasNegD) {
-            stop("\n- Data contains negative values and cannot be log transformed. Re-run command WITHOUT argument transform or alternatively if using two datasets, specify 'none' as the transform input for the dataset with negative values, e.g. c('none', 'log2') or c('log2', 'none').\n")
-        } else {
-            if (TRUE %in% hasZeroD) {
-                data1.original <- data1
-                data1 <- ReplaceZero(data1, group1)
-            }
-        }
+  print("Running missing values imputation on data1")
+  data1<-ReplaceNAs(data1)
+  print("Missing values imputation on data1 has finished")
+
+  print("Running missing values imputation on data1")
+  data2<-ReplaceNAs(data2)
+  print("Missing values imputation on data2 has finished")
+
+  print("MISSING VALUE IMPUTATIONS FINISHED")
+
+
+
+  print("PROCESSING TRANSFORMATION")
+  hasZeroD <- unique(as.vector(data1 == 0))
+  hasNegD <- unique(as.vector(data1 < 0))
+
+  if(transform[1] %in% c("log2", "log10", "logit")) {
+    if (TRUE %in% hasNegD) {
+      stop("\n- Data contains negative values and cannot be log transformed. Re-run command WITHOUT argument transform or alternatively if using two datasets, specify 'none' as the transform input for the dataset with negative values, e.g. c('none', 'log2') or c('log2', 'none').\n")
+    } else {
+      if (TRUE %in% hasZeroD) {
+        data1.original <- data1
+        data1 <- ReplaceZero(data1, group1)
+      }
     }
 
 

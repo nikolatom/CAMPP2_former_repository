@@ -2,18 +2,22 @@
 % Please edit documentation in R/Replace_NAs.R
 \name{ReplaceNAs}
 \alias{ReplaceNAs}
-\title{ReplaceNAs}
+\title{Replace "NA" values}
 \usage{
-ReplaceNAs(my.data)
+ReplaceNAs(data, pct.NA.row = 70, pct.NA.column = 80)
 }
 \arguments{
-\item{my.data}{a dataframe of expression/abundance counts.}
+\item{data}{a dataframe of gene/abundance counts.}
+
+\item{pct.NA.row}{a number defining maximal percentage of NA values per row (feature). Rows with a higher percentage of NA values will be removed.}
+
+\item{pct.NA.column}{a number defining maximal percentage of NA values per column (sample). Columns with a higher percentage of NA values will be removed.}
 }
 \value{
-Dataframe with replaced NA-values
+Data frame with replaced "NA" values
 }
 \description{
-Checking Data for NA Values.
+Replacing "NA" values in the data (counts) using llsImpute (1st round) and impute.knn (if 1st round wasn't successful or resulted in negative values). Rows with more than 50% missing values will be imputed using the overall mean per sample.
 }
 \examples{
 \dontrun{
