@@ -89,7 +89,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
         data1 <- ReplaceZero(data1, group1)
       }
     }
-
+  }
 
     if (!is.null(data2)){
         hasZeroS <- unique(as.vector(data2 == 0))

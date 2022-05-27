@@ -8,7 +8,7 @@ library(dynamicTreeCut)
 
 getwd()
 
-setwd("../data/BRCA")
+setwd("../data_nik")
 
 
 
