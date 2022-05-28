@@ -9,6 +9,7 @@
 #' @param logFC The logarithmic Fold Change for each data sample (ratio of changes in expression data)
 #' @param FDR The false discovery rate for each data sample (the corrected p-value)
 #' @param prefix a character defining the result folder name and prefix of output file names.
+#' @param block A vector or factor specifying a blocking variable. The block must be of same length as data and contain 2 or more options. For 2 datasets, the block can be defined as a vector of the two seperate blocks.
 #' @export
 #' @import limma
 #' @import sva
@@ -19,7 +20,7 @@
 #' }
 
 
-RunDEA <- function(data, metadata, technology, batch, covarDEA, group, logFC, FDR, prefix) {
+RunDEA <- function(data, metadata, technology, batch, covarDEA, group, logFC, FDR, prefix, block) {
 
     if (!(technology) %in% c("seq", "array", "ms", "other")) {
         stop("Defined technology is not supported.")
@@ -55,7 +56,7 @@ RunDEA <- function(data, metadata, technology, batch, covarDEA, group, logFC, FD
     contrast.matrix <- makeContrasts(contrasts=combinations$contr,levels=as.character(colnames(design)))
 
     # Apply DEA to all comparisons
-    res.DEA <- DEAFeatureApply(contrast.matrix, data, design, logFC, FDR, NULL, FALSE)
+    res.DEA <- DEAFeatureApply(contrast.matrix, data, design, logFC, FDR, block, FALSE)
 
     # Write results out as .txt file
     if (!is.null(res.DEA)) {

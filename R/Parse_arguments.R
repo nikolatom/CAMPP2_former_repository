@@ -20,6 +20,7 @@
 #' @param plot.mds This argument specifies ("TRUE" or "FALSE") if a preliminary MDSplot should be made for data overview. Works only for the first dataset. Default is FALSE (do not run).
 #' @param covariates Covariates to include in the analysis. If multiple of these, they should be specified as a character vector. The first element in this list must be either TRUE or FALSE. If TRUE is specified then covariates will be included in both DE/DA analysis and Survival Analsysis. If FALSE is specified covariates will ONLY be used for Survival Analsysis. Names of covariates should match the desired columns in the metadata file. Default is NULL.
 #' @param stratify This argument may be used if some of the categorical (NOT continous) covariates violate the cox proportional assumption. The workflow checks for proportional hazard and will retun the covariates that fail the PH test. You may then rerun the workflow with this argument followed by the names of the categorical covariates which failed and these will be stratified. Default is NULL.
+#' @param block A vector or factor specifying a blocking variable for differential expression analysis. The block must be of same length as the data and contain 2 or more options. For 2 datasets, the block can be defined as a vector of the two seperate blocks.
 #' @param colors Custom color pallet for MDS and heatmaps. Must be the same length as number of groups used for comparison (e.g. two groups = two colors) and must be defined as character vector. See R site for avalibe colors http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf. Default is NULL.
 #' @param lasso Argument specifying parameters for LASSO or Elastic net regression. This argument may be set to 1 for LASSO or >0 & <1 for Elastic Net, but NOT to 0 exactly (Ridge Regression). Defaults is FALSE (do not run).
 #' @param WGCNA Argument specifying parameter for Weighed Gene Co-expression Network Analysis. It takes a string, either "DA", "DE" or "ALL" specifying if all variables should be included in WGCNA or only differentially expressed / abundant variables. Defaults is FALSE (do not run).
@@ -32,7 +33,7 @@
 #' ...
 #' }
 
-parseArguments <- function(data1, data2, metadata1, metadata2, groups, technology, batches, data.check, standardize, transform, plot.mds, plot.heatmap, kmeans, signif, colors, prefix, correlation, lasso, WGCNA, cutoff.WGCNA, survival, covariates, stratify, surv.plot, PPint, gene.miR.int){
+parseArguments <- function(data1, data2, metadata1, metadata2, groups, technology, batches, data.check, standardize, transform, plot.mds, plot.heatmap, kmeans, signif, colors, block, prefix, correlation, lasso, WGCNA, cutoff.WGCNA, survival, covariates, stratify, surv.plot, PPint, gene.miR.int){
 
     # For DE/DA analysis, survival analysis and correlation analysis
     DEA.allowed.type <- c("ALL","EN", "LASSO", "DA", "DE", "Consensus",FALSE)
@@ -192,7 +193,23 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
         }
     }
 
+    # Blocks
 
+    block1=NULL
+    block2=NULL
+    if(!is.null(block)){
+        if (is.vector(block)){
+            if (!is.null(data2)){
+                block1 <- block[1:length(block)/2]
+                block2 <- block[length(block)/2:length(block)]
+            } else {
+                block1 <- block
+            }
+        }
+        if (is.factor(block)){
+            block1 <- block
+        }
+    }
 
     # Colors
 
@@ -301,6 +318,9 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
           paste0("FDR: ",FDR),"\n",
           paste0("slogFC: ",slogFC),"\n",
           paste0("sFDR: ",sFDR),"\n",
+          paste0("blocks:", block),"\n",
+          #         paste0("block1: ",block1),"\n",
+          #         paste0("block2: ",block2),"\n",
           paste0("colors: ",colors),"\n",
           paste0("prefix: ",prefix),"\n",
           paste0("plot.heatmap: ",plot.heatmap),"\n",
@@ -318,7 +338,7 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
           paste0("GmiRI: ",GmiRI),"\n"
     ))
 
-    return(list("data1"=data1,"data2"=data2,"metadata1"=metadata1,"metadata2"=metadata2, "technology"=technology, "groups"=groups,"group1"=group1,"group2"=group2,"ids"=ids,"batches"=batches,"databatch1"=databatch1,"databatch2"=databatch2,"batch1"=batch1, "batch2"=batch2, "standardize"=standardize,"transform"=transform,"data.check"=data.check,"plot.mds"=plot.mds,"kmeans"=kmeans,"labels.kmeans"=labels.kmeans,"signif"=signif,"logFC"=logFC,"FDR"=FDR,"slogFC"=slogFC,"sFDR"=sFDR,"colors"=colors,"prefix"=prefix,"plot.heatmap"=plot.heatmap,"corrby"=corrby,"lasso"=lasso,"WGCNA"=WGCNA,"cutoff.WGCNA"=cutoff.WGCNA,"survival"=survival,"covarDEA1"=covarDEA1,"covarDEA2"=covarDEA2,"covarS"=covarS,"stratify"=stratify,"surv.plot"=surv.plot,"PPI"=PPI,"GmiRI"=GmiRI,"DEA.allowed.type"=DEA.allowed.type,"survival.metadata"=survival.metadata,"approved.gene.IDs"=approved.gene.IDs,"approved.miR.IDs"=approved.miR.IDs,"gene.query"=gene.query,"miR.query"=miR.query))
+    return(list("data1"=data1,"data2"=data2,"metadata1"=metadata1,"metadata2"=metadata2, "technology"=technology, "groups"=groups,"group1"=group1,"group2"=group2,"ids"=ids,"batches"=batches,"databatch1"=databatch1,"databatch2"=databatch2,"batch1"=batch1, "batch2"=batch2, "standardize"=standardize,"transform"=transform,"data.check"=data.check,"plot.mds"=plot.mds,"kmeans"=kmeans,"labels.kmeans"=labels.kmeans,"signif"=signif,"logFC"=logFC,"FDR"=FDR,"slogFC"=slogFC,"sFDR"=sFDR,"block"=block,"block1"=block1,"block2"=block2,"colors"=colors,"prefix"=prefix,"plot.heatmap"=plot.heatmap,"corrby"=corrby,"lasso"=lasso,"WGCNA"=WGCNA,"cutoff.WGCNA"=cutoff.WGCNA,"survival"=survival,"covarDEA1"=covarDEA1,"covarDEA2"=covarDEA2,"covarS"=covarS,"stratify"=stratify,"surv.plot"=surv.plot,"PPI"=PPI,"GmiRI"=GmiRI,"DEA.allowed.type"=DEA.allowed.type,"survival.metadata"=survival.metadata,"approved.gene.IDs"=approved.gene.IDs,"approved.miR.IDs"=approved.miR.IDs,"gene.query"=gene.query,"miR.query"=miR.query))
 
 }
 

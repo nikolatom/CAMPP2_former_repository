@@ -21,11 +21,13 @@
 #' @param covariates Covariates to include in the analysis. If multiple of these, they should be specified as a character vector. The first element in this list must be either TRUE or FALSE. If TRUE is specified then covariates will be included in both DE/DA analysis and Survival Analsysis. If FALSE is specified covariates will ONLY be used for Survival Analsysis. Names of covariates should match the desired columns in the metadata file. Default is NULL.
 #' @param stratify This argument may be used if some of the categorical (NOT continous) covariates violate the cox proportional assumption. The workflow checks for proportional hazard and will retun the covariates that fail the PH test. You may then rerun the workflow with this argument followed by the names of the categorical covariates which failed and these will be stratified. Default is NULL.
 #' @param colors Custom color pallet for MDS and heatmaps. Must be the same length as number of groups used for comparison (e.g. two groups = two colors) and must be defined as character vector. See R site for avalibe colors http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf. Default is NULL.
+#' @param block A vector or factor specifying a blocking variable for differential expression analysis. The block must be of same length as the dataset and contain 2 or more options. For 2 datasets, the block can be defined as a vector of the two seperate blocks.
 #' @param lasso Argument specifying parameters for LASSO or Elastic net regression. This argument may be set to 1 for LASSO or >0 & <1 for Elastic Net, but NOT to 0 exactly (Ridge Regression). Defaults is FALSE (do not run).
 #' @param WGCNA Argument specifying parameter for Weighed Gene Co-expression Network Analysis. It takes a string, either "DA", "DE" or "ALL" specifying if all variables should be included in WGCNA or only differentially expressed / abundant variables. Defaults is FALSE (do not run).
 #' @param cutoff.WGCNA Argument specifying the cutoff values for WGCNA. The argument takes a numuric vector of three values: (I) minimum modules size, (II) maximum % dissimilarity for merging of modules, and (III) % of top most interconnected genes (or other features) to return, from each modules identified in the Weighed Gene Co-expression Network Analysis. Default values are 10,25,25.
 #' @param PPint Argument specifying that protein-protein interaction networks should be generated using the results of the differential expression analysis. This argument must be a character vector of length two. The first element in this list must be a string specifying the type of gene identifier in the gene counts file provided. Allowed identifiers are: "ensembl_peptide_id", "hgnc_symbol", "ensembl_gene_id", "ensembl_transcript_id", "uniprotswissprot". The second element is a string specifying version of the stringDB to use. Currently only version supported is: 11.0. Default is FALSE (do not run).
 #' @param gene.miR.int Argument specifying that gene-miRNA interaction networks should be generated using the results of the differential expression analysis. This argument must be a character vector of length two. The first element in this list must be a string specifying the type of miRNA identifier in the gene counts data file. Allowed identifiers are: "mature_mirna_ids", "mature_mirna_accession". The second element must be a string specifying the miRNA-gene database to use, currently options are: "targetscan" (validated miRNAs), "mirtarbase" (predicted miRNAs), "tarscanbase" (validated + predicted miRNAs)". Default is FALSE (do not run).
+#' @param block a vector or factor specifying a blocking variable
 #' @import zeallot
 #' @export
 #' @seealso
@@ -35,21 +37,21 @@
 #' }
 
 
-runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology, groups, batches=NULL, data.check=TRUE, standardize=FALSE, transform=FALSE, plot.mds=FALSE, plot.heatmap=FALSE, kmeans=FALSE, signif=NULL, colors=NULL, prefix="Results", correlation=FALSE, lasso=FALSE, WGCNA=FALSE, cutoff.WGCNA=NULL, survival=FALSE, covariates=NULL, stratify=NULL, surv.plot=50, PPint=FALSE, gene.miR.int=FALSE){
+runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology, groups, batches=NULL, data.check=TRUE, standardize=FALSE, transform=FALSE, plot.mds=FALSE, plot.heatmap=FALSE, kmeans=FALSE, signif=NULL, block=NULL, colors=NULL, prefix="Results", correlation=FALSE, lasso=FALSE, WGCNA=FALSE, cutoff.WGCNA=NULL, survival=FALSE, covariates=NULL, stratify=NULL, surv.plot=50, PPint=FALSE, gene.miR.int=FALSE){
 
     ###parse input arguments and assign updated values
     c(data1,data2,metadata1,metadata2,technology,groups,
       group1,group2,ids,batches,databatch1,databatch2,
       batch1,batch2,standardize,transform,data.check,
       plot.mds,kmeans,labels.kmeans,signif,logFC1,FDR1,
-      logFC2,FDR2,colors,prefix,plot.heatmap,corrby,
+      logFC2,FDR2,block,block1,block2,colors,prefix,plot.heatmap,corrby,
       lasso,WGCNA,cutoff.WGCNA,survival,covarDEA1,covarDEA2,
       covarS,stratify,surv.plot,PPI,GmiRI,DEA.allowed.type,
       survival.metadata,approved.gene.IDs,provedmiRIDs,gene.query,miR.query) %<-% parseArguments(data1=data1, metadata1=metadata1, data2=data2, metadata2=metadata2,
                                                                                                  groups=groups, technology=technology, prefix=prefix, batches=batches,
                                                                                                  data.check=data.check, standardize=standardize, transform=transform,
                                                                                                  plot.mds=plot.mds, plot.heatmap=plot.heatmap, kmeans=kmeans,
-                                                                                                 signif=signif, colors=colors, correlation=correlation, lasso=lasso,
+                                                                                                 signif=signif, block=block, colors=colors, correlation=correlation, lasso=lasso,
                                                                                                  WGCNA=WGCNA, cutoff.WGCNA=cutoff.WGCNA, survival=survival,
                                                                                                  covariates=covariates, stratify=stratify,surv.plot=surv.plot,
                                                                                                  PPint=PPint, gene.miR.int=gene.miR.int)
@@ -376,7 +378,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
     setwd("Results_DEA/")
 
     #First dataset
-    DEARes1 <- RunDEA(data1, metadata1, technology[1], batch1, covarDEA1, group1, logFC1, FDR1, prefix)
+    DEARes1 <- RunDEA(data1, metadata1, technology[1], batch1, covarDEA1, group1, logFC1, FDR1, prefix, block1)
 
     DEA1.out<-DEARes1$DE.out
     res.DEA1<-DEARes1$res.DE
@@ -384,7 +386,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
     #Second dataset
     if(!is.null(data2) & !is.null(metadata2)) {
-        DEARes2 <- RunDEA(data2, metadata2, technology[2], batch2, covarDEA2, group2, logFC2, FDR2, prefix)
+        DEARes2 <- RunDEA(data2, metadata2, technology[2], batch2, covarDEA2, group2, logFC2, FDR2, prefix, block2)
 
         DEA2.out<-DEARes2$DE.out
         res.DEA2<-DEARes2$res.DE

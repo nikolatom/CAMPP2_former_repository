@@ -5,7 +5,7 @@
 #' @param design a design matrix with all comparisons.
 #' @param coLFC a number specifying the cutoff for LogFC.
 #' @param coFDR a number specifying the cutoff for FDR.
-#' @param block a vector or factor specifying a blocking variable
+#' @param block A vector or factor specifying a blocking variable. The block must be of same length as data and contain 2 or more options. For 2 datasets, the block can be defined as a vector of the two seperate blocks.
 #' @param vector a vector of patient IDs; TRUE/FALSE statement specifying output format, if TRUE the function return a vector of feature IDs only
 #' @export
 #' @import sva
@@ -17,7 +17,7 @@
 #' }
 
 
-DEAFeature <- function(contrast, data, design, coLFC, coFDR, block=NULL) {
+DEAFeature <- function(contrast, data, design, coLFC, coFDR, block) {
     if(is.null(block)) {
         fit3 <- eBayes(contrasts.fit(lmFit(data, design), contrast))
     }

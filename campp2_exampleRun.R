@@ -52,6 +52,8 @@ metadata3<-rbind(metadata1,metadata2)
 
 setwd("../")
 
-runCampp2(prefix="DEA_Export", data1=dataset1, data2=dataset2, metadata1=metadata1,metadata2=metadata2, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"))
+block=c(metadata1$tumor_stage)
+#runCampp2(prefix="TestResults", data1=dataset1, data2=dataset2, metadata1=metadata1,metadata2=metadata2, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"), block=block)
+runCampp2(prefix="TestResults", data1=dataset1, metadata1=metadata1, groups=c("IDs", "diagnosis"), technology=c("seq"), block=block)
 
 
