@@ -7,7 +7,7 @@ library(rms)
 library(dynamicTreeCut)
 
 getwd()
-setwd("/data/user/mathilde/CAMPP2/data_nik")
+setwd("/data/BRCA")
 
 
 data_normal1<-as.data.frame(importCounts("normal_testData1.txt"))
@@ -52,8 +52,7 @@ metadata3<-rbind(metadata1,metadata2)
 
 setwd("../")
 
-block=c(metadata$tumor_stage)
 #runCampp2(prefix="TestResults", data1=dataset1, data2=dataset2, metadata1=metadata1,metadata2=metadata2, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"), block=block)
-runCampp2(prefix="TestResults", data1=dataset1, metadata1=metadata1, groups=c("IDs", "diagnosis"), technology=c("seq"), block=block)
+runCampp2(prefix="TestResults", data1=dataset1, metadata1=metadata1, groups=c("IDs", "diagnosis"), technology=c("seq"), block=c(metadata1$tumor_stage))
 
 
