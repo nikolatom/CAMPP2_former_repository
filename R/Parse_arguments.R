@@ -198,18 +198,24 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
     block1=NULL
     block2=NULL
     if(!is.null(block)){
-        if (is.vector(block)){
-            if (!is.null(data2)){
-                block1 <- block[1:length(block)/2]
-                block2 <- block[length(block)/2:length(block)]
-            } else {
-                block1 <- block
+        if (class(block)=='list'){
+            block1 <- block[[1]]
+            block2 <- block[[2]]
+
+            if ((length(block2)!=length(data2)) || (!length(unique(block2))>=2)){
+                block2=NULL
+                print("The given blocking parameter does not match the input data. Make sure that your input contains more than one block. Continuing analysis with standard value: block2=NULL")
             }
-        }
-        if (is.factor(block)){
+
+        } else {
             block1 <- block
         }
+        if ((length(block1)!=length(data1)) || (!length(unique(block1))>=2)){
+            block1=NULL
+            print("The given blocking parameter does not match the input data. Make sure that your input contains more than one block. Continuing analysis with standard value: block1=NULL")
+        }
     }
+
 
     # Colors
 
