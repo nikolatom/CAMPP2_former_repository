@@ -62,44 +62,23 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
   setwd(paste0(prefix, "/"))
 
 
-  print("PROCESSING DETECTION OF ZEROS AND NEGATIVE VALUES")
-  hasZeroD <- unique(as.vector(data1 == 0))
-  hasNegD <- unique(as.vector(data1 < 0))
+  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  #                                                                         ## MISSING VALUE IMPUTATIONS ###
+  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  print("RUNNING MISSING VALUE IMPUTATIONS")
 
-  data1.original=NULL
-  if(transform[1] %in% c("log2", "log10", "logit")) {
-      if (TRUE %in% hasNegD) {
-          stop("\n- Data contains negative values and cannot be log transformed. Re-run command WITHOUT argument transform or alternatively if using two datasets, specify 'none' as the transform input for the dataset with negative values, e.g. c('none', 'log2') or c('log2', 'none').\n")
-      } else {
-          if (TRUE %in% hasZeroD) {
-              data1.original <- data1
-              data1 <- ReplaceZero(data1, group1)
-          }
-      }
-  }
+  print("Running missing values imputation on data1")
+  data1<-ReplaceNAs(data1)
+  print("Missing values imputation on data1 has finished")
 
+  print("Running missing values imputation on data1")
+  data2<-ReplaceNAs(data2)
+  print("Missing values imputation on data2 has finished")
 
-  if (!is.null(data2)){
-      hasZeroS <- unique(as.vector(data2 == 0))
-      hasNegS <- unique(as.vector(data2 < 0))
-  }
-
-  data2.original=NULL
-  if(!is.null(data2) & transform[2] %in% c("log2", "log10", "logit")) {
-      if (TRUE %in% hasNegS) {
-          stop("\n- Second dataset contains negative values and cannot be log transformed. Re-run command WITHOUT argument transform  or alternatively if using two datasets, specify 'none' as the transforminput for the dataset with negative values, e.g. 'none,log2' or 'log2,none'.\n")
-      } else {
-          if (TRUE %in% hasZeroS) {
-              data2.original <- data2
-              data2 <- ReplaceZero(data2, group2)
-          }
-      }
-  }
+  print("MISSING VALUE IMPUTATIONS FINISHED")
 
 
-  print("PROCESSING DETECTION OF ZEROS AND NEGATIVE VALUES FINISHED")
-
-
+  
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   #                                                                         ## Normalization, Filtering and Transformation ###
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -134,49 +113,30 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
   print("PROCESSING NORMALIZATION AND TRANSFORMATION FINISHED")
 
-
+ 
 
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   ### BATCH CORRECTION ###
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-  print("PROCESSING BATCH CORRECTION")
+
+  print("RUNNING BATCH CORRECTION")
 
 
-  if (databatch1 == TRUE){
-    if (length(batch1) > 0) {
-      design1 <-  model.matrix(~group1)
-
-      if (technology[1] == "seq") {
-        data1.batch <- ComBat(as.matrix(data1$E), batch1, design1, par.prior=TRUE,prior.plots=FALSE)
-      } else {
-        data1.batch <- ComBat(as.matrix(data1), batch1, design1, par.prior=TRUE,prior.plots=FALSE)
-      }
-
-    } else {
-      data1.batch <- data1
-      cat("\n- No column names match specified batches for dataset.\n")
-    }
-  } else {
-    cat("\n- No batch correction requested.\n")
+  if (databatch1==TRUE){
+    print("Run batch correction on the 1st dataset")
+    data1.batch %<-% BatchCorrect(data1,batch1,group1,technology[1])
+    print("Batch correction of the first dataset finished")
+  }else{
+    print("Batch correction wasn't selected")
   }
 
-
-  if (databatch2 == TRUE){
-    if (length(batch2) > 0) {
-      design2 <- model.matrix(~group2)
-
-      if (technology[2] == "seq") {
-        data2.batch <- ComBat(as.matrix(data2$E), batch2, design2, par.prior=TRUE,prior.plots=FALSE)
-      } else {
-        data2.batch <- ComBat(as.matrix(data2), batch2, design2, par.prior=TRUE,prior.plots=FALSE)
-      }
-    } else {
-      data2.batch <- data2
-      cat("\n- No column names match specified batches for second dataset. Continuing without batch correction.\n")
-    }
-  } else {
-    cat("\n- No batch correction requested for second dataset.\n")
+  if (databatch2==TRUE){
+    print("Run batch correction on the 2nd dataset")
+    data2.batch %<-% BatchCorrect(data2,batch2,group2,technology[2])
+    print("Batch correction of the second dataset finished")
+  }else{
+    print("Batch correction wasn't selected")
   }
 
   print("BATCH CORRECTION PART FINISHED")
