@@ -62,6 +62,9 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
   setwd(paste0(prefix, "/"))
 
 
+  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  #                                                                         ## MISSING VALUE IMPUTATIONS ###
+  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   print("RUNNING MISSING VALUE IMPUTATIONS")
 
   print("Running missing values imputation on data1")
@@ -75,86 +78,47 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
   print("MISSING VALUE IMPUTATIONS FINISHED")
 
 
+  
+  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  #                                                                         ## Normalization, Filtering and Transformation ###
+  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  print("CAMPP2 automatically performs data normalization and transformation depending on technology from which data are derived.")
+  print("PROCESSING NORMALIZATION AND TRANSFORMATION")
+  print("Normalizing and tranforming data1")
 
-  print("PROCESSING TRANSFORMATION")
-  hasZeroD <- unique(as.vector(data1 == 0))
-  hasNegD <- unique(as.vector(data1 < 0))
+  if(!is.null(data1.original) && technology[1] == "seq"){    ###Only sequencing data could be normalized with 0-values
+    print("Original data1 including 0-values are being normalized")
+    data1 <- NormalizeData(data1.original, group1, transform[1], standardize[1], technology[1])
+  } else {
+    print("data1 without 0-values are being normalized")
+    data1 <- NormalizeData(data1, group1, transform[1], standardize[1], technology[1])
+  }
 
-  if(transform[1] %in% c("log2", "log10", "logit")) {
-    if (TRUE %in% hasNegD) {
-      stop("\n- Data contains negative values and cannot be log transformed. Re-run command WITHOUT argument transform or alternatively if using two datasets, specify 'none' as the transform input for the dataset with negative values, e.g. c('none', 'log2') or c('log2', 'none').\n")
+  if(!is.null(data2) || !is.null(data2.original)) {
+    print("Normalizing and tranforming data2")
+    if (length(technology) != 2 || length(technology) == 1) {
+        stop("\nTwo datasets are defined in the analysis, BUT argument technology has defined only one. Technology must be defined as string vector of length two.\n")
+    } else if (length(transform) != 2 || length(transform) == 1) {
+        stop("\nTwo datasets are defined in the analysis, BUT argument transform has defined only one. Transform must be defined as string vector of length two.\n")
+    }
+
+    if(!is.null(data2.original) && technology[2] == "seq"){       ###Only sequencing data could be normalized with 0-values
+        print("Original data2 including 0-values are being normalized")
+        data2 <- NormalizeData(data2.original, group2, transform[2], standardize[2], technology[2])
     } else {
-      if (TRUE %in% hasZeroD) {
-        data1.original <- data1
-        data1 <- ReplaceZero(data1, group1)
-      }
+        print("data2 without 0-values are being normalized")
+        data2 <- NormalizeData(data2, group2, transform[2], standardize[2], technology[2])
     }
   }
 
-    if (!is.null(data2)){
-        hasZeroS <- unique(as.vector(data2 == 0))
-        hasNegS <- unique(as.vector(data2 < 0))
-    }
+  print("PROCESSING NORMALIZATION AND TRANSFORMATION FINISHED")
 
-    if(!is.null(data2) & transform[2] %in% c("log2", "log10", "logit")) {
-        if (TRUE %in% hasNegS) {
-            stop("\n- Second dataset contains negative values and cannot be log transformed. Re-run command WITHOUT argument transform  or alternatively if using two datasets, specify 'none' as the transforminput for the dataset with negative values, e.g. 'none,log2' or 'log2,none'.\n")
-        } else {
-            if (TRUE %in% hasZeroS) {
-                data2.original <- data2
-                data2 <- ReplaceZero(data2, group2)
-            }
-        }
-    }
-
-
-    print("TRANSFORMATION PART FINISHED")
-
-
-    # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    #                                                                         ## Normalization, Filtering and Transformation ###
-    # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    print("PROCESSING NORMALIZATION")
-
-    NB <- " N.B This pipeline does not handle background correction of single-channel intensity data or within array normalization two-color intensity data. See limma manual section on array normalization for more on this. Data may be fully normalized with limma (R/Rstudio) or another software and the pipeline re-run."
-
-
-    # First Dataset
-
-    if (exists("data1.original")) {
-        data1 <- NormalizeData(technology[1], data1, group1, transform[1], standardize[1], data1.original)
-    } else {
-        data1 <- NormalizeData(technology[1], data1, group1, transform[1], standardize[1])
-    }
-
-
-    # Second Dataset
-
-    if(!is.null(data2)) {
-        if (length(technology) < 2) {
-            stop("\nTwo datasets are input for correlation analysis, BUT argument technology only has length one. Length of technology must be two.\n")
-        }
-        if (length(transform) < 2) {
-            stop("\nTwo datasets are input for correlation analysis, BUT argument transform only has length one. Length of transformmust be two, see.\n")
-        }
-    }
-
-
-
-    if (!is.null(data2)) {
-        if (exists("data2.original")) {
-            data2 <- NormalizeData(technology[2], data2, group2, transform[2], standardize[2], data2.original)
-        } else {
-            data2 <- NormalizeData(technology[2], data2, group2, transform[2], standardize[2])
-        }
-    }
-
-    print("NORMALIZATION PART FINISHED")
-
+ 
 
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   ### BATCH CORRECTION ###
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
   print("RUNNING BATCH CORRECTION")
 

@@ -54,7 +54,6 @@ dataset3<-cbind(dataset1,dataset2)
 metadata3<-rbind(metadata1,metadata2)
 
 
-runCampp2(batches=c("tumor_stage","tumor_stage"),prefix="test_replace_NA", data1=dataset1, data2=dataset2, metadata1=metadata1,metadata2=metadata2, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"))
-
+runCampp2(batches=c("tumor_stage","tumor_stage"),prefix="test_CAMPP2", data1=dataset1, data2=dataset2, metadata1=metadata1,metadata2=metadata2, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"))
 
 
