@@ -732,10 +732,10 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
     # heatmap colors in blue
     hm.gradient <- viridis(300, option="cividis")
-    range <- c(round(min(DE.out$logFC1)), round(max(DE.out$logFC1)))
+    range <- c(round(min(DE.out$"logFC")), round(max(DE.out$"logFC")))
 
     # Heatmap as pdf
-    MakeHeatmap(hm, hm.gradient, colors.hm, colors, groups, paste0(prefix,name), range)
+    MakeHeatmap(hm, hm.gradient, colors.hm, colors, groups, paste0(prefix,name),range)
 
     rm(hm)
 

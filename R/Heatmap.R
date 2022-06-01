@@ -1,12 +1,12 @@
-#' @title Heatmaps
-#' @description Function for making heatmaps
-#' @param my.DE a dataframe with counts for differential expressed/abundant features
-#' @param my.gradient a color gradient to use for heatmap
-#' @param my.colorshm a color pallet for groups full length
-#' @param my.colors a color pallet for groups at levels
-#' @param my.group a vector of groups to color by
-#' @param my.filename a name of output plot
-#' @param my.range ??
+#' @title Make Heatmap
+#' @description Function for making heatmaps.
+#' @param data A dataframe with counts for differential expressed/abundant features.
+#' @param gradient A color gradient to use for heatmap.
+#' @param side.colors A color pallet for groups full length.
+#' @param colors A color pallet for groups at levels.
+#' @param group A vector of groups to color by.
+#' @param filename A name of output plot.
+#' @param range A vector containing the smallest and biggest logFC values from the input data frame.
 #' @export
 #' @import heatmap.plus
 #' @import squash
@@ -19,12 +19,12 @@
 #' }
 
 
-MakeHeatmap <-  function(my.DE, my.gradient, my.colorshm, my.colors, my.group, my.filename, my.range) {
-    pdf(paste0(my.filename,"_heatmap.pdf"), height = 13, width=11)
-    heatmap.plus(as.matrix(scale(my.DE, scale = FALSE)), col=my.gradient, Rowv=NULL, hclustfun=function(d) hclust(d, method="ward.D2"), trace="none", labRow=rownames(my.DE), labCol='', ColSideColors=cbind(my.colorshm, rep("white", length(my.group))), margins = c(14,8), cexCol=1, cexRow = 0.8)
-    map <- makecmap(my.range[1]:my.range[2])
+MakeHeatmap <-  function(data, gradient, side.colors, colors, group, filename, range, prefix) {
+    pdf(paste0(filename,"_heatmap.pdf"), height = 13, width=11)
+    heatmap.plus(as.matrix(scale(data, scale = FALSE)), col=gradient, Rowv=NULL, hclustfun=function(d) hclust(d, method="ward.D2"), trace="none", labRow=rownames(data), labCol='', ColSideColors=cbind(side.colors, rep("white", length(group))), margins = c(14,8), cexCol=1, cexRow = 0.8)
+    map <- makecmap(range[1]:range[2])
     map$colors <- viridis((length(map$breaks)-1), option="cividis")
     hkey(map, x = 0, y = 0, title = "LogFC", stretch = 2)
-    legend("topleft", legend = as.character(levels(as.factor(my.group))), fill=my.colors, cex = 0.7)
+    legend("topleft", legend = as.character(levels(as.factor(group))), fill=colors, cex = 0.7)
     dev.off()
 }
