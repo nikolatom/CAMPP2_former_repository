@@ -20,7 +20,7 @@ load devtools library <br/>
 `library(devtools)`
 
 install CAMPP2 from private Github repository (using your personal token and commit ID)
-`devtools::install_github(repo = "ELELAB/CAMPP2",ref="668e7b6b8a7b69a711a961b0c96d75dd3afb7d30",auth_token="<your personal token to github>")`
+`devtools::install_github(repo = "ELELAB/CAMPP2",ref="47dc4173086428ba0feac57eec1c3c0ea8f8962d",auth_token="<your personal token to github>")`
 
 ### Example run
 Default settings can be executed in R using 
