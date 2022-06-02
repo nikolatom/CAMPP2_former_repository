@@ -21,7 +21,14 @@ install CAMPP2 from private Github repository (using your personal token and com
 `devtools::install_github(repo = "ELELAB/CAMPP2",ref="81bd7b3207ea49a1d5331e7d28e2201f66d96212",auth_token="<your personal token to github>")`
 
 ### Example run
-Default settings can be executed in R using `campp2_exampleRun.R`. 
+Default settings can be executed in R using 
+```
+library(CAMPP2)
+library(edgeR)
+
+runCampp2(batches=c("tumor_stage","tumor_stage"),prefix="test_CAMPP2", data1=dataset1, data2=dataset2, metadata1=metadata1,metadata2=metadata2, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"))
+
+```
 <br/>
 
 For more details, see help page of the main function `runCampp2`.
