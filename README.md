@@ -3,8 +3,10 @@
 
 ### Installation instructions
 
-#### Create conda environment with R and devtools
+#### Create and activate conda environment with R and devtools in your project directory
 `conda create --prefix env -c conda-forge r-base=4.1.3 r-devtools`
+`conda activate ./env`
+
 
 #### Install CAMPP2 from Github
 open R console: <br/>
