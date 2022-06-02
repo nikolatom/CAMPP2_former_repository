@@ -4,7 +4,7 @@
 ### Installation instructions
 
 #### Create and activate conda environment with R and devtools in your project directory
-`conda create --prefix env -c conda-forge r-base=4.1.3 r-devtools`
+`conda create --prefix env -c conda-forge r-base=4.1.3 r-devtools` <br/>
 `conda activate ./env`
 
 
