@@ -46,7 +46,8 @@ Imports:
  multiMiR,  
  biomaRt,  
  doMC,  
- nnet 
+ nnet,
+ zeallot
 exports:
 VignetteBuilder: knitr
 Suggests: BiocStyle, knitr, rmarkdown
