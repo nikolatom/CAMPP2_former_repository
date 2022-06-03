@@ -3,8 +3,10 @@
 
 ### Installation instructions
 
-#### Create conda environment with R and devtools
-`conda create --prefix env -c conda-forge r-base=4.1.3 r-devtools`
+#### Create and activate conda environment with R and devtools in your project directory
+`conda create --prefix env -c conda-forge r-base=4.1.3 r-devtools` <br/>
+`conda activate ./env`
+
 
 #### Install CAMPP2 from Github
 open R console: <br/>
@@ -18,7 +20,7 @@ load devtools library <br/>
 `library(devtools)`
 
 install CAMPP2 from private Github repository (using your personal token and commit ID)
-`devtools::install_github(repo = "ELELAB/CAMPP2",ref="81bd7b3207ea49a1d5331e7d28e2201f66d96212",auth_token="<your personal token to github>")`
+`devtools::install_github(repo = "ELELAB/CAMPP2",ref="992ca5a5343b8e6286c23fdcd1606bdaeb11c446d",auth_token="<your personal token to github>")`
 
 ### Example run
 Default settings can be executed in R using 
