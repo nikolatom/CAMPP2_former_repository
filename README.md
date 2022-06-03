@@ -34,7 +34,7 @@ runCampp2(batches=c("tumor_stage","tumor_stage"),prefix="test_CAMPP2", data1=dat
 ```
 <br/>
 
-For testing the functions, you can consider the code present in `campp2_example_Run.R`. <br/>
+For testing the functions, you can consider the code present in `campp2_example_Run.R` (git repository). <br/>
 
 For more details, see help page of the main function `runCampp2`.
 

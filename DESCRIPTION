@@ -47,7 +47,8 @@ Imports:
  biomaRt,  
  doMC,  
  nnet,
- zeallot
+ zeallot,
+ igraph
 exports:
 VignetteBuilder: knitr
 Suggests: BiocStyle, knitr, rmarkdown

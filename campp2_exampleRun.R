@@ -10,7 +10,7 @@ library(dynamicTreeCut)
 runCampp2(batches=c("tumor_stage","tumor_stage"),prefix="test_CAMPP2", data1=dataset1, data2=dataset2, metadata1=metadata1,metadata2=metadata2, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"))
 
 ###Code for testing the function for Replacing NAs
-n<-1000
+n<-10000
 Na_dataset1<-apply (dataset1, 2, function(x) {x[sample( c(1:n), floor(n/10))] <- NA; x} )
 ReplaceNAs(Na_dataset1)
 
