@@ -3,7 +3,6 @@
 #' @param my.truestatus a vetcor of groups/labels (a character vector, length of ncol in the matrix to be plotted)
 #' @param my.colors a vector with colors to use (a character vector with the length of the number of groups/levels).
 #' @export
-#' @import heatmap.plus
 #' @import squash
 #' @importFrom viridisLite viridis
 #' @import ggplot2

@@ -4,7 +4,6 @@
 #' @param my.filename a name of output plot
 #' @param my.n ?
 #' @export
-#' @import survminer
 #' @import survcomp
 #' @seealso
 #' @return survival plot
