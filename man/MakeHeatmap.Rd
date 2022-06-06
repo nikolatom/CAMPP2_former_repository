@@ -2,38 +2,26 @@
 % Please edit documentation in R/Heatmap.R
 \name{MakeHeatmap}
 \alias{MakeHeatmap}
-\title{Heatmaps}
+\title{Make Heatmap}
 \usage{
-MakeHeatmap(
-  my.DE,
-  my.gradient,
-  my.colorshm,
-  my.colors,
-  my.group,
-  my.filename,
-  my.range
-)
+MakeHeatmap(data, gradient, group, prefix, range)
 }
 \arguments{
-\item{my.DE}{a dataframe with counts for differential expressed/abundant features}
+\item{data}{A dataframe with counts for differential expressed/abundant features.}
 
-\item{my.gradient}{a color gradient to use for heatmap}
+\item{gradient}{A color gradient to use for the heatmap.}
 
-\item{my.colorshm}{a color pallet for groups full length}
+\item{group}{A vector of groups to color by.}
 
-\item{my.colors}{a color pallet for groups at levels}
+\item{prefix}{A prefix for the output filename.}
 
-\item{my.group}{a vector of groups to color by}
-
-\item{my.filename}{a name of output plot}
-
-\item{my.range}{??}
+\item{range}{A vector containing the smallest and biggest logFC values from the input data frame.}
 }
 \value{
-heatmaps
+heatmap
 }
 \description{
-Function for making heatmaps
+A function for making heatmaps from expression data.
 }
 \examples{
 \dontrun{

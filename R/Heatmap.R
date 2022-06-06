@@ -1,30 +1,38 @@
 #' @title Make Heatmap
-#' @description Function for making heatmaps.
+#' @description A function for making heatmaps from expression data.
 #' @param data A dataframe with counts for differential expressed/abundant features.
-#' @param gradient A color gradient to use for heatmap.
-#' @param side.colors A color pallet for groups full length.
-#' @param colors A color pallet for groups at levels.
+#' @param gradient A color gradient to use for the heatmap.
 #' @param group A vector of groups to color by.
-#' @param filename A name of output plot.
+#' @param prefix A prefix for the output filename.
 #' @param range A vector containing the smallest and biggest logFC values from the input data frame.
 #' @export
-#' @import heatmap.plus
+#' @import ComplexHeatmap
 #' @import squash
 #' @import viridis
-#' @import ggplot2
 #' @seealso
-#' @return heatmaps
+#' @return heatmap
 #' @examples \dontrun{
 #' ...
 #' }
 
+MakeHeatmap <- function(data, gradient, group, prefix, range){
+    data<-as.matrix(data)
+    data<-rbind(head(data,20),tail(data,20))
 
-MakeHeatmap <-  function(data, gradient, side.colors, colors, group, filename, range, prefix) {
-    pdf(paste0(filename,"_heatmap.pdf"), height = 13, width=11)
-    heatmap.plus(as.matrix(scale(data, scale = FALSE)), col=gradient, Rowv=NULL, hclustfun=function(d) hclust(d, method="ward.D2"), trace="none", labRow=rownames(data), labCol='', ColSideColors=cbind(side.colors, rep("white", length(group))), margins = c(14,8), cexCol=1, cexRow = 0.8)
+    col_ha = HeatmapAnnotation(Diagnosis = group$group1,
+    simple_anno_size = unit(0.3,'cm'), annotation_name_align = TRUE)
+
+    png(paste0(prefix,"_Heatmap.png"),width = 30, height = 20, units = "cm", res=1200)
+
     map <- makecmap(range[1]:range[2])
     map$colors <- viridis((length(map$breaks)-1), option="cividis")
-    hkey(map, x = 0, y = 0, title = "LogFC", stretch = 2)
-    legend("topleft", legend = as.character(levels(as.factor(group))), fill=colors, cex = 0.7)
+    lgd <- list(title='LogFC', at=1:length(map$breaks), labels=map$breaks, col_fun=map$colors)
+
+    ht <- Heatmap(scale(data,scale=TRUE), col = gradient, heatmap_legend_param = lgd,
+                  row_names_side = "left", row_names_gp=gpar(cex=0.6), column_names_gp = gpar(cex=0),
+                  clustering_method_rows = "ward.D", column_title="Samples", row_title="Genes",
+                  top_annotation=col_ha, column_km=3, row_km=3)
+
+    draw(ht)
     dev.off()
 }

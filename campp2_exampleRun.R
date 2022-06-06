@@ -5,6 +5,7 @@ library(pROC)
 library(VennDiagram)
 library(rms)
 library(dynamicTreeCut)
+library(ComplexHeatmap)
 
 getwd()
 setwd("/data/user/mathilde/CAMPP2/data_nik")
@@ -53,6 +54,6 @@ metadata3<-rbind(metadata1,metadata2)
 
 setwd("../")
 
-runCampp2(WGCNA="DE", signif=c(1,1,1,1),survival="DE",plot.heatmap=TRUE,batches=c("tumor_stage","tumor_stage"),kmeans=TRUE, plot.mds=TRUE,prefix="test_main_functon", data1=dataset1, data2=dataset2, metadata1=metadata1,metadata2=metadata2, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"))
+runCampp2(WGCNA="DE", signif=c(1,1,1,1),survival="DE",plot.heatmap="DA",batches=c("tumor_stage","tumor_stage"),prefix="TestResults", data1=dataset1, data2=dataset2, metadata1=metadata1,metadata2=metadata2, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"))
 
 
