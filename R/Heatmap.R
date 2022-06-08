@@ -1,4 +1,4 @@
-#' @title Make Heatmap
+#' @title Heatmap
 #' @description A function for making heatmaps from expression data.
 #' @param data A dataframe with counts for differential expressed/abundant features.
 #' @param gradient A color gradient to use for the heatmap.
