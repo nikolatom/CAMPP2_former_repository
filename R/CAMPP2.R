@@ -10,6 +10,7 @@
 #' @param batches Specifies which metadata should be used for a batch correction (sequencing run/tissue/interstitial fluid/etc.). Argument takes a character vector of length 1 (one dataset) or 2 (two datasets), where the string(s) match a column name(s) in the metadata file(s). Default is NULL.
 #' @param kmeans Argument for kmeans clustering. The parameter must be specified as a character vector matching the name of a column in the metadata file, denoting the labeling of points on the MDS plot(s). If a parameter is set to "TRUE" (no column name specified) no labels will be added to the plot. Works only for the first dataset (data1). Default is FALSE (do not run).
 #' @param plot.heatmap Argument for heatmap specified as either: "DE", "DA", "LASSO", "EN" or "Consensus". Defaults is FALSE (do not run).
+#' @param heatmap.size Argument specifying how many genes will be plotted in the heatmap if plot.heatmap is TRUE. The input must be specified as an even number.
 #' @param correlation Argument for correlation analysis. String specify which features should be correlated, options are: "ALL", "DE", "DA", "LASSO", "EN" or "Consensus". For this type of analysis, 2 datasets must include the same samples, e.g. tumor1-normal vs tumor2-normal (3 samples from 1 patient needed). Default is FALSE (do not run).
 #' @param survival (double check this when parsin survival function) Survival analysis may be performed on differentially expressed/abundant variables, variables from LASSO/EN regression or the consensus of these. Argument "survival" must be specified as either; "DE", "DA", "LASSO", "EN" or "Consensus". The full dataframe of variables may be used (if argument is set to ALL), HOWEVER this is not advisable unless the dataset is small with very few variables. At least, "survival", "outcome", "outcome.time" info must be included in the metadata file. The metadata file must contain at least four columns named; "ids" (sample identifiers), "age" (age in years at diagnosis, surgery or entry into trail), "outcome.time" (time until end of follow-up in weeks, months or years, censuring, death) and "outcome" (numeric 0 = censuring, 1=death). N.B. in case of (paired) normal samples the columns with survival information for these samples should contain "NA" values.
 #' @param surv.plot Argument which specifies number of features to include per survival plot. Default is 50.
@@ -35,22 +36,22 @@
 #' }
 
 
-runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology, groups, batches=NULL, data.check=TRUE, standardize=FALSE, transform=FALSE, plot.mds=FALSE, plot.heatmap=FALSE, kmeans=FALSE, signif=NULL, colors=NULL, prefix="Results", correlation=FALSE, lasso=FALSE, WGCNA=FALSE, cutoff.WGCNA=NULL, survival=FALSE, covariates=NULL, stratify=NULL, surv.plot=50, PPint=FALSE, gene.miR.int=FALSE){
+runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology, groups, batches=NULL, data.check=TRUE, standardize=FALSE, transform=FALSE, plot.mds=FALSE, plot.heatmap=FALSE, heatmap.size=40, kmeans=FALSE, signif=NULL, colors=NULL, prefix="Results", correlation=FALSE, lasso=FALSE, WGCNA=FALSE, cutoff.WGCNA=NULL, survival=FALSE, covariates=NULL, stratify=NULL, surv.plot=50, PPint=FALSE, gene.miR.int=FALSE){
 
   ###parse input arguments and assign updated values
   c(data1,data2,metadata1,metadata2,technology,groups,
     group1,group2,ids,batches,databatch1,databatch2,
     batch1,batch2,standardize,transform,data.check,
     plot.mds,kmeans,labels.kmeans,signif,logFC1,FDR1,
-    logFC2,FDR2,colors,prefix,plot.heatmap,corrby,
-    lasso,WGCNA,cutoff.WGCNA,survival,covarD,scovarD,
+    logFC2,FDR2,colors,prefix,plot.heatmap, heatmap.size,
+    corrby,lasso,WGCNA,cutoff.WGCNA,survival,covarD,scovarD,
     covarS,stratify,surv.plot,PPI,GmiRI,DEA.allowed.type,
     survival.metadata,approved.gene.IDs,provedmiRIDs,gene.query,miR.query) %<-% parseArguments(data1=data1, metadata1=metadata1, data2=data2, metadata2=metadata2,
                                                                                                groups=groups, technology=technology, prefix=prefix, batches=batches,
                                                                                                data.check=data.check, standardize=standardize, transform=transform,
-                                                                                               plot.mds=plot.mds, plot.heatmap=plot.heatmap, kmeans=kmeans,
-                                                                                               signif=signif, colors=colors, correlation=correlation, lasso=lasso,
-                                                                                               WGCNA=WGCNA, cutoff.WGCNA=cutoff.WGCNA, survival=survival,
+                                                                                               plot.mds=plot.mds, plot.heatmap=plot.heatmap, heatmap.size=heatmap.size,
+                                                                                               kmeans=kmeans,signif=signif, colors=colors, correlation=correlation,
+                                                                                               lasso=lasso,WGCNA=WGCNA, cutoff.WGCNA=cutoff.WGCNA, survival=survival,
                                                                                                covariates=covariates, stratify=stratify,surv.plot=surv.plot,
                                                                                                PPint=PPint, gene.miR.int=gene.miR.int)
 
@@ -700,8 +701,6 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
 
   if (!isFALSE(plot.heatmap)) {
-    # color scheme
-    colors.hm <- GetColors(as.character(group1), colors)
 
     if (databatch1 == TRUE){
       hm <- data1.batch
@@ -715,7 +714,8 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
     if (plot.heatmap == "ALL") {
       stop("\nOption ALL is not allowed for heatmap, too heavy! Pick either 'DE', 'DA', 'LASSO', 'EN' or 'Consensus'.\n")
     } else if (plot.heatmap %in% c("DA", "DE")) {
-      hm <- hm[rownames(hm) %in% res.DE.names,]
+      signif_samples <- rbind(head(res.DE.names,heatmap.size/2),tail(res.DE.names,heatmap.size/2))
+      hm <- hm[rownames(hm) %in% signif_samples,]
     } else {
       if(!is.null(lasso)) {
         if (plot.heatmap == "Consensus") {
@@ -735,7 +735,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
     range <- c(round(min(DE.out$"logFC")), round(max(DE.out$"logFC")))
 
     # Heatmap as pdf
-    MakeHeatmap(hm, hm.gradient, groups, prefix,range)
+    MakeHeatmap(hm, hm.gradient, group1, prefix, range)
 
     rm(hm)
 

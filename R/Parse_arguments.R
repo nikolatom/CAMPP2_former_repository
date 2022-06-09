@@ -10,6 +10,7 @@
 #' @param batches Specifies which metadata should be used for a batch correction (sequencing run/tissue/interstitial fluid/etc.). Argument takes a character vector of length 1 (one dataset) or 2 (two datasets), where the string(s) match a column name(s) in the metadata file(s). Default is NULL.
 #' @param kmeans Argument for kmeans clustering. The parameter must be specified as a character vector matching the name of a column in the metadata file, denoting the labeling of points on the MDS plot(s). If a parameter is set to "TRUE" (no column name specified) no labels will be added to the plot. Works only for the first dataset (data1). Default is FALSE (do not run).
 #' @param plot.heatmap Argument for heatmap specified as either: "DE", "DA", "LASSO", "EN" or "Consensus". Defaults is FALSE (do not run).
+#' @param heatmap.size Argument specifying how many genes will be plotted in the heatmap if plot.heatmap is TRUE. The input must be specified as an even number.
 #' @param correlation Argument for correlation analysis. String specify which features should be correlated, options are: "ALL", "DE", "DA", "LASSO", "EN" or "Consensus". For this type of analysis, 2 datasets must include the same samples, e.g. tumor1-normal vs tumor2-normal (3 samples from 1 patient needed). Default is FALSE (do not run).
 #' @param survival (double check this when parsin survival function) Survival analysis may be performed on differentially expressed/abundant variables, variables from LASSO/EN regression or the consensus of these. Argument "survival" must be specified as either; "DE", "DA", "LASSO", "EN" or "Consensus". The full dataframe of variables may be used (if argument is set to ALL), HOWEVER this is not advisable unless the dataset is small with very few variables. At least, "survival", "outcome", "outcome.time" info must be included in the metadata file. The metadata file must contain at least four columns named; "ids" (sample identifiers), "age" (age in years at diagnosis, surgery or entry into trail), "outcome.time" (time until end of follow-up in weeks, months or years, censuring, death) and "outcome" (numeric 0 = censuring, 1=death). N.B. in case of (paired) normal samples the columns with survival information for these samples should contain "NA" values.
 #' @param surv.plot Argument which specifies number of features to include per survival plot. Default is 50.
@@ -32,7 +33,7 @@
 #' ...
 #' }
 
-parseArguments <- function(data1, data2, metadata1, metadata2, groups, technology, batches, data.check, standardize, transform, plot.mds, plot.heatmap, kmeans, signif, colors, prefix, correlation, lasso, WGCNA, cutoff.WGCNA, survival, covariates, stratify, surv.plot, PPint, gene.miR.int){
+parseArguments <- function(data1, data2, metadata1, metadata2, groups, technology, batches, data.check, standardize, transform, plot.mds, plot.heatmap, heatmap.size, kmeans, signif, colors, prefix, correlation, lasso, WGCNA, cutoff.WGCNA, survival, covariates, stratify, surv.plot, PPint, gene.miR.int){
 
     # For DE/DA analysis, survival analysis and correlation analysis
     DEA.allowed.type <- c("ALL","EN", "LASSO", "DA", "DE", "Consensus",FALSE)
@@ -304,6 +305,7 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
          paste0("colors: ",colors),"\n",
          paste0("prefix: ",prefix),"\n",
          paste0("plot.heatmap: ",plot.heatmap),"\n",
+         paste0("heatmap.size:",heatmap.size),"\n",
          paste0("corrby: ",corrby),"\n",
          paste0("lasso: ",lasso),"\n",
          paste0("WGCNA: ",WGCNA),"\n",
@@ -318,7 +320,7 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
          paste0("GmiRI: ",GmiRI),"\n"
      ))
 
-    return(list("data1"=data1,"data2"=data2,"metadata1"=metadata1,"metadata2"=metadata2, "technology"=technology, "groups"=groups,"group1"=group1,"group2"=group2,"ids"=ids,"batches"=batches,"databatch1"=databatch1,"databatch2"=databatch2,"batch1"=batch1, "batch2"=batch2, "standardize"=standardize,"transform"=transform,"data.check"=data.check,"plot.mds"=plot.mds,"kmeans"=kmeans,"labels.kmeans"=labels.kmeans,"signif"=signif,"logFC"=logFC,"FDR"=FDR,"slogFC"=slogFC,"sFDR"=sFDR,"colors"=colors,"prefix"=prefix,"plot.heatmap"=plot.heatmap,"corrby"=corrby,"lasso"=lasso,"WGCNA"=WGCNA,"cutoff.WGCNA"=cutoff.WGCNA,"survival"=survival,"covarD"=covarD,"scovarD"=scovarD,"covarS"=covarS,"stratify"=stratify,"surv.plot"=surv.plot,"PPI"=PPI,"GmiRI"=GmiRI,"DEA.allowed.type"=DEA.allowed.type,"survival.metadata"=survival.metadata,"approved.gene.IDs"=approved.gene.IDs,"approved.miR.IDs"=approved.miR.IDs,"gene.query"=gene.query,"miR.query"=miR.query))
+    return(list("data1"=data1,"data2"=data2,"metadata1"=metadata1,"metadata2"=metadata2, "technology"=technology, "groups"=groups,"group1"=group1,"group2"=group2,"ids"=ids,"batches"=batches,"databatch1"=databatch1,"databatch2"=databatch2,"batch1"=batch1, "batch2"=batch2, "standardize"=standardize,"transform"=transform,"data.check"=data.check,"plot.mds"=plot.mds,"kmeans"=kmeans,"labels.kmeans"=labels.kmeans,"signif"=signif,"logFC"=logFC,"FDR"=FDR,"slogFC"=slogFC,"sFDR"=sFDR,"colors"=colors,"prefix"=prefix,"plot.heatmap"=plot.heatmap,"heatmap.size"=heatmap.size,"corrby"=corrby,"lasso"=lasso,"WGCNA"=WGCNA,"cutoff.WGCNA"=cutoff.WGCNA,"survival"=survival,"covarD"=covarD,"scovarD"=scovarD,"covarS"=covarS,"stratify"=stratify,"surv.plot"=surv.plot,"PPI"=PPI,"GmiRI"=GmiRI,"DEA.allowed.type"=DEA.allowed.type,"survival.metadata"=survival.metadata,"approved.gene.IDs"=approved.gene.IDs,"approved.miR.IDs"=approved.miR.IDs,"gene.query"=gene.query,"miR.query"=miR.query))
 
 }
 

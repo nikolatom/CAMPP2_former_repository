@@ -5,7 +5,7 @@
 #' @import ggplot2
 #' @import ggrepel
 #' @seealso
-#' @return Volcano plot showcasing significantly differentially expressed genes.
+#' @return Volcano plot
 #' @examples \dontrun{
 #' ...
 #' }
