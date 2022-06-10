@@ -64,13 +64,12 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
         metadata1$ids <- ids
     }
 
-    # Groups
+    # groups
     group1 = as.factor(metadata1[ , groups[[2]]])
 
     if (length(group1) <= 1) {
         stop(paste0("Check the column name for groups in your metadata1 ",groups[[2]], " If the name matches, check the samples names."))
     }
-
 
 
     # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -94,11 +93,12 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
         # Match Data and Metadata
         metadata2 <- metadata2[metadata2$ids %in% colnames(data2),]
 
-        # Groups
+        # groups
         group2 = as.factor(metadata2[ , groups[[4]]])
         if (length(group2) <= 1) {
             stop(paste0("No column in metadata2 file called ",groups[[4]]))
         }
+
     }
 
 
@@ -320,7 +320,7 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
          paste0("GmiRI: ",GmiRI),"\n"
      ))
 
-    return(list("data1"=data1,"data2"=data2,"metadata1"=metadata1,"metadata2"=metadata2, "technology"=technology, "groups"=groups,"group1"=group1,"group2"=group2,"ids"=ids,"batches"=batches,"databatch1"=databatch1,"databatch2"=databatch2,"batch1"=batch1, "batch2"=batch2, "standardize"=standardize,"transform"=transform,"data.check"=data.check,"plot.mds"=plot.mds,"kmeans"=kmeans,"labels.kmeans"=labels.kmeans,"signif"=signif,"logFC"=logFC,"FDR"=FDR,"slogFC"=slogFC,"sFDR"=sFDR,"colors"=colors,"prefix"=prefix,"plot.heatmap"=plot.heatmap,"heatmap.size"=heatmap.size,"corrby"=corrby,"lasso"=lasso,"WGCNA"=WGCNA,"cutoff.WGCNA"=cutoff.WGCNA,"survival"=survival,"covarD"=covarD,"scovarD"=scovarD,"covarS"=covarS,"stratify"=stratify,"surv.plot"=surv.plot,"PPI"=PPI,"GmiRI"=GmiRI,"DEA.allowed.type"=DEA.allowed.type,"survival.metadata"=survival.metadata,"approved.gene.IDs"=approved.gene.IDs,"approved.miR.IDs"=approved.miR.IDs,"gene.query"=gene.query,"miR.query"=miR.query))
+    return(list("data1"=data1,"data2"=data2,"metadata1"=metadata1,"metadata2"=metadata2, "technology"=technology, "groups"=groups,"group1"=group1,"group2"=group2,"subtype1"=subtype1,"subtype2"=subtype2,"ids"=ids,"batches"=batches,"databatch1"=databatch1,"databatch2"=databatch2,"batch1"=batch1, "batch2"=batch2, "standardize"=standardize,"transform"=transform,"data.check"=data.check,"plot.mds"=plot.mds,"kmeans"=kmeans,"labels.kmeans"=labels.kmeans,"signif"=signif,"logFC"=logFC,"FDR"=FDR,"slogFC"=slogFC,"sFDR"=sFDR,"colors"=colors,"prefix"=prefix,"plot.heatmap"=plot.heatmap,"heatmap.size"=heatmap.size,"corrby"=corrby,"lasso"=lasso,"WGCNA"=WGCNA,"cutoff.WGCNA"=cutoff.WGCNA,"survival"=survival,"covarD"=covarD,"scovarD"=scovarD,"covarS"=covarS,"stratify"=stratify,"surv.plot"=surv.plot,"PPI"=PPI,"GmiRI"=GmiRI,"DEA.allowed.type"=DEA.allowed.type,"survival.metadata"=survival.metadata,"approved.gene.IDs"=approved.gene.IDs,"approved.miR.IDs"=approved.miR.IDs,"gene.query"=gene.query,"miR.query"=miR.query))
 
 }
 

@@ -20,7 +20,6 @@ MakeVolcano <- function(data, prefix) {
 
     data$DEAlabel <- ""
     data[1:10,]$DEAlabel[data[1:10,]$diffexpressed != "NO"] <- data[1:10,]$"Gene name"[data[1:10,]$diffexpressed != "NO"]
-    #data$DEAlabel[data$diffexpressed != "NO"] <- data$"Gene name"[data$diffexpressed != "NO"]
 
     ggplot(data, aes(x=logFC, y=-log10(P.Value), col=data$diffexpressed, label=data$DEAlabel)) +
         labs(col="Gene regulation:") +

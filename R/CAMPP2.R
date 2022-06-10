@@ -502,8 +502,6 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
   }
 
 
-
-
   if (!is.null(data2) && technology[2] == "seq") {
     cnames <- colnames(data2$E)
     data2 <- data.frame(data2$E)
@@ -512,7 +510,24 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
   print("DIFFERENTIAL EXPRESSION PART FINISHED")
 
+  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  ### VISUALISATIONS FOR DIFFERENTIAL EXPRESSION ANALYSIS ###
+  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+  # First dataset
+  DE_out <- AddGeneName(DE_out)
+  MakeVolcano(DE_out, prefix+"1")
+  #MakeUpset(prefix+"1", list(subtype1, subtype2, subtype 3), c(name1, name2, name3))
+  #MakeVennDiagram(prefix+"1", list(subtype1, subtype2, subtype 3), c(name1, name2, name3))
+
+  #Second dataset
+  if (!is.null(sDE.out)){
+      sDE_out <- AddGeneName(sDE_out)
+      MakeVolcano(sDE_out, prefix+"2")
+      #MakeUpset(prefix+"2", list(subtype1, subtype2, subtype 3), c(name1, name2, name3))
+      #MakeVennDiagram(prefix+"2", list(subtype1, subtype2, subtype 3), c(name1, name2, name3))
+
+  }
 
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   #                                                                                       ## LASSO Regression ###
