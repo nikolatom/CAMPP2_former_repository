@@ -1,0 +1,56 @@
+Package: CAMPP2
+Type: Package
+Title: CAncer bioMarker Prediction Pipeline 2 (CAMPP2)
+Version: 0.1.0
+Author: Nikola Tom, Thilde Bagger Terkelsen
+Maintainer: Nikola Tom <1nikola.tom@gmail.com>
+Description: The CAncer bioMarker Prediction Pipeline2 (CAMPP2) is a simple
+  bioinformatics tool intended to automatize identification of potential
+  diagnostic and prognostic cancer biomarkers. The pipeline is versatile
+  and may be used for analysis of a variety of quantitative biological
+  data from high throughput platforms, including genes, proteins, small
+  RNAs, lipids and glycans. CAMPP2 currently supports; differential expression/
+  abundance analysis, LASSO/Elastic Net regression,Weighed
+  Gene Co-expression Network Analysis, Correlation analysis and Survival
+  analysis (Cox proportional hazard regression). 
+License: GPL
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.2
+biocViews:
+Depends: R (>= 4.0.0)
+Imports:
+ limma,
+ edgeR,
+ glmnet,
+ sva, 
+ openxlsx, 
+ ggplot2,  
+ gridExtra,  
+ heatmap.plus,  
+ plyr,  
+ dplyr,
+ data.table,  
+ viridis,
+ squash,  
+ survcomp,  
+ survminer,  
+ scales,  
+ rms,  
+ GO.db,  
+ WGCNA, 
+ fitdistrplus,  
+ impute,  
+ pcaMethods,  
+ pROC,  
+ VennDiagram,  
+ mclust,  
+ multiMiR,  
+ biomaRt,  
+ arcdiagram,  
+ doMC,  
+ knor,  
+ nnet 
+exports:
+VignetteBuilder: knitr
+Suggests: BiocStyle, knitr, rmarkdown
