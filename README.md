@@ -13,9 +13,6 @@ open R console: <br/>
 `R` <br/>
 
 
-install dependency for devtools <br/>
-`install.packages("usethis")`
-
 load devtools library <br/>
 `library(devtools)`
 
