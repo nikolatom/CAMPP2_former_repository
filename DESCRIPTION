@@ -27,14 +27,12 @@ Imports:
  openxlsx, 
  ggplot2,  
  gridExtra,  
- heatmap.plus,  
  plyr,  
  dplyr,
  data.table,  
  viridis,
  squash,  
  survcomp,  
- survminer,  
  scales,  
  rms,  
  GO.db,  
@@ -47,10 +45,10 @@ Imports:
  mclust,  
  multiMiR,  
  biomaRt,  
- arcdiagram,  
  doMC,  
- knor,  
- nnet 
+ nnet,
+ zeallot,
+ igraph
 exports:
 VignetteBuilder: knitr
 Suggests: BiocStyle, knitr, rmarkdown
