@@ -62,7 +62,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
   setwd(paste0(prefix, "/"))
 
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  #                                                                         ## Check if data contains zeros and negative values. ###
+  #                                                                         ## Fix zeros and check for negative values. ###
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
   print("CAMPP2 is automatically detects negative values and fix zeros in your data")

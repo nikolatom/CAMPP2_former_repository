@@ -6,7 +6,7 @@
 #' @export
 #' @import impute
 #' @seealso
-#' @return a data frame with replaced zeros and a dataframe with original data. Features having sum of zero counts higher than the size of the smallest sample group are removed by default.
+#' @return a data frame with fixed zeros. Features having sum of zero counts higher than the size of the smallest sample group are removed by default.
 #' @examples \dontrun{
 #' ...
 #' }
