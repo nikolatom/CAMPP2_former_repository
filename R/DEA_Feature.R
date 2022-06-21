@@ -10,6 +10,7 @@
 #' @export
 #' @import sva
 #' @import limma
+#' @import statmod
 #' @seealso
 #' @return DEA features
 #' @examples \dontrun{

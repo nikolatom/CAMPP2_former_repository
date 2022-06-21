@@ -19,6 +19,7 @@ runCampp2(
   plot.heatmap = FALSE,
   kmeans = FALSE,
   signif = NULL,
+  block = NULL,
   colors = NULL,
   prefix = "Results",
   correlation = FALSE,
@@ -62,6 +63,8 @@ runCampp2(
 
 \item{signif}{Cut-offs for log fold change (logFC) and corrected p-value (fdr), defining significant hits (proteins, genes, miRNAs or N-features). If argument is set, it must be a numeric vector, where the first element specifies the cut-off for logFC and the second element specifies the cut-off for corrected p-value (fdr).  In case of 2 datasets, vector must be of length 4. By default, cutoffs will be set to -1 > logFC > 1 and corrected p-values < 0.05.}
 
+\item{block}{A vector or factor specifying a blocking variable for differential expression analysis. The block must be of same length as the belonging dataset and contain 2 or more options. For 2 datasets the block can be defined as a list of factors or vectors.}
+
 \item{colors}{Custom color pallet for MDS and heatmaps. Must be the same length as number of groups used for comparison (e.g. two groups = two colors) and must be defined as character vector. See R site for avalibe colors http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf. Default is NULL.}
 
 \item{prefix}{Prefix for the results' files and results folder. Defalt is "Results".}
@@ -96,7 +99,4 @@ CAMPP2 is a tool for quantitative data analysis
 \dontrun{
 ...
 }
-}
-\seealso{
-
 }
