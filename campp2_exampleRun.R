@@ -7,7 +7,7 @@ library(rms)
 library(dynamicTreeCut)
 
 getwd()
-setwd("/data/user/mathilde/CAMPP2/data_nik")
+setwd("/data/BRCA/")
 
 
 data_normal1<-as.data.frame(importCounts("normal_testData1.txt"))
