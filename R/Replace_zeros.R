@@ -6,7 +6,7 @@
 #' @export
 #' @import impute
 #' @seealso
-#' @return a data frame with replaced zeros and a dataframe with original data. Features having sum of zero counts higher than the size of the smallest sample group are removed by default.
+#' @return a data frame with fixed zeros. Features having sum of zero counts higher than the size of the smallest sample group are removed by default.
 #' @examples \dontrun{
 #' ...
 #' }
@@ -27,7 +27,6 @@ FixZeros <- function(data, group, rm.zero=TRUE) {
         print("data doesn't include negative value(s)")
     }
 
-    data.original<-NULL
     ###Removal of features with high 0-counts
     if(rm.zero==TRUE){
         smallestGr <- min(as.numeric(table(group))) # a size of the smallest group of samples
@@ -35,7 +34,6 @@ FixZeros <- function(data, group, rm.zero=TRUE) {
         lessthanBG  <- which(as.numeric(greaterthanBG) < smallestGr) #features having number of zero counts higher than the size of the smallest sample group.
 
         if (length(lessthanBG) > 0) {
-            data.original<-data
             data <- data[-lessthanBG,] #removal of lines with low counts
             print(paste0(length(lessthanBG)," features will be removed because of the low counts"))
         }
@@ -47,5 +45,5 @@ FixZeros <- function(data, group, rm.zero=TRUE) {
         data[i, data[i,] == 0] <- min_per_row[i] #substitution of zeros with min values per row
     }
 
-    return(list(data, data.original))
+    return(data)
 }
