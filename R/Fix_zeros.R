@@ -1,4 +1,4 @@
-#' @title Replace zeros
+#' @title Fix zeros
 #' @description A function for a detection of zero/negative values and for replacing zero values in the data. Features having sum of zero counts higher than the size of the smallest sample group will be removed by default. Zeros are substituted with minimal values (>0) observed for each feature.
 #' @param data a dataframe of gene/abundance counts.
 #' @param group a factor specifying group which should be represented by a column from a metadata file.
