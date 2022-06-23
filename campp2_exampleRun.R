@@ -15,7 +15,7 @@ Na_dataset1<-apply (dataset1, 2, function(x) {x[sample( c(1:n), floor(n/10))] <-
 replacedNAs<-ReplaceNAs(data=Na_dataset1)
 
 ###An example code for fixing zeros and negative values
-zerofix<-FixZeros(data=replacedNAs,group=metadata1$diagnosis,data, group, remove.sparse.features=TRUE)
+zerofix<-FixZeros(data=replacedNAs,group=metadata1$diagnosis, remove.sparse.features=TRUE)
 
 ###An example code for normalization
 normalized_data<-NormalizeData(data=zerofix,group=metadata1$diagnosis,standardize="none",transform="none",technology="seq")
