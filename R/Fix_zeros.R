@@ -29,9 +29,9 @@ FixZeros <- function(data, group, remove.sparse.features=TRUE) {
     }
 
     if(any(data < 0)){
-        print("data includes 0-value(s)")
+        print("data includes negative value(s)")
     }else{
-        print("data doesn't include 0-value(s)")
+        print("data doesn't include negative value(s)")
     }
 
     ###Removal of features with high 0-counts
