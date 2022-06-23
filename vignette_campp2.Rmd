@@ -1,11 +1,11 @@
 ---
 title: "CAncer bioMarker Prediction Pipeline 2 (CAMPP2)"
 author:
-- name: Thilde Bagger Terkelsen
-  affiliation: Danish Cancer Society Research Center
 - name: Nikola Tom
   affiliation: Technical University of Denmark
   email: 1nikola.tom@gmail.com
+- name: Thilde Bagger Terkelsen
+  affiliation: Danish Cancer Society Research Center
 package: campp2
 output:
   BiocStyle::html_document
@@ -24,6 +24,8 @@ vignette: |
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+# This vignette still needs to be updated!
+
 # About CAMPP
 The CAncer bioMarker Prediction Pipeline was developed for internal
 use at the Danish Cancer Society Research Center (DCRC) providing

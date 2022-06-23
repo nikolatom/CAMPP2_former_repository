@@ -6,7 +6,7 @@
 #' @param my.ExpData A dataset, features (genes, proteins ect) as columns and samples as rows.
 #' @param my.n A Number indicating top n% most interconnected features in dataset
 #' @param my.name A name of output plot(s)
-#' @param my.softPower
+#' @param my.softPower ..to describe..
 #' @export
 #' @import WGCNA
 #' @seealso

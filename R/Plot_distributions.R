@@ -3,7 +3,6 @@
 #' @param my.data a dataframe of expression/abundance counts, N.B only a subset of variables should be input, not intended for the full expression matrix!(See "Fitting Data Distributions" above)
 #' @param list.of.lists an output from the function "Fitting Data Distributions". The my.data and list.of.list should have the same dimentions, e.g. length of list == nrows of dataframe.
 #' @export
-#' @import heatmap.plus
 #' @import ggplot2
 #' @import squash
 #' @import viridis
