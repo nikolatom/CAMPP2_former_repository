@@ -62,9 +62,11 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
   setwd(paste0(prefix, "/"))
 
 
+  
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   #                                                                         ## MISSING VALUE IMPUTATIONS ###
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ 
   print("RUNNING MISSING VALUE IMPUTATIONS")
 
   print("Running missing values imputation on data1")
@@ -77,14 +79,33 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
   print("MISSING VALUE IMPUTATIONS FINISHED")
 
-  ###
-  data1.original=NULL #this should be removed once function for checking zeros will be here
-  data2.original=NULL #this should be removed once function for checking zeros will be here
-  ###
+
+  
+  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  #                                                                         ## Fix zeros and check for negative values. ###
+  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+  print("CAMPP2 automatically detects negative values and fix zeros in your data")
+  print("RUNNING FIXING OF NEGATIVE AND ZERO VALUES")
+  print("Detecting negative values and fixing zeros in data1")
+
+  data1.original <- data1
+  data1 %<-% FixZeros(data1,group1)
+
+  if (!is.null(data2)){
+    data2.original <- data2
+    print("Detecting negative values and replacing zeros in data2")
+    data2 %<-% FixZeros(data2,group2)
+  }
+
+  print("FIXING OF NEGATIVE AND ZERO VALUES FINISHED")
+  
+  
 
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   #                                                                         ## Normalization, Filtering and Transformation ###
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  
   print("CAMPP2 automatically performs data normalization and transformation depending on technology from which data are derived.")
   print("PROCESSING NORMALIZATION AND TRANSFORMATION")
   print("Normalizing and tranforming data1")
@@ -121,7 +142,6 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   ### BATCH CORRECTION ###
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 
   print("RUNNING BATCH CORRECTION")
 
