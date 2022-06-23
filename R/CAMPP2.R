@@ -23,7 +23,7 @@
 #' @param colors Custom color pallet for MDS and heatmaps. Must be the same length as number of groups used for comparison (e.g. two groups = two colors) and must be defined as character vector. See R site for avalibe colors http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf. Default is NULL.
 #' @param lasso Argument specifying parameters for LASSO or Elastic net regression. This argument may be set to 1 for LASSO or >0 & <1 for Elastic Net, but NOT to 0 exactly (Ridge Regression). Defaults is FALSE (do not run).
 #' @param WGCNA Argument specifying parameter for Weighed Gene Co-expression Network Analysis. It takes a string, either "DA", "DE" or "ALL" specifying if all variables should be included in WGCNA or only differentially expressed / abundant variables. Defaults is FALSE (do not run).
-#' @param cutoff.WGCNA Argument specifying the cutoff values for WGCNA. The argument takes a numuric vector of three values: (I) minimum modules size, (II) maximum % dissimilarity for merging of modules, and (III) % of top most interconnected genes (or other features) to return, from each modules identified in the Weighed Gene Co-expression Network Analysis. Default values are 10,25,25.
+#' @param cutoff.WGCNA Argument specifying the cutoff values for WGCNA. The argument takes a numuric vector of three values: (I) minimum modules size, (II) maximum percentage of dissimilarity for merging of modules, and (III) percentage of top most interconnected genes (or other features) to return, from each modules identified in the Weighed Gene Co-expression Network Analysis. Default values are 10,25,25.
 #' @param PPint Argument specifying that protein-protein interaction networks should be generated using the results of the differential expression analysis. This argument must be a character vector of length two. The first element in this list must be a string specifying the type of gene identifier in the gene counts file provided. Allowed identifiers are: "ensembl_peptide_id", "hgnc_symbol", "ensembl_gene_id", "ensembl_transcript_id", "uniprotswissprot". The second element is a string specifying version of the stringDB to use. Currently only version supported is: 11.0. Default is FALSE (do not run).
 #' @param gene.miR.int Argument specifying that gene-miRNA interaction networks should be generated using the results of the differential expression analysis. This argument must be a character vector of length two. The first element in this list must be a string specifying the type of miRNA identifier in the gene counts data file. Allowed identifiers are: "mature_mirna_ids", "mature_mirna_accession". The second element must be a string specifying the miRNA-gene database to use, currently options are: "targetscan" (validated miRNAs), "mirtarbase" (predicted miRNAs), "tarscanbase" (validated + predicted miRNAs)". Default is FALSE (do not run).
 #' @import zeallot
@@ -31,7 +31,7 @@
 #' @seealso
 #' @return CAMPP2 results
 #' @examples \dontrun{
-#' ...
+#' runCampp2(batches=c("tumor_stage","tumor_stage"),prefix="test_CAMPP2", data1=dataset1, data2=dataset2, metadata1=metadata1,metadata2=metadata2, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"))
 #' }
 
 
@@ -41,8 +41,8 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
   c(data1,data2,metadata1,metadata2,technology,groups,
     group1,group2,ids,batches,databatch1,databatch2,
     batch1,batch2,standardize,transform,data.check,
-    plot.mds,kmeans,labels.kmeans,signif,logFC,FDR,
-    slogFC,sFDR,colors,prefix,plot.heatmap,corrby,
+    plot.mds,kmeans,labels.kmeans,signif,logFC1,FDR1,
+    logFC2,FDR2,colors,prefix,plot.heatmap,corrby,
     lasso,WGCNA,cutoff.WGCNA,survival,covarD,scovarD,
     covarS,stratify,surv.plot,PPI,GmiRI,DEA.allowed.type,
     survival.metadata,approved.gene.IDs,provedmiRIDs,gene.query,miR.query) %<-% parseArguments(data1=data1, metadata1=metadata1, data2=data2, metadata2=metadata2,
@@ -61,11 +61,31 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
   dir.create(prefix)
   setwd(paste0(prefix, "/"))
 
+
+  
+  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  #                                                                         ## MISSING VALUE IMPUTATIONS ###
+  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ 
+  print("RUNNING MISSING VALUE IMPUTATIONS")
+
+  print("Running missing values imputation on data1")
+  data1<-ReplaceNAs(data1)
+  print("Missing values imputation on data1 has finished")
+
+  print("Running missing values imputation on data1")
+  data2<-ReplaceNAs(data2)
+  print("Missing values imputation on data2 has finished")
+
+  print("MISSING VALUE IMPUTATIONS FINISHED")
+
+
+  
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   #                                                                         ## Fix zeros and check for negative values. ###
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-  print("CAMPP2 is automatically detects negative values and fix zeros in your data")
+  print("CAMPP2 automatically detects negative values and fix zeros in your data")
   print("RUNNING FIXING OF NEGATIVE AND ZERO VALUES")
   print("Detecting negative values and fixing zeros in data1")
 
@@ -79,93 +99,67 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
   }
 
   print("FIXING OF NEGATIVE AND ZERO VALUES FINISHED")
-
+  
+  
 
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   #                                                                         ## Normalization, Filtering and Transformation ###
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  print("PROCESSING NORMALIZATION")
+  
+  print("CAMPP2 automatically performs data normalization and transformation depending on technology from which data are derived.")
+  print("PROCESSING NORMALIZATION AND TRANSFORMATION")
+  print("Normalizing and tranforming data1")
 
-  NB <- " N.B This pipeline does not handle background correction of single-channel intensity data or within array normalization two-color intensity data. See limma manual section on array normalization for more on this. Data may be fully normalized with limma (R/Rstudio) or another software and the pipeline re-run."
-
-
-  # First Dataset
-
-  if (exists("data1.original")) {
-    data1 <- NormalizeData(technology[1], data1, group1, transform[1], standardize[1], data1.original)
+  if(!is.null(data1.original) && technology[1] == "seq"){    ###Only sequencing data could be normalized with 0-values
+    print("Original data1 including 0-values are being normalized")
+    data1 <- NormalizeData(data1.original, group1, transform[1], standardize[1], technology[1])
   } else {
-    data1 <- NormalizeData(technology[1], data1, group1, transform[1], standardize[1])
+    print("data1 without 0-values are being normalized")
+    data1 <- NormalizeData(data1, group1, transform[1], standardize[1], technology[1])
   }
 
-
-  # Second Dataset
-
-  if(!is.null(data2)) {
-    if (length(technology) < 2) {
-      stop("\nTwo datasets are input for correlation analysis, BUT argument technology only has length one. Length of technology must be two.\n")
+  if(!is.null(data2) || !is.null(data2.original)) {
+    print("Normalizing and tranforming data2")
+    if (length(technology) != 2 || length(technology) == 1) {
+        stop("\nTwo datasets are defined in the analysis, BUT argument technology has defined only one. Technology must be defined as string vector of length two.\n")
+    } else if (length(transform) != 2 || length(transform) == 1) {
+        stop("\nTwo datasets are defined in the analysis, BUT argument transform has defined only one. Transform must be defined as string vector of length two.\n")
     }
-    if (length(transform) < 2) {
-      stop("\nTwo datasets are input for correlation analysis, BUT argument transform only has length one. Length of transformmust be two, see.\n")
-    }
-  }
 
-
-
-  if (!is.null(data2)) {
-    if (exists("data2.original")) {
-      data2 <- NormalizeData(technology[2], data2, group2, transform[2], standardize[2], data2.original)
+    if(!is.null(data2.original) && technology[2] == "seq"){       ###Only sequencing data could be normalized with 0-values
+        print("Original data2 including 0-values are being normalized")
+        data2 <- NormalizeData(data2.original, group2, transform[2], standardize[2], technology[2])
     } else {
-      data2 <- NormalizeData(technology[2], data2, group2, transform[2], standardize[2])
+        print("data2 without 0-values are being normalized")
+        data2 <- NormalizeData(data2, group2, transform[2], standardize[2], technology[2])
     }
   }
 
-  print("NORMALIZATION PART FINISHED")
-
+  print("PROCESSING NORMALIZATION AND TRANSFORMATION FINISHED")
 
 
 
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   ### BATCH CORRECTION ###
   # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  ###create a function "runDatabatchCorr" taking arguments (databatch1, technology, databatch2)
 
-  print("PROCESSING BATCH CORRECTION")
+  print("RUNNING BATCH CORRECTION")
 
 
-  if (databatch1 == TRUE){
-    if (length(batch1) > 0) {
-      design1 <-  model.matrix(~group1)
-
-      if (technology[1] == "seq") {
-        data1.batch <- ComBat(as.matrix(data1$E), batch1, design1, par.prior=TRUE,prior.plots=FALSE)
-      } else {
-        data1.batch <- ComBat(as.matrix(data1), batch1, design1, par.prior=TRUE,prior.plots=FALSE)
-      }
-
-    } else {
-      data1.batch <- data1
-      cat("\n- No column names match specified batches for dataset.\n")
-    }
-  } else {
-    cat("\n- No batch correction requested.\n")
+  if (databatch1==TRUE){
+    print("Run batch correction on the 1st dataset")
+    data1.batch %<-% BatchCorrect(data1,batch1,group1,technology[1])
+    print("Batch correction of the first dataset finished")
+  }else{
+    print("Batch correction wasn't selected")
   }
 
-
-  if (databatch2 == TRUE){
-    if (length(batch2) > 0) {
-      design2 <- model.matrix(~group2)
-
-      if (technology[2] == "seq") {
-        data2.batch <- ComBat(as.matrix(data2$E), batch2, design2, par.prior=TRUE,prior.plots=FALSE)
-      } else {
-        data2.batch <- ComBat(as.matrix(data2), batch2, design2, par.prior=TRUE,prior.plots=FALSE)
-      }
-    } else {
-      data2.batch <- data2
-      cat("\n- No column names match specified batches for second dataset. Continuing without batch correction.\n")
-    }
-  } else {
-    cat("\n- No batch correction requested for second dataset.\n")
+  if (databatch2==TRUE){
+    print("Run batch correction on the 2nd dataset")
+    data2.batch %<-% BatchCorrect(data2,batch2,group2,technology[2])
+    print("Batch correction of the second dataset finished")
+  }else{
+    print("Batch correction wasn't selected")
   }
 
   print("BATCH CORRECTION PART FINISHED")
@@ -404,7 +398,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
   print("PROCESSING DE for the 1st DATASET")
 
 
-  res.DE <- DAFeatureApply(contrast.matrix, data1, design1, logFC, FDR)
+  res.DE <- DAFeatureApply(contrast.matrix, data1, design1, logFC1, FDR1)
 
 
   # Write results out as excel file
@@ -470,7 +464,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
     # Apply DE_limma function to all comparisons
     print("PROCESSING DE for the 2nd DATASET")
-    res.sDE <- DAFeatureApply(contrast.matrix, data2, design2, slogFC, sFDR)
+    res.sDE <- DAFeatureApply(contrast.matrix, data2, design2, logFC2, FDR2)
 
     # Write results out as excel file
     if (!is.null(res.sDE)) {
@@ -715,7 +709,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
     # heatmap colors in blue
     hm.gradient <- viridis(300, option="cividis")
-    range <- c(round(min(DE.out$logFC)), round(max(DE.out$logFC)))
+    range <- c(round(min(DE.out$logFC1)), round(max(DE.out$logFC1)))
 
     # Heatmap as pdf
     MakeHeatmap(hm, hm.gradient, colors.hm, colors, groups, paste0(prefix,name), range)
@@ -780,7 +774,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
 
     # print out significant hits in Excel
-    res.corr$sig.corr <- ifelse(res.corr$fdr <= FDR, "yes", "no")
+    res.corr$sig.corr <- ifelse(res.corr$fdr <= FDR1, "yes", "no")
 
     write.table(res.corr, paste0(prefix,"_corr.txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
 

@@ -8,7 +8,6 @@
 #' @param my.filename a name of output plot
 #' @param my.range ??
 #' @export
-#' @import heatmap.plus
 #' @import squash
 #' @import viridis
 #' @import ggplot2
