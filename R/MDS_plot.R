@@ -5,7 +5,6 @@
 #' @param my.lables a vector of IDs for labeling (may be the same or different, length should be equal to ncol(dataframe))
 #' @param my.cols a vector of colors (one color for each group)
 #' @export
-#' @import heatmap.plus
 #' @import ggplot2
 #' @import squash
 #' @import viridis

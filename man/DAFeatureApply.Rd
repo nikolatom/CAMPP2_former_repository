@@ -40,6 +40,3 @@ Apply differential abundance analysis to all the comparisons at once
 ...
 }
 }
-\seealso{
-
-}

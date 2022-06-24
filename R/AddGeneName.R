@@ -1,6 +1,6 @@
 #' @title Add Gene Name function
 #' @description A function for transforming stable gene IDs into HUGO IDs using biomaRt.
-#' @param data a data matrix containing a column of stable gene IDs.
+#' @param data a data matrix containing a column of stable gene IDs (column must be called 'name').
 #' @export
 #' @import biomaRt
 #' @seealso
@@ -26,6 +26,8 @@ AddGeneName <- function(data) {
     names(data)[names(data) == 'name'] <- "Gene stable ID"
     data_merged <- merge(gene_names, data, by="Gene stable ID", all = TRUE)
 
+    colnames(data_merged)[1] <- "Ensembl ID"
+    colnames(data_merged)[2] <- "HUGO ID"
+
     return(data_merged)
-    #write.table(data_merged,file="withGeneNames")
 }

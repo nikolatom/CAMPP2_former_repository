@@ -46,6 +46,3 @@ Function for batch correction
 ...
 }
 }
-\seealso{
-
-}

@@ -22,6 +22,3 @@ Function to export the results into an .txt (excel?)
 ...
 }
 }
-\seealso{
-
-}

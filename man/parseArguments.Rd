@@ -16,7 +16,9 @@ parseArguments(
   standardize,
   transform,
   plot.mds,
+  plot.DEA,
   plot.heatmap,
+  heatmap.size,
   kmeans,
   signif,
   colors,
@@ -56,7 +58,11 @@ parseArguments(
 
 \item{plot.mds}{This argument specifies ("TRUE" or "FALSE") if a preliminary MDSplot should be made for data overview. Works only for the first dataset. Default is FALSE (do not run).}
 
+\item{plot.DEA}{This argument specifies ("TRUE" or "FALSE") whether visualizations should be made for the differential expression analysis.}
+
 \item{plot.heatmap}{Argument for heatmap specified as either: "DE", "DA", "LASSO", "EN" or "Consensus". Defaults is FALSE (do not run).}
+
+\item{heatmap.size}{Argument specifying how many genes will be plotted in the heatmap if plot.heatmap is TRUE. The input must be specified as an even number.}
 
 \item{kmeans}{Argument for kmeans clustering. The parameter must be specified as a character vector matching the name of a column in the metadata file, denoting the labeling of points on the MDS plot(s). If a parameter is set to "TRUE" (no column name specified) no labels will be added to the plot. Works only for the first dataset (data1). Default is FALSE (do not run).}
 

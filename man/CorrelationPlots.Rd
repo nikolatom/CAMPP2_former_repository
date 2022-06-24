@@ -26,6 +26,3 @@ Function for correlation scatter plots
 ...
 }
 }
-\seealso{
-
-}

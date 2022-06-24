@@ -4,21 +4,21 @@
 \alias{MakeHeatmap}
 \title{Make Heatmap}
 \usage{
-MakeHeatmap(data, gradient, group, prefix, range)
+MakeHeatmap(data, gradient, groups, prefix, range)
 }
 \arguments{
 \item{data}{A dataframe with counts for differential expressed/abundant features.}
 
 \item{gradient}{A color gradient to use for the heatmap.}
 
-\item{group}{A vector of groups to color by.}
+\item{groups}{A vector of groupss to color by.}
 
 \item{prefix}{A prefix for the output filename.}
 
 \item{range}{A vector containing the smallest and biggest logFC values from the input data frame.}
 }
 \value{
-heatmap
+Heatmap
 }
 \description{
 A function for making heatmaps from expression data.
@@ -27,7 +27,4 @@ A function for making heatmaps from expression data.
 \dontrun{
 ...
 }
-}
-\seealso{
-
 }

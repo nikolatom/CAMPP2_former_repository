@@ -16,7 +16,9 @@ runCampp2(
   standardize = FALSE,
   transform = FALSE,
   plot.mds = FALSE,
+  plot.DEA = FALSE,
   plot.heatmap = FALSE,
+  heatmap.size = 40,
   kmeans = FALSE,
   signif = NULL,
   colors = NULL,
@@ -56,7 +58,11 @@ runCampp2(
 
 \item{plot.mds}{This argument specifies ("TRUE" or "FALSE") if a preliminary MDSplot should be made for data overview. Works only for the first dataset. Default is FALSE (do not run).}
 
-\item{plot.heatmap}{Argument for heatmap specified as either: "DE", "DA", "LASSO", "EN" or "Consensus". Defaults is FALSE (do not run).}
+\item{plot.DEA}{This argument specifies ("TRUE" or "FALSE") whether visualizations should be made for the differential expression analysis.}
+
+\item{plot.heatmap}{Argument for heatmap specified as either: "DEA", "LASSO", "EN" or "Consensus". Defaults is FALSE (do not run).}
+
+\item{heatmap.size}{Argument specifying how many genes will be plotted in the heatmap if plot.heatmap is TRUE. The input must be specified as an even number.}
 
 \item{kmeans}{Argument for kmeans clustering. The parameter must be specified as a character vector matching the name of a column in the metadata file, denoting the labeling of points on the MDS plot(s). If a parameter is set to "TRUE" (no column name specified) no labels will be added to the plot. Works only for the first dataset (data1). Default is FALSE (do not run).}
 
@@ -66,15 +72,15 @@ runCampp2(
 
 \item{prefix}{Prefix for the results' files and results folder. Defalt is "Results".}
 
-\item{correlation}{Argument for correlation analysis. String specify which features should be correlated, options are: "ALL", "DE", "DA", "LASSO", "EN" or "Consensus". For this type of analysis, 2 datasets must include the same samples, e.g. tumor1-normal vs tumor2-normal (3 samples from 1 patient needed). Default is FALSE (do not run).}
+\item{correlation}{Argument for correlation analysis. String specify which features should be correlated, options are: "ALL", "DEA", "LASSO", "EN" or "Consensus". For this type of analysis, 2 datasets must include the same samples, e.g. tumor1-normal vs tumor2-normal (3 samples from 1 patient needed). Default is FALSE (do not run).}
 
 \item{lasso}{Argument specifying parameters for LASSO or Elastic net regression. This argument may be set to 1 for LASSO or >0 & <1 for Elastic Net, but NOT to 0 exactly (Ridge Regression). Defaults is FALSE (do not run).}
 
-\item{WGCNA}{Argument specifying parameter for Weighed Gene Co-expression Network Analysis. It takes a string, either "DA", "DE" or "ALL" specifying if all variables should be included in WGCNA or only differentially expressed / abundant variables. Defaults is FALSE (do not run).}
+\item{WGCNA}{Argument specifying parameter for Weighed Gene Co-expression Network Analysis. It takes a string, either "DEA" or "ALL" specifying if all variables should be included in WGCNA or only differentially expressed / abundant variables. Defaults is FALSE (do not run).}
 
 \item{cutoff.WGCNA}{Argument specifying the cutoff values for WGCNA. The argument takes a numuric vector of three values: (I) minimum modules size, (II) maximum % dissimilarity for merging of modules, and (III) % of top most interconnected genes (or other features) to return, from each modules identified in the Weighed Gene Co-expression Network Analysis. Default values are 10,25,25.}
 
-\item{survival}{(double check this when parsin survival function) Survival analysis may be performed on differentially expressed/abundant variables, variables from LASSO/EN regression or the consensus of these. Argument "survival" must be specified as either; "DE", "DA", "LASSO", "EN" or "Consensus". The full dataframe of variables may be used (if argument is set to ALL), HOWEVER this is not advisable unless the dataset is small with very few variables. At least, "survival", "outcome", "outcome.time" info must be included in the metadata file. The metadata file must contain at least four columns named; "ids" (sample identifiers), "age" (age in years at diagnosis, surgery or entry into trail), "outcome.time" (time until end of follow-up in weeks, months or years, censuring, death) and "outcome" (numeric 0 = censuring, 1=death). N.B. in case of (paired) normal samples the columns with survival information for these samples should contain "NA" values.}
+\item{survival}{(double check this when parsin survival function) Survival analysis may be performed on differentially expressed/abundant variables, variables from LASSO/EN regression or the consensus of these. Argument "survival" must be specified as either; "DEA", "LASSO", "EN" or "Consensus". The full dataframe of variables may be used (if argument is set to ALL), HOWEVER this is not advisable unless the dataset is small with very few variables. At least, "survival", "outcome", "outcome.time" info must be included in the metadata file. The metadata file must contain at least four columns named; "ids" (sample identifiers), "age" (age in years at diagnosis, surgery or entry into trail), "outcome.time" (time until end of follow-up in weeks, months or years, censuring, death) and "outcome" (numeric 0 = censuring, 1=death). N.B. in case of (paired) normal samples the columns with survival information for these samples should contain "NA" values.}
 
 \item{covariates}{Covariates to include in the analysis. If multiple of these, they should be specified as a character vector. The first element in this list must be either TRUE or FALSE. If TRUE is specified then covariates will be included in both DE/DA analysis and Survival Analsysis. If FALSE is specified covariates will ONLY be used for Survival Analsysis. Names of covariates should match the desired columns in the metadata file. Default is NULL.}
 
@@ -96,7 +102,4 @@ CAMPP2 is a tool for quantitative data analysis
 \dontrun{
 ...
 }
-}
-\seealso{
-
 }
