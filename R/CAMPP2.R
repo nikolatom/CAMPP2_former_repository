@@ -521,15 +521,15 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
         print("PROCESSING VISUALISATIONS FOR DIFFERENTIAL EXPRESSION ANALYSIS")
 
         # First dataset
-        DE_out <- AddGeneName(DE_out)
-        MakeVolcano(DE_out, prefix+"1")
-        #MakeUpset(prefix+"1", list(subtype1, subtype2, subtype 3), c(name1, name2, name3))
+        DE.out <- AddGeneName(DE.out)
+        MakeVolcano(DE.out, prefix)
+        #MakeUpset(prefix, list(subtype1, subtype2, subtype 3), c(name1, name2, name3))
         #MakeVennDiagram(prefix+"1", list(subtype1, subtype2, subtype 3), c(name1, name2, name3))
 
         #Second dataset
-        if (!is.null(sDE.out)){
-            sDE_out <- AddGeneName(sDE_out)
-            MakeVolcano(sDE_out, prefix+"2")
+        if (!is.null(data2) & !is.null(metadata2)){
+            sDE.out <- AddGeneName(sDE.out)
+            MakeVolcano(sDE.out, prefix+"2")
             #MakeUpset(prefix+"2", list(subtype1, subtype2, subtype 3), c(name1, name2, name3))
             #MakeVennDiagram(prefix+"2", list(subtype1, subtype2, subtype 3), c(name1, name2, name3))
         }

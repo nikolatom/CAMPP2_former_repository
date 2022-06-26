@@ -5,7 +5,6 @@ library(pROC)
 library(VennDiagram)
 library(rms)
 library(dynamicTreeCut)
-library(ComplexHeatmap)
 
 getwd()
 setwd("/data/user/mathilde/CAMPP2/data_nik")
@@ -36,7 +35,7 @@ head(metadata$IDs)
 
 #if needed, correct samples names
 keep_samples1<-gsub("\\.","-",colnames(dataset1))
-keep_samples2<-gsub("\\.","-",colnames(dataset2))
+keep_samples2<-gsub("\\.","-",colnames(datast2))
 colnames(dataset1)<-keep_samples1
 colnames(dataset2)<-keep_samples2
 
@@ -52,8 +51,7 @@ metadata2<-metadata2[order(metadata2$IDs),]
 dataset3<-cbind(dataset1,dataset2)
 metadata3<-rbind(metadata1,metadata2)
 
-setwd("../")
 
-runCampp2(plot.DEA=TRUE,plot.heatmap="DEA",prefix="TestResults", data1=dataset1,metadata1=metadata1, groups=c("IDs", "diagnosis"), technology=c("seq"))
+runCampp2(WGCNA="DE", signif=c(1,1,1,1),survival="DE",plot.heatmap=TRUE,batches=c("tumor_stage","tumor_stage"),kmeans=TRUE, plot.mds=TRUE,prefix="Test_Results", data1=dataset1, data2=dataset2, metadata1=metadata1,metadata2=metadata2, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"))
 
 
