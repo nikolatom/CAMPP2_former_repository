@@ -1,6 +1,9 @@
 #' @title Make Volcano Plot
 #' @description A function for making volcano plots from DEA results.
 #' @param data A data matrix from RunDEA containing genes, AveExpr, logFCs,p.value, adj.p.value ect.
+#' @param prefix A prefix for the output filename.
+#' @param FDR A cut-off value for  corrected p.value
+#' @param logFC A cut-off value for log fold change
 #' @export
 #' @import ggplot2
 #' @import ggrepel
@@ -10,13 +13,13 @@
 #' ...
 #' }
 
-MakeVolcano <- function(data, prefix) {
+MakeVolcano <- function(data, prefix, logFC, FDR) {
 
     data <- data[order(data$P.Value),]
 
     data$diffexpressed <- "NO"
-    data$diffexpressed[data$logFC > 1.0 & data$P.Value < 0.05] <- "UP"
-    data$diffexpressed[data$logFC < -1.0 & data$P.Value < 0.05] <- "DOWN"
+    data$diffexpressed[data$logFC > logFC & data$P.Value < FDR] <- "UP"
+    data$diffexpressed[data$logFC < -logFC & data$P.Value < FDR] <- "DOWN"
 
     data$DEAlabel <- ""
     data[1:10,]$DEAlabel[data[1:10,]$diffexpressed != "NO"] <- data[1:10,]$"Ensembl ID"[data[1:10,]$diffexpressed != "NO"]
@@ -27,7 +30,7 @@ MakeVolcano <- function(data, prefix) {
         theme_minimal() +
         geom_text_repel() +
         scale_color_manual(values=c("cyan3", "black", "indianred2")) +
-        geom_vline(xintercept=c(-1.0, 1.0), col="black") +
-        geom_hline(yintercept=-log10(0.05), col="black")
+        geom_vline(xintercept=c(-logFC, logFC), col="black") +
+        geom_hline(yintercept=-log10(FDR), col="black")
     ggsave(paste0(prefix, "_VolcanoPlot.pdf"), dpi = 300, width = 10, height = 8)
 }

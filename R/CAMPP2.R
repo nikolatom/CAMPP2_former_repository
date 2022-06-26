@@ -522,7 +522,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
         #First dataset
         DE.out <- AddGeneName(DE.out)
-        MakeVolcano(DE.out, prefix)
+        MakeVolcano(DE.out, prefix,logFC1,FDR1)
 
         #Subtype analysis
         if (unique(DE.out$comparison) > 1){
@@ -540,7 +540,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
         #Second dataset
         if (!is.null(data2) & !is.null(metadata2)){
             sDE.out <- AddGeneName(sDE.out)
-            MakeVolcano(sDE.out, prefix+"2")
+            MakeVolcano(sDE.out, prefix+"2",logFC2,FDR2)
         }
 
             #Subtype analysis
