@@ -520,19 +520,41 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
     if (!isFALSE(plot.DEA)){
         print("PROCESSING VISUALISATIONS FOR DIFFERENTIAL EXPRESSION ANALYSIS")
 
-        # First dataset
+        #First dataset
         DE.out <- AddGeneName(DE.out)
         MakeVolcano(DE.out, prefix)
-        #MakeUpset(prefix, list(subtype1, subtype2, subtype 3), c(name1, name2, name3))
-        #MakeVennDiagram(prefix+"1", list(subtype1, subtype2, subtype 3), c(name1, name2, name3))
+
+        #Subtype analysis
+        if (unique(DE.out$comparison) > 1){
+            subtypes <- split.data.frame(DE.out,DE.out$comparison)
+
+            sublist=list()
+            for (genes in subtypes){
+                sublist <- append(sublist,list(genes$name))
+
+            MakeUpset(prefix,sublist,names(subtypes))
+            MakeVennDiagram(prefix,sublist,names(subtypes))
+            }
+        }
 
         #Second dataset
         if (!is.null(data2) & !is.null(metadata2)){
             sDE.out <- AddGeneName(sDE.out)
             MakeVolcano(sDE.out, prefix+"2")
-            #MakeUpset(prefix+"2", list(subtype1, subtype2, subtype 3), c(name1, name2, name3))
-            #MakeVennDiagram(prefix+"2", list(subtype1, subtype2, subtype 3), c(name1, name2, name3))
         }
+
+            #Subtype analysis
+            if (unique(sDE.out$comparison) > 1){
+                subtypes <- split.data.frame(sDE.out,sDE.out$comparison)
+
+                sublist=list()
+                for (genes in subtypes){
+                    sublist <- append(sublist,list(genes$name))
+
+                    MakeUpset(prefix,sublist,names(subtypes))
+                    MakeVennDiagram(prefix,sublist,names(subtypes))
+                }
+            }
 
         print("VISUALIZATION FOR DIFFERENTIAL EXPRESSION FINISHED")
     }

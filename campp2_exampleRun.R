@@ -10,7 +10,6 @@ getwd()
 setwd("/data/user/mathilde/CAMPP2/data_nik")
 
 
-
 data_normal1<-as.data.frame(importCounts("normal_testData1.txt"))
 data_normal2<-as.data.frame(importCounts("normal_testData2.txt"))
 data_tumor1<-as.data.frame(importCounts("tumor_testData1.txt"))
@@ -35,7 +34,7 @@ head(metadata$IDs)
 
 #if needed, correct samples names
 keep_samples1<-gsub("\\.","-",colnames(dataset1))
-keep_samples2<-gsub("\\.","-",colnames(datast2))
+keep_samples2<-gsub("\\.","-",colnames(dataset2))
 colnames(dataset1)<-keep_samples1
 colnames(dataset2)<-keep_samples2
 
@@ -51,7 +50,9 @@ metadata2<-metadata2[order(metadata2$IDs),]
 dataset3<-cbind(dataset1,dataset2)
 metadata3<-rbind(metadata1,metadata2)
 
+setwd("../")
 
-runCampp2(WGCNA="DE", signif=c(1,1,1,1),survival="DE",plot.heatmap=TRUE,batches=c("tumor_stage","tumor_stage"),kmeans=TRUE, plot.mds=TRUE,prefix="Test_Results", data1=dataset1, data2=dataset2, metadata1=metadata1,metadata2=metadata2, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"))
+#runCampp2(prefix="TestResults", data1=dataset1, data2=dataset2, metadata1=metadata1,metadata2=metadata2, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"))
+runCampp2(plot.DEA=TRUE,plot.heatmap=TRUE,prefix="Results1", data1=dataset1, metadata1=metadata1, groups=c("IDs", "diagosis"), technology=c("seq"))
 
 
