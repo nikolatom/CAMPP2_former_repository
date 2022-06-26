@@ -26,6 +26,7 @@ DEAFeature <- function(contrast, data, design, coLFC, coFDR, block) {
         fit3 <- treat(contrasts.fit(lmFit(data, design, block = block, correlation=corfit$consensus), contrast))
     }
     DEA.table <- topTreat(fit3, coef=1, adjust='fdr', number=nrow(data))
+    #DEA.table <- subset(DEA.table, grepl("healthy", comparison, fixed = TRUE))
 
     up.reg <- DEA.table[DEA.table$logFC >= coLFC & DEA.table$adj.P.Val < coFDR, ]
     down.reg <- DEA.table[DEA.table$logFC <= -coLFC & DEA.table$adj.P.Val < coFDR, ]
