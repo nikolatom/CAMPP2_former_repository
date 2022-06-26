@@ -551,8 +551,8 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
                 for (genes in subtypes){
                     sublist <- append(sublist,list(genes$name))
 
-                    MakeUpset(prefix,sublist,names(subtypes))
-                    MakeVennDiagram(prefix,sublist,names(subtypes))
+                    MakeUpset(prefix+"2",sublist,names(subtypes))
+                    MakeVennDiagram(prefix+"2",sublist,names(subtypes))
                 }
             }
 
