@@ -760,6 +760,8 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
         if (plot.heatmap == "ALL") {
             stop("\nOption ALL is not allowed for heatmap, too heavy! Pick either 'DE', 'DA', 'LASSO', 'EN' or 'Consensus'.\n")
+        } else if (plot.heatmap %in% c("DEA")) {
+            hm <- hm[rownames(hm) %in% res.DE.names,]
         } else {
             if(!is.null(lasso)) {
                 if (plot.heatmap == "Consensus") {
