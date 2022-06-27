@@ -44,6 +44,7 @@ Imports:
  pROC,  
  VennDiagram,
  ComplexHeatmap,
+ SummarizedExperiment,
  mclust,  
  multiMiR,  
  biomaRt,  
