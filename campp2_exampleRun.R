@@ -52,6 +52,6 @@ metadata3<-rbind(metadata1,metadata2)
 
 setwd("../")
 
-runCampp2(plot.DEA=TRUE,plot.heatmap=TRUE,prefix="Results1", data1=dataset1, metadata1=metadata1, groups=c("IDs", "diagosis"), technology=c("seq"))
+runCampp2(plot.DEA=TRUE,plot.heatmap="DEA",prefix="TEST", data1=dataset1, metadata1=metadata1, groups=c("IDs", "diagnosis"), technology=c("seq"))
 
 
