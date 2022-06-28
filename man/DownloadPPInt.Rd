@@ -11,6 +11,9 @@ DownloadPPInt(my.geneIDs, my.version = "11.0")
 
 \item{my.version}{Version of STRING database to use. Default is version 11.}
 }
+\value{
+
+}
 \description{
 Function to download string database
 }
@@ -18,4 +21,7 @@ Function to download string database
 \dontrun{
 ...
 }
+}
+\seealso{
+
 }

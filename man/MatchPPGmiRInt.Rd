@@ -11,6 +11,9 @@ MatchPPGmiRInt(nodes.list1, nodes.list2)
 
 \item{nodes.list2}{a list of networks, i.e. output of the function "GetDeaPPInt"}
 }
+\value{
+
+}
 \description{
 A function for combining miRNA-gene interactions and protein-protein (gene-gene) interactions.
 }
@@ -18,4 +21,7 @@ A function for combining miRNA-gene interactions and protein-protein (gene-gene)
 \dontrun{
 ...
 }
+}
+\seealso{
+
 }

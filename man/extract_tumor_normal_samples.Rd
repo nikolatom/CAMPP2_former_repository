@@ -43,3 +43,6 @@ This function extracts gene counts based on sample name using regular expression
     write.table(normal_duplicates, file="normal_duplicates.txt", sep = "\t")
 }
 }
+\seealso{
+
+}

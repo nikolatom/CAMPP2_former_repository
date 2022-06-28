@@ -20,3 +20,6 @@ A function for fitting data distribution
 ...
 }
 }
+\seealso{
+
+}

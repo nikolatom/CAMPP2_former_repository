@@ -13,6 +13,9 @@ WGCNAAnalysis(my.data, my.thresholds, my.name)
 
 \item{my.name}{a name of output plot(s)}
 }
+\value{
+
+}
 \description{
 Weighted gene co-expression network analysis for describing the correlation patterns among genes
 }
@@ -20,4 +23,7 @@ Weighted gene co-expression network analysis for describing the correlation patt
 \dontrun{
 ...
 }
+}
+\seealso{
+
 }

@@ -22,3 +22,6 @@ Function for getting heatmap colors
 ...
 }
 }
+\seealso{
+
+}
