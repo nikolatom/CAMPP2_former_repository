@@ -11,7 +11,7 @@ MakeHeatmap(data, gradient, groups, prefix, range)
 
 \item{gradient}{A color gradient to use for the heatmap.}
 
-\item{groups}{A vector of groupss to color by.}
+\item{groups}{A vector of groups to color by.}
 
 \item{prefix}{A prefix for the output filename.}
 

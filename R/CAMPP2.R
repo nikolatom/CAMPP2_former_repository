@@ -429,6 +429,9 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
     # Write results out as excel file
     if (!is.null(res.DE)) {
         DE.out <- TextOutput(res.DE, paste0(prefix, out.name))
+        if (group1=="subtype"){
+            DE.out<-subset(DE.out, grepl("healthy", comparison, fixed = TRUE))
+        }
         rownames(DE.out) <- NULL
         res.DE.names <- unique(DE.out$name)
         rm(res.DE)
@@ -494,6 +497,9 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
         # Write results out as excel file
         if (!is.null(res.sDE)) {
             sDE.out <- TextOutput(res.sDE, paste0(prefix,out.name))
+            if (group2=="subtype"){
+                sDE.out<-subset(sDE.out, grepl("healthy", comparison, fixed = TRUE))
+            }
             rownames(sDE.out) <- NULL
             res.sDE.names <- unique(sDE.out$name)
         } else {

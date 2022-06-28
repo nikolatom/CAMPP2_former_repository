@@ -26,8 +26,8 @@ AddGeneName <- function(data) {
     names(data)[names(data) == 'name'] <- "Gene stable ID"
     data_merged <- merge(gene_names, data, by="Gene stable ID", all = TRUE)
 
-    colnames(data_merged)[1] <- "Ensembl ID"
-    colnames(data_merged)[2] <- "HUGO ID"
+    colnames(data_merged)[1] <- "Ensembl_ID"
+    colnames(data_merged)[2] <- "HUGO_ID"
 
     return(data_merged)
 }

@@ -22,14 +22,14 @@ MakeVolcano <- function(data, prefix, logFC, FDR) {
     data$diffexpressed[data$logFC < -logFC & data$P.Value < FDR] <- "DOWN"
 
     data$DEAlabel <- ""
-    data[1:10,]$DEAlabel[data[1:10,]$diffexpressed != "NO"] <- data[1:10,]$"Ensembl ID"[data[1:10,]$diffexpressed != "NO"]
+    data[1:15,]$DEAlabel[data[1:15,]$diffexpressed != "NO"] <- data[1:15,]$"HUGO_ID"[data[1:15,]$diffexpressed != "NO"]
 
     ggplot(data, aes(x=logFC, y=-log10(P.Value), col=data$diffexpressed, label=data$DEAlabel)) +
         labs(col="Gene regulation:") +
         geom_point(shape=1) +
         theme_minimal() +
         geom_text_repel() +
-        scale_color_manual(values=c("cyan3", "black", "indianred2")) +
+        scale_color_manual(values=c("cyan3", "indianred2")) +
         geom_vline(xintercept=c(-logFC, logFC), col="black") +
         geom_hline(yintercept=-log10(FDR), col="black")
     ggsave(paste0(prefix, "_VolcanoPlot.pdf"), dpi = 300, width = 10, height = 8)

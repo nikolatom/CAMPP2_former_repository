@@ -14,7 +14,7 @@ MakeUpset(prefix, sets_list, names_sets)
 \item{names_sets}{A vector of the corresponding names to each set in sets_list.}
 }
 \value{
-Upset Plot
+Upset plot
 }
 \description{
 A function for making Upset plots to visualize the intersection between 2 or more sets.

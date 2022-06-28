@@ -4,10 +4,16 @@
 \alias{MakeVolcano}
 \title{Make Volcano Plot}
 \usage{
-MakeVolcano(data, prefix)
+MakeVolcano(data, prefix, logFC, FDR)
 }
 \arguments{
 \item{data}{A data matrix from RunDEA containing genes, AveExpr, logFCs,p.value, adj.p.value ect.}
+
+\item{prefix}{A prefix for the output filename.}
+
+\item{logFC}{A cut-off value for log fold change}
+
+\item{FDR}{A cut-off value for  corrected p.value}
 }
 \value{
 Volcano plot
