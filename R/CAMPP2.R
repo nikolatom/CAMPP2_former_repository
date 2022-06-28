@@ -24,7 +24,7 @@
 #' @param block A vector or factor specifying a blocking variable for differential expression analysis. The block must be of same length as the belonging dataset and contain 2 or more options. For 2 datasets the block can be defined as a list of factors or vectors.
 #' @param lasso Argument specifying parameters for LASSO or Elastic net regression. This argument may be set to 1 for LASSO or >0 & <1 for Elastic Net, but NOT to 0 exactly (Ridge Regression). Defaults is FALSE (do not run).
 #' @param WGCNA Argument specifying parameter for Weighed Gene Co-expression Network Analysis. It takes a string, either "DA", "DE" or "ALL" specifying if all variables should be included in WGCNA or only differentially expressed / abundant variables. Defaults is FALSE (do not run).
-#' @param cutoff.WGCNA Argument specifying the cutoff values for WGCNA. The argument takes a numuric vector of three values: (I) minimum modules size, (II) maximum % dissimilarity for merging of modules, and (III) % of top most interconnected genes (or other features) to return, from each modules identified in the Weighed Gene Co-expression Network Analysis. Default values are 10,25,25.
+#' @param cutoff.WGCNA Argument specifying the cutoff values for WGCNA. The argument takes a numuric vector of three values: (I) minimum modules size, (II) maximum percentage of dissimilarity for merging of modules, and (III) percentage of top most interconnected genes (or other features) to return, from each modules identified in the Weighed Gene Co-expression Network Analysis. Default values are 10,25,25.
 #' @param PPint Argument specifying that protein-protein interaction networks should be generated using the results of the differential expression analysis. This argument must be a character vector of length two. The first element in this list must be a string specifying the type of gene identifier in the gene counts file provided. Allowed identifiers are: "ensembl_peptide_id", "hgnc_symbol", "ensembl_gene_id", "ensembl_transcript_id", "uniprotswissprot". The second element is a string specifying version of the stringDB to use. Currently only version supported is: 11.0. Default is FALSE (do not run).
 #' @param gene.miR.int Argument specifying that gene-miRNA interaction networks should be generated using the results of the differential expression analysis. This argument must be a character vector of length two. The first element in this list must be a string specifying the type of miRNA identifier in the gene counts data file. Allowed identifiers are: "mature_mirna_ids", "mature_mirna_accession". The second element must be a string specifying the miRNA-gene database to use, currently options are: "targetscan" (validated miRNAs), "mirtarbase" (predicted miRNAs), "tarscanbase" (validated + predicted miRNAs)". Default is FALSE (do not run).
 #' @import zeallot
@@ -32,7 +32,7 @@
 #' @seealso
 #' @return CAMPP2 results
 #' @examples \dontrun{
-#' ...
+#' runCampp2(batches=c("tumor_stage","tumor_stage"),prefix="test_CAMPP2", data1=dataset1, data2=dataset2, metadata1=metadata1,metadata2=metadata2, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"))
 #' }
 
 
@@ -63,133 +63,107 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
     setwd(paste0(prefix, "/"))
 
 
-    print("PROCESSING TRANSFORMATION")
-    hasZeroD <- unique(as.vector(data1 == 0))
-    hasNegD <- unique(as.vector(data1 < 0))
+ ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  #                                                                         ## MISSING VALUE IMPUTATIONS ###
+  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ 
+  print("RUNNING MISSING VALUE IMPUTATIONS")
 
-    if(transform[1] %in% c("log2", "log10", "logit")) {
-        if (TRUE %in% hasNegD) {
-            stop("\n- Data contains negative values and cannot be log transformed. Re-run command WITHOUT argument transform or alternatively if using two datasets, specify 'none' as the transform input for the dataset with negative values, e.g. c('none', 'log2') or c('log2', 'none').\n")
-        } else {
-            if (TRUE %in% hasZeroD) {
-                data1.original <- data1
-                data1 <- ReplaceZero(data1, group1)
-            }
-        }
+  print("Running missing values imputation on data1")
+  data1<-ReplaceNAs(data1)
+  print("Missing values imputation on data1 has finished")
+
+  print("Running missing values imputation on data1")
+  data2<-ReplaceNAs(data2)
+  print("Missing values imputation on data2 has finished")
+
+  print("MISSING VALUE IMPUTATIONS FINISHED")
+
+
+   ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  #                                                                         ## Fix zeros and check for negative values. ###
+  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+>>>>>>> main
+
+  print("CAMPP2 automatically detects negative values and fix zeros in your data")
+  print("RUNNING FIXING OF NEGATIVE AND ZERO VALUES")
+  print("Detecting negative values and fixing zeros in data1")
+
+  data1.original <- data1
+  data1 %<-% FixZeros(data1,group1)
+
+  if (!is.null(data2)){
+    data2.original <- data2
+    print("Detecting negative values and replacing zeros in data2")
+    data2 %<-% FixZeros(data2,group2)
+  }
+
+  print("FIXING OF NEGATIVE AND ZERO VALUES FINISHED")
+  
+  
+ ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  #                                                                         ## Normalization, Filtering and Transformation ###
+  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  
+  print("CAMPP2 automatically performs data normalization and transformation depending on technology from which data are derived.")
+  print("PROCESSING NORMALIZATION AND TRANSFORMATION")
+  print("Normalizing and tranforming data1")
+
+  if(!is.null(data1.original) && technology[1] == "seq"){    ###Only sequencing data could be normalized with 0-values
+    print("Original data1 including 0-values are being normalized")
+    data1 <- NormalizeData(data1.original, group1, transform[1], standardize[1], technology[1])
+  } else {
+    print("data1 without 0-values are being normalized")
+    data1 <- NormalizeData(data1, group1, transform[1], standardize[1], technology[1])
+  }
+
+  if(!is.null(data2) || !is.null(data2.original)) {
+    print("Normalizing and tranforming data2")
+    if (length(technology) != 2 || length(technology) == 1) {
+        stop("\nTwo datasets are defined in the analysis, BUT argument technology has defined only one. Technology must be defined as string vector of length two.\n")
+    } else if (length(transform) != 2 || length(transform) == 1) {
+        stop("\nTwo datasets are defined in the analysis, BUT argument transform has defined only one. Transform must be defined as string vector of length two.\n")
     }
 
-
-    if (!is.null(data2)){
-        hasZeroS <- unique(as.vector(data2 == 0))
-        hasNegS <- unique(as.vector(data2 < 0))
-    }
-
-    if(!is.null(data2) & transform[2] %in% c("log2", "log10", "logit")) {
-        if (TRUE %in% hasNegS) {
-            stop("\n- Second dataset contains negative values and cannot be log transformed. Re-run command WITHOUT argument transform  or alternatively if using two datasets, specify 'none' as the transforminput for the dataset with negative values, e.g. 'none,log2' or 'log2,none'.\n")
-        } else {
-            if (TRUE %in% hasZeroS) {
-                data2.original <- data2
-                data2 <- ReplaceZero(data2, group2)
-            }
-        }
-    }
-
-
-    print("TRANSFORMATION PART FINISHED")
-
-
-    # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    #                                                                         ## Normalization, Filtering and Transformation ###
-    # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    print("PROCESSING NORMALIZATION")
-
-    NB <- " N.B This pipeline does not handle background correction of single-channel intensity data or within array normalization two-color intensity data. See limma manual section on array normalization for more on this. Data may be fully normalized with limma (R/Rstudio) or another software and the pipeline re-run."
-
-
-    # First Dataset
-
-    if (exists("data1.original")) {
-        data1 <- NormalizeData(technology[1], data1, group1, transform[1], standardize[1], data1.original)
+    if(!is.null(data2.original) && technology[2] == "seq"){       ###Only sequencing data could be normalized with 0-values
+        print("Original data2 including 0-values are being normalized")
+        data2 <- NormalizeData(data2.original, group2, transform[2], standardize[2], technology[2])
     } else {
-        data1 <- NormalizeData(technology[1], data1, group1, transform[1], standardize[1])
+        print("data2 without 0-values are being normalized")
+        data2 <- NormalizeData(data2, group2, transform[2], standardize[2], technology[2])
+
     }
 
 
-    # Second Dataset
-
-    if(!is.null(data2)) {
-        if (length(technology) < 2) {
-            stop("\nTwo datasets are input for correlation analysis, BUT argument technology only has length one. Length of technology must be two.\n")
-        }
-        if (length(transform) < 2) {
-            stop("\nTwo datasets are input for correlation analysis, BUT argument transform only has length one. Length of transformmust be two, see.\n")
-        }
-    }
+  print("PROCESSING NORMALIZATION AND TRANSFORMATION FINISHED")
 
 
+ ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  ### BATCH CORRECTION ###
+  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    if (!is.null(data2)) {
-        if (exists("data2.original")) {
-            data2 <- NormalizeData(technology[2], data2, group2, transform[2], standardize[2], data2.original)
-        } else {
-            data2 <- NormalizeData(technology[2], data2, group2, transform[2], standardize[2])
-        }
-    }
-
-    print("NORMALIZATION PART FINISHED")
+  print("RUNNING BATCH CORRECTION")
 
 
+  if (databatch1==TRUE){
+    print("Run batch correction on the 1st dataset")
+    data1.batch %<-% BatchCorrect(data1,batch1,group1,technology[1])
+    print("Batch correction of the first dataset finished")
+  }else{
+    print("Batch correction wasn't selected")
+  }
 
+  if (databatch2==TRUE){
+    print("Run batch correction on the 2nd dataset")
+    data2.batch %<-% BatchCorrect(data2,batch2,group2,technology[2])
+    print("Batch correction of the second dataset finished")
+  }else{
+    print("Batch correction wasn't selected")
+  }
 
-    # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    ### BATCH CORRECTION ###
-    # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    ###create a function "runDatabatchCorr" taking arguments (databatch1, technology, databatch2)
+  print("BATCH CORRECTION PART FINISHED")
 
-    print("PROCESSING BATCH CORRECTION")
-
-
-    if (databatch1 == TRUE){
-        if (length(batch1) > 0) {
-            design1 <-  model.matrix(~group1)
-
-            if (technology[1] == "seq") {
-                data1.batch <- ComBat(as.matrix(data1$E), batch1, design1, par.prior=TRUE,prior.plots=FALSE)
-            } else {
-                data1.batch <- ComBat(as.matrix(data1), batch1, design1, par.prior=TRUE,prior.plots=FALSE)
-            }
-
-        } else {
-            data1.batch <- data1
-            cat("\n- No column names match specified batches for dataset.\n")
-        }
-    } else {
-        cat("\n- No batch correction requested.\n")
-    }
-
-
-    if (databatch2 == TRUE){
-        if (length(batch2) > 0) {
-            design2 <- model.matrix(~group2)
-
-            if (technology[2] == "seq") {
-                data2.batch <- ComBat(as.matrix(data2$E), batch2, design2, par.prior=TRUE,prior.plots=FALSE)
-            } else {
-                data2.batch <- ComBat(as.matrix(data2), batch2, design2, par.prior=TRUE,prior.plots=FALSE)
-            }
-        } else {
-            data2.batch <- data2
-            cat("\n- No column names match specified batches for second dataset. Continuing without batch correction.\n")
-        }
-    } else {
-        cat("\n- No batch correction requested for second dataset.\n")
-    }
-
-    print("BATCH CORRECTION PART FINISHED")
-
-
-    # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     ### Distributional Checks ###
     # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 

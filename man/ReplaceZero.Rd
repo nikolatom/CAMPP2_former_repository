@@ -2,20 +2,20 @@
 % Please edit documentation in R/Replace_zeros.R
 \name{ReplaceZero}
 \alias{ReplaceZero}
-\title{ReplaceZeros}
+\title{Replace zeros}
 \usage{
-ReplaceZero(my.data, my.group)
+ReplaceZero(data, group)
 }
 \arguments{
-\item{my.data}{a dataframe of expression/abundance counts.}
+\item{data}{a dataframe of expression/abundance counts.}
 
-\item{my.group}{a vector of integers specifying group; should be represented by a column in metadata file.}
+\item{group}{a factor specifying group; should be represented by a column in metadata file.}
 }
 \value{
-Dataframe with replaced zeros
+Data frame with replaced zeros
 }
 \description{
-Checking Data for zero Values.
+Replaces zero values in the data (counts).
 }
 \examples{
 \dontrun{
