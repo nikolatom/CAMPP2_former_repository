@@ -63,62 +63,63 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
     setwd(paste0(prefix, "/"))
 
 
- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  #                                                                         ## MISSING VALUE IMPUTATIONS ###
-  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
- 
-  print("RUNNING MISSING VALUE IMPUTATIONS")
+    # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    #                                                                         ## MISSING VALUE IMPUTATIONS ###
+    # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-  print("Running missing values imputation on data1")
-  data1<-ReplaceNAs(data1)
-  print("Missing values imputation on data1 has finished")
+    print("RUNNING MISSING VALUE IMPUTATIONS")
 
-  print("Running missing values imputation on data1")
-  data2<-ReplaceNAs(data2)
-  print("Missing values imputation on data2 has finished")
+    print("Running missing values imputation on data1")
+    data1<-ReplaceNAs(data1)
+    print("Missing values imputation on data1 has finished")
 
-  print("MISSING VALUE IMPUTATIONS FINISHED")
+    if (!is.null(data2)){
+        print("Running missing values imputation on data2")
+        data2<-ReplaceNAs(data2)
+        print("Missing values imputation on data2 has finished")
+    }
+
+    print("MISSING VALUE IMPUTATIONS FINISHED")
+
+    # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    #                                                                         ## Fix zeros and check for negative values. ###
+    # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    print("CAMPP2 automatically detects negative values and fix zeros in your data")
+    print("RUNNING FIXING OF NEGATIVE AND ZERO VALUES")
+    print("Detecting negative values and fixing zeros in data1")
+
+    data1.original <- data1
+    data1 %<-% FixZeros(data1,group1)
+
+    data2.original=NULL
+    if (!is.null(data2)){
+        data2.original <- data2
+        print("Detecting negative values and replacing zeros in data2")
+        data2 %<-% FixZeros(data2,group2)
+    }
+
+    print("FIXING OF NEGATIVE AND ZERO VALUES FINISHED")
 
 
-   ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  #                                                                         ## Fix zeros and check for negative values. ###
-  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
->>>>>>> main
+    # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    #                                                                         ## Normalization, Filtering and Transformation ###
+    # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-  print("CAMPP2 automatically detects negative values and fix zeros in your data")
-  print("RUNNING FIXING OF NEGATIVE AND ZERO VALUES")
-  print("Detecting negative values and fixing zeros in data1")
+    print("CAMPP2 automatically performs data normalization and transformation depending on technology from which data are derived.")
+    print("PROCESSING NORMALIZATION AND TRANSFORMATION")
+    print("Normalizing and tranforming data1")
 
-  data1.original <- data1
-  data1 %<-% FixZeros(data1,group1)
+    if(!is.null(data1.original) && technology[1] == "seq"){    ###Only sequencing data could be normalized with 0-values
+        print("Original data1 including 0-values are being normalized")
+        data1 <- NormalizeData(data1.original, group1, transform[1], standardize[1], technology[1])
+    } else {
+        print("data1 without 0-values are being normalized")
+        data1 <- NormalizeData(data1, group1, transform[1], standardize[1], technology[1])
+    }
 
-  if (!is.null(data2)){
-    data2.original <- data2
-    print("Detecting negative values and replacing zeros in data2")
-    data2 %<-% FixZeros(data2,group2)
-  }
-
-  print("FIXING OF NEGATIVE AND ZERO VALUES FINISHED")
-  
-  
- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  #                                                                         ## Normalization, Filtering and Transformation ###
-  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  
-  print("CAMPP2 automatically performs data normalization and transformation depending on technology from which data are derived.")
-  print("PROCESSING NORMALIZATION AND TRANSFORMATION")
-  print("Normalizing and tranforming data1")
-
-  if(!is.null(data1.original) && technology[1] == "seq"){    ###Only sequencing data could be normalized with 0-values
-    print("Original data1 including 0-values are being normalized")
-    data1 <- NormalizeData(data1.original, group1, transform[1], standardize[1], technology[1])
-  } else {
-    print("data1 without 0-values are being normalized")
-    data1 <- NormalizeData(data1, group1, transform[1], standardize[1], technology[1])
-  }
-
-  if(!is.null(data2) || !is.null(data2.original)) {
-    print("Normalizing and tranforming data2")
+    if(!is.null(data2) || !is.null(data2.original)){
+        print("Normalizing and tranforming data2")
     if (length(technology) != 2 || length(technology) == 1) {
         stop("\nTwo datasets are defined in the analysis, BUT argument technology has defined only one. Technology must be defined as string vector of length two.\n")
     } else if (length(transform) != 2 || length(transform) == 1) {
@@ -131,39 +132,39 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
     } else {
         print("data2 without 0-values are being normalized")
         data2 <- NormalizeData(data2, group2, transform[2], standardize[2], technology[2])
-
+        }
     }
 
 
-  print("PROCESSING NORMALIZATION AND TRANSFORMATION FINISHED")
+    print("PROCESSING NORMALIZATION AND TRANSFORMATION FINISHED")
 
 
- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  ### BATCH CORRECTION ###
-  # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    ### BATCH CORRECTION ###
+    # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-  print("RUNNING BATCH CORRECTION")
+    print("RUNNING BATCH CORRECTION")
 
 
-  if (databatch1==TRUE){
-    print("Run batch correction on the 1st dataset")
-    data1.batch %<-% BatchCorrect(data1,batch1,group1,technology[1])
-    print("Batch correction of the first dataset finished")
-  }else{
-    print("Batch correction wasn't selected")
-  }
+    if (databatch1==TRUE){
+        print("Run batch correction on the 1st dataset")
+        data1.batch %<-% BatchCorrect(data1,batch1,group1,technology[1])
+        print("Batch correction of the first dataset finished")
+    }else{
+        print("Batch correction wasn't selected")
+    }
 
-  if (databatch2==TRUE){
-    print("Run batch correction on the 2nd dataset")
-    data2.batch %<-% BatchCorrect(data2,batch2,group2,technology[2])
-    print("Batch correction of the second dataset finished")
-  }else{
-    print("Batch correction wasn't selected")
-  }
+    if (databatch2==TRUE){
+        print("Run batch correction on the 2nd dataset")
+        data2.batch %<-% BatchCorrect(data2,batch2,group2,technology[2])
+        print("Batch correction of the second dataset finished")
+    }else{
+        print("Batch correction wasn't selected")
+    }
 
-  print("BATCH CORRECTION PART FINISHED")
+    print("BATCH CORRECTION PART FINISHED")
 
- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     ### Distributional Checks ###
     # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
