@@ -33,6 +33,3 @@ A function for a detection of zero/negative values and for
 ...
 }
 }
-\seealso{
-
-}
