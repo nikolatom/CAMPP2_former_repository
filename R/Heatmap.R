@@ -18,6 +18,7 @@
 MakeHeatmap <- function(data, gradient, groups, prefix, range){
     data<-as.matrix(data)
 
+
     col_ha = HeatmapAnnotation(Groups = groups,
                                simple_anno_size = unit(0.3,'cm'), annotation_name_align = TRUE)
 
