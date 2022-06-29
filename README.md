@@ -1,3 +1,7 @@
+Cancer Systems Biology, Section of Bioinformatics, Department of Health and Technology, Technical University of Denmark, 2800, Lyngby, Copenhagen, Denmark
+
+Cancer Structural Biology Group, Danish Cancer Society Research Center, Strandboulevarden 49, 2100, Copenhagen, Denmark
+
 # CAncer-bioMarker-Prediction-Pipeline - CAMPP2  #
 <br/>
 
@@ -20,9 +24,9 @@ install CAMPP2 from private Github repository (using your personal token and com
 `devtools::install_github(repo = "ELELAB/CAMPP2",auth_token="<your personal token to github>")`
 
 ### Example data
-Test data include 2 BRCA datasets (campp2_brca_1, campp2_brca_2) and associated metadata (campp2_brca_1_meta, campp2_brca_2_meta). Each dataset is represented by raw read counts for 25 samples (15 tumours, 10 normals in the 1st dataset; 18 tumours and 7 normals in the 2nd dataset). Metadata includes information about diagnosis, age, vital status, days to death, outcome time, tumor stage, outcome and survival.
+The data to test the functions and workflow includes: 2 BRCA datasets (campp2_brca_1, campp2_brca_2) and the associated metadata (campp2_brca_1_meta, campp2_brca_2_meta). Each dataset is represented by raw read counts for 25 samples (15 tumours, 10 normals in the 1st dataset; 18 tumours and 7 normals in the 2nd dataset). Metadata includes information about diagnosis, age, vital status, days to death, outcome time, tumor stage, outcome and survival.
 
-Both, raw read counts and metadata were extracted from TCGA BReast CAncer dataset using in-house scripts. 
+Both, raw read counts and metadata were extracted from TCGA BReast CAncer dataset (TCGA-BRCA) Level 3 data. 
 
 Test data are integrated into CAMPP2 package and accessible as campp2_brca_1, campp2_brca_2, campp2_brca_1_meta, campp2_brca_2_meta variables once the package is installed. R data object files (.rda) are also available in a data/ directory of CAMPP2 package.
 
