@@ -200,19 +200,32 @@ pct.NA.colum:n a number defining maximal percentage of NA values per column (sam
 **Output from the function:**  \
 Data frame with replaced "NA" values \
 **An example run:** \
-
-```library(CAMPP2)``` \
-
-##Test data are already part of the CAMPP2 package so user doesn't need to download them. In case you want to load .rda objects you can alter the path and use this code:
-```load("path/to/campp2_brca_1.rda")``` \
-
 ##In each of the 2 datasets, we have 10000 genes. In our example, we will randomly introduce 1000 NAs into each sample. Next, ReplaceNAs function is called. 
 
-```n<-10000``` # a number of genes in the dataset.
+```
+library(CAMPP2)
+``` 
 
-```Na_dataset1<-apply (campp2_brca_1, 2, function(x) {x[sample( c(1:n), floor(n/10))] <- NA; x} )``` # For each sample, 1000 NA values is introduced randomly. All 10000 genes (n) in the example dataset are considered.
+##Test data are already part of the CAMPP2 package so user doesn't need to download them. In case you want to load .rda objects you can alter the path and use this code:
+```
+load("path/to/campp2_brca_1.rda")
+``` 
 
-```replacedNAs<-ReplaceNAs(data=Na_dataset1)``` # creates an object with replaced NAs
+##get a number of genes in the dataset.
+```
+n<-nrow(campp2_brca_1)
+``` 
+
+##For each sample, 1000 NA values is introduced randomly. All 10000 genes (n) in the example dataset are considered.
+```
+Na_dataset1<-apply (campp2_brca_1, 2, function(x) {x[sample( c(1:n), floor(n/10))] <- NA; x} )
+``` 
+
+##create an object with replaced NAs
+
+```
+replacedNAs<-ReplaceNAs(data=Na_dataset1)
+```
 \
 \
 \
