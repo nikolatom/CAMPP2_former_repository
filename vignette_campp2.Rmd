@@ -1,7 +1,7 @@
 ---
 title: "CAncer bioMarker Prediction Pipeline 2 (CAMPP2)"
 authors:
-- names: Nikola Tom, Matteo Tiberti, Elena Papaleo
+  names: Nikola Tom, Matteo Tiberti, Elena Papaleo
   affiliations: Technical University of Denmark, Danish Cancer Society Research Center
   email: nikto@dtu.dk, tiberti@cancer.dk, elpap@dtu.dk, elenap@cancer.dk
 package: CAMPP2
@@ -108,14 +108,25 @@ The test data include 2 BRCA datasets (campp2_brca_1, campp2_brca_2) and associa
 
 Both, raw read counts and metadata were extracted from TCGA-BRCA Level 3. 
 
-Test data are integrated into CAMPP2 package and accessible as campp2_brca_1, campp2_brca_2, campp2_brca_1_meta, campp2_brca_2_meta variables once the package is installed. R data object files (.rda) are also available in a data/ directory of CAMPP2 package.
+Test data are integrated into CAMPP2 package and accessible as campp2_brca_1, campp2_brca_2, campp2_brca_1_meta, campp2_brca_2_meta variables once the package is installed. R data object files (.rda) are also available on https://github.com/ELELAB/CAMPP2/tree/main/data. 
 
 ## Running example script
+
+##Load CAMPP2 package:
 ```
 library(CAMPP2)
-library(edgeR)
+```
+##Test data are already part of the CAMPP2 package so user doesn't need to download them. In case you want to load .rda objects you can alter the path and use this code:
+```
+load("/path/to/campp2_brca_1.rda")
+load("/path/to/campp2_brca_1_meta.rda")
+load("/path/to/campp2_brca_2.rda")
+load("/path/to/campp2_brca_2_meta.rda")
+```
 
-runCampp2(batches=c("tumor_stage","tumor_stage"),prefix="test_CAMPP2", data1=campp2_brca_1, data2=campp2_brca_2, metadata1=campp2_brca_1_meta,metadata2=campp2_brca_2_meta, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq")) 
+##Run CAMPP2 on example data with default settings:
+```
+runCampp2(batches=c("tumor_stage","tumor_stage"), prefix="test_CAMPP2", data1=campp2_brca_1, data2=campp2_brca_2, metadata1=campp2_brca_1_meta, metadata2=campp2_brca_2_meta, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq")) 
 ```
 
 ## Mandatory Input and Parameters
@@ -189,11 +200,19 @@ pct.NA.colum:n a number defining maximal percentage of NA values per column (sam
 **Output from the function:**  \
 Data frame with replaced "NA" values \
 **An example run:** \
-```
-n<-10000
-Na_dataset1<-apply (campp2_brca_1, 2, function(x) {x[sample( c(1:n), floor(n/10))] <- NA; x} )
-replacedNAs<-ReplaceNAs(data=Na_dataset1)
-```
+
+```library(CAMPP2)``` \
+
+##Test data are already part of the CAMPP2 package so user doesn't need to download them. In case you want to load .rda objects you can alter the path and use this code:
+```load("path/to/campp2_brca_1.rda")``` \
+
+##In each of the 2 datasets, we have 10000 genes. In our example, we will randomly introduce 1000 NAs into each sample. Next, ReplaceNAs function is called. 
+
+```n<-10000``` # a number of genes in the dataset.
+
+```Na_dataset1<-apply (campp2_brca_1, 2, function(x) {x[sample( c(1:n), floor(n/10))] <- NA; x} )``` # For each sample, 1000 NA values is introduced randomly. All 10000 genes (n) in the example dataset are considered.
+
+```replacedNAs<-ReplaceNAs(data=Na_dataset1)``` # creates an object with replaced NAs
 \
 \
 \

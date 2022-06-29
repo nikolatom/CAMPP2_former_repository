@@ -28,17 +28,26 @@ The data to test the functions and workflow includes: 2 BRCA datasets (campp2_br
 
 Both, raw read counts and metadata were extracted from TCGA BReast CAncer dataset (TCGA-BRCA) Level 3 data. 
 
-Test data are integrated into CAMPP2 package and accessible as campp2_brca_1, campp2_brca_2, campp2_brca_1_meta, campp2_brca_2_meta variables once the package is installed. R data object files (.rda) are also available in a data/ directory of CAMPP2 package.
+Test data are integrated into CAMPP2 package and accessible as campp2_brca_1, campp2_brca_2, campp2_brca_1_meta, campp2_brca_2_meta variables once the package is installed. R data object files (.rda) are also available on https://github.com/ELELAB/CAMPP2/tree/main/data. 
+
 
 ### Example run
 Default settings can be executed in R using 
-```
-library(CAMPP2)
-library(edgeR)
 
-runCampp2(batches=c("tumor_stage","tumor_stage"),prefix="test_CAMPP2", data1=dataset1, data2=dataset2, metadata1=metadata1,metadata2=metadata2, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"))
+`library(CAMPP2)`
 
-```
+Test data are already part of the CAMPP2 package so user doesn't need to download them. In case you want to load .rda objects you can alter the path and use this code:
+
+`load("/path/to/campp2_brca_1.rda")` 
+<br/>
+`load("/path/to/campp2_brca_1_meta.rda")` 
+<br/>
+`load("/path/to/campp2_brca_2.rda")` 
+<br/>
+`load("/path/to/campp2_brca_2_meta.rda")` 
+<br/>
+<br/>
+`runCampp2(batches=c("tumor_stage","tumor_stage"),prefix="test_CAMPP2", data1=dataset1, data2=dataset2, metadata1=metadata1,metadata2=metadata2, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"))`
 <br/>
 
 For testing the functions, you can consider the code present in `campp2_example_Run.R` (git repository). <br/>
