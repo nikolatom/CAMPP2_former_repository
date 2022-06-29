@@ -32,7 +32,7 @@ Test data are integrated into CAMPP2 package and accessible as campp2_brca_1, ca
 
 
 ### Example run
-Default settings can be executed in R using 
+Default settings can be executed in R using:
 
 `library(CAMPP2)`
 
@@ -46,6 +46,8 @@ Test data are already part of the CAMPP2 package so user doesn't need to downloa
 <br/>
 `load("/path/to/campp2_brca_2_meta.rda")` 
 <br/>
+<br/>
+Default workflow could be run using this command: 
 <br/>
 `runCampp2(batches=c("tumor_stage","tumor_stage"),prefix="test_CAMPP2", data1=dataset1, data2=dataset2, metadata1=metadata1,metadata2=metadata2, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"))`
 <br/>
