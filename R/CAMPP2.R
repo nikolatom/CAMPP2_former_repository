@@ -492,7 +492,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
         # Apply DE_limma function to all comparisons
         print("PROCESSING DE for the 2nd DATASET")
-        res.sDE <- DAFeatureApply(contrast.matrix, data2, design2, logFC2, FDR2)
+        res.sDE <- DAFeatureApply(contrast.matrix, data2, design2, logFC2, cutoff.FDR2)
 
         # Write results out as excel file
         if (!is.null(res.sDE)) {

@@ -3,8 +3,8 @@
 #' @param my.contrast a contrast between groups of interest
 #' @param my.data a dataframe of expression/abundance counts
 #' @param my.design a design matrix with all comparisons
-#' @param my.coLFC a cutoff for logFC
-#' @param my.coFDR a cutoff for FDR
+#' @param cutoff.logFC a cutoff for logFC
+#' @param cutoff.FDR a cutoff for FDR
 #' @param my.block if blocking than a vector of patient IDs
 #' @param my.vector a vector of patient IDs; TRUE/FALSE statement specifying output format, if TRUE the function return a vector of feature IDs only
 #' @export
@@ -17,7 +17,7 @@
 #' }
 
 
-DAFeature <- function(my.contrast, my.data, my.design, coLFC, coFDR, my.block=NULL) {
+DAFeature <- function(my.contrast, my.data, my.design, cutoff.logFC, cutoff.FDR, my.block=NULL) {
     if(is.null(my.block)) {
         fit3 <- eBayes(contrasts.fit(lmFit(my.data, my.design), my.contrast))
     }
@@ -27,8 +27,8 @@ DAFeature <- function(my.contrast, my.data, my.design, coLFC, coFDR, my.block=NU
     }
     tt <- topTable(fit3, coef=1, adjust='fdr', number=nrow(my.data))
 
-    up <- tt[tt$logFC >= coLFC & tt$adj.P.Val < coFDR, ]
-    down <- tt[tt$logFC <= -coLFC & tt$adj.P.Val < coFDR, ]
+    up <- tt[tt$logFC >= cutoff.logFC & tt$adj.P.Val < cutoff.FDR, ]
+    down <- tt[tt$logFC <= -cutoff.logFC & tt$adj.P.Val < cutoff.FDR, ]
 
     up$name <- rownames(up)
     down$name <- rownames(down)
