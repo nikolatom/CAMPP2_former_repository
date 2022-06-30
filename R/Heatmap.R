@@ -4,7 +4,7 @@
 #' @param gradient A color gradient to use for the heatmap.
 #' @param groups A vector of groups to color by.
 #' @param prefix A prefix for the output filename.
-#' @param range A vector containing the smallest and biggest logFC values from the input data frame.
+#' @param range A vector containing the smallest and biggest gene count values from the input data frame.
 #' @export
 #' @import ComplexHeatmap
 #' @import squash

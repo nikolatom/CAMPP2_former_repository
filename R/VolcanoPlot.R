@@ -32,5 +32,5 @@ MakeVolcano <- function(data, prefix, cutoff.logFC, cutoff.FDR) {
         scale_color_manual(values=c("cyan3", "indianred2")) +
         geom_vline(xintercept=c(-cutoff.logFC, cutoff.logFC), col="black") +
         geom_hline(yintercept=-log10(cutoff.FDR), col="black")
-    ggsave(paste0(prefix, "_VolcanoPlot.pdf"), dpi = 300, width = 10, height = 8)
+    ggsave(paste0(prefix, "_VolcanoPlot.png"), dpi = 300, width = 10, height = 8)
 }

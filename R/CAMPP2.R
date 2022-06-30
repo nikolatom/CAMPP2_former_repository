@@ -429,7 +429,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
     # Write results out as excel file
     if (!is.null(res.DE)) {
         DE.out <- TextOutput(res.DE, paste0(prefix, out.name))
-        if (group1=="subtype"){
+        if (length(unique(DE.out$comparison)) > 1){
             DE.out<-subset(DE.out, grepl("healthy", comparison, fixed = TRUE))
         }
         rownames(DE.out) <- NULL
@@ -497,7 +497,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
         # Write results out as excel file
         if (!is.null(res.sDE)) {
             sDE.out <- TextOutput(res.sDE, paste0(prefix,out.name))
-            if (group2=="subtype"){
+            if (length(unique(sDE.out$comparison)) > 1){
                 sDE.out<-subset(sDE.out, grepl("healthy", comparison, fixed = TRUE))
             }
             rownames(sDE.out) <- NULL
@@ -531,7 +531,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
         MakeVolcano(DE.out, prefix,logFC1,FDR1)
 
         #Subtype analysis
-        if (unique(DE.out$comparison) > 1){
+        if (length(unique(DE.out$comparison)) > 1){
             subtypes <- split.data.frame(DE.out,DE.out$comparison)
 
             sublist=list()
@@ -550,7 +550,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
         }
 
             #Subtype analysis
-            if (unique(sDE.out$comparison) > 1){
+            if (length(unique(sDE.out$comparison)) > 1){
                 subtypes <- split.data.frame(sDE.out,sDE.out$comparison)
 
                 sublist=list()
@@ -786,7 +786,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
         # heatmap colors in blue
         hm.gradient <- viridis(300, option="cividis")
-        range <- c(round(min(DE.out$"logFC")), round(max(DE.out$"logFC")))
+        range <- c(round(min(hm)), round(max(hm)))
 
         # Heatmap as pdf
         MakeHeatmap(hm, hm.gradient, group1, prefix, range)

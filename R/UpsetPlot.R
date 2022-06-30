@@ -14,7 +14,7 @@
 
 MakeUpset <- function(prefix,sets_list,names_sets) {
 
-    pdf(file = paste0(prefix,"_UpsetPlot.pdf"))
+    tiff(file = paste0(prefix,"_UpsetPlot.tiff"))
 
     names(sets_list) <- names_sets
     comb_mat <- make_comb_mat(sets_list)

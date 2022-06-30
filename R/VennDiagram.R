@@ -22,7 +22,7 @@ MakeVennDiagram <- function(sets_list,names_sets,prefix) {
     palette_col <- viridis_pal(alpha = 0.8,option = "viridis")(n_col)
 
     #Create Venn diagram and save it as pdf in plots directory of TCGA project
-    venn.diagram(sets_list,filename = paste0(prefix,"_VennDiagram"),category.names = names_sets,
+    venn.diagram(sets_list,filename = paste0(prefix,"_VennDiagram.png"),category.names = names_sets,
                  output = TRUE,main = "Venn Diagram",main.cex = 1.5,main.fontface = "bold",
                  main.fontfamily = "sans",lwd = 3,lty = "blank",fill = palette_col,cex = 2,
                  fontface = "bold",fontfamily = "sans",cat.cex = 1.5,cat.fontface = "bold",
