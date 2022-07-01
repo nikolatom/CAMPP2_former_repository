@@ -206,9 +206,10 @@ Data frame with replaced "NA" values \
 library(CAMPP2)
 ``` 
 
-##Test data are already part of the CAMPP2 package so user doesn't need to download them. In case you want to load .rda objects you can alter the path and use this code:
+##Test data are already part of the CAMPP2 package so user doesn't need to download them. In case you want to load .rda objects manually from the cloned repository, you can use this code:
+
 ```
-load("path/to/campp2_brca_1.rda")
+load("./data/campp2_brca_1.rda")
 ``` 
 
 ##get a number of genes in the dataset.
