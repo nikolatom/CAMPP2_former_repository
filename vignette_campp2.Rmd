@@ -116,12 +116,12 @@ Test data are integrated into CAMPP2 package and accessible as campp2_brca_1, ca
 ```
 library(CAMPP2)
 ```
-##Test data are already part of the CAMPP2 package so user doesn't need to download them. In case you want to load .rda objects you can alter the path and use this code:
+##Test data are already part of the CAMPP2 package so user doesn't need to download them. In case you want to load .rda objects manually from the cloned repository, you can use this code:
 ```
-load("/path/to/campp2_brca_1.rda")
-load("/path/to/campp2_brca_1_meta.rda")
-load("/path/to/campp2_brca_2.rda")
-load("/path/to/campp2_brca_2_meta.rda")
+load("./data/campp2_brca_1.rda")
+load("./data/campp2_brca_1_meta.rda")
+load("./data/campp2_brca_2.rda")
+load("./data/campp2_brca_2_meta.rda")
 ```
 
 ##Run CAMPP2 on example data with default settings:

@@ -36,15 +36,15 @@ Default settings can be executed in R using:
 
 `library(CAMPP2)`
 
-Test data are already part of the CAMPP2 package so user doesn't need to download them. In case you want to load .rda objects you can alter the path and use this code:
+Test data are already part of the CAMPP2 package so user doesn't need to download them. In case you want to load .rda objects manually from the cloned repository, you can use this code:
 
-`load("/path/to/campp2_brca_1.rda")` 
+`load("./data/campp2_brca_1.rda")` 
 <br/>
-`load("/path/to/campp2_brca_1_meta.rda")` 
+`load("./data/campp2_brca_1_meta.rda")` 
 <br/>
-`load("/path/to/campp2_brca_2.rda")` 
+`load("./data/campp2_brca_2.rda")` 
 <br/>
-`load("/path/to/campp2_brca_2_meta.rda")` 
+`load("./data/campp2_brca_2_meta.rda")` 
 <br/>
 <br/>
 Default workflow could be run using this command: 
