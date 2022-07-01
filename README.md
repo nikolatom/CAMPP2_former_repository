@@ -49,7 +49,7 @@ Test data are already part of the CAMPP2 package so user doesn't need to downloa
 <br/>
 Default workflow could be run using this command: 
 <br/>
-`runCampp2(batches=c("tumor_stage","tumor_stage"),prefix="test_CAMPP2", data1=dataset1, data2=dataset2, metadata1=metadata1,metadata2=metadata2, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"))`
+`runCampp2(batches=c("tumor_stage","tumor_stage"),prefix="test_CAMPP2", data1=campp2_brca_1, data2=campp2_brca_2, metadata1=campp2_brca_1_meta,metadata2=campp2_brca_2_meta, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"))`
 <br/>
 
 For testing the functions, you can consider the code present in `campp2_example_Run.R` (git repository). <br/>
