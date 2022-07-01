@@ -15,7 +15,7 @@ MakeHeatmap(data, gradient, groups, prefix, range)
 
 \item{prefix}{A prefix for the output filename.}
 
-\item{range}{A vector containing the smallest and biggest logFC values from the input data frame.}
+\item{range}{A vector containing the smallest and biggest gene count values from the input data frame.}
 }
 \value{
 Heatmap

@@ -141,8 +141,6 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
     print("NORMALIZATION PART FINISHED")
 
 
-
-
     # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     ### BATCH CORRECTION ###
     # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -428,7 +426,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
     # Write results out as excel file
     if (!is.null(res.DE)) {
-        DE.out <- TextOutput(res.DE, paste0(prefix, out.name))
+        DE.out <- TextOutput(AddGeneName(as.matrix(res.DE)), paste0(prefix, out.name))
         if (length(unique(DE.out$comparison)) > 1){
             DE.out<-subset(DE.out, grepl("healthy", comparison, fixed = TRUE))
         }
@@ -527,7 +525,6 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
         print("PROCESSING VISUALISATIONS FOR DIFFERENTIAL EXPRESSION ANALYSIS")
 
         #First dataset
-        DE.out <- AddGeneName(DE.out)
         MakeVolcano(DE.out, prefix,logFC1,FDR1)
 
         #Subtype analysis
@@ -536,18 +533,16 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
             sublist=list()
             for (genes in subtypes){
-                sublist <- append(sublist,list(genes$name))
-
+                sublist <- append(sublist,list(genes$Ensembl_ID))
+            }
             MakeUpset(prefix,sublist,names(subtypes))
             MakeVennDiagram(prefix,sublist,names(subtypes))
-            }
         }
 
         #Second dataset
         if (!is.null(data2) & !is.null(metadata2)){
             sDE.out <- AddGeneName(sDE.out)
             MakeVolcano(sDE.out, prefix+"2",logFC2,FDR2)
-        }
 
             #Subtype analysis
             if (length(unique(sDE.out$comparison)) > 1){
@@ -555,14 +550,13 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
                 sublist=list()
                 for (genes in subtypes){
-                    sublist <- append(sublist,list(genes$name))
-
-                    MakeUpset(prefix+"2",sublist,names(subtypes))
-                    MakeVennDiagram(prefix+"2",sublist,names(subtypes))
+                    sublist <- append(sublist,list(genes$Ensembl_ID))
                 }
+                MakeUpset(prefix+"2",sublist,names(subtypes))
+                MakeVennDiagram(prefix+"2",sublist,names(subtypes))
             }
-
-        print("VISUALIZATION FOR DIFFERENTIAL EXPRESSION FINISHED")
+        }
+    print("VISUALIZATION FOR DIFFERENTIAL EXPRESSION FINISHED")
     }
 
     setwd("..")
@@ -767,7 +761,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
         if (plot.heatmap == "ALL") {
             stop("\nOption ALL is not allowed for heatmap, too heavy! Pick either 'DE', 'DA', 'LASSO', 'EN' or 'Consensus'.\n")
         } else if (plot.heatmap %in% c("DEA")) {
-            signif_samples <- head(DE.out[order(DE.out$P.Value),],40)
+            signif_samples <- rbind(head(DE.out[order(DE.out$logFC),],20),tail(DE.out[order(DE.out$logFC),],20))
             signif_samples <- signif_samples$name
             hm <- data1[rownames(data1) %in% signif_samples,]
         } else {
