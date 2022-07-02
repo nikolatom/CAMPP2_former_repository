@@ -204,7 +204,7 @@ In the first step of this function, percentages of NAs in rows (features) and co
 **Output from the function:**  \
 A data frame without NA values \
 **An example run:** \
-##In each of the 2 datasets, we have 10000 genes and all of them have assigned read counts. In our example, we will randomly introduce 1000 NAs into each sample in the first step. Next, NA values will be replaced by calling ReplaceNAs function. 
+##Each of the CAMPP2 example datasets (2) has 10000 genes and all of them have assigned read counts. In our example, we will randomly introduce 1000 NA values into each sample's genes (taking dataset campp2_brca_1) in the first step in order to prepare test data for NA values replacement. In the next step, NA values will be replaced by calling ReplaceNAs function. 
 
 ```
 library(CAMPP2)
