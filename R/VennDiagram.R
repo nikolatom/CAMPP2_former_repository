@@ -12,9 +12,10 @@
 #' ...
 #' }
 
-MakeVennDiagram <- function(sets_list,names_sets,prefix) {
+MakeVennDiagram <- function(prefix,sets_list,names_sets) {
 
     # Assign names to list of sets
+    names_sets <- gsub("-","",gsub("healthy","",names_sets))
     names(sets_list) <- names_sets
 
     # Define colors to use in Venn diagram

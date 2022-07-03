@@ -16,9 +16,15 @@
 #' }
 
 MakeHeatmap <- function(data, gradient, groups, prefix, range){
+    name <- rownames(data)
+    rownames(data) <- NULL
+    data <- cbind(name,data)
+    data <- AddGeneName(data)
+    data <- subset(data, HUGO_ID != "")
+    rownames(data) <- data$HUGO_ID
+    data <- subset(data, select=-c(Ensembl_ID,HUGO_ID))
+
     data<-as.matrix(data)
-
-
     col_ha = HeatmapAnnotation(Groups = groups,
                                simple_anno_size = unit(0.3,'cm'), annotation_name_align = TRUE)
 

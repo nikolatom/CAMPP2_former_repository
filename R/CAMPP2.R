@@ -426,7 +426,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
     # Write results out as excel file
     if (!is.null(res.DE)) {
-        DE.out <- TextOutput(AddGeneName(as.matrix(res.DE)), paste0(prefix, out.name))
+        DE.out <- TextOutput(res.DE, paste0(prefix, out.name))
         if (length(unique(DE.out$comparison)) > 1){
             DE.out<-subset(DE.out, grepl("healthy", comparison, fixed = TRUE))
         }
@@ -525,6 +525,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
         print("PROCESSING VISUALISATIONS FOR DIFFERENTIAL EXPRESSION ANALYSIS")
 
         #First dataset
+        DE.out <- AddGeneName(DE.out)
         MakeVolcano(DE.out, prefix,logFC1,FDR1)
 
         #Subtype analysis
