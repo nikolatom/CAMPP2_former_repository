@@ -24,7 +24,7 @@ install CAMPP2 from private Github repository (using your personal token and com
 `devtools::install_github(repo = "ELELAB/CAMPP2",auth_token="<your personal token to github>")`
 
 ### Example data
-The data to test the functions and workflow includes: 2 BRCA datasets (campp2_brca_1, campp2_brca_2) and the associated metadata (campp2_brca_1_meta, campp2_brca_2_meta). Each dataset is represented by raw read counts for 25 samples (15 tumours, 10 normals in the 1st dataset; 18 tumours and 7 normals in the 2nd dataset). Metadata includes information about diagnosis, age, vital status, days to death, outcome time, tumor stage, outcome and survival.
+The data for testing the functions and workflow includes 2 BRCA datasets (campp2_brca_1, campp2_brca_2) and the associated metadata (campp2_brca_1_meta, campp2_brca_2_meta). Each dataset is represented by raw read counts for 30 samples: 20 tumours which are divided into 4 subtypes (each subtype has 5 samples), and 10 normals. Metadata includes information about diagnosis, age, vital status, days to death, outcome time, tumor stage, subtype, outcome and survival.
 
 Both, raw read counts and metadata were extracted from TCGA BReast CAncer dataset (TCGA-BRCA) Level 3 data. 
 

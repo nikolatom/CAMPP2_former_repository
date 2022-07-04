@@ -104,7 +104,7 @@ List of dependencies: (KEEP THIS? if yes, needs to be updated)
 # Running CAMPP2
 
 ## Example data
-The test data include 2 BRCA datasets (campp2_brca_1, campp2_brca_2) and associated metadata (campp2_brca_1_meta, campp2_brca_2_meta). Each dataset is represented by raw read counts for 25 samples (15 tumor, 10 normal samples in the 1st dataset; 18 tumors and 7 normal samples in the 2nd dataset). Metadata includes information about diagnosis, age, vital status, days to death, outcome time, tumor stage, outcome and survival.
+The test data include 2 BRCA datasets (campp2_brca_1, campp2_brca_2) and associated metadata (campp2_brca_1_meta, campp2_brca_2_meta). Each dataset is represented by raw read counts for 30 samples: 20 tumours which are divided into 4 subtypes (each subtype has 5 samples), and 10 normals. Metadata includes information about diagnosis, age, vital status, days to death, outcome time, tumor stage, subtyte, outcome and survival.
 
 Both, raw read counts and metadata were extracted from TCGA-BRCA Level 3. 
 
