@@ -8,7 +8,7 @@
 #' @param block A vector or factor specifying a blocking variable. The block must be of same length as data and contain 2 or more options. For 2 datasets, the block can be defined as a vector of the two seperate blocks.
 #' @export
 #' @import sva
-#' @import limma
+#' @import edgeR
 #' @import statmod
 #' @seealso
 #' @return DEA features
