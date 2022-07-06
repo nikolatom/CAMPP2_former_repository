@@ -25,6 +25,3 @@ first entry referring to data file 1 and second entry referring to the data file
 ...
 }
 }
-\seealso{
-
-}

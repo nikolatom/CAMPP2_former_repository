@@ -26,6 +26,3 @@ Function for a batch correction. Batch corrected data are NOT intended for a DEA
 ...
 }
 }
-\seealso{
-
-}

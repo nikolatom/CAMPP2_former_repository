@@ -30,6 +30,3 @@ A function for returning DEA features for DEAFeatureApply function.
 ...
 }
 }
-\seealso{
-
-}

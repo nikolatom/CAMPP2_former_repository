@@ -104,7 +104,7 @@ List of dependencies: (KEEP THIS? if yes, needs to be updated)
 # Running CAMPP2
 
 ## Example data
-The test data include 2 BRCA datasets (campp2_brca_1, campp2_brca_2) and associated metadata (campp2_brca_1_meta, campp2_brca_2_meta). Each dataset is represented by raw read counts for 30 samples: 20 tumours which are divided into 4 subtypes (each subtype has 5 samples), and 10 normals. Metadata includes information about diagnosis, age, vital status, days to death, outcome time, tumor stage, subtyte, outcome and survival.
+The test data include 2 BRCA datasets (campp2_brca_1, campp2_brca_2) and associated metadata (campp2_brca_1_meta, campp2_brca_2_meta). Each dataset is represented by raw read counts (10000 genes) for 30 samples: 20 tumours which are divided into 4 subtypes (each subtype has 5 samples), and 10 normals. Metadata includes information about diagnosis, age, vital status, days to death, outcome time, tumor stage, subtyte, outcome and survival.
 
 Both, raw read counts and metadata were extracted from TCGA-BRCA Level 3. 
 
@@ -226,9 +226,44 @@ n<-nrow(campp2_brca_1)
 Na_dataset1<-apply (campp2_brca_1, 2, function(x) {x[sample( c(1:n), floor(n/10))] <- NA; x} )
 ``` 
 
-##create an object with replaced NAs; features having "NA" in more than 70% of the samples will be removed; samples having "NA" in more than 80% of the genes will be removed
+##create an object with replaced NAs; features having "NA" in more than 70% 
+of the samples will be removed; samples having "NA" in more than 80% 
+of the genes will be removed
 ```
 replacedNAs<-ReplaceNAs(data=Na_dataset1, pct.NA.row=70, pct.NA.column=80) 
+```
+\
+
+### FixZeros 
+**Description:** \
+This function detects zero/negative values and replaces zero values in the data.
+In the first step, the function checks for the presence of zero and negative values in the data.
+In the second step, (activated by default), features having sum of zero counts higher than the size of the smallest sample group will be
+removed (e.g. genes represented by zero counts/transcripts in more than n samples will be removed; n = size of the smallest group). 
+Next, remaining zeros are substituted with minimal values (>0) observed in each feature across all samples in the dataset. \
+**Parameters:** \
+*data* a dataframe of gene/abundance counts. \
+*group* a factor specifying samples' group which should be represented by a column from a metadata file. \
+*remove.sparse.features* a logical argument (TRUE/FALSE) for removal of features with sum of zero counts larger than the size of the smallest 
+sample group, and for replacing the remaining zeros. Default is TRUE. \
+**Output from the function:**  \
+a data frame with fixed zeros. Features having sum of zero counts higher than the size of the smallest sample group are removed and remaining zeros will be replaced by default. \
+**An example run:** \
+
+```
+library(CAMPP2)
+``` 
+
+##Test data are already part of the CAMPP2 package so user doesn't need to download them. In case you want to load .rda objects manually from the cloned repository, you can use this code:
+
+```
+load("./data/campp2_brca_1.rda")
+``` 
+
+
+##Create an object with fixed zeros:
+```
+zerofix<-FixZeros(data=replacedNAs,group=campp2_brca_1_meta$diagnosis, remove.sparse.features=TRUE)
 ```
 \
 \

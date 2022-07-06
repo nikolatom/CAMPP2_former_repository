@@ -13,6 +13,6 @@ A data frame with 10000 rows (genes) and 30 columns (samples):
 campp2_brca_1
 }
 \description{
-A campp2_brca_1 contains 10000 gene counts for 30 samples: 20 tumor (4 subtypes, each 5 samples) x 10 normal samples). Data are derived from TCGA dataset.
+A campp2_brca_1 contains 10000 gene counts for 30 samples: 20 tumor (4 subtypes, each subtype has 5 samples) x 10 normal samples). Data are derived from TCGA dataset.
 }
 \keyword{datasets}

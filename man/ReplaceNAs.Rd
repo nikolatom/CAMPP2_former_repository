@@ -40,6 +40,3 @@ Na_dataset1<-apply (campp2_brca_1, 2, function(x) {x[sample( c(1:n), floor(n/10)
 ReplaceNAs(data=Na_dataset1, pct.NA.row=70, pct.NA.column=80)
 }
 }
-\seealso{
-
-}

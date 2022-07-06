@@ -29,6 +29,3 @@ This function normalizes and transforms feature counts depending on data types a
 }
 
 }
-\seealso{
-
-}

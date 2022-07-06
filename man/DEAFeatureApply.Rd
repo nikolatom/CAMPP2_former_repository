@@ -40,6 +40,3 @@ A function for applying differential expression/abundance analysis to all compar
 ...
 }
 }
-\seealso{
-
-}

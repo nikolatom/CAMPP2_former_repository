@@ -13,9 +13,6 @@ GetGeneMiRNAInt(arg.miRset, my.miRdat, my.Genedat = NULL)
 
 \item{my.Genedat}{?}
 }
-\value{
-
-}
 \description{
 A function which extracts the miRNA-gene interactions where miRNAs (and potentially genes, if this data is available,) are differentially expressed.
 }
@@ -23,7 +20,4 @@ A function which extracts the miRNA-gene interactions where miRNAs (and potentia
 \dontrun{
 ...
 }
-}
-\seealso{
-
 }
