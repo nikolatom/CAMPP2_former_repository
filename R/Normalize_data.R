@@ -1,20 +1,37 @@
 #' @title Normalization and Transformation
-#' @description This function normalizes and transforms feature counts depending on data types and selected normalization/standardization methods.
+#' @description This function normalizes and transforms feature counts depending
+#' on data types and selected normalization/standardization methods.
+#' Transformation methods include options log2, logit and log10. If technology
+#' is "seq", a Voom transform is applied automatically. Standardization methods
+#' options include "mean" or "median". If technology is "seq" or "array", this
+#' option is ignored, instead, sequencing data are normalized by "TMM";
+#' micro-arrays data are normalized by "quantile" standardization.
 #' @param data a dataframe of expression/abundance counts
-#' @param group a factor specifying sample group from metadata
-#' @param transform a string vector of length 1 defining transformation type for each dataset ("log2", "logit", "log10"). If technology is "seq", this option is ignored an Voom transform is applied instead.
-#' @param standardize a string vector of length 1 defining standardization method ("mean" or "median"). If technology is "seq" or "array", this option is ignored, instead, seq data is normalized by "TMM"; array data is normalized by "quantile" standardization.
-#' @param technology a string vector of length 1 defining technology used for generating the data. Allowed types are: 'array', 'seq', 'ms' or 'other'.
+#' @param group group a factor specifying samples' group (e.g. could be
+#' represented by a column from a metadata file).
+#' @param transform a string vector of length 1 defining transformation type for
+#' each dataset ("log2", "logit", "log10"). If technology is "seq", this option
+#' is ignored an Voom transform is applied. Default="".
+#' @param standardize a string vector of length 1 defining standardization
+#' method ("mean" or "median"). If technology is "seq" or "array", this option
+#' is ignored, instead, seq data are normalized by "TMM"; array data are
+#' normalized by "quantile" standardization. Default="".
+#' @param technology a string vector of length 1 defining technology used for
+#' generating the data. Allowed types are: 'array', 'seq', 'ms' or 'other'.
+#' Default="".
 #' @export
 #' @import fitdistrplus
 #' @seealso
-#' @return Elist (seq technology) or array (array, ms, other technologies) of normalized, filtered and transformed (gene) counts data
+#' @return Elist (seq technology) or array (array, ms, other technologies) of
+#' normalized, filtered and transformed feature counts data
 #' @examples \dontrun{
-#' ...
+#' normalizedGeneCounts <- NormalizeData(data=campp2_brca_1,
+#' group=campp2_brca_1_meta$diagnosis, standardize="TMM", transform="voom",
+#' technology="seq")
 #' }
 #'
 
-NormalizeData <- function(data,group,transform,standardize,technology){
+NormalizeData <- function(data,group,transform="",standardize="",technology=""){
 
     # section in which we define correctness of input parameters
     if (!(technology) %in% c("seq", "array", "ms", "other")) {
@@ -38,7 +55,7 @@ NormalizeData <- function(data,group,transform,standardize,technology){
     hasZero <- unique(as.vector(data == 0))
     if(transform %in% c("log2", "log10", "logit")) {
         if (TRUE %in% hasNeg || TRUE %in% hasZero) {
-            stop("\n- Data contains zero/negative values and cannot be log transformed. Re-run command WITHOUT argument transform or alternatively if using two datasets, specify 'none' as the transform input for the dataset with negative values, e.g. c('none', 'log2') or c('log2', 'none').\n")
+            stop("\n- Data contains zero/negative values and cannot be log transformed. \n")
         }
     }
 

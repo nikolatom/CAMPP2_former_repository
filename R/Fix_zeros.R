@@ -8,8 +8,8 @@
 #' smallest group). Next, remaining zeros are substituted with minimal values
 #' (>0) observed in each feature across all samples.
 #' @param data a dataframe of gene/abundance counts.
-#' @param group a factor specifying samples' group which should be represented by
-#'        a column from a metadata file.
+#' @param group group a factor specifying samples' group (e.g. could be
+#' represented by a column from a metadata file).
 #' @param remove.sparse.features a logical argument (TRUE/FALSE) for removal of
 #'        features with sum of zero counts larger than the size of the smallest
 #'        sample group, and for replacing the remaining zeros.  Default is TRUE.

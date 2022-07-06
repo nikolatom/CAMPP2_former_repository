@@ -263,11 +263,46 @@ load("./data/campp2_brca_1.rda")
 
 ##Create an object with fixed zeros:
 ```
-zerofix<-FixZeros(data=replacedNAs,group=campp2_brca_1_meta$diagnosis, remove.sparse.features=TRUE)
+zerofix<-FixZeros(data=campp2_brca_1,group=campp2_brca_1_meta$diagnosis, remove.sparse.features=TRUE)
 ```
 \
+
+### NormalizeData 
+**Description:** \
+This function normalizes and transforms feature counts depending on data types and selected normalization/standardization methods. 
+Transformation methods include options log2, logit and log10. If technology is "seq", a Voom transform is applied automatically.
+Standardization methods options include "mean" or "median". If technology is "seq" or "array", this option is ignored, instead, sequencing data are normalized by "TMM"; micro-arrays data are normalized by "quantile" standardization. \
+**Parameters:** \
+*data* a dataframe of expression/abundance counts \
+*group* a factor specifying samples' group (e.g. could be represented by a column from a metadata file). \
+*transform* a string vector of length 1 defining transformation type ("log2", "logit", "log10"). If technology is "seq", this option is ignored a Voom transform is applied. \
+*standardize* a string vector of length 1 defining standardization method ("mean" or "median"). If technology is "seq" or "array", this option is ignored, instead, seq data are normalized by "TMM"; array data are normalized by "quantile" standardization. \
+*technology* a string vector of length 1 defining technology used for generating the data. Allowed types are: 'array', 'seq', 'ms' or 'other'. \
+**Output from the function:**  \
+Elist (seq technology) or array (array, ms, other technologies) of normalized, 
+filtered and transformed feature counts data \
+**An example run:** \
+
+```
+library(CAMPP2)
+``` 
+
+##Test data are already part of the CAMPP2 package so user doesn't need to download them. In case you want to load .rda objects manually from the cloned repository, you can use this code:
+
+```
+load("./data/campp2_brca_1.rda")
+``` 
+
+
+##Create an object with normalized gene counts
+```
+normalized_data<-NormalizeData(data=campp2_brca_1,group=campp2_brca_1_meta$diagnosis,standardize="TMM",transform="voom",technology="seq")
+```
+
 \
 \
+\
+
 
 
 ================================================================================================

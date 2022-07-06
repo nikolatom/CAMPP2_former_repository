@@ -9,8 +9,8 @@ FixZeros(data, group, remove.sparse.features = TRUE)
 \arguments{
 \item{data}{a dataframe of gene/abundance counts.}
 
-\item{group}{a factor specifying samples' group which should be represented by
-a column from a metadata file.}
+\item{group}{group a factor specifying samples' group (e.g. could be
+represented by a column from a metadata file).}
 
 \item{remove.sparse.features}{a logical argument (TRUE/FALSE) for removal of
 features with sum of zero counts larger than the size of the smallest
