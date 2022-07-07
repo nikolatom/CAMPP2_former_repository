@@ -7,7 +7,7 @@
 #' option is ignored, instead, sequencing data are normalized by "TMM";
 #' micro-arrays data are normalized by "quantile" standardization.
 #' @param data a dataframe of expression/abundance counts
-#' @param group group a factor specifying samples' group (e.g. could be
+#' @param group a factor specifying group for each sample (e.g. could be
 #' represented by a column from a metadata file).
 #' @param transform a string vector of length 1 defining transformation type for
 #' each dataset ("log2", "logit", "log10"). If technology is "seq", this option
@@ -23,9 +23,10 @@
 #' @import fitdistrplus
 #' @seealso
 #' @return Elist (seq technology) or array (array, ms, other technologies) of
-#' normalized, filtered and transformed feature counts data
+#' normalized and transformed feature counts data
 #' @examples \dontrun{
-#' normalizedGeneCounts <- NormalizeData(data=campp2_brca_1,
+#' ###In this example, data with fixed zeros are used as an input.
+#' NormalizeData(data=campp2_brca_1_zeroFix,
 #' group=campp2_brca_1_meta$diagnosis, standardize="TMM", transform="voom",
 #' technology="seq")
 #' }

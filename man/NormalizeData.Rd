@@ -9,7 +9,7 @@ NormalizeData(data, group, transform = "", standardize = "", technology = "")
 \arguments{
 \item{data}{a dataframe of expression/abundance counts}
 
-\item{group}{group a factor specifying samples' group (e.g. could be
+\item{group}{a factor specifying group for each sample (e.g. could be
 represented by a column from a metadata file).}
 
 \item{transform}{a string vector of length 1 defining transformation type for
@@ -27,7 +27,7 @@ Default="".}
 }
 \value{
 Elist (seq technology) or array (array, ms, other technologies) of
-normalized, filtered and transformed feature counts data
+normalized and transformed feature counts data
 }
 \description{
 This function normalizes and transforms feature counts depending
@@ -40,7 +40,8 @@ micro-arrays data are normalized by "quantile" standardization.
 }
 \examples{
 \dontrun{
-normalizedGeneCounts <- NormalizeData(data=campp2_brca_1,
+###In this example, data with fixed zeros are used as an input.
+NormalizeData(data=campp2_brca_1_zeroFix,
 group=campp2_brca_1_meta$diagnosis, standardize="TMM", transform="voom",
 technology="seq")
 }

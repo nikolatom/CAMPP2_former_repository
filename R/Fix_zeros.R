@@ -20,7 +20,8 @@
 #'         higher than the size of the smallest sample group are removed and
 #'         remaining zeros will be replaced by default.
 #' @examples \dontrun{
-#' FixZeros(data=replacedNAs,group=campp2_brca_1_meta$diagnosis, remove.sparse.features=TRUE)
+#' ###In this example, data with fixed NA values are used as an input.
+#' FixZeros(data=campp2_brca_1_replacedNAs,group=campp2_brca_1_meta$diagnosis, remove.sparse.features=TRUE)
 #' }
 
 
