@@ -1,23 +1,23 @@
 #' @title Add Gene Name function
-#' @description A function for transforming stable gene IDs into HUGO IDs using biomaRt.
+#' @description A function for adding a column of HUGO IDs to a dataframe with a column of Ensemble IDs using biomaRt.
 #' @param data a data matrix containing a column of stable gene IDs (column must be called 'name').
 #' @export
 #' @import biomaRt
 #' @seealso
-#' @return the input data matrix merged with a gene name column.
+#' @return the input dataframe merged with a column of HUGO IDs.
 #' @examples \dontrun{
 #' ...
 #' }
 
-AddGeneName <- function(data) {
+AddGeneName <- function(data, ensembl.version) {
 
-    ensembl104 <- useEnsembl(biomart = 'genes', dataset = 'hsapiens_gene_ensembl',version = 104)
+    ensembl <- useEnsembl(biomart = 'genes', dataset = 'hsapiens_gene_ensembl',version = ensembl.version)
 
     ensembl_id <- as.data.frame(data$name)
     colnames(ensembl_id) <- "Gene stable ID"
 
     gene_names <- getBM(attributes = c('ensembl_gene_id', 'external_gene_name'),
-                        mart = ensembl104,
+                        mart <- ensembl,
                         values = ensembl_id,
                         filters = 'ensembl_gene_id',
                         uniqueRows = TRUE,

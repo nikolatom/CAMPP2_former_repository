@@ -4,16 +4,16 @@
 \alias{AddGeneName}
 \title{Add Gene Name function}
 \usage{
-AddGeneName(data)
+AddGeneName(data, ensembl.version)
 }
 \arguments{
 \item{data}{a data matrix containing a column of stable gene IDs (column must be called 'name').}
 }
 \value{
-the input data matrix merged with a gene name column.
+the input dataframe merged with a column of HUGO IDs.
 }
 \description{
-A function for transforming stable gene IDs into HUGO IDs using biomaRt.
+A function for adding a column of HUGO IDs to a dataframe with a column of Ensemble IDs using biomaRt.
 }
 \examples{
 \dontrun{

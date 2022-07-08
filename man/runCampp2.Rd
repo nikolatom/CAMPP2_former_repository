@@ -19,6 +19,7 @@ runCampp2(
   plot.DEA = FALSE,
   plot.heatmap = FALSE,
   heatmap.size = 40,
+  ensembl.version = 104,
   kmeans = FALSE,
   signif = NULL,
   colors = NULL,
@@ -63,6 +64,8 @@ runCampp2(
 \item{plot.heatmap}{Argument for heatmap specified as either: "DEA", "LASSO", "EN" or "Consensus". Defaults is FALSE (do not run).}
 
 \item{heatmap.size}{Argument specifying how many genes will be plotted in the heatmap if plot.heatmap is TRUE. The input must be specified as an even number.}
+
+\item{ensembl.version}{This arugment specifies which ensembl database to use when transforming ensemble IDs into HUGO IDs using biomaRt. The argument should be specified as a number.}
 
 \item{kmeans}{Argument for kmeans clustering. The parameter must be specified as a character vector matching the name of a column in the metadata file, denoting the labeling of points on the MDS plot(s). If a parameter is set to "TRUE" (no column name specified) no labels will be added to the plot. Works only for the first dataset (data1). Default is FALSE (do not run).}
 

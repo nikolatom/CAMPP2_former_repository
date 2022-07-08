@@ -19,7 +19,9 @@
 #' @param prefix Prefix for the results' files and results folder. Defalt is "Results".
 #' @param signif Cut-offs for log fold change (logFC) and corrected p-value (fdr), defining significant hits (proteins, genes, miRNAs or N-features). If argument is set, it must be a numeric vector, where the first element specifies the cut-off for logFC and the second element specifies the cut-off for corrected p-value (fdr).  In case of 2 datasets, vector must be of length 4. By default, cutoffs will be set to -1 > logFC > 1 and corrected p-values < 0.05.
 #' @param plot.mds This argument specifies ("TRUE" or "FALSE") if a preliminary MDSplot should be made for data overview. Works only for the first dataset. Default is FALSE (do not run).
-#' @param plot.DEA This argument specifies ("TRUE" or "FALSE") whether visualizations should be made for the differential expression analysis.
+#' @param MDS.labels Argument specifying whether to include labels on the MDS plot if plot.mds is TRUE. The argument should be defined with TRUE/FALSE.
+#' @param plot.DEA This argument specifies ("TRUE" or "FALSE") whether visualizations should be made for the differential expression analysis. Visualizations include a Volcano plot for the groups of samples and an Upset plot and Venn diagram for sample subtypes in the input data if subtypes are present.
+#' @param ensembl.version This arugment specifies which ensembl database to use when transforming ensemble IDs into HUGO IDs using biomaRt. The argument should be specified as a number.
 #' @param covariates Covariates to include in the analysis. If multiple of these, they should be specified as a character vector. The first element in this list must be either TRUE or FALSE. If TRUE is specified then covariates will be included in both DE/DA analysis and Survival Analsysis. If FALSE is specified covariates will ONLY be used for Survival Analsysis. Names of covariates should match the desired columns in the metadata file. Default is NULL.
 #' @param stratify This argument may be used if some of the categorical (NOT continous) covariates violate the cox proportional assumption. The workflow checks for proportional hazard and will retun the covariates that fail the PH test. You may then rerun the workflow with this argument followed by the names of the categorical covariates which failed and these will be stratified. Default is NULL.
 #' @param colors Custom color pallet for MDS and heatmaps. Must be the same length as number of groups used for comparison (e.g. two groups = two colors) and must be defined as character vector. See R site for avalibe colors http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf. Default is NULL.
@@ -37,21 +39,22 @@
 #' }
 
 
-runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology, groups, batches=NULL, data.check=TRUE, standardize=FALSE, transform=FALSE, plot.mds=FALSE, plot.DEA=FALSE, plot.heatmap=FALSE, heatmap.size=40, kmeans=FALSE, signif=NULL, colors=NULL, prefix="Results", correlation=FALSE, lasso=FALSE, WGCNA=FALSE, cutoff.WGCNA=NULL, survival=FALSE, covariates=NULL, stratify=NULL, surv.plot=50, PPint=FALSE, gene.miR.int=FALSE){
+runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology, groups, batches=NULL, data.check=TRUE, standardize=FALSE, transform=FALSE, plot.mds=FALSE, MDS.labels=TRUE, plot.DEA=FALSE, plot.heatmap=FALSE, heatmap.size=40, ensembl.version=104, kmeans=FALSE, signif=NULL, colors=NULL, prefix="Results", correlation=FALSE, lasso=FALSE, WGCNA=FALSE, cutoff.WGCNA=NULL, survival=FALSE, covariates=NULL, stratify=NULL, surv.plot=50, PPint=FALSE, gene.miR.int=FALSE){
 
     ###parse input arguments and assign updated values
     c(data1,data2,metadata1,metadata2,technology,groups,
       group1,group2,ids,batches,databatch1,databatch2,
       batch1,batch2,standardize,transform,data.check,
-      plot.mds,kmeans,labels.kmeans,signif,logFC1,FDR1,
+      plot.mds,MDS.labels,kmeans,labels.kmeans,signif,logFC1,FDR1,
       logFC2,FDR2,colors,prefix,plot.DEA, plot.heatmap,
-      heatmap.size,corrby,lasso,WGCNA,cutoff.WGCNA,survival,
-      covarD,scovarD,covarS,stratify,surv.plot,PPI,GmiRI,
+      heatmap.size,ensembl.version,corrby,lasso,WGCNA,cutoff.WGCNA,
+      survival,covarD,scovarD,covarS,stratify,surv.plot,PPI,GmiRI,
       DEA.allowed.type,survival.metadata,approved.gene.IDs,provedmiRIDs,gene.query,miR.query) %<-% parseArguments(data1=data1, metadata1=metadata1, data2=data2, metadata2=metadata2,
                                                                                                                   groups=groups, technology=technology, prefix=prefix, batches=batches,
                                                                                                                   data.check=data.check, standardize=standardize, transform=transform,
-                                                                                                                  plot.mds=plot.mds, plot.DEA=plot.DEA, plot.heatmap=plot.heatmap, heatmap.size=heatmap.size,
-                                                                                                                  kmeans=kmeans,signif=signif, colors=colors, correlation=correlation,
+                                                                                                                  plot.mds=plot.mds, MDS.labels=MDS.labels, plot.DEA=plot.DEA,
+                                                                                                                  plot.heatmap=plot.heatmap, heatmap.size=heatmap.size,ensembl.version=ensembl.version,
+                                                                                                                  kmeans=kmeans,signif=signif, colors=colors,correlation=correlation,
                                                                                                                   lasso=lasso,WGCNA=WGCNA, cutoff.WGCNA=cutoff.WGCNA, survival=survival,
                                                                                                                   covariates=covariates, stratify=stratify,surv.plot=surv.plot,
                                                                                                                   PPint=PPint, gene.miR.int=gene.miR.int)
@@ -254,14 +257,14 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
 
     if (plot.mds == TRUE && databatch1 == TRUE){
-        mdsplot <- MDSPlot(data1.batch, group1, ids, MDScolors)
+        mdsplot <- MDSPlot(data1.batch, group1, ids, MDScolors, MDS.labels)
         ggsave(paste0(prefix, "_MDSplot_batchcorr.pdf"), plot = mdsplot, dpi = 300, width = 8, height = 8)
 
     } else if (plot.mds == TRUE && databatch1 == FALSE){
         if (technology[1] == "seq") {
-            mdsplot <- MDSPlot(data.frame(data1$E), group1, ids, MDScolors)
+            mdsplot <- MDSPlot(data.frame(data1$E), group1, ids, MDScolors, MDS.labels)
         } else {
-            mdsplot <- MDSPlot(data1, group1, ids, MDScolors)
+            mdsplot <- MDSPlot(data1, group1, ids, MDScolors, MDS.labels)
         }
         ggsave(paste0(prefix, "_MDSplot.pdf"), plot = mdsplot, dpi = 300, width = 8, height = 8)
 
@@ -490,7 +493,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
         # Apply DE_limma function to all comparisons
         print("PROCESSING DE for the 2nd DATASET")
-        res.sDE <- DAFeatureApply(contrast.matrix, data2, design2, logFC2, cutoff.FDR2)
+        res.sDE <- DAFeatureApply(contrast.matrix, data2, design2, logFC2, FDR2)
 
         # Write results out as excel file
         if (!is.null(res.sDE)) {
@@ -525,7 +528,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
         print("PROCESSING VISUALISATIONS FOR DIFFERENTIAL EXPRESSION ANALYSIS")
 
         #First dataset
-        DE.out <- AddGeneName(DE.out)
+        DE.out <- AddGeneName(DE.out,ensembl.version)
         MakeVolcano(DE.out, prefix,logFC1,FDR1)
 
         #Subtype analysis
@@ -538,12 +541,20 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
             }
             MakeUpset(prefix,sublist,names(subtypes))
             MakeVennDiagram(prefix,sublist,names(subtypes))
+
+            #Subtypes and expression
+            subtypes_updown<-split.data.frame(DE.out,list(DE.out$comparison,DE.out$dir))
+            sublist=list()
+            for (genes in subtypes_updown){
+                sublist <- append(sublist,list(genes$Ensembl_ID))
+            }
+            MakeUpset(paste0(prefix,".updown"),sublist,names(subtypes))
         }
 
         #Second dataset
         if (!is.null(data2) & !is.null(metadata2)){
-            sDE.out <- AddGeneName(sDE.out)
-            MakeVolcano(sDE.out, prefix+"2",logFC2,FDR2)
+            sDE.out <- AddGeneName(sDE.out,ensembl.version)
+            MakeVolcano(sDE.out, paste0(prefix,"2"),logFC2,FDR2)
 
             #Subtype analysis
             if (length(unique(sDE.out$comparison)) > 1){
@@ -553,8 +564,8 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
                 for (genes in subtypes){
                     sublist <- append(sublist,list(genes$Ensembl_ID))
                 }
-                MakeUpset(prefix+"2",sublist,names(subtypes))
-                MakeVennDiagram(prefix+"2",sublist,names(subtypes))
+                MakeUpset(prefix,"2",sublist,names(subtypes))
+                MakeVennDiagram(prefix,"2",sublist,names(subtypes))
             }
         }
     print("VISUALIZATION FOR DIFFERENTIAL EXPRESSION FINISHED")
@@ -742,13 +753,15 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
     }
 
+    print("LASSO PART FINISHED")
 
     # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     ### Plotting Results Heatmap ###
     # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-
     if (!isFALSE(plot.heatmap)) {
+
+        print("PRINTING HEATMAP FOR FIRST DATASET")
 
         if (databatch1 == TRUE){
             hm <- data1.batch
@@ -758,13 +771,13 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
             name <- ""
         }
 
-
         if (plot.heatmap == "ALL") {
-            stop("\nOption ALL is not allowed for heatmap, too heavy! Pick either 'DE', 'DA', 'LASSO', 'EN' or 'Consensus'.\n")
+            stop("\nOption ALL is not allowed for heatmap, too heavy! Pick either 'DEA', 'LASSO', 'EN' or 'Consensus'.\n")
         } else if (plot.heatmap %in% c("DEA")) {
-            signif_samples <- rbind(head(DE.out[order(DE.out$logFC),],20),tail(DE.out[order(DE.out$logFC),],20))
+            signif_samples <- rbind(head(DE.out[order(DE.out$logFC),],heatmap.size/2),tail(DE.out[order(DE.out$logFC),],heatmap.size/2))
             signif_samples <- signif_samples$name
             hm <- data1[rownames(data1) %in% signif_samples,]
+            print("\n- DEA was selected. Normalized and voom transformed data will be used for visualization.\n")
         } else {
             if(!is.null(lasso)) {
                 if (plot.heatmap == "Consensus") {
@@ -778,24 +791,66 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
             }
         }
 
-
-        # heatmap colors in blue
+        # Heatmap colors in blue
         hm.gradient <- viridis(300, option="cividis")
         range <- c(round(min(hm)), round(max(hm)))
 
+        # Add HUGO IDs
+        name <- rownames(hm)
+        rownames(hm) <- NULL
+        hm <- cbind(name,hm)
+        hm <- AddGeneName(hm,ensembl.version)
+        hm <- subset(hm, HUGO_ID != "")
+        rownames(hm) <- hm$HUGO_ID
+        hm <- subset(hm, select=-c(Ensembl_ID,HUGO_ID))
+
         # Heatmap as pdf
         MakeHeatmap(hm, hm.gradient, group1, prefix, range)
-
         rm(hm)
+
+        print("HEATMAP WAS SUCCESFULLY PRINTED")
+
+        if (!is.null(data2)){
+            print("PRINTING HEATMAP FOR SECOND DATASET")
+
+            if (databatch2 == TRUE){
+                hm2 <- data2.batch
+                name <- "_batchcorr"
+            } else {
+                hm2 <- data2
+                name <- ""
+            }
+
+            if (plot.heatmap %in% c("DEA")) {
+                signif_samples2 <- rbind(head(sDE.out[order(sDE.out$logFC),],heatmap.size/2),tail(sDE.out[order(sDE.out$logFC),],heatmap.size/2))
+                signif_samples2 <- signif_samples2$name
+                hm2 <- data2[rownames(data2) %in% signif_samples2,]
+                print("\n- DEA was selected. Normalized and voom transformed data will be used for visualization.\n")
+            } else {
+                stop("A heatmap for the second dataset can only be generated from DEA")
+            }
+
+            # Add HUGO IDs
+            name <- rownames(hm2)
+            rownames(hm2) <- NULL
+            hm2 <- cbind(name,hm2)
+            hm2 <- AddGeneName(hm2,ensembl.version)
+            hm2 <- subset(hm2, HUGO_ID != "")
+            rownames(hm2) <- hm2$HUGO_ID
+            hm2 <- subset(hm2, select=-c(Ensembl_ID,HUGO_ID))
+
+            range <- c(round(min(hm2)), round(max(hm2)))
+
+            # Heatmap as pdf
+            MakeHeatmap(hm2, hm.gradient, group2, paste0(prefix,"2"), range)
+            rm(hm2)
+
+            print("HEATMAP WAS SUCCESFULLY PRINTED")
+        }
 
     } else {
         cat("\n- No heatmap requested.\n")
     }
-
-
-    print("LASSO PART FINISHED")
-
-
 
 
     # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

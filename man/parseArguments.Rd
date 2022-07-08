@@ -18,6 +18,7 @@ parseArguments(
   plot.mds,
   plot.DEA,
   plot.heatmap,
+  ensembl.version,
   heatmap.size,
   kmeans,
   signif,

@@ -4,14 +4,14 @@
 \alias{MakeVennDiagram}
 \title{Venn Diagram}
 \usage{
-MakeVennDiagram(sets_list, names_sets, prefix)
+MakeVennDiagram(prefix, sets_list, names_sets)
 }
 \arguments{
+\item{prefix}{A prefix for the output filename.}
+
 \item{sets_list}{A list of sets to compare.}
 
 \item{names_sets}{A vector of the corresponding names to each set in sets_list.}
-
-\item{prefix}{A prefix for the output filename.}
 }
 \value{
 Venn Diagram
