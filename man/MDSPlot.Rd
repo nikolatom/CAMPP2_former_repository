@@ -4,16 +4,18 @@
 \alias{MDSPlot}
 \title{Multidimensional Scaling Plot}
 \usage{
-MDSPlot(my.data, my.group, my.labels, my.cols)
+MDSPlot(data, group, labels, cols, MDS.labels)
 }
 \arguments{
-\item{my.data}{a dataframe of expression/abundance counts}
+\item{data}{a dataframe of expression/abundance counts}
 
-\item{my.group}{a vector of integers specifying the group (may be the same or different, length should be equal to ncol(dataframe))}
+\item{group}{a vector of integers specifying the group (may be the same or different, length should be equal to ncol(dataframe))}
 
-\item{my.cols}{a vector of colors (one color for each group)}
+\item{cols}{a vector of colors (one color for each group)}
 
-\item{my.lables}{a vector of IDs for labeling (may be the same or different, length should be equal to ncol(dataframe))}
+\item{MDS.labels}{a TRUE/FALSE statement specifying whether to include labels on the output plot}
+
+\item{lables}{a vector of IDs for labeling (may be the same or different, length should be equal to ncol(dataframe))}
 }
 \value{
 distribution plots

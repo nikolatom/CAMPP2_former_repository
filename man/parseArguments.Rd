@@ -16,6 +16,7 @@ parseArguments(
   standardize,
   transform,
   plot.mds,
+  MDS.labels,
   plot.DEA,
   plot.heatmap,
   ensembl.version,
@@ -58,6 +59,8 @@ parseArguments(
 \item{transform}{Data transformation type. Current options are "log2", "log10", "logit" and "voom". If two datasets are provided the parameter should be specified for each dataset, provided as a character vector. Defaults is FALSE (do not run).}
 
 \item{plot.mds}{This argument specifies ("TRUE" or "FALSE") if a preliminary MDSplot should be made for data overview. Works only for the first dataset. Default is FALSE (do not run).}
+
+\item{MDS.labels}{Argument specifying whether to include labels on the MDS plot if plot.mds is TRUE. The argument should be defined with TRUE/FALSE.}
 
 \item{plot.DEA}{This argument specifies ("TRUE" or "FALSE") whether visualizations should be made for the differential expression analysis.}
 

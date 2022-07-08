@@ -4,12 +4,12 @@
 \alias{PlotDistributions}
 \title{Plotting Distributions}
 \usage{
-PlotDistributions(my.data, list.of.lists)
+PlotDistributions(data, fitted.data)
 }
 \arguments{
-\item{my.data}{a dataframe of expression/abundance counts, N.B only a subset of variables should be input, not intended for the full expression matrix!(See "Fitting Data Distributions" above)}
+\item{data}{a dataframe of expression/abundance counts, N.B only a subset of variables should be input, not intended for the full expression matrix!(See "Fitting Data Distributions" above)}
 
-\item{list.of.lists}{an output from the function "Fitting Data Distributions". The my.data and list.of.list should have the same dimentions, e.g. length of list == nrows of dataframe.}
+\item{fitted.data}{a list of lists obtained as output from the function "Fitting Data Distributions". The data and fitted.data should have the same dimensions, e.g. length of list == nrows of dataframe.}
 }
 \value{
 distribution plots

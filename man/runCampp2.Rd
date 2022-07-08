@@ -16,6 +16,7 @@ runCampp2(
   standardize = FALSE,
   transform = FALSE,
   plot.mds = FALSE,
+  MDS.labels = TRUE,
   plot.DEA = FALSE,
   plot.heatmap = FALSE,
   heatmap.size = 40,
@@ -59,7 +60,9 @@ runCampp2(
 
 \item{plot.mds}{This argument specifies ("TRUE" or "FALSE") if a preliminary MDSplot should be made for data overview. Works only for the first dataset. Default is FALSE (do not run).}
 
-\item{plot.DEA}{This argument specifies ("TRUE" or "FALSE") whether visualizations should be made for the differential expression analysis.}
+\item{MDS.labels}{Argument specifying whether to include labels on the MDS plot if plot.mds is TRUE. The argument should be defined with TRUE/FALSE.}
+
+\item{plot.DEA}{This argument specifies ("TRUE" or "FALSE") whether visualizations should be made for the differential expression analysis. Visualizations include a Volcano plot for the groups of samples and an Upset plot and Venn diagram for sample subtypes in the input data if subtypes are present.}
 
 \item{plot.heatmap}{Argument for heatmap specified as either: "DEA", "LASSO", "EN" or "Consensus". Defaults is FALSE (do not run).}
 
