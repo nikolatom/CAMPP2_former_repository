@@ -30,7 +30,7 @@ MakeVolcano <- function(data, prefix, cutoff.logFC, cutoff.FDR) {
         geom_point(shape=1) +
         theme_minimal() +
         geom_text_repel() +
-        scale_color_manual(values=c("cyan3", "indianred2")) +
+        scale_color_manual(values=c("cyan3", "indianred2","black")) +
         geom_vline(xintercept=c(-cutoff.logFC, cutoff.logFC), col="black") +
         geom_hline(yintercept=-log10(cutoff.FDR), col="black")
 
