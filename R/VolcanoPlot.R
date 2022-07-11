@@ -24,6 +24,9 @@ MakeVolcano <- function(data, prefix, cutoff.logFC, cutoff.FDR) {
     data$DEAlabel <- ""
     data[1:15,]$DEAlabel[data[1:15,]$diffexpressed != "NO"] <- data[1:15,]$"HUGO_ID"[data[1:15,]$diffexpressed != "NO"]
 
+    data$logFC <- as.numeric(data$logFC)
+    data$P.Value <- as.numeric(data$P.Value)
+
     ggplot(data, aes(x=logFC, y=-log10(P.Value), col=data$diffexpressed, label=data$DEAlabel)) +
         geom_point(shape=1) +
         theme_minimal() +

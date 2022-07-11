@@ -543,13 +543,12 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
             MakeVennDiagram(prefix,sublist,names(subtypes))
 
             #Subtypes and expression
-            subtypes_updown<-split.data.frame(DE.out,list(DE.out$comparison,DE.out$dir))
+            subtypes_updown<-split.data.frame(DEA.visuals,list(DEA.visuals$comparison,DEA.visuals$dir))
             sublist_updown=list()
             for (genes in subtypes_updown){
                 sublist_updown <- append(sublist_updown,list(genes$Ensembl_ID))
             }
-            print(length(sublist_updown))
-            print(names(subtypes_updown))
+
             MakeUpset(paste0(prefix,".updown"),sublist_updown,names(subtypes_updown))
         }
 
@@ -566,11 +565,11 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
                 for (genes in subtypes){
                     sublist <- append(sublist,list(genes$Ensembl_ID))
                 }
-                MakeUpset(prefix,"_second",sublist,names(subtypes))
-                MakeVennDiagram(prefix,"_second",sublist,names(subtypes))
+                MakeUpset(paste0(prefix,"_second"),sublist,names(subtypes))
+                MakeVennDiagram(paste0(prefix,"_second"),sublist,names(subtypes))
 
                 #Subtypes and expression
-                subtypes_updown<-split.data.frame(sDE.out,list(sDE.out$comparison,sDE.out$dir))
+                subtypes_updown<-split.data.frame(DEA.visuals2,list(DEA.visuals2$comparison,DEA.visuals2$dir))
                 sublist=list()
                 for (genes in subtypes_updown){
                     sublist <- append(sublist,list(genes$Ensembl_ID))
