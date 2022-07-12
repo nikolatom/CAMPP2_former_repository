@@ -2,41 +2,33 @@
 % Please edit documentation in R/Normalize_data.R
 \name{NormalizeData}
 \alias{NormalizeData}
-\title{Normalization}
+\title{Normalization and Transformation}
 \usage{
-NormalizeData(
-  my.technology,
-  my.data,
-  my.group,
-  my.transform,
-  my.standardize,
-  my.data.original = NULL
-)
+NormalizeData(data, group, transform, standardize, technology)
 }
 \arguments{
-\item{my.technology}{Possible values are: "array" (mircoarray data), "seq" (high throughput sequencing data), "ms" (mass spectrometry data) or "other" (other type).}
+\item{data}{a dataframe of expression/abundance counts}
 
-\item{my.data}{a dataframe of expression/abundance counts, N.B only a subset of variables should be input, not intended for the full expression matrix!}
+\item{group}{a factor specifying sample group from metadata}
 
-\item{my.group}{a vector of integers specifying group; should be represented by a column in metadata file.}
+\item{transform}{a string vector of length 1 defining transformation type for each dataset ("log2", "logit", "log10"). If technology is "seq", this option is ignored an Voom transform is applied instead.}
 
-\item{my.transform}{a normalization type - "log2", "logit" or "log10"}
+\item{standardize}{a string vector of length 1 defining standardization method ("mean" or "median"). If technology is "seq" or "array", this option is ignored, instead, seq data is normalized by "TMM"; array data is normalized by "quantile" standardization.}
 
-\item{my.standardize}{a standardization method - "mean" or "median"}
-
-\item{my.data.original}{= NULL}
+\item{technology}{a string vector of length 1 defining technology used for generating the data. Allowed types are: 'array', 'seq', 'ms' or 'other'.}
 }
 \value{
-normalized counts
+Elist (seq technology) or array (array, ms, other technologies) of normalized, filtered and transformed (gene) counts data
 }
 \description{
-Normalizing features' counts depending on data types and selected normalization/standardization methods
+This function normalizes and transforms feature counts depending on data types and selected normalization/standardization methods.
 }
 \examples{
 \dontrun{
 ...
 }
+
 }
 \seealso{
-LINK TO MANUAL (TRANSFORMATION/NORMALIZATION)
+
 }
