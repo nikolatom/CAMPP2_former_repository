@@ -15,7 +15,6 @@ ExportDEA <- function(res.DEA, filename) {
     } else {
         res.DEA <- do.call(rbind, unlist(res.DEA, recursive=FALSE))
         group.names <- gsub("1[.](.*)|2[.](.*)", "", rownames(res.DEA))
-        group.names <- gsub("group", "", group.names)
         res.DEA$comparison <- group.names
         write.table(res.DEA, paste0(filename,".txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
     }
