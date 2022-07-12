@@ -342,8 +342,8 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
          paste0("WGCNA: ",WGCNA),"\n",
          paste0("cutoff.WGCNA: ",cutoff.WGCNA),"\n",
          paste0("survival: ",survival),"\n",
-         paste0("covarD: ",covarD),"\n",
-         paste0("scovarD: ",scovarD),"\n",
+         paste0("covarDEA1: ",covarDEA1),"\n",
+         paste0("covarDEA2: ",covarDEA2),"\n",
          paste0("covarS: ",covarS),"\n",
          paste0("stratify: ",stratify),"\n",
          paste0("surv.plot: ",surv.plot),"\n",
@@ -351,7 +351,7 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
          paste0("GmiRI: ",GmiRI),"\n"
      ))
 
-    return(list("data1"=data1,"data2"=data2,"metadata1"=metadata1,"metadata2"=metadata2, "technology"=technology, "groups"=groups,"group1"=group1,"group2"=group2,"ids"=ids,"batches"=batches,"databatch1"=databatch1,"databatch2"=databatch2,"batch1"=batch1, "batch2"=batch2, "standardize"=standardize,"transform"=transform,"data.check"=data.check,"plot.mds"=plot.mds,"MDS.labels"=MDS.labels,"kmeans"=kmeans,"labels.kmeans"=labels.kmeans,"signif"=signif,"logFC1"=logFC1,"FDR1"=FDR1,"logFC2"=logFC2,"FDR2"=FDR2,"block"=block,"block1"=block1,"block2"=block2,"colors"=colors,"prefix"=prefix,"plot.DEA"=plot.DEA,"plot.heatmap"=plot.heatmap,"heatmap.size"=heatmap.size,"ensembl.version"=ensembl.version,"corrby"=corrby,"lasso"=lasso,"WGCNA"=WGCNA,"cutoff.WGCNA"=cutoff.WGCNA,"survival"=survival,"covarD"=covarD,"scovarD"=scovarD,"covarS"=covarS,"stratify"=stratify,"surv.plot"=surv.plot,"PPI"=PPI,"GmiRI"=GmiRI,"DEA.allowed.type"=DEA.allowed.type,"survival.metadata"=survival.metadata,"approved.gene.IDs"=approved.gene.IDs,"approved.miR.IDs"=approved.miR.IDs,"gene.query"=gene.query,"miR.query"=miR.query))
+    return(list("data1"=data1,"data2"=data2,"metadata1"=metadata1,"metadata2"=metadata2, "technology"=technology, "groups"=groups,"group1"=group1,"group2"=group2,"ids"=ids,"batches"=batches,"databatch1"=databatch1,"databatch2"=databatch2,"batch1"=batch1, "batch2"=batch2, "standardize"=standardize,"transform"=transform,"data.check"=data.check,"plot.mds"=plot.mds,"MDS.labels"=MDS.labels,"kmeans"=kmeans,"labels.kmeans"=labels.kmeans,"signif"=signif,"logFC1"=logFC1,"FDR1"=FDR1,"logFC2"=logFC2,"FDR2"=FDR2,"block"=block,"block1"=block1,"block2"=block2,"colors"=colors,"prefix"=prefix,"plot.DEA"=plot.DEA,"plot.heatmap"=plot.heatmap,"heatmap.size"=heatmap.size,"ensembl.version"=ensembl.version,"corrby"=corrby,"lasso"=lasso,"WGCNA"=WGCNA,"cutoff.WGCNA"=cutoff.WGCNA,"survival"=survival,"covarDEA1"=covarDEA1,"covarDEA2"=covarDEA2,"covarS"=covarS,"stratify"=stratify,"surv.plot"=surv.plot,"PPI"=PPI,"GmiRI"=GmiRI,"DEA.allowed.type"=DEA.allowed.type,"survival.metadata"=survival.metadata,"approved.gene.IDs"=approved.gene.IDs,"approved.miR.IDs"=approved.miR.IDs,"gene.query"=gene.query,"miR.query"=miR.query))
 
 }
 
