@@ -8,7 +8,6 @@ library(dynamicTreeCut)
 
 ###This command will run CAMPP2 with default settigs using example data which are included in the package
 runCampp2(batches=c("tumor_stage","tumor_stage"),prefix="test_CAMPP2", data1=campp2_brca_1, data2=campp2_brca_2, metadata1=campp2_brca_1_meta, metadata2=campp2_brca_2_meta, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"))
->>>>>>> main
 
 ###An example code for testing the function for Replacing NAs
 n<-10000
@@ -26,3 +25,6 @@ batch_corrected_data<-BatchCorrect(normalized_data,campp2_brca_1_meta$tumor_stag
 
 ###An example code for running differential gene expression analysis
 runCampp2(prefix="Testing_DEA", data1=campp2_brca_1, metadata1=campp2_brca_1_meta, groups=c("IDs", "diagnosis"), technology=c("seq"), block=c(campp2_brca_1_meta$tumor_stage))
+
+###An example code for running differential expression analysis with subtype analysis and visualizations
+runCampp2(prefix="Testing_DEA", data1=campp2_brca_1, metadata1=campp2_brca_1_meta, groups=c("IDs", "subtype"), technology=c("seq"), plot.DEA=TRUE, plot.heatmap="DEA")

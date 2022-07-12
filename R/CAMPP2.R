@@ -50,15 +50,15 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
       plot.mds,MDS.labels,kmeans,labels.kmeans,signif,logFC1,FDR1,
       logFC2,FDR2,block,block1,block2, colors,prefix,plot.DEA, plot.heatmap,
       heatmap.size,ensembl.version,corrby,lasso,WGCNA,cutoff.WGCNA,
-      survival,covarD,scovarD,covarS,stratify,surv.plot,PPI,GmiRI,
-      DEA.allowed.type,survival.metadata,approved.gene.IDs,provedmiRIDs,gene.query,miR.query) %<-% parseArguments(data1=data1, metadata1=metadata1, data2=data2, 													metadata2=metadata2,groups=groups, technology=technology, 													prefix=prefix, batches=batches,data.check=data.check, 		
-												standardize=standardize, transform=transform,plot.mds=plot.mds, 
-												MDS.labels=MDS.labels, plot.DEA=plot.DEA, plot.heatmap=plot.heatmap, 													heatmap.size=heatmap.size, 			
-												ensembl.version=ensembl.version,kmeans=kmeans,signif=signif, 
-												block=block, colors=colors,correlation=correlation,
-												lasso=lasso,WGCNA=WGCNA, cutoff.WGCNA=cutoff.WGCNA,survival=survival,
-                                                                                                covariates=covariates, stratify=stratify,surv.plot=surv.plot,
-                                                                                                PPint=PPint, gene.miR.int=gene.miR.int)
+      survival,covarDEA1,covarDEA2,covarS,stratify,surv.plot,PPI,GmiRI,
+      DEA.allowed.type,survival.metadata,approved.gene.IDs,provedmiRIDs,gene.query,miR.query) %<-% parseArguments(data1=data1, metadata1=metadata1, data2=data2,
+                                                                                                    metadata2=metadata2,groups=groups, technology=technology,prefix=prefix,
+                                                                                                    batches=batches,data.check=data.check,standardize=standardize, transform=transform,
+                                                                                                    plot.mds=plot.mds,MDS.labels=MDS.labels, plot.DEA=plot.DEA, plot.heatmap=plot.heatmap,
+                                                                                                    heatmap.size=heatmap.size,ensembl.version=ensembl.version,kmeans=kmeans,signif=signif,
+												                                                    block=block, colors=colors,correlation=correlation,lasso=lasso,WGCNA=WGCNA,
+												                                                    cutoff.WGCNA=cutoff.WGCNA,survival=survival,covariates=covariates,
+												                                                    stratify=stratify,surv.plot=surv.plot,PPint=PPint, gene.miR.int=gene.miR.int)
 
 
     # Create directory Results
@@ -216,11 +216,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
         rm(subset.data1, list.of.dists)
     }
 
-
     print("DISTRIBUTIONAL CHECK PART FINISHED")
-
->>>>>>> main
-
 
     # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     ### PRELIMINARY MDS PLOT ###
@@ -232,16 +228,16 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
 
     if (plot.mds == TRUE && databatch1 == TRUE){
-        mdsplot <- MDSPlot(data1.batch, group1, ids, MDScolors)
+        mdsplot <- MDSPlot(data1.batch, group1, ids, MDScolors, MDS.labels)
         ggsave(paste0(prefix, "_MDSplot_batchcorr.pdf"), plot = mdsplot, dpi = 300, width = 8, height = 8)
 
     } else if (plot.mds == TRUE && databatch1 == FALSE){
         if (technology[1] == "seq") {
-            mdsplot <- MDSPlot(data.frame(data1$E), group1, ids, MDScolors)
+            mdsplot <- MDSPlot(data.frame(data1$E), group1, ids, MDScolors, MDS.labels)
         } else {
-            mdsplot <- MDSPlot(data1, group1, ids, MDScolors)
+            mdsplot <- MDSPlot(data1, group1, ids, MDScolors, MDS.labels)
         }
-        ggsave(paste0(prefix, "_MDSplot.pdf"), plot = mdsplot, dpi = 300, width = 8, height = 8
+        ggsave(paste0(prefix, "_MDSplot.pdf"), plot = mdsplot, dpi = 300, width = 8, height = 8)
         rm(mdsplot)
 
     } else {
@@ -347,17 +343,27 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
     #First dataset
     DEARes1 <- RunDEA(data1, metadata1, technology[1], batch1, covarDEA1, group1, logFC1, FDR1, paste0(prefix,"1"), block1)
 
-    DEA1.out<-DEARes1$DE.out
-    res.DEA1<-DEARes1$res.DE
-    res.DEA1.names<-DEARes1$res.DE.names
+    DEA1.out<-DEARes1$DEA.out
+
+    if (length(unique(DEA1.out$comparison)) > 1){
+        DEA1.out<-subset(DEA1.out, grepl("healthy", comparison, fixed = TRUE))
+    }
+
+    res.DEA1<-DEARes1$res.DEA
+    res.DEA1.names<-DEARes1$res.DEA.names
 
     #Second dataset
     if(!is.null(data2) & !is.null(metadata2)) {
         DEARes2 <- RunDEA(data2, metadata2, technology[2], batch2, covarDEA2, group2, logFC2, FDR2, paste0(prefix,"2"), block2)
 
-        DEA2.out<-DEARes2$DE.out
-        res.DEA2<-DEARes2$res.DE
-        res.DEA2.names<-DEARes2$res.DE.names
+        DEA2.out<-DEARes2$DEA.out
+
+        if (length(unique(DEA2.out$comparison)) > 1){
+            DEA2.out<-subset(DEA2.out, grepl("healthy", comparison, fixed = TRUE))
+        }
+
+        res.DEA2<-DEARes2$res.DEA
+        res.DEA2.names<-DEARes2$res.DEA.names
     }
 
     setwd("..")
@@ -368,7 +374,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
     ### VISUALISATIONS FOR DIFFERENTIAL EXPRESSION ANALYSIS ###
     # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    setwd("DEA_results/")
+    setwd("Results_DEA/")
 
     if (!isFALSE(plot.DEA)){
         print("PROCESSING VISUALISATIONS FOR DIFFERENTIAL EXPRESSION ANALYSIS")
@@ -425,6 +431,9 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
         }
     print("VISUALIZATION FOR DIFFERENTIAL EXPRESSION FINISHED")
     }
+
+    setwd("..")
+
     #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     #                                                                                       ## LASSO Regression ###
     # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

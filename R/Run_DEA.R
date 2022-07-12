@@ -57,6 +57,7 @@ RunDEA <- function(data, metadata, technology, batch, covarDEA, group, logFC, FD
 
     # Apply DEA to all comparisons
     res.DEA <- DEAFeatureApply(contrast.matrix, data, design, logFC, FDR, block, FALSE)
+    print(res.DEA)
 
     # Write results out as .txt file
     if (!is.null(res.DEA)) {
@@ -64,7 +65,7 @@ RunDEA <- function(data, metadata, technology, batch, covarDEA, group, logFC, FD
         rownames(DEA.out) <- NULL
         res.DEA.names <- unique(DEA.out$name)
     } else {
-        cat("No signficant DE/DA hits found. Check your cut-off for differential expression analysis, it may be that these are too stringent.")
+        cat("No signficant DEA hits found. Check your cut-off for differential expression analysis, it may be that these are too stringent.")
     }
 
     if (technology[1] == "seq") {
