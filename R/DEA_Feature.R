@@ -3,8 +3,8 @@
 #' @param contrast an array containing contrasts between groups of interest.
 #' @param data A raw gene count matrix from seq, array, ms or other technology (with gene IDs as row names and sample IDs as columns). It's recommended to import gene counts using function "import_counts".
 #' @param design a design matrix with all comparisons.
-#' @param coLFC a number specifying the cutoff for LogFC.
-#' @param coFDR a number specifying the cutoff for FDR.
+#' @param cutoff.logFC a number specifying the cutoff for LogFC.
+#' @param cutoff.FDR a number specifying the cutoff for FDR.
 #' @param block A vector or factor specifying a blocking variable. The block must be of same length as data and contain 2 or more options. For 2 datasets, the block can be defined as a vector of the two seperate blocks.
 #' @export
 #' @import sva
@@ -17,7 +17,7 @@
 #' }
 
 
-DEAFeature <- function(contrast, data, design, coLFC, coFDR, block) {
+DEAFeature <- function(contrast, data, design, cutoff.logFC, cutoff.FDR, block) {
     if(is.null(block)) {
         fit3 <- treat(contrasts.fit(lmFit(data, design), contrast))
     }
@@ -27,10 +27,8 @@ DEAFeature <- function(contrast, data, design, coLFC, coFDR, block) {
     }
     DEA.table <- topTreat(fit3, coef=1, adjust='fdr', number=nrow(data))
 
-    print("coFDR: ",coFDR)
-
-    up.reg <- DEA.table[DEA.table$logFC >= coLFC & DEA.table$adj.P.Val < coFDR, ]
-    down.reg <- DEA.table[DEA.table$logFC <= -coLFC & DEA.table$adj.P.Val < coFDR, ]
+    up.reg <- DEA.table[DEA.table$logFC >= cutoff.logFC & DEA.table$adj.P.Val < cutoff.FDR, ]
+    down.reg <- DEA.table[DEA.table$logFC <= -cutoff.logFC & DEA.table$adj.P.Val < cutoff.FDR, ]
 
     up.reg$name <- rownames(up.reg)
     down.reg$name <- rownames(down.reg)

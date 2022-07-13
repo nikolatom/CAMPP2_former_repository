@@ -628,16 +628,16 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
             hm <- data1.batch
             name <- "_batchcorr"
         } else {
-            hm <- data1
+            hm <- as.data.frame(data1$E)
             name <- ""
         }
 
         if (plot.heatmap == "ALL") {
             stop("\nOption ALL is not allowed for heatmap, too heavy! Pick either 'DEA', 'LASSO', 'EN' or 'Consensus'.\n")
         } else if (plot.heatmap %in% c("DEA")) {
-            signif_samples <- rbind(head(DE.out[order(DE.out$logFC),],heatmap.size/2),tail(DE.out[order(DE.out$logFC),],heatmap.size/2))
+            signif_samples <- rbind(head(DEA1.out[order(DEA1.out$logFC),],heatmap.size/2),tail(DEA1.out[order(DEA1.out$logFC),],heatmap.size/2))
             signif_samples <- signif_samples$name
-            hm <- data1[rownames(data1) %in% signif_samples,]
+            hm <- hm[rownames(data1) %in% signif_samples,]
             cat("\n- DEA was selected. Normalized and voom transformed data will be used for visualization.\n")
         } else {
             if(!is.null(lasso)) {
@@ -678,14 +678,14 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
                 hm2 <- data2.batch
                 name <- "_batchcorr"
             } else {
-                hm2 <- data2
+                hm2 <- as.data.frame(data2$E)
                 name <- ""
             }
 
             if (plot.heatmap %in% c("DEA")) {
-                signif_samples2 <- rbind(head(sDE.out[order(sDE.out$logFC),],heatmap.size/2),tail(sDE.out[order(sDE.out$logFC),],heatmap.size/2))
+                signif_samples2 <- rbind(head(DEA2.out[order(DEA2.out$logFC),],heatmap.size/2),tail(DEA2.out[order(DEA2.out$logFC),],heatmap.size/2))
                 signif_samples2 <- signif_samples2$name
-                hm2 <- data2[rownames(data2) %in% signif_samples2,]
+                hm2 <- hm[rownames(data2) %in% signif_samples2,]
                 cat("\n- DEA was selected. Normalized and voom transformed data will be used for visualization.\n")
             } else {
                 stop("A heatmap for the second dataset can only be generated for DEA")

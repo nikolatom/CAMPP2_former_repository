@@ -17,6 +17,11 @@ ExportDEA <- function(res.DEA, filename) {
         group.names <- gsub("1[.](.*)|2[.](.*)", "", rownames(res.DEA))
         group.names <- gsub("group","",group.names)
         res.DEA$comparison <- group.names
+
+        if (length(unique(res.DEA$comparison)) > 1){
+            res.DEA<-subset(res.DEA, grepl("healthy", comparison, fixed = TRUE))
+        }
+
         write.table(res.DEA, paste0(filename,".txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
     }
     return(res.DEA)

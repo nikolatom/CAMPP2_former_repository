@@ -24,4 +24,3 @@ importMetadata <- function(my.data) {
         rm(file)
         return(my.data)
 }
-

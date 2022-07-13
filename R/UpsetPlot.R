@@ -16,7 +16,7 @@ MakeUpset <- function(prefix,sets_list,names_sets) {
 
     png(file = paste0(prefix,"_UpsetPlot.png"))
 
-    names_sets <- gsub("group1","",gsub("-","",gsub("healthy","",names_sets)))
+    names_sets <- gsub("-","",gsub("healthy","",names_sets))
     names(sets_list) <- names_sets
     comb_mat <- make_comb_mat(sets_list)
     n_col <- max(comb_degree(comb_mat))
