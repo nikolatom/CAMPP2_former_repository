@@ -341,7 +341,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
     setwd("Results_DEA/")
 
     #First dataset
-    DEARes1 <- RunDEA(data1, technology[1], databatch1, batch1, covarDEA1, group1, logFC1, FDR1, paste0(prefix,"1"), block1)
+    DEARes1 <- RunDEA(data1, technology[1], batch1, covarDEA1, group1, logFC1, FDR1, paste0(prefix,"1"), block1)
 
     DEA1.out<-DEARes1$DEA.out
 
@@ -354,7 +354,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
     #Second dataset
     if(!is.null(data2) & !is.null(metadata2)) {
-        DEARes2 <- RunDEA(data2, technology[2], databatch2, batch2, covarDEA2, group2, logFC2, FDR2, paste0(prefix,"2"), block2)
+        DEARes2 <- RunDEA(data2, technology[2], batch2, covarDEA2, group2, logFC2, FDR2, paste0(prefix,"2"), block2)
 
         DEA2.out<-DEARes2$DEA.out
 

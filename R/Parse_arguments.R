@@ -175,7 +175,7 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
     if (is.null(signif)){
         cat("\n- No cut-off for significant hits has been chosen. Cutoffs will be set to -1 > logFC > 1 and corrected p-value (fdr) < 0.05.")
         logFC1 <- 1
-        FDR2 <- 0.05
+        FDR1 <- 0.05
         logFC2 <- 1
         FDR2 <- 0.05
     }

@@ -27,6 +27,8 @@ DEAFeature <- function(contrast, data, design, coLFC, coFDR, block) {
     }
     DEA.table <- topTreat(fit3, coef=1, adjust='fdr', number=nrow(data))
 
+    print("coFDR: ",coFDR)
+
     up.reg <- DEA.table[DEA.table$logFC >= coLFC & DEA.table$adj.P.Val < coFDR, ]
     down.reg <- DEA.table[DEA.table$logFC <= -coLFC & DEA.table$adj.P.Val < coFDR, ]
 
@@ -37,5 +39,6 @@ DEAFeature <- function(contrast, data, design, coLFC, coFDR, block) {
     down.reg$dir <- rep("down.reg", nrow(down.reg))
 
     all.reg <- list(up.reg, down.reg)
+
     return(all.reg)
 }
