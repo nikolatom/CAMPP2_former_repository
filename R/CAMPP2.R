@@ -370,70 +370,6 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
     print("DIFFERENTIAL EXPRESSION PART DONE")
 
-    # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    ### VISUALISATIONS FOR DIFFERENTIAL EXPRESSION ANALYSIS ###
-    # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-    setwd("Results_DEA/")
-
-    if (!isFALSE(plot.DEA)){
-        print("PROCESSING VISUALISATIONS FOR DIFFERENTIAL EXPRESSION ANALYSIS")
-
-        #First dataset
-        DEA.visuals <- AddGeneName(DEA1.out,ensembl.version)
-        MakeVolcano(DEA.visuals, prefix,logFC1,FDR1)
-
-        #Subtype analysis
-        if (length(unique(DEA.visuals$comparison)) > 1){
-            subtypes <- split.data.frame(DEA.visuals,DEA.visuals$comparison)
-
-            sublist=list()
-            for (genes in subtypes){
-                sublist <- append(sublist,list(genes$Ensembl_ID))
-            }
-            MakeUpset(prefix,sublist,names(subtypes))
-            MakeVennDiagram(prefix,sublist,names(subtypes))
-
-            #Subtypes and expression
-            subtypes_updown<-split.data.frame(DEA.visuals,list(DEA.visuals$comparison,DEA.visuals$dir))
-            sublist_updown=list()
-            for (genes in subtypes_updown){
-                sublist_updown <- append(sublist_updown,list(genes$Ensembl_ID))
-            }
-
-            MakeUpset(paste0(prefix,".updown"),sublist_updown,names(subtypes_updown))
-        }
-
-        #Second dataset
-        if (!is.null(data2) & !is.null(metadata2)){
-            DEA2.visuals <- AddGeneName(DEA2.out,ensembl.version)
-            MakeVolcano(DEA2.visuals, paste0(prefix,"_second"),logFC2,FDR2)
-
-            #Subtype analysis
-            if (length(unique(DEA2.visuals$comparison)) > 1){
-                subtypes <- split.data.frame(DEA2.visuals,DEA2.visuals$comparison)
-
-                sublist=list()
-                for (genes in subtypes){
-                    sublist <- append(sublist,list(genes$Ensembl_ID))
-                }
-                MakeUpset(paste0(prefix,"_second"),sublist,names(subtypes))
-                MakeVennDiagram(paste0(prefix,"_second"),sublist,names(subtypes))
-
-                #Subtypes and expression
-                subtypes_updown<-split.data.frame(DEA2.visuals,list(DEA2.visuals$comparison,DEA2.visuals$dir))
-                sublist=list()
-                for (genes in subtypes_updown){
-                    sublist <- append(sublist,list(genes$Ensembl_ID))
-                }
-                MakeUpset(paste0(prefix,".updown_second"),sublist,names(subtypes_updown))
-            }
-        }
-    print("VISUALIZATION FOR DIFFERENTIAL EXPRESSION FINISHED")
-    }
-
-    setwd("..")
-
     #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     #                                                                                       ## LASSO Regression ###
     # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -617,6 +553,70 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
     print("LASSO PART FINISHED")
 
     # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    ### VISUALISATIONS FOR DIFFERENTIAL EXPRESSION ANALYSIS ###
+    # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    setwd("Results_DEA/")
+
+    if (!isFALSE(plot.DEA)){
+        print("PROCESSING VISUALISATIONS FOR DIFFERENTIAL EXPRESSION ANALYSIS")
+
+        #First dataset
+        DEA.visuals <- AddGeneName(DEA1.out,ensembl.version)
+        MakeVolcano(DEA.visuals, prefix,logFC1,FDR1)
+
+        #Subtype analysis
+        if (length(unique(DEA.visuals$comparison)) > 1){
+            subtypes <- split.data.frame(DEA.visuals,DEA.visuals$comparison)
+
+            sublist=list()
+            for (genes in subtypes){
+                sublist <- append(sublist,list(genes$Ensembl_ID))
+            }
+            MakeUpset(prefix,sublist,names(subtypes))
+            MakeVennDiagram(prefix,sublist,names(subtypes))
+
+            #Subtypes and expression
+            subtypes_updown<-split.data.frame(DEA.visuals,list(DEA.visuals$comparison,DEA.visuals$dir))
+            sublist_updown=list()
+            for (genes in subtypes_updown){
+                sublist_updown <- append(sublist_updown,list(genes$Ensembl_ID))
+            }
+
+            MakeUpset(paste0(prefix,".updown"),sublist_updown,names(subtypes_updown))
+        }
+
+        #Second dataset
+        if (!is.null(data2) & !is.null(metadata2)){
+            DEA2.visuals <- AddGeneName(DEA2.out,ensembl.version)
+            MakeVolcano(DEA2.visuals, paste0(prefix,"_second"),logFC2,FDR2)
+
+            #Subtype analysis
+            if (length(unique(DEA2.visuals$comparison)) > 1){
+                subtypes <- split.data.frame(DEA2.visuals,DEA2.visuals$comparison)
+
+                sublist=list()
+                for (genes in subtypes){
+                    sublist <- append(sublist,list(genes$Ensembl_ID))
+                }
+                MakeUpset(paste0(prefix,"_second"),sublist,names(subtypes))
+                MakeVennDiagram(paste0(prefix,"_second"),sublist,names(subtypes))
+
+                #Subtypes and expression
+                subtypes_updown<-split.data.frame(DEA2.visuals,list(DEA2.visuals$comparison,DEA2.visuals$dir))
+                sublist=list()
+                for (genes in subtypes_updown){
+                    sublist <- append(sublist,list(genes$Ensembl_ID))
+                }
+                MakeUpset(paste0(prefix,".updown_second"),sublist,names(subtypes_updown))
+            }
+        }
+        print("VISUALIZATION FOR DIFFERENTIAL EXPRESSION FINISHED")
+    }
+
+    setwd("..")
+
+    # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     ### Plotting Results Heatmap ###
     # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -637,7 +637,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
         } else if (plot.heatmap %in% c("DEA")) {
             signif_samples <- rbind(head(DEA1.out[order(DEA1.out$logFC),],heatmap.size/2),tail(DEA1.out[order(DEA1.out$logFC),],heatmap.size/2))
             signif_samples <- signif_samples$name
-            hm <- hm[rownames(data1) %in% signif_samples,]
+            hm <- hm[rownames(hm) %in% signif_samples,]
             cat("\n- DEA was selected. Normalized and voom transformed data will be used for visualization.\n")
         } else {
             if(!is.null(lasso)) {
@@ -654,7 +654,6 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
         # Heatmap colors in blue
         hm.gradient <- viridis(300, option="cividis")
-        range <- c(round(min(hm)), round(max(hm)))
 
         # Add HUGO IDs
         name <- rownames(hm)
@@ -663,10 +662,10 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
         hm <- AddGeneName(hm,ensembl.version)
         hm <- subset(hm, HUGO_ID != "")
         rownames(hm) <- hm$HUGO_ID
-        hm <- subset(hm, select=-c(Ensembl_ID,HUGO_ID))
+        hm <- subset(hm, select=-c(Ensembl_ID,HUGO_ID,name))
 
         # Heatmap as pdf
-        MakeHeatmap(hm, hm.gradient, group1, prefix, range)
+        MakeHeatmap(hm, hm.gradient, group1, prefix)
         rm(hm)
 
         print("HEATMAP WAS SUCCESFULLY PRINTED")
@@ -685,7 +684,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
             if (plot.heatmap %in% c("DEA")) {
                 signif_samples2 <- rbind(head(DEA2.out[order(DEA2.out$logFC),],heatmap.size/2),tail(DEA2.out[order(DEA2.out$logFC),],heatmap.size/2))
                 signif_samples2 <- signif_samples2$name
-                hm2 <- hm[rownames(data2) %in% signif_samples2,]
+                hm2 <- hm2[rownames(hm2) %in% signif_samples2,]
                 cat("\n- DEA was selected. Normalized and voom transformed data will be used for visualization.\n")
             } else {
                 stop("A heatmap for the second dataset can only be generated for DEA")
@@ -698,12 +697,10 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
             hm2 <- AddGeneName(hm2,ensembl.version)
             hm2 <- subset(hm2, HUGO_ID != "")
             rownames(hm2) <- hm2$HUGO_ID
-            hm2 <- subset(hm2, select=-c(Ensembl_ID,HUGO_ID))
-
-            range <- c(round(min(hm2)), round(max(hm2)))
+            hm2 <- subset(hm2, select=-c(Ensembl_ID,HUGO_ID,name))
 
             # Heatmap as pdf
-            MakeHeatmap(hm2, hm.gradient, group2, paste0(prefix,"_second"), range)
+            MakeHeatmap(hm2, hm.gradient, group2, paste0(prefix,"_second"))
             rm(hm2)
 
             print("HEATMAP WAS SUCCESFULLY PRINTED")

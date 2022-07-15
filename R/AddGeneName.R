@@ -25,10 +25,13 @@ AddGeneName <- function(data, ensembl.version) {
                         bmHeader = T)
 
     names(data)[names(data) == 'name'] <- "Gene stable ID"
-    data_merged <- merge(gene_names, data, by="Gene stable ID", all = TRUE)
+    data_merged <- merge(data, gene_names, by="Gene stable ID", all = TRUE)
 
-    colnames(data_merged)[1] <- "Ensembl_ID"
-    colnames(data_merged)[2] <- "HUGO_ID"
+    colnames(data_merged)[1] <- "name"
+    data_merged$Ensembl_ID <- data_merged$name
+    colnames(data_merged)[which(names(data_merged) == "Gene name")] <- "HUGO_ID"
+
+    print(paste0(" - You have chosen to use HUGO IDs for annotation. *Note that ",sum(is.na(data_merged))," genes will be lost!"))
 
     return(data_merged)
 }

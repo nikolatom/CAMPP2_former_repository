@@ -4,7 +4,6 @@
 #' @param gradient A color gradient to use for the heatmap.
 #' @param groups A vector of groups to color by.
 #' @param prefix A prefix for the output filename.
-#' @param range A vector containing the smallest and biggest gene count values from the input data frame.
 #' @export
 #' @import ComplexHeatmap
 #' @import squash
@@ -16,7 +15,7 @@
 #' ...
 #' }
 
-MakeHeatmap <- function(data, gradient, groups, prefix, range){
+MakeHeatmap <- function(data, gradient, groups, prefix){
 
     data<-as.matrix(data)
     col_ha = HeatmapAnnotation(Groups = groups,
@@ -24,7 +23,7 @@ MakeHeatmap <- function(data, gradient, groups, prefix, range){
 
     png(paste0(prefix,"_Heatmap.png"),width = 30, height = 20, units = "cm", res=1200)
 
-    map <- makecmap(range[1]:range[2])
+    map <- makecmap(round(min(data)):round(max(data)))
     map$colors <- viridis((length(map$breaks)-1), option="cividis")
     lgd <- list(title='LogFC', at=1:length(map$breaks), labels=map$breaks, col_fun=map$colors)
 
