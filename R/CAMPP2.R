@@ -226,6 +226,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
     MDScolors <- gsub(pattern = "FF", replacement = "", x = colors)
 
+    print(MDScolors)
 
     if (plot.mds == TRUE && databatch1 == TRUE){
         mdsplot <- MDSPlot(data1.batch, group1, ids, MDScolors, MDS.labels)
@@ -665,7 +666,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
         hm <- subset(hm, select=-c(Ensembl_ID,HUGO_ID,name))
 
         # Heatmap as pdf
-        MakeHeatmap(hm, hm.gradient, group1, prefix)
+        MakeHeatmap(hm, group1, prefix, hm.gradient)
         rm(hm)
 
         print("HEATMAP WAS SUCCESFULLY PRINTED")
@@ -700,7 +701,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
             hm2 <- subset(hm2, select=-c(Ensembl_ID,HUGO_ID,name))
 
             # Heatmap as pdf
-            MakeHeatmap(hm2, hm.gradient, group2, paste0(prefix,"_second"))
+            MakeHeatmap(hm2, group2, paste0(prefix,"_second"), hm.gradient)
             rm(hm2)
 
             print("HEATMAP WAS SUCCESFULLY PRINTED")

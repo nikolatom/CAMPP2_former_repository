@@ -27,4 +27,4 @@ batch_corrected_data<-BatchCorrect(normalized_data,campp2_brca_1_meta$tumor_stag
 runCampp2(prefix="Testing_DEA", data1=campp2_brca_1, metadata1=campp2_brca_1_meta, groups=c("IDs", "diagnosis"), technology=c("seq"), block=c(campp2_brca_1_meta$tumor_stage))
 
 ###An example code for running differential expression analysis with subtype analysis and visualizations
-runCampp2(prefix="Testing_DEA_2", data1=campp2_brca_1, metadata1=campp2_brca_1_meta, groups=c("IDs", "subtype"), technology=c("seq"), block=c(metadata1$subtype), plot.DEA=TRUE, plot.heatmap="DEA")
+runCampp2(prefix="Testing_DEA_visuals", data1=campp2_brca_1, metadata1=campp2_brca_1_meta, groups=c("IDs", "subtype"), technology=c("seq"), block=c(metadata1$subtype), plot.DEA=TRUE, plot.heatmap="DEA")
