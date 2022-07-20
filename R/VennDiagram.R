@@ -14,7 +14,7 @@
 
 MakeVennDiagram <- function(prefix,sets_list,names_sets) {
 
-    names_sets <- gsub("-","",gsub("healthy","",names_sets))
+    names_sets <- gsub("-","",gsub("healthy","",names_sets)) #As the input genes are based on DEA, the names_sets are actually comparisons, e.g. CN_high-healthy. Here we are removing everything but the subtype names to get a prettier output
     names(sets_list) <- names_sets
 
     n_col <- length(sets_list)

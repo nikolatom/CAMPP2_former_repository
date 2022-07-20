@@ -7,7 +7,7 @@
 #' @param group A string vector of specific sample groups derived from metadata column (e.g. diagnosis)
 #' @param cutoff.logFC A cutoff value for the logarithmic Fold Change for each data sample (ratio of changes in expression data)
 #' @param cutoff.FDR The false discovery rate for each data sample (the corrected p-value)
-#' @param prefix a character defining the result folder name and prefix of output file names.
+#' @param prefix a character defining a prefix of output file names.
 #' @param block A vector or factor specifying a blocking variable. The block must be of same length as data and contain 2 or more options. For 2 datasets, the block can be defined as a vector of the two seperate blocks.
 #' @export
 #' @import limma

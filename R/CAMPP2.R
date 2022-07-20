@@ -188,8 +188,10 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
         dir.create("DataChecks")
         setwd("DataChecks/")
+        dir.create("data1/")
+        setwd("data1/")
         PlotDistributions(subset.data1, list.of.dists)
-        setwd("..")
+        setwd("../")
 
         rm(subset.data1, list.of.dists)
     }
@@ -208,13 +210,15 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
         list.of.dists <- FitDistributions(subset.data1)
 
-        dir.create("SecondDataChecks")
-        setwd("SecondDataChecks/")
+        dir.create("data2/")
+        setwd("data2/")
         PlotDistributions(subset.data1, list.of.dists)
-        setwd("..")
+        setwd("../")
 
         rm(subset.data1, list.of.dists)
     }
+
+    setwd("../")
 
     print("DISTRIBUTIONAL CHECK PART FINISHED")
 
@@ -226,20 +230,15 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
     MDScolors <- gsub(pattern = "FF", replacement = "", x = colors)
 
-    print(MDScolors)
-
     if (plot.mds == TRUE && databatch1 == TRUE){
-        mdsplot <- MDSPlot(data1.batch, group1, ids, MDScolors, MDS.labels)
-        ggsave(paste0(prefix, "_MDSplot_batchcorr.pdf"), plot = mdsplot, dpi = 300, width = 8, height = 8)
+        MDSPlot(data1.batch, group1, paste0(prefix,"_batchcorr"), ids, MDScolors, MDS.labels)
 
     } else if (plot.mds == TRUE && databatch1 == FALSE){
         if (technology[1] == "seq") {
-            mdsplot <- MDSPlot(data.frame(data1$E), group1, ids, MDScolors, MDS.labels)
+            MDSPlot(data.frame(data1$E), group1, prefix, ids, MDScolors, MDS.labels)
         } else {
-            mdsplot <- MDSPlot(data1, group1, ids, MDScolors, MDS.labels)
+            MDSPlot(data1, group1, prefix, ids, MDScolors, MDS.labels)
         }
-        ggsave(paste0(prefix, "_MDSplot.pdf"), plot = mdsplot, dpi = 300, width = 8, height = 8)
-        rm(mdsplot)
 
     } else {
         cat("\n- No preliminary plot requested.\n")
@@ -340,9 +339,13 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
     # Differential Expression Analysis with Limma
     dir.create("Results_DEA")
     setwd("Results_DEA/")
+    dir.create("data1")
+    setwd("data1/")
 
     #First dataset
     DEARes1 <- RunDEA(data1, technology[1], batch1, covarDEA1, group1, logFC1, FDR1, paste0(prefix,"1"), block1)
+
+    setwd("../")
 
     DEA1.out<-DEARes1$DEA.out
 
@@ -355,7 +358,13 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
     #Second dataset
     if(!is.null(data2) & !is.null(metadata2)) {
+
+        dir.create("data2")
+        setwd("data2/")
+
         DEARes2 <- RunDEA(data2, technology[2], batch2, covarDEA2, group2, logFC2, FDR2, paste0(prefix,"2"), block2)
+
+        setwd("../")
 
         DEA2.out<-DEARes2$DEA.out
 
@@ -557,13 +566,15 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
     ### VISUALISATIONS FOR DIFFERENTIAL EXPRESSION ANALYSIS ###
     # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    setwd("Results_DEA/")
+    setwd("Results_DEA/data1/")
 
     if (!isFALSE(plot.DEA)){
         print("PROCESSING VISUALISATIONS FOR DIFFERENTIAL EXPRESSION ANALYSIS")
 
         #First dataset
+        print(" - Adding HUGO IDs to the DEA output for the first dataset.")
         DEA.visuals <- AddGeneName(DEA1.out,ensembl.version)
+        print(" - Printing Volcano Plot for the first dataset.")
         MakeVolcano(DEA.visuals, prefix,logFC1,FDR1)
 
         #Subtype analysis
@@ -574,7 +585,9 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
             for (genes in subtypes){
                 sublist <- append(sublist,list(genes$Ensembl_ID))
             }
+            print(" - Printing Upset Plot for the first dataset.")
             MakeUpset(prefix,sublist,names(subtypes))
+            print(" - Printing Venn Diagram for the first dataset.")
             MakeVennDiagram(prefix,sublist,names(subtypes))
 
             #Subtypes and expression
@@ -583,13 +596,16 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
             for (genes in subtypes_updown){
                 sublist_updown <- append(sublist_updown,list(genes$Ensembl_ID))
             }
-
+            print(" - Printing Upset Plot with DEA features for the first dataset.")
             MakeUpset(paste0(prefix,".updown"),sublist_updown,names(subtypes_updown))
         }
 
         #Second dataset
         if (!is.null(data2) & !is.null(metadata2)){
+            setwd("../data2")
+            print(" - Adding HUGO IDs to the DEA output for the second dataset.")
             DEA2.visuals <- AddGeneName(DEA2.out,ensembl.version)
+            print(" - Printing Volcano Plot for the second dataset.")
             MakeVolcano(DEA2.visuals, paste0(prefix,"_second"),logFC2,FDR2)
 
             #Subtype analysis
@@ -600,7 +616,9 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
                 for (genes in subtypes){
                     sublist <- append(sublist,list(genes$Ensembl_ID))
                 }
+                print(" - Printing Upset Plot for the second dataset.")
                 MakeUpset(paste0(prefix,"_second"),sublist,names(subtypes))
+                print(" - Printing Venn Diagram for the second dataset.")
                 MakeVennDiagram(paste0(prefix,"_second"),sublist,names(subtypes))
 
                 #Subtypes and expression
@@ -609,13 +627,14 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
                 for (genes in subtypes_updown){
                     sublist <- append(sublist,list(genes$Ensembl_ID))
                 }
+                print(" - Printing Upset Plot with DEA features for the second dataset.")
                 MakeUpset(paste0(prefix,".updown_second"),sublist,names(subtypes_updown))
             }
         }
         print("VISUALIZATION FOR DIFFERENTIAL EXPRESSION FINISHED")
     }
 
-    setwd("..")
+    setwd("../../")
 
     # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     ### Plotting Results Heatmap ###

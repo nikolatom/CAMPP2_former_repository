@@ -1,7 +1,7 @@
 #' @title Plotting Distributions
 #' @description Plotting the counts' Distributions
-#' @param data a dataframe of expression/abundance counts, N.B only a subset of variables should be input, not intended for the full expression matrix!(See "Fitting Data Distributions" above)
-#' @param fitted.data a list of lists obtained as output from the function "Fitting Data Distributions". The data and fitted.data should have the same dimensions, e.g. length of list == nrows of dataframe.
+#' @param data a data.frame of expression/abundance counts. N.B only a subset of variables should be input, not intended for the full expression matrix!(See function "FitDistributions")
+#' @param fitted.data a list of lists obtained as output from the function "FitDistributions". The data and fitted.data must have the same dimensions, e.g. length(fitted.data) == nrows(data).
 #' @export
 #' @import ggplot2
 #' @import squash

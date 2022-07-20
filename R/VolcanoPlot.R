@@ -1,8 +1,8 @@
 #' @title Make Volcano Plot
 #' @description A function for making volcano plots from DEA results.
-#' @param data A data matrix from RunDEA containing genes and their corresponding AveExpr, logFCs,p.value, adj.p.value ect. Mandatory columns are logFC, P.value and HUGO_ID.
+#' @param data A data matrix from RunDEA containing genes and their corresponding AveExpr, logFCs, p.value, adj.p.value ect. Mandatory columns are logFC, adj.P.Val and HUGO_ID. N.B. columns logFC and adj.P.Val must contain numeric values!
 #' @param prefix A prefix for the output filename.
-#' @param cutoff.FDR A cut-off value for  corrected p.value
+#' @param cutoff.FDR A cut-off value for  corrected adj.P.Val
 #' @param cutoff.logFC A cut-off value for log fold change
 #' @export
 #' @import ggplot2
@@ -15,18 +15,16 @@
 
 MakeVolcano <- function(data, prefix, cutoff.logFC, cutoff.FDR) {
 
-    data$logFC <- as.numeric(data$logFC)
-    data$P.Value <- as.numeric(data$P.Value)
-    data <- data[order(data$P.Value),]
+    data <- data[order(data$adj.P.Val),]
 
     data$diffexpressed <- "NO"
-    data$diffexpressed[data$logFC > cutoff.logFC & data$P.Value < cutoff.FDR] <- "UP"
-    data$diffexpressed[data$logFC < -cutoff.logFC & data$P.Value < cutoff.FDR] <- "DOWN"
+    data$diffexpressed[data$logFC > cutoff.logFC & data$adj.P.Val < cutoff.FDR] <- "UP"
+    data$diffexpressed[data$logFC < -cutoff.logFC & data$adj.P.Val < cutoff.FDR] <- "DOWN"
 
     data$DEAlabel <- ""
     data[1:15,]$DEAlabel[data[1:15,]$diffexpressed != "NO"] <- data[1:15,]$"HUGO_ID"[data[1:15,]$diffexpressed != "NO"]
 
-    ggplot(data, aes(x=logFC, y=-log10(P.Value), col=data$diffexpressed, label=data$DEAlabel)) +
+    ggplot(data, aes(x=logFC, y=-log10(adj.P.Val), col=data$diffexpressed, label=data$DEAlabel)) +
         geom_point(shape=1) +
         theme_minimal() +
         geom_text_repel() +

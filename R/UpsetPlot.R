@@ -7,7 +7,7 @@
 #' @import ComplexHeatmap
 #' @import viridis
 #' @seealso
-#' @return Upset plot
+#' @return An Upset plot showcasing the intersection size of differentially expressed genes across the input sets.
 #' @examples \dontrun{
 #' ...
 #' }
@@ -16,7 +16,7 @@ MakeUpset <- function(prefix,sets_list,names_sets) {
 
     png(file = paste0(prefix,"_UpsetPlot.png"))
 
-    names_sets <- gsub("-","",gsub("healthy","",names_sets))
+    names_sets <- gsub("-","",gsub("healthy","",names_sets)) #As the input genes are based on DEA, the names_sets are actually comparisons, e.g. CN_high-healthy. Here we are removing everything but the subtype names to get a prettier output
     names(sets_list) <- names_sets
     comb_mat <- make_comb_mat(sets_list)
     n_col <- max(comb_degree(comb_mat))
