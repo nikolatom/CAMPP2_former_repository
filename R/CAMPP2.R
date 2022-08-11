@@ -148,7 +148,11 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
     if (databatch1==TRUE){
         print("Run batch correction on the 1st dataset")
+        dir.create("BatchCorrection")
+        setwd("BatchCorrection/")
         data1.batch %<-% BatchCorrect(data1,batch1,group1,technology[1])
+        save(data1.batch,file="data1.batch.rda")
+        setwd("../")
         print("Batch correction of the first dataset finished")
     }else{
         print("Batch correction wasn't selected")
@@ -156,10 +160,11 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
     if (databatch2==TRUE){
         print("Run batch correction on the 2nd dataset")
+        setwd("BatchCorrection/")
         data2.batch %<-% BatchCorrect(data2,batch2,group2,technology[2])
+        save(data2.batch,file="data2.batch.rda")
+        setwd("../")
         print("Batch correction of the second dataset finished")
-    }else{
-        print("Batch correction wasn't selected")
     }
 
     print("BATCH CORRECTION PART FINISHED")
