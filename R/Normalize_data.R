@@ -6,19 +6,18 @@
 #' options include "mean" or "median". If technology is "seq" or "array", this
 #' option is ignored, instead, sequencing data are normalized by "TMM";
 #' micro-arrays data are normalized by "quantile" standardization.
-#' @param data a dataframe of expression/abundance counts
+#' @param data a data frame of expression/abundance counts
 #' @param group a factor specifying group for each sample (e.g. could be
 #' represented by a column from a metadata file).
 #' @param transform a string vector of length 1 defining transformation type for
 #' each dataset ("log2", "logit", "log10"). If technology is "seq", this option
-#' is ignored an Voom transform is applied. Default="".
+#' is ignored an Voom transform is applied..
 #' @param standardize a string vector of length 1 defining standardization
 #' method ("mean" or "median"). If technology is "seq" or "array", this option
 #' is ignored, instead, seq data are normalized by "TMM"; array data are
-#' normalized by "quantile" standardization. Default="".
+#' normalized by "quantile" standardization.
 #' @param technology a string vector of length 1 defining technology used for
 #' generating the data. Allowed types are: 'array', 'seq', 'ms' or 'other'.
-#' Default="".
 #' @export
 #' @import fitdistrplus
 #' @seealso
@@ -32,7 +31,7 @@
 #' }
 #'
 
-NormalizeData <- function(data,group,transform="",standardize="",technology=""){
+NormalizeData <- function(data,group,transform,standardize,technology){
 
     # section in which we define correctness of input parameters
     if (!(technology) %in% c("seq", "array", "ms", "other")) {

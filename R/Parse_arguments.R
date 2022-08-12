@@ -7,7 +7,7 @@
 #' @param technology Technology used for the analysis of biological input. Current options are 'array', 'seq', 'ms' or 'other'. This argument is mandatory and depending on which option is chosen, data is transformed differently. If a second dataset is provided, the option should be specified for each dataset, provided as a character vector.
 #' @param groups Argument defining groups of samples should be specified as a character vector. The first element specifying the name of the column in the metadata file containing sample IDs and the second element specifying the name of the column which contains the groups for the DE/DA analysis.
 #' @param data.check Distributional checks of the input data is activated using logical argument (TRUE/FALSE). If activated, Cullen-Frey graphs will be made for 10 randomly selected variables to check data distributions. This argument is per default set to TRUE.
-#' @param batches Specifies which metadata should be used for a batch correction (sequencing run/tissue/interstitial fluid/etc.). Argument takes a character vector of length 1 (one dataset) or 2 (two datasets), where the string(s) match a column name(s) in the metadata file(s). Default is NULL.
+#' @param batches Specifies which metadata should be used for a batch correction (sequencing run/tissue/interstitial fluid/etc.). Argument takes a character vector of length 1 (one data set) or 2 (two data sets), where the string(s) match a column name(s) in the metadata file(s). In case batch correction should be performed only in 1 out of 2 data sets, a data set without the batch correction (1st one in the example) should be define as "", e.g. batches(c("","column_name")). Default is NULL.
 #' @param kmeans Argument for kmeans clustering. The parameter must be specified as a character vector matching the name of a column in the metadata file, denoting the labeling of points on the MDS plot(s). If a parameter is set to "TRUE" (no column name specified) no labels will be added to the plot. Works only for the first dataset (data1). Default is FALSE (do not run).
 #' @param plot.heatmap Argument for heatmap specified as either: "DE", "DA", "LASSO", "EN" or "Consensus". Defaults is FALSE (do not run).
 #' @param correlation Argument for correlation analysis. String specify which features should be correlated, options are: "ALL", "DE", "DA", "LASSO", "EN" or "Consensus". For this type of analysis, 2 datasets must include the same samples, e.g. tumor1-normal vs tumor2-normal (3 samples from 1 patient needed). Default is FALSE (do not run).
@@ -107,24 +107,47 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
 
     batch1=NULL
     batch2=NULL
-    if (is.null(batches)){
+
+
+    if(is.null(batches) || batches[1]==""){
         databatch1 <- FALSE
-        databatch2 <- FALSE
-    } else {
-        batch1 = as.factor(metadata1[ , batches[[1]]])
+    }else{
         databatch1 <- TRUE
-        if (length(batch1) <= 1) {
+    }
+
+    if(is.null(batches) || batches[2]=="" || is.na(batches[2])){
+        databatch2 <- FALSE
+    }else{
+        databatch2 <- TRUE
+    }
+
+    if(length(batches)==2 && is.null(data2)){
+        stop("Two batches defined but data set 2 is empty.")
+    }
+    if(length(batches)==1 && !is.null(data2)){
+        stop("One batch defined but 2 datasets should be analyzed.")
+    }
+
+    if(isTRUE(databatch1))
+        if(batches[1] %in% colnames(metadata1)){
+            batch1 = as.factor(metadata1[ , batches[1]])
+        }else{
             stop(paste0("No column in metadata1 file called ",as.character(batches[[1]])))
         }
-        if (length(batches) > 1 & exists("metadata2")) {
-            batch2 = as.factor(metadata2[ , batches[[2]]])
-            databatch2 <- TRUE
-            if (length(batch2) <= 1) {
-                stop(paste0("No column in metadata2 file called ",as.character(batches[[2]])))
-            }
-        } else {
-            databatch2 <- FALSE
+
+    if(isTRUE(databatch2))
+        if(batches[2] %in% colnames(metadata2)){
+            batch2 = as.factor(metadata2[ , batches[2]])
+        }else{
+            stop(paste0("No column in metadata2 file called ",as.character(batches[2])))
         }
+
+
+
+    #Technology
+
+    if (!is.null(data2) && length(technology) != 2) {
+        stop("\nTwo datasets are defined in the analysis, BUT argument technology is defined as ",length(technology),". Technology must be defined as string vector of length two.\n")
     }
 
 
@@ -135,12 +158,19 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
         standardize<-c("none","none")
     }
 
+    if (!isFALSE(standardize) && !is.null(data2) && length(standardize) != 2) {
+        stop("\nTwo datasets are defined in the analysis, BUT argument standardize is defined as ",length(standardize),". Standardize must be defined as string vector of length two.\n")
+    }
 
 
     #Transform
 
     if(isFALSE(transform)){
         transform<-c("none","none")
+    }
+
+    if (!isFALSE(transform) && !is.null(data2) && length(transform) != 2) {
+        stop("\nTwo datasets are defined in the analysis, BUT argument transform is defined as ",length(technology),". Transform must be defined as string vector of length two.\n")
     }
 
 
@@ -158,8 +188,6 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
             rm(file)
         }
     }
-
-
 
 
 
