@@ -28,7 +28,7 @@ The data for testing the functions and workflow includes 2 BRCA datasets (campp2
 
 Both, raw read counts and metadata were extracted from TCGA BReast CAncer dataset (TCGA-BRCA) Level 3 data. 
 
-Test data (gene counts and metadata for 2 data sets) are integrated into CAMPP2 package and accessible as campp2_brca_1, campp2_brca_2, campp2_brca_1_meta, campp2_brca_2_meta variables once the package is installed. Results from intermediate steps are also integrated and used as an input for running the examples of the functions. R data object files (.rda) are available on https://github.com/ELELAB/CAMPP2/tree/main/data. 
+Test data (gene counts and metadata for 2 data sets) are integrated into CAMPP2 package and accessible as campp2_brca_1, campp2_brca_2, campp2_brca_1_meta, campp2_brca_2_meta variables once the package is installed. Results from intermediate steps (not described here) are also integrated and used as an input for running the examples of the functions. R data object files (.rda) are available on https://github.com/ELELAB/CAMPP2/tree/main/data. 
 
 
 ### Example run
