@@ -100,6 +100,3 @@ CAMPP2 is a tool for quantitative data analysis
 runCampp2(batches=c("tumor_stage","tumor_stage"),prefix="test_CAMPP2", data1=dataset1, data2=dataset2, metadata1=metadata1,metadata2=metadata2, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"))
 }
 }
-\seealso{
-
-}

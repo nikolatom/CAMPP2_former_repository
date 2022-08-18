@@ -49,6 +49,3 @@ Run differential expression/abundance analysis
 ...
 }
 }
-\seealso{
-
-}

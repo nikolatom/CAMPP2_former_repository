@@ -7,7 +7,7 @@
 #' @param technology Technology used for the analysis of biological input. Current options are 'array', 'seq', 'ms' or 'other'. This argument is mandatory and depending on which option is chosen, data is transformed differently. If a second dataset is provided, the option should be specified for each dataset, provided as a character vector.
 #' @param groups Argument defining groups of samples should be specified as a character vector. The first element specifying the name of the column in the metadata file containing sample IDs and the second element specifying the name of the column which contains the groups for the DE/DA analysis.
 #' @param data.check Distributional checks of the input data is activated using logical argument (TRUE/FALSE). If activated, Cullen-Frey graphs will be made for 10 randomly selected variables to check data distributions. This argument is per default set to TRUE.
-#' @param batches Specifies which metadata should be used for a batch correction (sequencing run/tissue/interstitial fluid/etc.). Argument takes a character vector of length 1 (one dataset) or 2 (two datasets), where the string(s) match a column name(s) in the metadata file(s). Default is NULL.
+#' @param batches Specifies which metadata should be used for a batch correction (sequencing run/tissue/interstitial fluid/etc.). Argument takes a character vector of length 1 (one data set) or 2 (two data sets), where the string(s) match a column name(s) in the metadata file(s). In case batch correction should be performed only in 1 out of 2 data sets, a data set without the batch correction (1st one in the example) should be define as "", e.g. batches(c("","column_name")). Default is NULL.
 #' @param kmeans Argument for kmeans clustering. The parameter must be specified as a character vector matching the name of a column in the metadata file, denoting the labeling of points on the MDS plot(s). If a parameter is set to "TRUE" (no column name specified) no labels will be added to the plot. Works only for the first dataset (data1). Default is FALSE (do not run).
 #' @param plot.heatmap Argument for heatmap specified as either: "DE", "DA", "LASSO", "EN" or "Consensus". Defaults is FALSE (do not run).
 #' @param correlation Argument for correlation analysis. String specify which features should be correlated, options are: "ALL", "DE", "DA", "LASSO", "EN" or "Consensus". For this type of analysis, 2 datasets must include the same samples, e.g. tumor1-normal vs tumor2-normal (3 samples from 1 patient needed). Default is FALSE (do not run).
@@ -32,9 +32,9 @@
 #' @seealso
 #' @return CAMPP2 results
 #' @examples \dontrun{
-#' runCampp2(batches=c("tumor_stage","tumor_stage"),prefix="test_CAMPP2", data1=dataset1, data2=dataset2, metadata1=metadata1,metadata2=metadata2, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"))
+#' runCampp2(batches=c("tumor_stage","tumor_stage"),prefix="test_CAMPP2", data1=campp2_brca_1, data2=campp2_brca_2, metadata1=campp2_brca_1_meta,metadata2=campp2_brca_2_meta, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"))
 #' }
-
+#'
 
 runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology, groups, batches=NULL, data.check=TRUE, standardize=FALSE, transform=FALSE, plot.mds=FALSE, plot.heatmap=FALSE, kmeans=FALSE, signif=NULL, block=NULL, colors=NULL, prefix="Results", correlation=FALSE, lasso=FALSE, WGCNA=FALSE, cutoff.WGCNA=NULL, survival=FALSE, covariates=NULL, stratify=NULL, surv.plot=50, PPint=FALSE, gene.miR.int=FALSE){
 
@@ -68,16 +68,28 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
     # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     print("RUNNING MISSING VALUE IMPUTATIONS")
-
     print("Running missing values imputation on data1")
+
     data1<-ReplaceNAs(data1)
+
     print("Missing values imputation on data1 has finished")
 
     if (!is.null(data2)){
         print("Running missing values imputation on data2")
+
         data2<-ReplaceNAs(data2)
+
         print("Missing values imputation on data2 has finished")
     }
+
+    ###saving the results
+    dir.create("ReplaceNAs")
+    setwd("ReplaceNAs/")
+    save(data1,file="data1_ReplaceNAs.rda")
+    if(!is.null(data2)){
+        save(data2,file="data2_ReplaceNAs.rda")
+    }
+    setwd("../")
 
     print("MISSING VALUE IMPUTATIONS FINISHED")
 
@@ -86,7 +98,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
     # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     print("CAMPP2 automatically detects negative values and fix zeros in your data")
-    print("RUNNING FIXING OF NEGATIVE AND ZERO VALUES")
+    print("RUNNING DETECTION OF NEGATIVE VALUES AND FIXING OF ZERO VALUES")
     print("Detecting negative values and fixing zeros in data1")
 
     data1.original <- data1
@@ -98,6 +110,15 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
         print("Detecting negative values and replacing zeros in data2")
         data2 %<-% FixZeros(data2,group2)
     }
+
+    ###saving the results
+    dir.create("FixZeros")
+    setwd("FixZeros/")
+    save(data1,file="data1_FixZeros.rda")
+    if(!is.null(data2)){
+        save(data2,file="data2_FixZeros.rda")
+    }
+    setwd("../")
 
     print("FIXING OF NEGATIVE AND ZERO VALUES FINISHED")
 
@@ -120,21 +141,23 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
     if(!is.null(data2) || !is.null(data2.original)){
         print("Normalizing and tranforming data2")
-    if (length(technology) != 2 || length(technology) == 1) {
-        stop("\nTwo datasets are defined in the analysis, BUT argument technology has defined only one. Technology must be defined as string vector of length two.\n")
-    } else if (length(transform) != 2 || length(transform) == 1) {
-        stop("\nTwo datasets are defined in the analysis, BUT argument transform has defined only one. Transform must be defined as string vector of length two.\n")
+        if(!is.null(data2.original) && technology[2] == "seq"){       ###Only sequencing data could be normalized with 0-values
+            print("Original data2 including 0-values are being normalized")
+            data2 <- NormalizeData(data2.original, group2, transform[2], standardize[2], technology[2])
+        } else {
+            print("data2 without 0-values are being normalized")
+            data2 <- NormalizeData(data2, group2, transform[2], standardize[2], technology[2])
+            }
     }
 
-    if(!is.null(data2.original) && technology[2] == "seq"){       ###Only sequencing data could be normalized with 0-values
-        print("Original data2 including 0-values are being normalized")
-        data2 <- NormalizeData(data2.original, group2, transform[2], standardize[2], technology[2])
-    } else {
-        print("data2 without 0-values are being normalized")
-        data2 <- NormalizeData(data2, group2, transform[2], standardize[2], technology[2])
-        }
+    ###saving the results
+    dir.create("NormalizeTransform")
+    setwd("NormalizeTransform/")
+    save(data1,file="data1_NormTrans.rda")
+    if(!is.null(data2)){
+        save(data2,file="data2_NormTrans.rda")
     }
-
+    setwd("../")
 
     print("PROCESSING NORMALIZATION AND TRANSFORMATION FINISHED")
 
@@ -145,24 +168,42 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
     print("RUNNING BATCH CORRECTION")
 
-
+    ###This should consider scenario when only 2nd data set should be batch corrected
     if (databatch1==TRUE){
         print("Run batch correction on the 1st dataset")
         data1.batch %<-% BatchCorrect(data1,batch1,group1,technology[1])
         print("Batch correction of the first dataset finished")
-    }else{
-        print("Batch correction wasn't selected")
+    }else if (!is.null(data1) && databatch1==FALSE && !is.null(batches)){
+        print("Batch correction for the 1st dataset was not selected.")
     }
-
     if (databatch2==TRUE){
         print("Run batch correction on the 2nd dataset")
         data2.batch %<-% BatchCorrect(data2,batch2,group2,technology[2])
         print("Batch correction of the second dataset finished")
-    }else{
+    }else if (!is.null(data2) && databatch2==FALSE && !is.null(batches)){
+        print("Batch correction for the 2nd dataset was not selected.")
+    }
+    if (is.null(batches)){
         print("Batch correction wasn't selected")
+        }
+
+    ###saving the results
+    if(databatch1==TRUE && !is.null(data1.batch)){
+        dir.create("BatchCorrect")
+        setwd("BatchCorrect/")
+        save(data1.batch,file="data1_BatchCorrect.rda")
+        setwd("../")
+    }
+    if(databatch2==TRUE && !is.null(data2.batch)){
+        dir.create("BatchCorrect")
+        setwd("BatchCorrect/")
+        save(data2.batch,file="data2_BatchCorrect.rda")
+        setwd("../")
     }
 
+
     print("BATCH CORRECTION PART FINISHED")
+
 
     # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     ### Distributional Checks ###

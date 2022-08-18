@@ -9,9 +9,6 @@ TrimWriteInt(my.nodes.list)
 \arguments{
 \item{my.nodes.list}{A list of networks, i.e. output of the function "GetGeneMiRNAInt" or ourput of "GetDeaPPInt" or output of "MatchPPGmiRInt".}
 }
-\value{
-
-}
 \description{
 A function to write out interaction lists and trim interactions for plotting
 }
@@ -19,8 +16,5 @@ A function to write out interaction lists and trim interactions for plotting
 \dontrun{
 ...
 }
-
-}
-\seealso{
 
 }

@@ -40,6 +40,3 @@ Function for making heatmaps
 ...
 }
 }
-\seealso{
-
-}

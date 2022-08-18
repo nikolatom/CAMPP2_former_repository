@@ -12,8 +12,6 @@ DFtoList(my.data)
 \item{my.data}{a dataframe with results of differential expression analysis.}
 }
 \value{
-
-
 a list of dataframes by comparison
 }
 \description{
@@ -28,9 +26,4 @@ Function which subsets a dataframe of differential expression analysis into a li
 \dontrun{
 ...
 }
-}
-\seealso{
-
-
-
 }

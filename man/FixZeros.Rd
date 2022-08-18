@@ -9,30 +9,31 @@ FixZeros(data, group, remove.sparse.features = TRUE)
 \arguments{
 \item{data}{a dataframe of gene/abundance counts.}
 
-\item{group}{a factor specifying group which should be represented by
-a column from a metadata file.}
+\item{group}{group a factor specifying samples' group (e.g. could be
+represented by a column from a metadata file).}
 
 \item{remove.sparse.features}{a logical argument (TRUE/FALSE) for removal of
 features with sum of zero counts larger than the size of the smallest
-sample group. Default is TRUE.}
+sample group, and for replacing the remaining zeros.  Default is TRUE.}
 }
 \value{
 a data frame with fixed zeros. Features having sum of zero counts
-        higher than the size of the smallest sample group are removed by
-        default.
+        higher than the size of the smallest sample group are removed and
+        remaining zeros will be replaced by default.
 }
 \description{
-A function for a detection of zero/negative values and for
-             replacing zero values in the data. Features having sum of zero
-             counts higher than the size of the smallest sample group will be
-             removed by default. Zeros are substituted with minimal values
-             (>0) observed for each feature.
+This function detects zero/negative values and replaces zero
+values in the data. In the first step, the function checks for the presence
+of zero and negative values in the data. In the second step, (activated by
+default), features having sum of zero counts higher than the size of the
+smallest sample group will be removed (e.g. genes represented by zero
+counts/transcripts in more than n samples will be removed; n = size of the
+smallest group). Next, remaining zeros are substituted with minimal values
+(>0) observed in each feature across all samples.
 }
 \examples{
 \dontrun{
-...
+###In this example, data with fixed NA values are used as an input.
+FixZeros(data=campp2_brca_1_replacedNAs,group=campp2_brca_1_meta$diagnosis, remove.sparse.features=TRUE)
 }
-}
-\seealso{
-
 }

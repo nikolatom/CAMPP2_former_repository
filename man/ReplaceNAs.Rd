@@ -35,11 +35,6 @@ values will be imputed using the overall mean per sample).
 }
 \examples{
 \dontrun{
-n<-nrow(campp2_brca_1)
-Na_dataset1<-apply (campp2_brca_1, 2, function(x) {x[sample( c(1:n), floor(n/10))] <- NA; x} )
-ReplaceNAs(data=Na_dataset1, pct.NA.row=70, pct.NA.column=80)
+ReplaceNAs(data=campp2_brca_1_NAs, pct.NA.row=70, pct.NA.column=80)
 }
-}
-\seealso{
-
 }

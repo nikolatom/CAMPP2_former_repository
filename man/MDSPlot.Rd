@@ -26,6 +26,3 @@ Data overview. The plot shows the relationship between samples (squared euclidia
 ...
 }
 }
-\seealso{
-
-}

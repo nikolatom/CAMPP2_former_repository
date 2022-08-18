@@ -29,9 +29,6 @@ ModuleIC(
 
 \item{my.name}{A name of output plot(s)}
 }
-\value{
-
-}
 \description{
 Weighted gene co-expression network analysis for describing the correlation patterns among genes
 }
@@ -39,7 +36,4 @@ Weighted gene co-expression network analysis for describing the correlation patt
 \dontrun{
 ...
 }
-}
-\seealso{
-
 }

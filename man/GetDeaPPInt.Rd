@@ -13,11 +13,6 @@ GetDeaPPInt(my.DB, my.Genedat)
 
 \item{my.Geneset}{= A dataframe with results of differential expression analysis.}
 }
-\value{
-
-
-
-}
 \description{
 Function which extracts the protein-protein interactions where each protein (gene) is differentially abundant (expressed).
 
@@ -30,9 +25,4 @@ A Function which extracts the protein-protein interactions where each protein (g
 \dontrun{
 ...
 }
-}
-\seealso{
-
-
-
 }
