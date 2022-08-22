@@ -7,8 +7,10 @@
 #' @param technology Technology used for the analysis of biological input. Current options are 'array', 'seq', 'ms' or 'other'. This argument is mandatory and depending on which option is chosen, data is transformed differently. If a second dataset is provided, the option should be specified for each dataset, provided as a character vector.
 #' @param groups Argument defining groups of samples should be specified as a character vector. The first element specifying the name of the column in the metadata file containing sample IDs and the second element specifying the name of the column which contains the groups for the DE/DA analysis.
 #' @param data.check Distributional checks of the input data is activated using logical argument (TRUE/FALSE). If activated, Cullen-Frey graphs will be made for 10 randomly selected variables to check data distributions. This argument is per default set to TRUE.
-#' @param batches Specifies which metadata should be used for a batch correction (sequencing run/tissue/interstitial fluid/etc.). Argument takes a character vector of length 1 (one data set) or 2 (two data sets), where the string(s) match a column name(s) in the metadata file(s). In case batch correction should be performed only in 1 out of 2 data sets, a data set without the batch correction (1st one in the example) should be define as "", e.g. batches(c("","column_name")). Default is NULL.
-#' @param kmeans Argument for kmeans clustering. The parameter must be specified as a character vector matching the name of a column in the metadata file, denoting the labeling of points on the MDS plot(s). If a parameter is set to "TRUE" (no column name specified) no labels will be added to the plot. Works only for the first dataset (data1). Default is FALSE (do not run).
+#' @param batches Specifies which metadata should be used for a batch correction (sequencing run/tissue/interstitial fluid/etc.). Argument takes a character vector of length 1 (one dataset) or 2 (two datasets), where the string(s) match a column name(s) in the metadata file(s). Default is NULL.
+#' @param kmeans Argument specifies ("TRUE" or "FALSE") if a k-means clustering should be performed. Default is FALSE (do not run).
+#' @param num.km.clusters a vector of manually defined number(s) of clusters. By default, the values(s) are calculated automatically (a default value is NULL).
+#' @param PCA.labels a string vector ("all" or "none") specifying which elements (e.g. samples) should be labelled (for PCAPlot and runKmeans functions). Labeling is based on column names of the input data. Default value is "none".
 #' @param plot.heatmap Argument for heatmap specified as either: "DE", "DA", "LASSO", "EN" or "Consensus". Defaults is FALSE (do not run).
 #' @param correlation Argument for correlation analysis. String specify which features should be correlated, options are: "ALL", "DE", "DA", "LASSO", "EN" or "Consensus". For this type of analysis, 2 datasets must include the same samples, e.g. tumor1-normal vs tumor2-normal (3 samples from 1 patient needed). Default is FALSE (do not run).
 #' @param survival (double check this when parsin survival function) Survival analysis may be performed on differentially expressed/abundant variables, variables from LASSO/EN regression or the consensus of these. Argument "survival" must be specified as either; "DE", "DA", "LASSO", "EN" or "Consensus". The full dataframe of variables may be used (if argument is set to ALL), HOWEVER this is not advisable unless the dataset is small with very few variables. At least, "survival", "outcome", "outcome.time" info must be included in the metadata file. The metadata file must contain at least four columns named; "ids" (sample identifiers), "age" (age in years at diagnosis, surgery or entry into trail), "outcome.time" (time until end of follow-up in weeks, months or years, censuring, death) and "outcome" (numeric 0 = censuring, 1=death). N.B. in case of (paired) normal samples the columns with survival information for these samples should contain "NA" values.
@@ -17,43 +19,47 @@
 #' @param transform Data transformation type. Current options are "log2", "log10", "logit" and "voom". If two datasets are provided the parameter should be specified for each dataset, provided as a character vector. Defaults is FALSE (do not run).
 #' @param prefix Prefix for the results' files and results folder. Defalt is "Results".
 #' @param signif Cut-offs for log fold change (logFC) and corrected p-value (fdr), defining significant hits (proteins, genes, miRNAs or N-features). If argument is set, it must be a numeric vector, where the first element specifies the cut-off for logFC and the second element specifies the cut-off for corrected p-value (fdr).  In case of 2 datasets, vector must be of length 4. By default, cutoffs will be set to -1 > logFC > 1 and corrected p-values < 0.05.
-#' @param plot.mds This argument specifies ("TRUE" or "FALSE") if a preliminary MDSplot should be made for data overview. Works only for the first dataset. Default is FALSE (do not run).
+#' @param plot.PCA Argument specifies ("TRUE" or "FALSE") if a preliminary PCA plot should be made for data overview. Default is FALSE (do not run).
 #' @param covariates Covariates to include in the analysis. If multiple of these, they should be specified as a character vector. The first element in this list must be either TRUE or FALSE. If TRUE is specified then covariates will be included in both DE/DA analysis and Survival Analsysis. If FALSE is specified covariates will ONLY be used for Survival Analsysis. Names of covariates should match the desired columns in the metadata file. Default is NULL.
 #' @param stratify This argument may be used if some of the categorical (NOT continous) covariates violate the cox proportional assumption. The workflow checks for proportional hazard and will retun the covariates that fail the PH test. You may then rerun the workflow with this argument followed by the names of the categorical covariates which failed and these will be stratified. Default is NULL.
-#' @param colors Custom color pallet for MDS and heatmaps. Must be the same length as number of groups used for comparison (e.g. two groups = two colors) and must be defined as character vector. See R site for avalibe colors http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf. Default is NULL.
+#' @param colors Custom color pallet for PCA and heatmaps. Must be the same length as number of groups used for comparison (e.g. two groups = two colors) and must be defined as character vector. See R site for avalibe colors http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf. Default is NULL.
 #' @param block A vector or factor specifying a blocking variable for differential expression analysis. The block must be of same length as the belonging dataset and contain 2 or more options. For 2 datasets the block can be defined as a list of factors or vectors.
 #' @param lasso Argument specifying parameters for LASSO or Elastic net regression. This argument may be set to 1 for LASSO or >0 & <1 for Elastic Net, but NOT to 0 exactly (Ridge Regression). Defaults is FALSE (do not run).
 #' @param WGCNA Argument specifying parameter for Weighed Gene Co-expression Network Analysis. It takes a string, either "DA", "DE" or "ALL" specifying if all variables should be included in WGCNA or only differentially expressed / abundant variables. Defaults is FALSE (do not run).
 #' @param cutoff.WGCNA Argument specifying the cutoff values for WGCNA. The argument takes a numuric vector of three values: (I) minimum modules size, (II) maximum percentage of dissimilarity for merging of modules, and (III) percentage of top most interconnected genes (or other features) to return, from each modules identified in the Weighed Gene Co-expression Network Analysis. Default values are 10,25,25.
 #' @param PPint Argument specifying that protein-protein interaction networks should be generated using the results of the differential expression analysis. This argument must be a character vector of length two. The first element in this list must be a string specifying the type of gene identifier in the gene counts file provided. Allowed identifiers are: "ensembl_peptide_id", "hgnc_symbol", "ensembl_gene_id", "ensembl_transcript_id", "uniprotswissprot". The second element is a string specifying version of the stringDB to use. Currently only version supported is: 11.0. Default is FALSE (do not run).
 #' @param gene.miR.int Argument specifying that gene-miRNA interaction networks should be generated using the results of the differential expression analysis. This argument must be a character vector of length two. The first element in this list must be a string specifying the type of miRNA identifier in the gene counts data file. Allowed identifiers are: "mature_mirna_ids", "mature_mirna_accession". The second element must be a string specifying the miRNA-gene database to use, currently options are: "targetscan" (validated miRNAs), "mirtarbase" (predicted miRNAs), "tarscanbase" (validated + predicted miRNAs)". Default is FALSE (do not run).
+#' @param plot.umap This argument specifies ("TRUE" or "FALSE") if a preliminary UMAP plot should be made for data overview. Default is FALSE (do not run).
 #' @import zeallot
+#' @import M3C
 #' @export
 #' @seealso
 #' @return CAMPP2 results
 #' @examples \dontrun{
-#' runCampp2(batches=c("tumor_stage","tumor_stage"),prefix="test_CAMPP2", data1=campp2_brca_1, data2=campp2_brca_2, metadata1=campp2_brca_1_meta,metadata2=campp2_brca_2_meta, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"))
+#' runCampp2(batches=c("tumor_stage","tumor_stage"),prefix="test_CAMPP2", data1=campp2_brca_1, data2=campp2_brca_2, metadata1=campp2_brca_1_meta,metadata2=campp2_brca_2_meta, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"), kmeans=TRUE)
 #' }
 #'
 
-runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology, groups, batches=NULL, data.check=TRUE, standardize=FALSE, transform=FALSE, plot.mds=FALSE, plot.heatmap=FALSE, kmeans=FALSE, signif=NULL, block=NULL, colors=NULL, prefix="Results", correlation=FALSE, lasso=FALSE, WGCNA=FALSE, cutoff.WGCNA=NULL, survival=FALSE, covariates=NULL, stratify=NULL, surv.plot=50, PPint=FALSE, gene.miR.int=FALSE){
+runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology, groups, batches=NULL, data.check=TRUE, standardize=FALSE, transform=FALSE, plot.PCA=FALSE, plot.heatmap=FALSE, kmeans=FALSE, num.km.clusters=NULL, signif=NULL, block=NULL, colors=NULL, prefix="Results", correlation=FALSE, lasso=FALSE, WGCNA=FALSE, cutoff.WGCNA=NULL, survival=FALSE, covariates=NULL, stratify=NULL, surv.plot=50, PPint=FALSE, gene.miR.int=FALSE, PCA.labels="none",plot.umap=FALSE){
 
     ###parse input arguments and assign updated values
     c(data1,data2,metadata1,metadata2,technology,groups,
       group1,group2,ids,batches,databatch1,databatch2,
       batch1,batch2,standardize,transform,data.check,
-      plot.mds,kmeans,labels.kmeans,signif,logFC1,FDR1,
+      plot.PCA,kmeans,num.km.clusters,signif,logFC1,FDR1,
       logFC2,FDR2,block,block1,block2,colors,prefix,plot.heatmap,corrby,
       lasso,WGCNA,cutoff.WGCNA,survival,covarDEA1,covarDEA2,
       covarS,stratify,surv.plot,PPI,GmiRI,DEA.allowed.type,
-      survival.metadata,approved.gene.IDs,provedmiRIDs,gene.query,miR.query) %<-% parseArguments(data1=data1, metadata1=metadata1, data2=data2, metadata2=metadata2,
-                                                                                                 groups=groups, technology=technology, prefix=prefix, batches=batches,
-                                                                                                 data.check=data.check, standardize=standardize, transform=transform,
-                                                                                                 plot.mds=plot.mds, plot.heatmap=plot.heatmap, kmeans=kmeans,
-                                                                                                 signif=signif, block=block, colors=colors, correlation=correlation, lasso=lasso,
-                                                                                                 WGCNA=WGCNA, cutoff.WGCNA=cutoff.WGCNA, survival=survival,
-                                                                                                 covariates=covariates, stratify=stratify,surv.plot=surv.plot,
-                                                                                                 PPint=PPint, gene.miR.int=gene.miR.int)
+      survival.metadata,approved.gene.IDs,provedmiRIDs,gene.query,miR.query,
+      PCA.labels,plot.umap) %<-% parseArguments(data1=data1, metadata1=metadata1, data2=data2, metadata2=metadata2,
+                                                groups=groups, technology=technology, prefix=prefix, batches=batches,
+                                                data.check=data.check, standardize=standardize, transform=transform,
+                                                plot.PCA=plot.PCA, plot.heatmap=plot.heatmap, kmeans=kmeans,
+                                                signif=signif, block=block, colors=colors, correlation=correlation, lasso=lasso,
+                                                WGCNA=WGCNA, cutoff.WGCNA=cutoff.WGCNA, survival=survival,
+                                                covariates=covariates, stratify=stratify,surv.plot=surv.plot,
+                                                PPint=PPint, gene.miR.int=gene.miR.int, PCA.labels=PCA.labels,plot.umap=plot.umap,
+                                                num.km.clusters=num.km.clusters)
 
 
 
@@ -260,35 +266,35 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
     print("DISTRIBUTIONAL CHECK PART FINISHED")
 
 
-
-    # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    ### PRELIMINARY MDS PLOT ###
-    # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-    print("PROCESSING PRELIMINARY MDS PLOT")
-
-    MDScolors <- gsub(pattern = "FF", replacement = "", x = colors)
-
-
-    if (plot.mds == TRUE && databatch1 == TRUE){
-        mdsplot <- MDSPlot(data1.batch, group1, ids, MDScolors)
-        ggsave(paste0(prefix, "_MDSplot_batchcorr.pdf"), plot = mdsplot, dpi = 300, width = 8, height = 8)
-
-    } else if (plot.mds == TRUE && databatch1 == FALSE){
-        if (technology[1] == "seq") {
-            mdsplot <- MDSPlot(data.frame(data1$E), group1, ids, MDScolors)
-        } else {
-            mdsplot <- MDSPlot(data1, group1, ids, MDScolors)
-        }
-        ggsave(paste0(prefix, "_MDSplot.pdf"), plot = mdsplot, dpi = 300, width = 8, height = 8)
-
-        rm(mdsplot)
-
-    } else {
-        cat("\n- No preliminary plot requested.\n")
-    }
-
-    print("PRELIMINARY MDS PLOT PART FINISHED")
+###WILL BE REPLACED BY PCA. COMMENTED TO AVOID PROBLEMS WITH VARIABLE NAMES
+    # # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    # ### PRELIMINARY MDS PLOT ###
+    # # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    #
+    # print("PROCESSING PRELIMINARY MDS PLOT")
+    #
+    # MDScolors <- gsub(pattern = "FF", replacement = "", x = colors)
+    #
+    #
+    # if (plot.mds == TRUE && databatch1 == TRUE){
+    #     mdsplot <- MDSPlot(data1.batch, group1, ids, MDScolors)
+    #     ggsave(paste0(prefix, "_MDSplot_batchcorr.pdf"), plot = mdsplot, dpi = 300, width = 8, height = 8)
+    #
+    # } else if (plot.mds == TRUE && databatch1 == FALSE){
+    #     if (technology[1] == "seq") {
+    #         mdsplot <- MDSPlot(data.frame(data1$E), group1, ids, MDScolors)
+    #     } else {
+    #         mdsplot <- MDSPlot(data1, group1, ids, MDScolors)
+    #     }
+    #     ggsave(paste0(prefix, "_MDSplot.pdf"), plot = mdsplot, dpi = 300, width = 8, height = 8)
+    #
+    #     rm(mdsplot)
+    #
+    # } else {
+    #     cat("\n- No preliminary plot requested.\n")
+    # }
+    #
+    # print("PRELIMINARY MDS PLOT PART FINISHED")
 
 
 
@@ -296,89 +302,54 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
     # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     ### Kmeans ###
     # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
     print("PROCESSING KMEANS")
 
 
-
-    if (kmeans == TRUE) {
-
-        if (technology[1] == "seq") {
-            k.data1 <- data1$E
+    if (kmeans == TRUE){
+        dir.create("kmeans")
+        setwd("kmeans/")
+        if (databatch1 == TRUE){
+            Kmeans.Out1 <- runKmeans(data1.batch, PCA.labels, colors, paste0(prefix,"_1st_dataset"),num.km.clusters)
         } else {
-            k.data1 <- data1
-        }
-
-        # Number of sample sets to generate
-        nsets <- 1:ceiling(nrow(k.data1)/1000)
-        if(length(nsets) > 10) {
-            nsets <- 1:10
-        }
-
-        # Number of variables in each sample set
-        setsize <- nrow(k.data1)
-        if (setsize > 2000) {
-            setsize <- 2000
-        }
-
-
-        # Number of kmeans to try
-        if(ncol(k.data1) <= 100) {
-            nks <- 2:6
-        } else if (ncol(k.data1) > 100 && ncol(k.data1) <= 500) {
-            nks <- 2:11
-        } else {
-            nks <- 2:16
-        }
-
-
-        cat(paste0("Based on size of dataset, ", length(nsets), " sample sets will be generated of size ", setsize, " and ", length(nks), " clusters will be tested - N.B This may take up to 10 min!\nRunning......"))
-
-        dir.create("KmeansResults")
-        setwd("KmeansResults/")
-
-
-        list.of.dfs <- list()
-
-        if (databatch1 == TRUE) {
-            for (idx in 1:length(nsets)) {
-                df <- t(data1.batch[sample(nrow(data1.batch), setsize), ])
-                list.of.dfs[[idx]] <- df
+            if (technology[1] == "seq") {
+                Kmeans.Out1 <- runKmeans(data.frame(data1$E), PCA.labels, colors, paste0(prefix,"_1st_dataset"),num.km.clusters)
+            } else {
+                Kmeans.Out1 <- runKmeans(data1$E, PCA.labels, colors, paste0(prefix,"_1st_dataset"),num.km.clusters) ##not sure if this is necessary
             }
-            Kmeans.list <- lapply(list.of.dfs, function(x) EstimateKmeans(x, nsets))
-            Kmeans.Out <- PlotKmeans(data1.batch, Kmeans.list, nks, labels.kmeans, prefix)
-        } else {
-            for (idx in 1:length(nsets)) {
-                df <- t(k.data1[sample(nrow(k.data1), setsize), ])
-                list.of.dfs[[idx]] <- df
-            }
-            Kmeans.list <- lapply(list.of.dfs, function(x) EstimateKmeans(x, nsets))
-            Kmeans.Out <- PlotKmeans(k.data1, Kmeans.list, nks, labels.kmeans, prefix)
         }
 
+        kmeans.clusters1 <- cbind(metadata1, Kmeans.Out1$res.clusters) ##here the result is a cluster information for each sample appended to the metadata file
+        write.table(kmeans.clusters1, paste0(prefix,"_Metadata_Kmeans_dataset1.txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+        pca.data1<-Kmeans.Out1$res.pca
+        save(pca.data1,file="pca_data1.rda")
 
-        out <- cbind(metadata1, Kmeans.Out)
+        ##kmeans for dataset2
+        if(!is.null(data2)){
+            if (databatch2 == TRUE){
+                Kmeans.Out2 <- runKmeans(data2.batch, PCA.labels, colors, paste0(prefix,"_2st_dataset"),num.km.clusters)
+            } else {
+                if (technology[1] == "seq") {
+                    Kmeans.Out2 <- runKmeans(data.frame(data2$E), PCA.labels, colors, paste0(prefix,"_2st_dataset"),num.km.clusters)
+                } else {
+                    Kmeans.Out2 <- runKmeans(data2$E, PCA.labels, colors, paste0(prefix,"_2st_dataset"),num.km.clusters) ##not sure if this is necessary
+                }
+            }
 
-        write.table(out, paste0(prefix,"_Metadata_Kmeans.txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+            kmeans.clusters2 <- cbind(metadata2, Kmeans.Out2$res.clusters) ##here the product is cluster information for each sample
+            write.table(kmeans.clusters2, paste0(prefix,"_Metadata_Kmeans_dataset2.txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+            pca.data2<-Kmeans.Out2$res.pca
+            save(pca.data1,file="pca_data2.rda")
+
+        }
 
         setwd("..")
 
-        rm(k.data1, Kmeans.list, Kmeans.Out, out)
+    } else {
+        cat("\n- No k-means clustering requested.\n")
     }
-
 
     print("KMEANS PART FINISHED")
 
-
-
-
-    # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    # CLEAN UP AND SOURCE FUNCTIONS FROM THE FUNCTIONS SCRIPT - PART 2
-    # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-    #rm(SplitList, ReadMyFile, ReplaceNAs, ReplaceZero, NormalizeData, FitDistributions, PlotDistributions, MDSPlot, EstimateKmeans)
-    gc(full = TRUE)
 
 
 
