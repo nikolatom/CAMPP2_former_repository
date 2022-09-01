@@ -4,7 +4,14 @@
 \alias{PCAPlot}
 \title{Principal Component Analysis (PCA)}
 \usage{
-PCAPlot(data, group, PCA.labels = "none", cols = NULL, prefix = "")
+PCAPlot(
+  data,
+  group,
+  show.PCA.labels = FALSE,
+  cols = NULL,
+  prefix = "",
+  scale = FALSE
+)
 }
 \arguments{
 \item{data}{a dataframe of expression/abundance counts}
@@ -12,16 +19,19 @@ PCAPlot(data, group, PCA.labels = "none", cols = NULL, prefix = "")
 \item{group}{a factor specifying group for each sample (e.g. could be
 represented by a column from a metadata file)}
 
-\item{PCA.labels}{a text ("all", "none) specifying the elements to be
-labelled. Default value is "none"}
+\item{show.PCA.labels}{a boolean value (TRUE or FALSE) specifying if elements
+(e.g. samples) should be labelled. Labeling is based on column names of
+the input data. Default value is FALSE.}
 
 \item{cols}{a vector of colors (one color for each group)}
 
 \item{prefix}{a character defining a prefix of output file}
+
+\item{scale}{a boolean, if TRUE then data are scaled to unit variance. Default is FALSE}
 }
 \value{
-1) scree plot, 2) contributions of variables to PC1, 3) contributions
-of variables to PC2, 4) 2D PCA plot, 5) 3D PCA plot
+1) scree plot, 2) plot of contributions of variables to PC1, 3) plot
+of contributions of variables to PC2, 4) 2D PCA plot, 5) 3D PCA plot
 }
 \description{
 A function calculating PCA. PCA plot shows the relationships
@@ -33,6 +43,6 @@ are visualized in 3D plot.
 }
 \examples{
 \dontrun{
-PCAPlot(campp2_brca_1_batchCorrected, as.factor(campp2_brca_1_meta$subtype), PCA.labels ="none", cols=NULL, prefix="test_PCA")
+PCAPlot(campp2_brca_1_batchCorrected, as.factor(campp2_brca_1_meta$subtype), show.PCA.labels =FALSE, cols=NULL, prefix="test_PCA")
 }
 }

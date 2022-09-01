@@ -29,14 +29,13 @@
 #' @param cutoff.WGCNA Argument specifying the cutoff values for WGCNA. The argument takes a numuric vector of three values: (I) minimum modules size, (II) maximum % dissimilarity for merging of modules, and (III) % of top most interconnected genes (or other features) to return, from each modules identified in the Weighed Gene Co-expression Network Analysis. Default values are 10,25,25.
 #' @param PPint Argument specifying that protein-protein interaction networks should be generated using the results of the differential expression analysis. This argument must be a character vector of length two. The first element in this list must be a string specifying the type of gene identifier in the gene counts file provided. Allowed identifiers are: "ensembl_peptide_id", "hgnc_symbol", "ensembl_gene_id", "ensembl_transcript_id", "uniprotswissprot". The second element is a string specifying version of the stringDB to use. Currently only version supported is: 11.0. Default is FALSE (do not run).
 #' @param gene.miR.int Argument specifying that gene-miRNA interaction networks should be generated using the results of the differential expression analysis. This argument must be a character vector of length two. The first element in this list must be a string specifying the type of miRNA identifier in the gene counts data file. Allowed identifiers are: "mature_mirna_ids", "mature_mirna_accession". The second element must be a string specifying the miRNA-gene database to use, currently options are: "targetscan" (validated miRNAs), "mirtarbase" (predicted miRNAs), "tarscanbase" (validated + predicted miRNAs)". Default is FALSE (do not run).
-#' @param plot.umap This argument specifies ("TRUE" or "FALSE") if a preliminary UMAP plot should be made for data overview. Default is FALSE (do not run).
 #' @export
 #' @return parsed arguments
 #' @examples \dontrun{
 #' ...
 #' }
 
-parseArguments <- function(data1, data2, metadata1, metadata2, groups, technology, batches, data.check, standardize, transform, plot.PCA, plot.heatmap, kmeans, num.km.clusters, signif, colors, block, prefix, correlation, lasso, WGCNA, cutoff.WGCNA, survival, covariates, stratify, surv.plot, PPint, gene.miR.int, show.PCA.labels, plot.umap){
+parseArguments <- function(data1, data2, metadata1, metadata2, groups, technology, batches, data.check, standardize, transform, plot.PCA, plot.heatmap, kmeans, num.km.clusters, signif, colors, block, prefix, correlation, lasso, WGCNA, cutoff.WGCNA, survival, covariates, stratify, surv.plot, PPint, gene.miR.int, show.PCA.labels){
 
     # For DE/DA analysis, survival analysis and correlation analysis
     DEA.allowed.type <- c("ALL","EN", "LASSO", "DA", "DE", "Consensus",FALSE)
@@ -291,6 +290,7 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
         }
     }
 
+
     print("Printing defined/processed parameters:")
     cat(c("\n",
           paste0("technology: ",technology),"\n",
@@ -332,11 +332,10 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
           paste0("surv.plot: ",surv.plot),"\n",
           paste0("PPI: ",PPI),"\n",
           paste0("GmiRI: ",GmiRI),"\n",
-          paste0("show.PCA.labels: ",show.PCA.labels),"\n",
-          paste0("plot.umap: ",plot.umap),"\n"
+          paste0("show.PCA.labels: ",show.PCA.labels),"\n"
     ))
 
-    return(list("data1"=data1,"data2"=data2,"metadata1"=metadata1,"metadata2"=metadata2, "technology"=technology, "groups"=groups,"group1"=group1,"group2"=group2,"ids"=ids,"batches"=batches,"databatch1"=databatch1,"databatch2"=databatch2,"batch1"=batch1, "batch2"=batch2, "standardize"=standardize,"transform"=transform,"data.check"=data.check,"plot.PCA"=plot.PCA,"kmeans"=kmeans, "num.km.clusters"=num.km.clusters, "signif"=signif, "logFC"=logFC,"FDR"=FDR,"slogFC"=slogFC,"sFDR"=sFDR,"block"=block,"block1"=block1,"block2"=block2,"colors"=colors,"prefix"=prefix,"plot.heatmap"=plot.heatmap,"corrby"=corrby,"lasso"=lasso,"WGCNA"=WGCNA,"cutoff.WGCNA"=cutoff.WGCNA,"survival"=survival,"covarDEA1"=covarDEA1,"covarDEA2"=covarDEA2,"covarS"=covarS,"stratify"=stratify,"surv.plot"=surv.plot,"PPI"=PPI,"GmiRI"=GmiRI,"DEA.allowed.type"=DEA.allowed.type,"survival.metadata"=survival.metadata,"approved.gene.IDs"=approved.gene.IDs,"approved.miR.IDs"=approved.miR.IDs,"gene.query"=gene.query,"miR.query"=miR.query, "show.PCA.labels"=show.PCA.labels, "plot.umap"=plot.umap))
+    return(list("data1"=data1,"data2"=data2,"metadata1"=metadata1,"metadata2"=metadata2, "technology"=technology, "groups"=groups,"group1"=group1,"group2"=group2,"ids"=ids,"batches"=batches,"databatch1"=databatch1,"databatch2"=databatch2,"batch1"=batch1, "batch2"=batch2, "standardize"=standardize,"transform"=transform,"data.check"=data.check,"plot.PCA"=plot.PCA,"kmeans"=kmeans, "num.km.clusters"=num.km.clusters, "signif"=signif, "logFC"=logFC,"FDR"=FDR,"slogFC"=slogFC,"sFDR"=sFDR,"block"=block,"block1"=block1,"block2"=block2,"colors"=colors,"prefix"=prefix,"plot.heatmap"=plot.heatmap,"corrby"=corrby,"lasso"=lasso,"WGCNA"=WGCNA,"cutoff.WGCNA"=cutoff.WGCNA,"survival"=survival,"covarDEA1"=covarDEA1,"covarDEA2"=covarDEA2,"covarS"=covarS,"stratify"=stratify,"surv.plot"=surv.plot,"PPI"=PPI,"GmiRI"=GmiRI,"DEA.allowed.type"=DEA.allowed.type,"survival.metadata"=survival.metadata,"approved.gene.IDs"=approved.gene.IDs,"approved.miR.IDs"=approved.miR.IDs,"gene.query"=gene.query,"miR.query"=miR.query, "show.PCA.labels"=show.PCA.labels))
 
 }
 
