@@ -13,10 +13,11 @@ ExportDEA <- function(res.DEA, filename) {
     if (is.null(res.DEA)) {
         cat("\nDEA yielded no results. Aren't your logFC or FDR cut-offs too strict?\n")
     } else {
-        res.DEA <- do.call(rbind, unlist(res.DEA, recursive=FALSE))
-        group.names <- gsub("1[.](.*)|2[.](.*)", "", rownames(res.DEA))
+        DEA.out <- do.call(rbind, unlist(res.DEA, recursive=FALSE))  ##this should be done also outside of this function
+        group.names <- gsub("1[.](.*)|2[.](.*)", "", rownames(DEA.out))
         group.names <- gsub("group", "", group.names)
-        res.DEA$comparison <- group.names
-        write.table(res.DEA, paste0(filename,".txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+        DEA.out$comparison <- group.names
+        write.table(DEA.out, paste0(filename,".txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+        return(DEA.out)
     }
 }
