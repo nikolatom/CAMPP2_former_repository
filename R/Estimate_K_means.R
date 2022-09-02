@@ -18,7 +18,7 @@ EstimateKmeans <- function(data) {
     mod1 <- Mclust(data, x = BIC) #obtained model
     # fviz_nbclust(my_data, kmeans, method = "silhouette") #alternative approach
     num.km.clusters <- as.numeric(mod1$G)  #number of clusters according to the best model
-    print(paste0("number of clusters according to the best model, G: ",num.km.clusters,"\n"))
+    print(paste0("number of clusters according to the best model, G: ",num.km.clusters))
     summary.clust<-summary(mod1, parameters = FALSE) #summary for the best model
     print(summary.clust)
     return(num.km.clusters)

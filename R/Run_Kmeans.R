@@ -17,9 +17,10 @@
 #' A summary describing the best model is printed on the screen during
 #' calculation.
 #' @param data a data.frame of feature (e.g. gene) counts
-#' @param PCA.labels a string vector ("all" or "none") specifying which elements
-#' (e.g. samples) should be labelled (labeling is based on column names of the
-#' input data). Default value is "none".
+#' @param show.PCA.labels a boolean value (TRUE or FALSE) specifying if elements
+#' (e.g. samples) should be labelled in the PCA plot including information about
+#' the clusters. Labeling is based on column names of the input data.
+#' Default value is FALSE.
 #' @param cols a vector of colors (one color for each group)
 #' @param prefix a character string defining a prefix of output file.
 #' @param num.km.clusters a vector of manually defined number(s) of clusters.
@@ -31,13 +32,23 @@
 #' @seealso
 #' @return a data.frame with cluster information assigned to each sample;
 #' a list of results from PCA;
-#' PCA plot(s) saved into png.
+#' 2D PCA plot(s) projecting samples over
+#' first 2 principal components saved into png.
 #' @examples \dontrun{
-#' runKmeans(campp2_brca_1_batchCorrected, PCA.labels = "none", cols=NULL,
+#' runKmeans(campp2_brca_1_batchCorrected, show.PCA.labels = FALSE, cols=NULL,
 #' prefix="test", num.km.clusters=NULL)
 #' }
 
-runKmeans <- function(data, PCA.labels = FALSE, cols=NULL, prefix=NULL, num.km.clusters=NULL){
+runKmeans <- function(data, show.PCA.labels = FALSE, cols=NULL, prefix=NULL, num.km.clusters=NULL){
+
+    ###parse TRUE/FALSE into "all"/"none".
+    if(show.PCA.labels==TRUE){
+        show.PCA.labels<-"all"
+    } else if (show.PCA.labels==FALSE) {
+        show.PCA.labels=="none"
+    } else {
+        stop(paste0("The value ", show.PCA.labels, " defined as show.PCA.labels parameter is not supported. Supported values are TRUE/FALSE."))
+    }
 
      if(is.null(prefix)){
         stop(print("Please, provide a prefix for the result files."))
@@ -103,7 +114,7 @@ runKmeans <- function(data, PCA.labels = FALSE, cols=NULL, prefix=NULL, num.km.c
             cols <- NULL
         }
         fviz_pca_ind(res.pca,
-                     label = PCA.labels, # show/hide individual labels; labels are taken from feature counts matrix automatically
+                     label = show.PCA.labels, # show/hide individual labels; labels are taken from feature counts matrix automatically
                      habillage = as.factor(Clusters), # color by groups (clusters in this case)
                      palette = cols,
                      addEllipses = TRUE, # concentration ellipses
