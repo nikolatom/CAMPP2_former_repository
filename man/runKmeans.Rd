@@ -6,7 +6,7 @@
 \usage{
 runKmeans(
   data,
-  PCA.labels = FALSE,
+  show.PCA.labels = FALSE,
   cols = NULL,
   prefix = NULL,
   num.km.clusters = NULL
@@ -15,9 +15,10 @@ runKmeans(
 \arguments{
 \item{data}{a data.frame of feature (e.g. gene) counts}
 
-\item{PCA.labels}{a string vector ("all" or "none") specifying which elements
-(e.g. samples) should be labelled (labeling is based on column names of the
-input data). Default value is "none".}
+\item{show.PCA.labels}{a boolean value (TRUE or FALSE) specifying if elements
+(e.g. samples) should be labelled in the PCA plot including information about
+the clusters. Labeling is based on column names of the input data.
+Default value is FALSE.}
 
 \item{cols}{a vector of colors (one color for each group)}
 
@@ -30,7 +31,8 @@ NULL).}
 \value{
 a data.frame with cluster information assigned to each sample;
 a list of results from PCA;
-PCA plot(s) saved into png.
+2D PCA plot(s) projecting samples over
+first 2 principal components saved into png.
 }
 \description{
 A wrapper function for K-means clustering.
@@ -53,7 +55,7 @@ calculation.
 }
 \examples{
 \dontrun{
-runKmeans(campp2_brca_1_batchCorrected, PCA.labels = "none", cols=NULL,
+runKmeans(campp2_brca_1_batchCorrected, show.PCA.labels = FALSE, cols=NULL,
 prefix="test", num.km.clusters=NULL)
 }
 }
