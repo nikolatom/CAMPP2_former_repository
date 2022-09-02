@@ -18,8 +18,8 @@ sample group, and for replacing the remaining zeros.  Default is TRUE.}
 }
 \value{
 a data frame with fixed zeros. Features having sum of zero counts
-        higher than the size of the smallest sample group are removed and
-        remaining zeros will be replaced by default.
+higher than the size of the smallest sample group are removed and
+remaining zeros will be replaced by default.
 }
 \description{
 This function detects zero/negative values and replaces zero
