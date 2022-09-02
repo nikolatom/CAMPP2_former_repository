@@ -10,8 +10,8 @@
 #' represented by a column from a metadata file)
 #' @param cols a vector of colors (one color for each group)
 #' @param show.PCA.labels a boolean value (TRUE or FALSE) specifying if elements
-#' (e.g. samples) should be labelled. Labeling is based on column names of
-#' the input data. Default value is FALSE.
+#' (e.g. samples) should be labelled in the PCA plot. Labeling is based on
+#' column names of the input data. Default value is FALSE.
 #' @param prefix a character defining a prefix of output file
 #' @param scale a boolean, if TRUE then data are scaled to unit variance. Default is FALSE
 #' @export
@@ -19,8 +19,10 @@
 #' @import FactoMineR
 #' @import pca3d
 #' @seealso
-#' @return 1) scree plot, 2) plot of contributions of variables to PC1, 3) plot
-#' of contributions of variables to PC2, 4) 2D PCA plot, 5) 3D PCA plot
+#' @return 1) scree plot; 2) plot of contributions of variables to PC1; 3) plot
+#' of contributions of variables to PC2; 4) 2D PCA plot projecting samples over
+#' first 2 principal components; 5) 3D PCA plot projecting samples over
+#' first 3 principal components
 #' @examples \dontrun{
 #' PCAPlot(campp2_brca_1_batchCorrected, as.factor(campp2_brca_1_meta$subtype), show.PCA.labels =FALSE, cols=NULL, prefix="test_PCA")
 #' }
@@ -60,7 +62,6 @@ PCAPlot <- function(data, group, show.PCA.labels =FALSE, cols=NULL, prefix="", s
         ggsave(paste0(prefix,"_PCA.png"))
 
         # PCA 3D
-        # pca<-prcomp(t(data), scale.=scale) #default option
         pca3d(res.pca$ind$coord[,1:3], group=as.factor(group), fancy=FALSE,legend="topleft",show.ellipses=TRUE, ellipse.ci=0.75, show.plane=FALSE)
         snapshotPCA3d(file=paste0(prefix,"_3D_PCA.png"))
 }

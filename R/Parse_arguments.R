@@ -210,7 +210,7 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
     #show.PCA.labels
 
     if (!show.PCA.labels %in% c(show.PCA.labels.allowed.type)) {
-        stop("Options for PCA labels are: TRUE or FALSE Please re-run pipeline with one of these!")
+        stop("Allowed options for show.PCA.labes argument are: TRUE or FALSE. Please re-run pipeline with one of these!")
     }
 
 

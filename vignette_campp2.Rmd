@@ -408,19 +408,6 @@ metadataset 2.
 ## Other Arguments
 \
 <!-- MDS removed -->
-**Multidimensional* Scaling plot** (MDS): The MDS may be set
-to generate a preliminary multidimensional scaling (MDS) plot.
-Multidimensional scaling (MDS) reduces high-dimensional data
-to two (or more) "observable" dimensions (M1 and M2) in such
-a way that the inter-sample distance relationship in the simplified
-dimensions mimic the distance relationship between the original
-values of samples in n-dimensional space (n = number of variables).
-MDS was performed with the euclidean distances as the distance
-metric. A MDS plot may help to determine whether there appears
-to be any "grouping" of data in a desired way (tumor samples
-together and normal samples together) or in an undesired way
-(experimental batches) before performing the DE/DA analysis.
-\
 
 **Data Transformation** (transform): The flag -t may be set if the user
 desires the expression/abundance data to be transformed before
