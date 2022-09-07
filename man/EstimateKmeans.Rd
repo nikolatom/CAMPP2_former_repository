@@ -10,7 +10,11 @@ EstimateKmeans(data)
 \item{data}{a data frame of feature (e.g. gene) counts}
 }
 \value{
-a data frame with a number of clusters
+a list including:
+1) a data frame with a number of clusters corresponding to G from BIC object.
+G represents a number of mixture components in the model corresponding to
+the optimal BIC
+2) an 'mclustBIC' object, which is the result of applying mclustBIC to data
 }
 \description{
 A function to estimate the number of K-means.
