@@ -24,7 +24,14 @@ normalized_data<-NormalizeData(data=zerofix,group=campp2_brca_1_meta$diagnosis,s
 batch_corrected_data<-BatchCorrect(normalized_data,campp2_brca_1_meta$tumor_stage,campp2_brca_1_meta$diagnosis,technology="seq")
 
 ###An example code for running differential gene expression analysis
-runCampp2(prefix="Testing_DEA", data1=campp2_brca_1, metadata1=campp2_brca_1_meta, groups=c("IDs", "diagnosis"), technology=c("seq"), block=c(campp2_brca_1_meta$tumor_stage))
+runCampp2(prefix="Testing_DEA", data1=campp2_brca_1, metadata1=campp2_brca_1_meta, groups=c("IDs", "diagnosis"), technology=c("seq"), block=campp2_brca_1_meta$tumor_stage)
+
+###An example code for running differential expression analysis with visualizations
+runCampp2(prefix="Testing_DEA_visuals", data1=campp2_brca_1, metadata1=campp2_brca_1_meta, groups=c("IDs", "diagnosis"), technology=c("seq"), block=campp2_brca_1_meta$tumor_stage,
+plot.DEA=TRUE, plot.heatmap="DEA")
+
+##An example code for running differential gene expression analysis with subtype analysis of two datasets
+runCampp2(prefix="Testing_DEA_subtype", data1=campp2_brca_1, metadata1=campp2_brca_1_meta, data2=campp2_brca_2, metadata2=campp2_brca_2_meta, groups=c("IDs", "subtype","IDs","subtype"), technology=c("seq","seq"), block=c(campp2_brca_1_meta$subtype,campp2_brca_2_meta$subtype), plot.DEA=TRUE, plot.heatmap="DEA")
 
 ###An example code for running differential expression analysis with subtype analysis and visualizations
 runCampp2(prefix="Testing_DEA_visuals", data1=campp2_brca_1, metadata1=campp2_brca_1_meta, data2=campp2_brca_2, metadata2=campp2_brca_2_meta, groups=c("IDs", "subtype","IDs","subtype"), technology=c("seq","seq"), block=c(metadata1$subtype), plot.DEA=TRUE, plot.heatmap="DEA")
