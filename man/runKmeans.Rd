@@ -6,6 +6,8 @@
 \usage{
 runKmeans(
   data,
+  num.subsets = NULL,
+  subset.size = NULL,
   show.PCA.labels = FALSE,
   prefix,
   colors = NULL,
@@ -17,10 +19,26 @@ runKmeans(
 \arguments{
 \item{data}{a data.frame of feature (e.g. gene) counts}
 
+\item{num.subsets}{a number of sub-sets to be generated for the estimation of
+the number of clusters. This parameter has several options:
+1) a numeric (integer) value estimated by the user.
+2) a string "automatic" will let CAMPP2 estimate the number of the sub-sets.
+3) NULL option will use the whole set for the estimation
+of the number of clusters. If using this option, subset.size must be also NULL.
+Defaults is NULL.}
+
+\item{subset.size}{a number of features included in each sub-set. This
+parameter has several options:
+1) a numeric (integer) value estimated by the user.
+2) a string "automatic" will let CAMPP2 estimate the size of the sub-sets.
+3) NULL option will use all the features (no sub-sampling) for the estimation
+of the number of clusters. If using this option, num.subsets must be also NULL.
+Defaults is "automatic"}
+
 \item{show.PCA.labels}{a boolean value (TRUE or FALSE) specifying if elements
 (e.g. samples) should be labelled in the PCA plot including information about
 the clusters. Labeling is based on column names of the input data.
-Default value is FALSE.}
+Default value is "automatic".}
 
 \item{prefix}{a character string defining a prefix of output file.}
 
@@ -50,17 +68,19 @@ during PCA. Default is FALSE}
 }
 \description{
 A wrapper function for K-means clustering.
-For data sets with >1000 features, multiple subsets (number of sets = number
-of features/1000; rounded up to the higher integer) will be generated,
-maximum is 10 subsets. A number of randomly selected features (e.g. genes)
-in 1 subset is limited to 2000.
-A number of clusters for each sub set is automatically estimated (using
+By default, For data sets with >1000 features, multiple subsets (number of
+sets = number of features/1000; rounded up to the higher integer) will be
+generated, maximum is 10 sub-sets. A number of randomly selected features
+(e.g. genes) in 1 subset is limited to 2000. The values for number of subsets
+and size of the sub-sets might by defined manually. The option of using the
+whole dataset for the estimation of the number of the clusters is also available.
+By default, a number of clusters for each sub-set is automatically estimated (using
 mclustBIC function from mclust package) and a consensus (based on all the
 subsets) of best n k-means is returned and used for K-means clustering.
 If K-means estimation using BIC fails, a number of clusters will be based on
 the number of samples (2-6 clusters for data set with less than 100 samples;
 2-11 for data sets with 101-500 samples, and 2-16 clusters for data sets with
-more than 500 samples). The number of cluster can also be supplied manually.
+more than 500 samples). The number of clusters can also be supplied manually.
 As results, an information about the clusters assigned to each sample and
 results from PCA (FactoMineR) function are provided.
 The clusters are visualized on PCA plot and saved into .png file.
@@ -70,7 +90,8 @@ calculation.
 }
 \examples{
 \dontrun{
-runKmeans(campp2_brca_1_batchCorrected[1:2000,], show.PCA.labels = FALSE, colors=NULL,
+runKmeans(campp2_brca_1_batchCorrected[1:2000,], num.subsets= NULL, subset.size=NULL, show.PCA.labels = FALSE, colors=NULL,
 prefix="test", num.km.clusters=NULL, seed=123, pca.scale=FALSE)
+
 }
 }

@@ -1,16 +1,18 @@
 #' @title K-means clustering
 #' @description A wrapper function for K-means clustering.
-#' For data sets with >1000 features, multiple subsets (number of sets = number
-#' of features/1000; rounded up to the higher integer) will be generated,
-#' maximum is 10 subsets. A number of randomly selected features (e.g. genes)
-#' in 1 subset is limited to 2000.
-#' A number of clusters for each sub set is automatically estimated (using
+#' By default, For data sets with >1000 features, multiple subsets (number of
+#' sets = number of features/1000; rounded up to the higher integer) will be
+#' generated, maximum is 10 sub-sets. A number of randomly selected features
+#' (e.g. genes) in 1 subset is limited to 2000. The values for number of subsets
+#' and size of the sub-sets might by defined manually. The option of using the
+#' whole dataset for the estimation of the number of the clusters is also available.
+#' By default, a number of clusters for each sub-set is automatically estimated (using
 #' mclustBIC function from mclust package) and a consensus (based on all the
 #' subsets) of best n k-means is returned and used for K-means clustering.
 #' If K-means estimation using BIC fails, a number of clusters will be based on
 #' the number of samples (2-6 clusters for data set with less than 100 samples;
 #' 2-11 for data sets with 101-500 samples, and 2-16 clusters for data sets with
-#' more than 500 samples). The number of cluster can also be supplied manually.
+#' more than 500 samples). The number of clusters can also be supplied manually.
 #' As results, an information about the clusters assigned to each sample and
 #' results from PCA (FactoMineR) function are provided.
 #' The clusters are visualized on PCA plot and saved into .png file.
@@ -18,10 +20,24 @@
 #' A summary describing the best model is printed on the screen during
 #' calculation.
 #' @param data a data.frame of feature (e.g. gene) counts
+#' @param num.subsets a number of sub-sets to be generated for the estimation of
+#' the number of clusters. This parameter has several options:
+#' 1) a numeric (integer) value estimated by the user.
+#' 2) a string "automatic" will let CAMPP2 estimate the number of the sub-sets.
+#' 3) NULL option will use the whole set for the estimation
+#' of the number of clusters. If using this option, subset.size must be also NULL.
+#' Defaults is NULL.
+#' @param subset.size a number of features included in each sub-set. This
+#' parameter has several options:
+#' 1) a numeric (integer) value estimated by the user.
+#' 2) a string "automatic" will let CAMPP2 estimate the size of the sub-sets.
+#' 3) NULL option will use all the features (no sub-sampling) for the estimation
+#' of the number of clusters. If using this option, num.subsets must be also NULL.
+#' Defaults is "automatic"
 #' @param show.PCA.labels a boolean value (TRUE or FALSE) specifying if elements
 #' (e.g. samples) should be labelled in the PCA plot including information about
 #' the clusters. Labeling is based on column names of the input data.
-#' Default value is FALSE.
+#' Default value is "automatic".
 #' @param colors a vector of colors (one color for each cluster)
 #' @param prefix a character string defining a prefix of output file.
 #' @param num.km.clusters a vector of numbers of clusters expected in the data.
@@ -47,11 +63,12 @@
 #'    principal components saved into .png.
 #' 3) plots of BIC values for each sample sub-set saved into .png file
 #' @examples \dontrun{
-#' runKmeans(campp2_brca_1_batchCorrected[1:2000,], show.PCA.labels = FALSE, colors=NULL,
+#' runKmeans(campp2_brca_1_batchCorrected[1:2000,], num.subsets= NULL, subset.size=NULL, show.PCA.labels = FALSE, colors=NULL,
 #' prefix="test", num.km.clusters=NULL, seed=123, pca.scale=FALSE)
+#'
 #' }
 
-runKmeans <- function(data, show.PCA.labels = FALSE, prefix, colors=NULL, num.km.clusters=NULL, seed=NULL, pca.scale=FALSE){
+runKmeans <- function(data, num.subsets= "automatic", subset.size="automatic", show.PCA.labels = FALSE, prefix, colors=NULL, num.km.clusters=NULL, seed=NULL, pca.scale=FALSE){
 
     ###parse TRUE/FALSE into "all"/"none".
     if(show.PCA.labels==TRUE){
@@ -62,54 +79,99 @@ runKmeans <- function(data, show.PCA.labels = FALSE, prefix, colors=NULL, num.km
         stop(paste0("The value ", show.PCA.labels, " defined as show.PCA.labels parameter is not supported. Supported values are TRUE/FALSE."))
     }
 
-     if(is.null(prefix)){
+    ###check prefix
+    if(is.null(prefix)){
         stop(print("Please, provide a prefix for the result files."))
      }
 
+    ###check set up of num.subsets and subset.size parameters
+    if((!is.null(num.subsets) && is.null(subset.size)) || (is.null(num.subsets) && !is.null(subset.size))){
+        stop("In case of settings using sub-sampling of the dataset, both \"num.subsets\" and \"subset.size\" parameters have to be defined as numbers (integers) or as a string (\"automatic\") or as a combination of these values.")
+    }
+
+    ##Number of clusters set up manually
     if(!is.null(num.km.clusters)){
         nclus <- num.km.clusters
+        print("Number of cluster was assigned manually.")
     } else {
-        # Number of sample subsets to generate
-        num.subsets <- 1:min(ceiling(nrow(data)/1000), 10)
-
-        # Number of variables (genes) in each sample subset, limit is 2000.
-        subset.size <- min(nrow(data),2000)
-
-        # In case k-means estimation using BIC is not working, number of K-means is estimated based on a number of samples in the data
-        if(ncol(data) <= 100) {
-            cluster.counts.alt <- 2:6
-        } else if (ncol(data) <= 500) {
-            cluster.counts.alt <- 2:11
-        } else {
-            cluster.counts.alt <- 2:16
+    ##Number of clusters based on BIC
+        ###Set number of sub-sets
+        if(is.null(num.subsets)){
+            print("Number of clusters will be estimated using the whole dataset.")
+        }else if(num.subsets == "automatic"){
+            num.subsets <- 1:min(ceiling(nrow(data)/1000), 10)
+            print(paste0("Number of clusters will be calculated based on the (", num.subsets, ") sub-sets. The number of sub-sets was estimated by CAMPP2 automatically."))
+        }else if (is.numeric(num.subsets)){
+            num.subsets <- 1:num.subsets
+            print(paste0("Number of sub-sets (", max(num.subsets), ") for the estimation of the number of clusters was defined by the user manually."))
+        }else{
+            stop("Parameter \"num.subsets\" is not defined properly.")
         }
 
-        list.of.subsets <- list()
-
-        for (idx in 1:length(num.subsets)) {
-            subset <- t(data[sample(nrow(data), subset.size), ])  #make random gene selections
-            list.of.subsets[[idx]] <- subset  #create list of random selections
-        }
-        cat(paste0("\n", length(num.subsets), " clustering runs will be done in total...\n"))
-        clusters.list <- lapply(list.of.subsets, function(x) EstimateKmeans(x)) #estimate how many clusters in the data subsets
-
-        #extract cluster numbers from clusters.list
-        cluster.counts<-list()
-        for (i in 1:length(num.subsets)){
-            cluster.counts[[i]] <- clusters.list[[i]]$num.km.clusters
+        ###Set sub-set size
+        if(is.null(subset.size)){
+            print("For the calculation of the clusters, all the features will be used.")
+        }else if(subset.size == "automatic"){
+            subset.size <- min(nrow(data),2000)
+            print(paste0("For the calculation of the clusters, sub-set(s) of automatically estimated size (",subset.size,") features will be used."))
+        }else if (is.numeric(subset.size)){
+            print(paste0("For the calculation of the clusters, sub-set(s) of size ",subset.size," features will be used."))
+        }else{
+            stop("Parameter \"subset.size\" is not defined properly.")
         }
 
-        #save BIC plots
-        for (i in 1:length(num.subsets)){
-            png(file=paste0(prefix,"_BIC_plot_subset_",i,".png"))
-            plot(clusters.list[[i]]$BIC)
+
+        ###calculate number of clusters based on the whole dataset
+        if(is.null(num.subsets) && is.null(subset.size)){
+            clusters <- EstimateKmeans(data)
+            nclus <- clusters$num.km.clusters
+            png(file=paste0(prefix,"_BIC_plot_whole_dataset.png"))
+            plot(clusters$BIC)
             dev.off()
+
+        } else if(!is.null(num.subsets) && !is.null(subset.size)){
+        ###calculate number of clusters based on downsampling
+
+            list.of.subsets <- list()
+
+            for (idx in 1:length(num.subsets)) {
+                subset <- t(data[sample(nrow(data), subset.size), ])  #make random gene selections
+                list.of.subsets[[idx]] <- subset  #create list of random selections
+            }
+            cat(paste0("\n", length(num.subsets), " clustering runs will be done in total.\n"))
+            clusters.list <- lapply(list.of.subsets, function(x) EstimateKmeans(x)) #estimate how many clusters in the data subsets
+
+            #extract cluster numbers from clusters.list
+            cluster.counts<-list()
+            for (i in 1:length(num.subsets)){
+                cluster.counts[[i]] <- clusters.list[[i]]$num.km.clusters
+            }
+
+            #save BIC plots
+            for (i in 1:length(num.subsets)){
+                png(file=paste0(prefix,"_BIC_plot_subset_",i,".png"))
+                plot(clusters.list[[i]]$BIC)
+                dev.off()
+            }
+
+            nclus <- unique(unlist(cluster.counts))
+
         }
 
-        nclus <- unique(unlist(cluster.counts))
 
+        ### In case k-means estimation using BIC is not working, number of K-means is estimated based on a number of samples in the data
         if (unique(is.na(nclus)) == TRUE) {
-            cat(paste0("Number of clusters could not be determined using BIC. There may be little or poor clustering of samples. Alternatively, based on size of dataset, ", length(num.subsets), " sample sets will be generated of size ", subset.size, " and ", length(cluster.counts.alt), " clusters will be tested. \nRunning..."))
+            print(paste0("Number of clusters could not be determined using BIC. There may be little or poor clustering of samples. Alternatively, based on size of dataset, ", length(num.subsets), " sample sets will be generated of size ", subset.size, " and ", length(cluster.counts.alt), " clusters will be tested. \nRunning..."))
+
+            ###Estimate number of cluster based on sample counts
+            if(ncol(data) <= 100) {
+                cluster.counts.alt <- 2:6
+            } else if (ncol(data) <= 500) {
+                cluster.counts.alt <- 2:11
+            } else {
+                cluster.counts.alt <- 2:16
+            }
+
             nclus <- cluster.counts.alt
         }
     }
