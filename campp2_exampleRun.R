@@ -18,7 +18,7 @@ replacedNAs<-ReplaceNAs(data=Na_campp2_brca_1)
 zerofix<-FixZeros(data=replacedNAs,group=campp2_brca_1_meta$diagnosis, remove.sparse.features=TRUE)
 
 ###An example code for normalization
-normalized_data<-NormalizeData(data=zerofix,group=campp2_brca_1_meta$diagnosis,standardize="none",transform="none",technology="seq")
+normalized_data<-NormalizeData(data=zerofix,group=campp2_brca_1_meta$diagnosis,standardize="TMM",transform="voom",technology="seq")
 
 ###An example code for batch correction
 batch_corrected_data<-BatchCorrect(normalized_data,campp2_brca_1_meta$tumor_stage,campp2_brca_1_meta$diagnosis,technology="seq")
@@ -34,4 +34,4 @@ plot.DEA=TRUE, plot.heatmap="DEA")
 runCampp2(prefix="Testing_DEA_subtype", data1=campp2_brca_1, metadata1=campp2_brca_1_meta, data2=campp2_brca_2, metadata2=campp2_brca_2_meta, groups=c("IDs", "subtype","IDs","subtype"), technology=c("seq","seq"), block=c(campp2_brca_1_meta$subtype,campp2_brca_2_meta$subtype), plot.DEA=TRUE, plot.heatmap="DEA")
 
 ###An example code for running differential expression analysis with subtype analysis and visualizations
-runCampp2(prefix="Testing_DEA_visuals", data1=campp2_brca_1, metadata1=campp2_brca_1_meta, data2=campp2_brca_2, metadata2=campp2_brca_2_meta, groups=c("IDs", "subtype","IDs","subtype"), technology=c("seq","seq"), block=c(metadata1$subtype), plot.DEA=TRUE, plot.heatmap="DEA")
+runCampp2(prefix="Testing_DEA_visuals", data1=campp2_brca_1, metadata1=campp2_brca_1_meta, data2=campp2_brca_2, metadata2=campp2_brca_2_meta, groups=c("IDs", "subtype","IDs","subtype"), technology=c("seq","seq"), block=c(campp2_brca_1_meta$subtype), plot.DEA=TRUE, plot.heatmap="DEA")

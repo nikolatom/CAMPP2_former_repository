@@ -7,28 +7,42 @@
 NormalizeData(data, group, transform, standardize, technology)
 }
 \arguments{
-\item{data}{a dataframe of expression/abundance counts}
+\item{data}{a data frame of expression/abundance counts}
 
-\item{group}{a factor specifying sample group from metadata}
+\item{group}{a factor specifying group for each sample (e.g. could be
+represented by a column from a metadata file).}
 
-\item{transform}{a string vector of length 1 defining transformation type for each dataset ("log2", "logit", "log10"). If technology is "seq", this option is ignored an Voom transform is applied instead.}
+\item{transform}{a string vector of length 1 defining transformation type for
+each dataset ("log2", "logit", "log10"). If technology is "seq", this option
+is ignored an Voom transform is applied..}
 
-\item{standardize}{a string vector of length 1 defining standardization method ("mean" or "median"). If technology is "seq" or "array", this option is ignored, instead, seq data is normalized by "TMM"; array data is normalized by "quantile" standardization.}
+\item{standardize}{a string vector of length 1 defining standardization
+method ("mean" or "median"). If technology is "seq" or "array", this option
+is ignored, instead, seq data are normalized by "TMM"; array data are
+normalized by "quantile" standardization.}
 
-\item{technology}{a string vector of length 1 defining technology used for generating the data. Allowed types are: 'array', 'seq', 'ms' or 'other'.}
+\item{technology}{a string vector of length 1 defining technology used for
+generating the data. Allowed types are: 'array', 'seq', 'ms' or 'other'.}
 }
 \value{
-Elist (seq technology) or array (array, ms, other technologies) of normalized, filtered and transformed (gene) counts data
+Elist (seq technology) or array (array, ms, other technologies) of
+normalized and transformed feature counts data
 }
 \description{
-This function normalizes and transforms feature counts depending on data types and selected normalization/standardization methods.
+This function normalizes and transforms feature counts depending
+on data types and selected normalization/standardization methods.
+Transformation methods include options log2, logit and log10. If technology
+is "seq", a Voom transform is applied automatically. Standardization methods
+options include "mean" or "median". If technology is "seq" or "array", this
+option is ignored, instead, sequencing data are normalized by "TMM";
+micro-arrays data are normalized by "quantile" standardization.
 }
 \examples{
 \dontrun{
-...
+###In this example, data with fixed zeros are used as an input.
+NormalizeData(data=campp2_brca_1_zeroFix,
+group=campp2_brca_1_meta$diagnosis, standardize="TMM", transform="voom",
+technology="seq")
 }
-
-}
-\seealso{
 
 }

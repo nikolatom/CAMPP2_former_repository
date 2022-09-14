@@ -6,13 +6,12 @@
 \usage{
 RunDEA(
   data,
-  metadata,
   technology,
   batch,
   covarDEA,
   group,
-  logFC,
-  FDR,
+  cutoff.logFC,
+  cutoff.FDR,
   prefix,
   block
 )
@@ -20,21 +19,19 @@ RunDEA(
 \arguments{
 \item{data}{A raw gene count matrix from seq, array, ms or other technology (with gene IDs as row names and sample IDs as columns). It's recommended to import gene counts using function "import_counts".}
 
-\item{metadata}{Samples' metadata table is recommended to be imported using function "import_metadata". Metadata must include exactly the same samples sorted in the same order as in a gene counts matrix (data).}
-
 \item{technology}{a string vector of length 1 defining technology used for generating the data. Allowed types are: 'array', 'seq', 'ms' or 'other'.}
 
-\item{batch}{The batch covariate for each data sample, derived from metadata column.}
+\item{batch}{A list of batches in the input samples}
 
 \item{covarDEA}{Covariates to include in the analysis If multiple of these, they should be specified as a character vector.}
 
-\item{group}{An array of specific sample groups derived from metadata column (e.g. diagnosis)}
+\item{group}{A string vector of specific sample groups derived from metadata column (e.g. diagnosis)}
 
-\item{logFC}{The logarithmic Fold Change for each data sample (ratio of changes in expression data)}
+\item{cutoff.logFC}{A cutoff value for the logarithmic Fold Change for each data sample (ratio of changes in expression data)}
 
-\item{FDR}{The false discovery rate for each data sample (the corrected p-value)}
+\item{cutoff.FDR}{The false discovery rate for each data sample (the corrected p-value)}
 
-\item{prefix}{a character defining the result folder name and prefix of output file names.}
+\item{prefix}{a character defining a prefix of output file names.}
 
 \item{block}{A vector or factor specifying a blocking variable. The block must be of same length as data and contain 2 or more options. For 2 datasets, the block can be defined as a vector of the two seperate blocks.}
 }
@@ -48,7 +45,4 @@ Run differential expression/abundance analysis
 \dontrun{
 ...
 }
-}
-\seealso{
-
 }

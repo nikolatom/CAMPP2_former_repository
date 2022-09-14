@@ -13,6 +13,7 @@ A data frame with 30 rows (samples) and 10 columns.
 campp2_brca_1_meta
 }
 \description{
-A metadata for campp2_brca_1 contains 9 variables for 30 samples in campp2_brca_1 dataset. Data are derived from TCGA dataset.
+A metadata for campp2_brca_1 contains 9 variables for 30 samples in
+campp2_brca_1 dataset. Data are derived from TCGA dataset.
 }
 \keyword{datasets}

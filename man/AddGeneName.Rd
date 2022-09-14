@@ -8,6 +8,8 @@ AddGeneName(data, ensembl.version)
 }
 \arguments{
 \item{data}{a data matrix containing a column of stable gene IDs (column must be called 'name').}
+
+\item{ensembl.version}{This arugment specifies which ensembl database to use when transforming ensemble IDs into HUGO IDs using biomaRt. The argument should be specified as a number.}
 }
 \value{
 the input dataframe merged with a column of HUGO IDs.

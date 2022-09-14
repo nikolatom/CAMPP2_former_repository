@@ -8,23 +8,24 @@
 #' @param groups Argument defining groups of samples should be specified as a character vector. The first element specifying the name of the column in the metadata file containing sample IDs and the second element specifying the name of the column which contains the groups for the DE/DA analysis.
 #' @param data.check Distributional checks of the input data is activated using logical argument (TRUE/FALSE). If activated, Cullen-Frey graphs will be made for 10 randomly selected variables to check data distributions. This argument is per default set to TRUE.
 #' @param batches Specifies which metadata should be used for a batch correction (sequencing run/tissue/interstitial fluid/etc.). Argument takes a character vector of length 1 (one dataset) or 2 (two datasets), where the string(s) match a column name(s) in the metadata file(s). Default is NULL.
-#' @param kmeans Argument for kmeans clustering. The parameter must be specified as a character vector matching the name of a column in the metadata file, denoting the labeling of points on the MDS plot(s). If a parameter is set to "TRUE" (no column name specified) no labels will be added to the plot. Works only for the first dataset (data1). Default is FALSE (do not run).
 #' @param plot.heatmap Argument for heatmap specified as either: "DEA", "LASSO", "EN" or "Consensus". Defaults is FALSE (do not run).
 #' @param heatmap.size Argument specifying how many genes will be plotted in the heatmap if plot.heatmap is TRUE. The input must be specified as an even number.
-#' @param correlation Argument for correlation analysis. String specify which features should be correlated, options are: "ALL", "DEA", "LASSO", "EN" or "Consensus". For this type of analysis, 2 datasets must include the same samples, e.g. tumor1-normal vs tumor2-normal (3 samples from 1 patient needed). Default is FALSE (do not run).
-#' @param survival (double check this when parsin survival function) Survival analysis may be performed on differentially expressed/abundant variables, variables from LASSO/EN regression or the consensus of these. Argument "survival" must be specified as either; "DEA", "LASSO", "EN" or "Consensus". The full dataframe of variables may be used (if argument is set to ALL), HOWEVER this is not advisable unless the dataset is small with very few variables. At least, "survival", "outcome", "outcome.time" info must be included in the metadata file. The metadata file must contain at least four columns named; "ids" (sample identifiers), "age" (age in years at diagnosis, surgery or entry into trail), "outcome.time" (time until end of follow-up in weeks, months or years, censuring, death) and "outcome" (numeric 0 = censuring, 1=death). N.B. in case of (paired) normal samples the columns with survival information for these samples should contain "NA" values.
+#' @param kmeans Argument specifies ("TRUE" or "FALSE") if a k-means clustering should be performed. Default is FALSE (do not run).
+#' @param num.km.clusters a vector of manually defined number(s) of clusters. By default, the values(s) are calculated automatically (a default value is NULL).
+#' @param correlation Argument for correlation analysis. String specify which features should be correlated, options are: "ALL", "DE", "DA", "LASSO", "EN" or "Consensus". For this type of analysis, 2 datasets must include the same samples, e.g. tumor1-normal vs tumor2-normal (3 samples from 1 patient needed). Default is FALSE (do not run).
+#' @param survival (double check this when parsin survival function) Survival analysis may be performed on differentially expressed/abundant variables, variables from LASSO/EN regression or the consensus of these. Argument "survival" must be specified as either; "DE", "DA", "LASSO", "EN" or "Consensus". The full dataframe of variables may be used (if argument is set to ALL), HOWEVER this is not advisable unless the dataset is small with very few variables. At least, "survival", "outcome", "outcome.time" info must be included in the metadata file. The metadata file must contain at least four columns named; "ids" (sample identifiers), "age" (age in years at diagnosis, surgery or entry into trail), "outcome.time" (time until end of follow-up in weeks, months or years, censuring, death) and "outcome" (numeric 0 = censuring, 1=death). N.B. in case of (paired) normal samples the columns with survival information for these samples should contain "NA" values.
 #' @param surv.plot Argument which specifies number of features to include per survival plot. Default is 50.
 #' @param standardize (double check for sequencing) Data centering. This option may be set to "mean" or "median." If two datasets are provided, the standardize option should be specified for each dataset, provided as a character vector. If the argument standardize is not specified and "technology" = "array", then quantile normalization will be performed. Defaults is FALSE (do not run).
 #' @param transform Data transformation type. Current options are "log2", "log10", "logit" and "voom". If two datasets are provided the parameter should be specified for each dataset, provided as a character vector. Defaults is FALSE (do not run).
 #' @param prefix Prefix for the results' files and results folder. Defalt is "Results".
 #' @param signif Cut-offs for log fold change (logFC) and corrected p-value (fdr), defining significant hits (proteins, genes, miRNAs or N-features). If argument is set, it must be a numeric vector, where the first element specifies the cut-off for logFC and the second element specifies the cut-off for corrected p-value (fdr).  In case of 2 datasets, vector must be of length 4. By default, cutoffs will be set to -1 > logFC > 1 and corrected p-values < 0.05.
-#' @param plot.mds This argument specifies ("TRUE" or "FALSE") if a preliminary MDSplot should be made for data overview. Works only for the first dataset. Default is FALSE (do not run).
-#' @param MDS.labels Argument specifying whether to include labels on the MDS plot if plot.mds is TRUE. The argument should be defined with TRUE/FALSE.
 #' @param plot.DEA This argument specifies ("TRUE" or "FALSE") whether visualizations should be made for the differential expression analysis.
+#' @param plot.PCA This argument specifies ("TRUE" or "FALSE") if a preliminary PCAplot should be made for data overview. Default is FALSE (do not run).
+#' @param show.PCA.labels a boolean value (TRUE or FALSE) specifying if elements (e.g. samples) should be labelled (for PCAPlot and runKmeans functions). Labeling is based on column names of the input data. Default value is FALSE.
 #' @param covariates Covariates to include in the analysis. If multiple of these, they should be specified as a character vector. The first element in this list must be either TRUE or FALSE. If TRUE is specified then covariates will be included in both DE/DA analysis and Survival Analsysis. If FALSE is specified covariates will ONLY be used for Survival Analsysis. Names of covariates should match the desired columns in the metadata file. Default is NULL.
 #' @param stratify This argument may be used if some of the categorical (NOT continous) covariates violate the cox proportional assumption. The workflow checks for proportional hazard and will retun the covariates that fail the PH test. You may then rerun the workflow with this argument followed by the names of the categorical covariates which failed and these will be stratified. Default is NULL.
 #' @param block A vector or factor specifying a blocking variable for differential expression analysis. The block must be of same length as the data and contain 2 or more options. For 2 datasets, the block can be defined as a list of two vectors or factors.
-#' @param colors Custom color pallet for MDS and heatmaps. Must be the same length as number of groups used for comparison (e.g. two groups = two colors) and must be defined as character vector. See R site for avalibe colors http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf. Default is NULL.
+#' @param colors Custom color pallet for PCA and heatmaps. Must be the same length as number of groups used for comparison (e.g. two groups = two colors) and must be defined as character vector. See R site for avalibe colors http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf. Default is NULL.
 #' @param lasso Argument specifying parameters for LASSO or Elastic net regression. This argument may be set to 1 for LASSO or >0 & <1 for Elastic Net, but NOT to 0 exactly (Ridge Regression). Defaults is FALSE (do not run).
 #' @param WGCNA Argument specifying parameter for Weighed Gene Co-expression Network Analysis. It takes a string, either "DA", "DE" or "ALL" specifying if all variables should be included in WGCNA or only differentially expressed / abundant variables. Defaults is FALSE (do not run).
 #' @param cutoff.WGCNA Argument specifying the cutoff values for WGCNA. The argument takes a numuric vector of three values: (I) minimum modules size, (II) maximum % dissimilarity for merging of modules, and (III) % of top most interconnected genes (or other features) to return, from each modules identified in the Weighed Gene Co-expression Network Analysis. Default values are 10,25,25.
@@ -36,11 +37,13 @@
 #' ...
 #' }
 
-parseArguments <- function(data1, data2, metadata1, metadata2, groups, technology, batches, data.check, standardize, transform, plot.mds, MDS.labels, plot.DEA, plot.heatmap, ensembl.version, heatmap.size, kmeans, signif, block, colors, prefix, correlation, lasso, WGCNA, cutoff.WGCNA, survival, covariates, stratify, surv.plot, PPint, gene.miR.int){
+
+parseArguments <- function(data1, data2, metadata1, metadata2, groups, technology, batches, data.check, standardize, transform, plot.PCA, plot.heatmap, plot.DEA, ensembl.version, heatmap.size, kmeans, num.km.clusters, signif, colors, block, prefix, correlation, lasso, WGCNA, cutoff.WGCNA, survival, covariates, stratify, surv.plot, PPint, gene.miR.int, show.PCA.labels){
 
     # For DEA analysis, survival analysis and correlation analysis
     DEA.allowed.type <- c("ALL","EN", "LASSO", "DEA", "Consensus",FALSE)
     WGCNA.allowed.type <- c("DEA", "ALL", FALSE)
+    show.PCA.labels.allowed.type <- c(TRUE, FALSE)
 
     # For survival analysis, must be in metadata file:
     survival.metadata <- c("survival", "outcome", "outcome.time")
@@ -148,24 +151,6 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
 
 
 
-    # Kmeans
-
-    labels.kmeans=NULL
-    if (kmeans == TRUE) {
-        labels.kmeans <- ""
-    }
-    if (!isFALSE(kmeans) && !isTRUE(kmeans)) {
-        file <- try(labels.kmeans <- as.character(eval(parse(text = paste0("metadata1$", as.character(kmeans))))))
-        if (class(file) == "try-error") {
-            labels.kmeans <- ""
-            rm(file)
-        }
-    }
-
-
-
-
-
     # Significance
 
     logFC1=NULL
@@ -219,13 +204,17 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
         }
     }
 
-
     # Colors
 
     if (is.null(colors)){
-        colors <- viridisLite::viridis(length(levels(group1)), begin = 0.2, end = 0.8)
+        colors <- viridisLite::viridis(length(unique(levels(c(group1,group2)))), begin = 0.2, end = 0.8)
     }
 
+    #show.PCA.labels
+
+    if (!show.PCA.labels %in% c(show.PCA.labels.allowed.type)) {
+        stop("Allowed options for show.PCA.labes argument are: TRUE or FALSE. Please re-run pipeline with one of these!")
+    }
 
 
     # Correlation
@@ -304,54 +293,64 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
         }
     }
 
+
     print("Printing defined/processed parameters:")
     cat(c("\n",
-         paste0("technology: ",technology),"\n",
-         paste0("groups: ",groups),"\n",
-#         paste0("group1: ",group1),"\n",
-#         paste0("group2: ",group2),"\n",
-#         paste0("ids: ",ids),"\n",
-         paste0("batches: ",batches),"\n",
-#         paste0("batch1: ",batch1),"\n",
-#         paste0("batch2: ",batch2),"\n",
-         paste0("databatch1: ",databatch1),"\n",
-         paste0("databatch2: ",databatch2),"\n",
-         paste0("standardize: ",standardize),"\n",
-         paste0("transform: ",transform),"\n",
-         paste0("data.check: ",data.check),"\n",
-         paste0("plot.mds: ",plot.mds),"\n",
-         paste0("MDS.labels: ",MDS.labels),"\n",
-         paste0("kmeans: ",kmeans),"\n",
-         paste0("labels.kmeans: ",labels.kmeans),"\n",
-         paste0("signif: ",signif),"\n",
-         paste0("logFC1: ",logFC1),"\n",
-         paste0("FDR1: ",FDR1),"\n",
-         paste0("logFC2: ",logFC2),"\n",
-         paste0("FDR2: ",FDR2),"\n",
-         paste0("blocks:", block),"\n",
-#         paste0("block1: ",block1),"\n",
-#         paste0("block2: ",block2),"\n",
-         paste0("colors: ",colors),"\n",
-         paste0("prefix: ",prefix),"\n",
-         paste0("plot.DEA:",plot.DEA),"\n",
-         paste0("plot.heatmap: ",plot.heatmap),"\n",
-         paste0("ensembl.version: ",ensembl.version),"\n",
-         paste0("heatmap.size:",heatmap.size),"\n",
-         paste0("corrby: ",corrby),"\n",
-         paste0("lasso: ",lasso),"\n",
-         paste0("WGCNA: ",WGCNA),"\n",
-         paste0("cutoff.WGCNA: ",cutoff.WGCNA),"\n",
-         paste0("survival: ",survival),"\n",
-         paste0("covarDEA1: ",covarDEA1),"\n",
-         paste0("covarDEA2: ",covarDEA2),"\n",
-         paste0("covarS: ",covarS),"\n",
-         paste0("stratify: ",stratify),"\n",
-         paste0("surv.plot: ",surv.plot),"\n",
-         paste0("PPI: ",PPI),"\n",
-         paste0("GmiRI: ",GmiRI),"\n"
-     ))
+          paste0("technology: ",technology),"\n",
+          paste0("groups: ",groups),"\n",
+          #         paste0("group1: ",group1),"\n",
+          #         paste0("group2: ",group2),"\n",
+          #         paste0("ids: ",ids),"\n",
+          paste0("batches: ",batches),"\n",
+          #         paste0("batch1: ",batch1),"\n",
+          #         paste0("batch2: ",batch2),"\n",
+          paste0("databatch1: ",databatch1),"\n",
+          paste0("databatch2: ",databatch2),"\n",
+          paste0("standardize: ",standardize),"\n",
+          paste0("transform: ",transform),"\n",
+          paste0("data.check: ",data.check),"\n",
+          paste0("plot.PCA: ",plot.PCA),"\n",
+          paste0("plot.DEA:",plot.DEA),"\n",
+          paste0("kmeans: ",kmeans),"\n",
+          paste0("num.km.clusters: ",num.km.clusters),"\n",
+          paste0("signif: ",signif),"\n",
+          paste0("logFC1: ",logFC1),"\n",
+          paste0("FDR1: ",FDR1),"\n",
+          paste0("logFC12: ",logFC2),"\n",
+          paste0("FDR2: ",FDR2),"\n",
+          # paste0("slogFC: ",slogFC),"\n",
+          # paste0("sFDR: ",sFDR),"\n",
+          paste0("blocks:", block),"\n",
+          #         paste0("block1: ",block1),"\n",
+          #         paste0("block2: ",block2),"\n",
+          paste0("colors: ",colors),"\n",
+          paste0("prefix: ",prefix),"\n",
+          paste0("plot.heatmap: ",plot.heatmap),"\n",
+          paste0("ensembl.version: ",ensembl.version),"\n",
+          paste0("heatmap.size:",heatmap.size),"\n",
+          paste0("corrby: ",corrby),"\n",
+          paste0("lasso: ",lasso),"\n",
+          paste0("WGCNA: ",WGCNA),"\n",
+          paste0("cutoff.WGCNA: ",cutoff.WGCNA),"\n",
+          paste0("survival: ",survival),"\n",
+          paste0("covarDEA1: ",covarDEA1),"\n",
+          paste0("covarDEA2: ",covarDEA2),"\n",
+          paste0("covarS: ",covarS),"\n",
+          paste0("stratify: ",stratify),"\n",
+          paste0("surv.plot: ",surv.plot),"\n",
+          paste0("PPI: ",PPI),"\n",
+          paste0("GmiRI: ",GmiRI),"\n",
+          paste0("show.PCA.labels: ",show.PCA.labels),"\n"
+    ))
 
-    return(list("data1"=data1,"data2"=data2,"metadata1"=metadata1,"metadata2"=metadata2, "technology"=technology, "groups"=groups,"group1"=group1,"group2"=group2,"ids"=ids,"batches"=batches,"databatch1"=databatch1,"databatch2"=databatch2,"batch1"=batch1, "batch2"=batch2, "standardize"=standardize,"transform"=transform,"data.check"=data.check,"plot.mds"=plot.mds,"MDS.labels"=MDS.labels,"kmeans"=kmeans,"labels.kmeans"=labels.kmeans,"signif"=signif,"logFC1"=logFC1,"FDR1"=FDR1,"logFC2"=logFC2,"FDR2"=FDR2,"block"=block,"block1"=block1,"block2"=block2,"colors"=colors,"prefix"=prefix,"plot.DEA"=plot.DEA,"plot.heatmap"=plot.heatmap,"heatmap.size"=heatmap.size,"ensembl.version"=ensembl.version,"corrby"=corrby,"lasso"=lasso,"WGCNA"=WGCNA,"cutoff.WGCNA"=cutoff.WGCNA,"survival"=survival,"covarDEA1"=covarDEA1,"covarDEA2"=covarDEA2,"covarS"=covarS,"stratify"=stratify,"surv.plot"=surv.plot,"PPI"=PPI,"GmiRI"=GmiRI,"DEA.allowed.type"=DEA.allowed.type,"survival.metadata"=survival.metadata,"approved.gene.IDs"=approved.gene.IDs,"approved.miR.IDs"=approved.miR.IDs,"gene.query"=gene.query,"miR.query"=miR.query))
-
+    return(list("data1"=data1,"data2"=data2,"metadata1"=metadata1,"metadata2"=metadata2, "technology"=technology, "groups"=groups,
+                "group1"=group1,"group2"=group2,"ids"=ids,"batches"=batches,"databatch1"=databatch1,"databatch2"=databatch2,
+                "batch1"=batch1, "batch2"=batch2, "standardize"=standardize,"transform"=transform,"data.check"=data.check,
+                "plot.PCA"=plot.PCA,"kmeans"=kmeans, "num.km.clusters"=num.km.clusters, "signif"=signif, "logFC1"=logFC1,"FDR1"=FDR1,
+                "logFC2"=logFC2,"FDR2"=FDR2,"block"=block,"block1"=block1,"block2"=block2,"colors"=colors,"prefix"=prefix,
+                "plot.heatmap"=plot.heatmap,"corrby"=corrby,"lasso"=lasso,"WGCNA"=WGCNA,"cutoff.WGCNA"=cutoff.WGCNA,"survival"=survival,"covarDEA1"=covarDEA1,"covarDEA2"=covarDEA2,
+                "covarS"=covarS,"stratify"=stratify,"surv.plot"=surv.plot,"PPI"=PPI,"GmiRI"=GmiRI,"DEA.allowed.type"=DEA.allowed.type,
+                "survival.metadata"=survival.metadata,"approved.gene.IDs"=approved.gene.IDs,"approved.miR.IDs"=approved.miR.IDs,"gene.query"=gene.query,"miR.query"=miR.query,
+                "show.PCA.labels"=show.PCA.labels,"heatmap.size"=heatmap.size,"ensembl.version"=ensembl.version, "plot.DEA"=plot.DEA))
 }
 

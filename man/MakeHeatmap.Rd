@@ -4,24 +4,22 @@
 \alias{MakeHeatmap}
 \title{Make Heatmap}
 \usage{
-MakeHeatmap(data, gradient, groups, prefix, range)
+MakeHeatmap(data, groups, prefix, gradient = viridis(300, option = "cividis"))
 }
 \arguments{
-\item{data}{A dataframe with counts for differential expressed/abundant features.}
-
-\item{gradient}{A color gradient to use for the heatmap.}
-
-\item{groups}{A vector of groups to color by.}
+\item{data}{A dataframe containing expression values for genes within a set of samples.}
 
 \item{prefix}{A prefix for the output filename.}
 
-\item{range}{A vector containing the smallest and biggest gene count values from the input data frame.}
+\item{gradient}{A color gradient to use for the heatmap. Default is 'blue' using the viridis library.}
+
+\item{group}{a factor derived from metadata column selected as a sample group (e.g. diagnosis), which will be used to color and split the heatmap by. Length should be equal to ncol(data)).}
 }
 \value{
 Heatmap
 }
 \description{
-A function for making heatmaps from expression data.
+A function for making heatmaps to showcase the difference in expression values across samples.
 }
 \examples{
 \dontrun{

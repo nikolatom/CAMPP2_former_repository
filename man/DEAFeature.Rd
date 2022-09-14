@@ -4,7 +4,7 @@
 \alias{DEAFeature}
 \title{DEA_feature}
 \usage{
-DEAFeature(contrast, data, design, coLFC, coFDR, block)
+DEAFeature(contrast, data, design, cutoff.logFC, cutoff.FDR, block)
 }
 \arguments{
 \item{contrast}{an array containing contrasts between groups of interest.}
@@ -13,9 +13,9 @@ DEAFeature(contrast, data, design, coLFC, coFDR, block)
 
 \item{design}{a design matrix with all comparisons.}
 
-\item{coLFC}{a number specifying the cutoff for LogFC.}
+\item{cutoff.logFC}{a number specifying the cutoff for LogFC.}
 
-\item{coFDR}{a number specifying the cutoff for FDR.}
+\item{cutoff.FDR}{a number specifying the cutoff for FDR.}
 
 \item{block}{A vector or factor specifying a blocking variable. The block must be of same length as data and contain 2 or more options. For 2 datasets, the block can be defined as a vector of the two seperate blocks.}
 }
@@ -29,7 +29,4 @@ A function for returning DEA features for DEAFeatureApply function.
 \dontrun{
 ...
 }
-}
-\seealso{
-
 }

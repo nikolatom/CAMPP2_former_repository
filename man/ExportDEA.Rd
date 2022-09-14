@@ -22,6 +22,3 @@ A function for exporting DEA results into a .txt file.
 ...
 }
 }
-\seealso{
-
-}

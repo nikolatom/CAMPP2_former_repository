@@ -14,7 +14,7 @@ MakeUpset(prefix, sets_list, names_sets)
 \item{names_sets}{A vector of the corresponding names of each subtype in sets_list. names_sets must be same length as sets_list.}
 }
 \value{
-Upset plot
+An Upset plot showcasing the intersection size of differentially expressed genes across the input sets.
 }
 \description{
 A function for making Upset plots to visualize the intersection size of significantly differentially expressed genes between 2 or more subtypes. The genes to compare is gathered from the results provided by DEA using CAMPP2.

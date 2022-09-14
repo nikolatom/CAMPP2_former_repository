@@ -8,8 +8,8 @@ DEAFeatureApply(
   contrast.matrix,
   data,
   design,
-  coLFC,
-  coFDR,
+  cutoff.logFC,
+  cutoff.FDR,
   block,
   vector = FALSE
 )
@@ -21,9 +21,9 @@ DEAFeatureApply(
 
 \item{design}{a design matrix with all comparisons.}
 
-\item{coLFC}{a number specifying the cutoff for LogFC.}
+\item{cutoff.logFC}{a number specifying the cutoff for LogFC.}
 
-\item{coFDR}{a number specifying the cutoff for FDR.}
+\item{cutoff.FDR}{a number specifying the cutoff for FDR.}
 
 \item{block}{A vector or factor specifying a blocking variable. The block must be of same length as data and contain 2 or more options. For 2 datasets, the block can be defined as a vector of the two seperate blocks.}
 
@@ -39,7 +39,4 @@ A function for applying differential expression/abundance analysis to all compar
 \dontrun{
 ...
 }
-}
-\seealso{
-
 }

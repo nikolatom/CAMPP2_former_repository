@@ -7,13 +7,13 @@
 MakeVolcano(data, prefix, cutoff.logFC, cutoff.FDR)
 }
 \arguments{
-\item{data}{A data matrix from RunDEA containing genes and their corresponding AveExpr, logFCs,p.value, adj.p.value ect. Mandatory columns are logFC, P.value and HUGO_ID.}
+\item{data}{A data matrix from RunDEA containing genes and their corresponding AveExpr, logFCs, p.value, adj.p.value ect. Mandatory columns are logFC, adj.P.Val and HUGO_ID. N.B. columns logFC and adj.P.Val must contain numeric values!}
 
 \item{prefix}{A prefix for the output filename.}
 
 \item{cutoff.logFC}{A cut-off value for log fold change}
 
-\item{cutoff.FDR}{A cut-off value for  corrected p.value}
+\item{cutoff.FDR}{A cut-off value for  corrected adj.P.Val}
 }
 \value{
 Volcano plot

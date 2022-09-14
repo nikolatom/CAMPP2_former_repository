@@ -7,9 +7,9 @@
 PlotDistributions(data, fitted.data)
 }
 \arguments{
-\item{data}{a dataframe of expression/abundance counts, N.B only a subset of variables should be input, not intended for the full expression matrix!(See "Fitting Data Distributions" above)}
+\item{data}{a data.frame of expression/abundance counts. N.B only a subset of variables should be input, not intended for the full expression matrix!(See function "FitDistributions")}
 
-\item{fitted.data}{a list of lists obtained as output from the function "Fitting Data Distributions". The data and fitted.data should have the same dimensions, e.g. length of list == nrows of dataframe.}
+\item{fitted.data}{a list of lists obtained as output from the function "FitDistributions". The data and fitted.data must have the same dimensions, e.g. length(fitted.data) == nrows(data).}
 }
 \value{
 distribution plots

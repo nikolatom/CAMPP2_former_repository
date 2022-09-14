@@ -1,6 +1,8 @@
 #' campp2_brca_1 - example data
 #'
-#' A campp2_brca_1 contains 10000 gene counts for 30 samples: 20 tumor (4 subtypes, each subtype has 5 samples) x 10 normal samples). Data are derived from TCGA dataset.
+#' A campp2_brca_1 contains 10000 gene counts for 30 samples: 20 tumor (4
+#' subtypes, each subtype has 5 samples) x 10 normal samples). Data are derived
+#' from TCGA dataset.
 #'
 #' @format A data frame with 10000 rows (genes) and 30 columns (samples):
 #' \describe{
@@ -11,7 +13,9 @@
 
 #' campp2_brca_2 - example data
 #'
-#' A campp2_brca_2 contains 10000 gene counts for 30 samples: 20 tumor (4 subtypes, each subtype has 5 samples) x 10 normal samples). Data are derived from TCGA dataset.
+#' A campp2_brca_2 contains 10000 gene counts for 30 samples: 20 tumor (4
+#' subtypes, each subtype has 5 samples) x 10 normal samples). Data are derived
+#' from TCGA dataset.
 #'
 #' @format A data frame with 10000 rows (genes) and 30 columns (samples):
 #' \describe{
@@ -22,7 +26,8 @@
 
 #' campp2_brca_1_meta - example data
 #'
-#' A metadata for campp2_brca_1 contains 9 variables for 30 samples in campp2_brca_1 dataset. Data are derived from TCGA dataset.
+#' A metadata for campp2_brca_1 contains 9 variables for 30 samples in
+#' campp2_brca_1 dataset. Data are derived from TCGA dataset.
 #'
 #' @format A data frame with 30 rows (samples) and 10 columns.
 #' \describe{
@@ -33,10 +38,76 @@
 
 #' campp2_brca_2_meta - example data
 #'
-#' A metadata for campp2_brca_2 contains 9 variables for 30 samples in campp2_brca_2 dataset. Data are derived from TCGA dataset.
+#' A metadata for campp2_brca_2 contains 9 variables for 30 samples in
+#' campp2_brca_2 dataset. Data are derived from TCGA dataset.
 #'
 #' @format A data frame with 30 rows (samples) and 10 columns.
 #' \describe{
 #' }
 #'
 "campp2_brca_2_meta"
+
+
+#' campp2_brca_1_NAs - example data
+#'
+#' A dataset with randomly introduced 1000 NA values into every sample's genes
+#' (10000). This dataset is based on "campp2_brca_1". For more details, see the
+#' vignette.
+#'
+#' @format A matrix with 10000 rows (genes) and 30 columns (samples).
+#' \describe{
+#' }
+#'
+"campp2_brca_1_NAs"
+
+
+#' campp2_brca_1_replacedNAs - example data
+#'
+#' A dataset with replaced NA values. This dataset is based on
+#' "campp2_brca_1_NAs" dataset. For more details, see the vignette.
+#'
+#' @format A data frame with 10000 rows (genes) and 30 columns (samples).
+#' \describe{
+#' }
+#'
+"campp2_brca_1_replacedNAs"
+
+
+#' campp2_brca_1_zeroFix - example data
+#'
+#' A dataset with fixed zero values generated using "FixZeros" function. This
+#' dataset is based on "campp2_brca_1_replacedNAs" data. For more details, see the vignette.
+#'
+#' @format A data frame with 9720 rows (genes) and 30 columns (samples).
+#' \describe{
+#' }
+#'
+"campp2_brca_1_zeroFix"
+
+
+#' campp2_brca_1_normalized - example data
+#'
+#' A dataset with normalized and transformed gene counts data generated using
+#' "NormalizeData" function. This dataset is based on "campp2_brca_1_zeroFix" data.
+#' For more details, see the vignette.
+#'
+#' @format A Elist with 9046 rows (genes) and 30 columns (samples).
+#' \describe{
+#' }
+#'
+"campp2_brca_1_normalized"
+
+
+#' campp2_brca_1_batchCorrected - example data
+#'
+#' A dataset with batch corrected data generated using "BatchCorrect" function.
+#' This dataset is based on "campp2_brca_1_normalized". For more details, see the
+#' vignette. For more details, see the vignette.
+#'
+#' @format A matrix with 9046 rows (genes) and 30 columns (samples).
+#' \describe{
+#' }
+#'
+"campp2_brca_1_batchCorrected"
+
+
