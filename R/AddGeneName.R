@@ -1,7 +1,8 @@
-#' @title Add Gene Name function
-#' @description A function for adding a column of HUGO IDs to a dataframe with a column of Ensemble IDs using biomaRt.
-#' @param data a data matrix containing a column of stable gene IDs (column must be called 'name').
-#' @param ensembl.version This arugment specifies which ensembl database to use when transforming ensemble IDs into HUGO IDs using biomaRt. The argument should be specified as a number.
+#' @title Add HUGO Gene Name
+#' @description A function for adding HUGO IDs to existing dataframe based on ENSEMBL gene IDs using biomaRt.
+#' @param data a data matrix containing a column of stable gene IDs.
+#' @param ensembl.version a number specifying version of ENSEMBL database is used when transforming ENSEMBL IDs into HUGO IDs using biomaRt. Default is 104.
+#' @param ensembl.id.column.name a column name including ENSEMBL IDs. Default is "name" (as present in the output from DEA analysis done on limma).
 #' @export
 #' @import biomaRt
 #' @seealso
@@ -10,11 +11,11 @@
 #' ...
 #' }
 
-AddGeneName <- function(data, ensembl.version) {
+AddGeneName <- function(data, ensembl.version = 104, ensembl.id.column.name="name") {
 
     ensembl <- useEnsembl(biomart = 'genes', dataset = 'hsapiens_gene_ensembl',version = ensembl.version)
 
-    ensembl_id <- as.data.frame(data$name)
+    ensembl_id <- as.data.frame(data$ensembl.id.column.name)
     colnames(ensembl_id) <- "Gene stable ID"
 
     gene_names <- getBM(attributes = c('ensembl_gene_id', 'external_gene_name'),
@@ -24,10 +25,10 @@ AddGeneName <- function(data, ensembl.version) {
                         uniqueRows = TRUE,
                         bmHeader = T)
 
-    names(data)[names(data) == 'name'] <- "Gene stable ID"
+    names(data)[names(data) == ensembl.id.column.name] <- "Gene stable ID"
     data_merged <- merge(data, gene_names, by="Gene stable ID", all = TRUE)
 
-    colnames(data_merged)[1] <- "name"
+    colnames(data_merged)[1] <- ensembl.id.column.name
     data_merged$Ensembl_ID <- data_merged$name
     colnames(data_merged)[which(names(data_merged) == "Gene name")] <- "HUGO_ID"
 
