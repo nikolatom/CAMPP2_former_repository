@@ -1,89 +1,99 @@
 #' @title Run differential expression/abundance analysis
 #' @descriptionA A function for running differential expression/abundance
-#' analysis on a matrix data sample using limma.
+#' analysis on a data matrix of features (e.g., genes) counts. Analysis is
+#' based on voom transformation and limma.
 #' @param data A raw gene count matrix from seq, array, ms or other technology
 #' (with gene IDs as row names and sample IDs as columns). It's recommended to
 #' import gene counts using function "import_counts".
-#' @param technology a string vector of length 1 defining technology used for
-#' generating the data. Allowed types are: 'array', 'seq', 'ms' or 'other'.
-#' @param batch A list of batches in the input samples
-#' @param covarDEA Covariates to include in the analysis If multiple of these,
-#' they should be specified as a character vector.
-#' @param group A string vector of specific sample groups derived from metadata
-#' column (e.g. diagnosis)
-#' @param cutoff.logFC A cutoff value for the logarithmic Fold Change for each
-#' data sample (ratio of changes in expression data)
-#' @param cutoff.FDR The false discovery rate for each data sample (the
-#' corrected p-value)
-#' @param prefix a character defining a prefix of output file names.
-#' @param block A vector or factor specifying a blocking variable. The block
-#' must be of same length as data and contain 2 or more options. For 2 datasets,
-#' the block can be defined as a vector of the two seperate blocks.
+#' @param metadata Samples' metadata table should be imported using function
+#' "import_metadata". Metadata must include exactly the same samples as gene
+#' counts (data) and samples must be sorted similarly. In case of this function,
+#' metadata are used to extract covariates data for each sample. Default = NULL.
+#' @param batch a factor specifying batch for each sample (e.g. could be
+#' represented by a column from a metadata file). Default = NULL.
+#' @param covarDEA a covariate(s) to include in the analysis provided
+#' as a character vector. covarDEA can be defined only with a batch parameter
+#' (which represents one of the covariates). Default = NULL.
+#' @param group a factor specifying group for each sample (e.g. could be
+#' represented by a column from a metadata file)
+#' @param cutoff.logFC A cutoff value for the logarithmic fold change for each
+#' feature. Default = 1.
+#' @param cutoff.FDR a false discovery rate (corrected p-value) for each feature
+#' @param prefix a character defining a prefix of output file name. Default =
+#' 0.01.
+#' @param block a factor specifying blocking variable. The block must be of
+#' the same length as data and contain 2 or more options. Default = NULL.
 #' @export
 #' @import limma
 #' @import sva
 #' @seealso
-#' @return a matrix of differential expression/abundance results (containing
-#' information on gene regulation and significance of comparison)
+#' @return a list of:
+#' 1) re-formatted matrix of differential expression/abundance results
+#' (containing information on gene regulation and significance of comparison)
+#' 2) original results (a list) from limma
+#' 3) a character vector with unique feature names
 #' @examples \dontrun{
-#' campp2_brca_1_DEA<-RunDEA(data=campp2_brca_1, technology = "seq",
-#' batch = campp2_brca_1_meta$tumor_stage, covarDEA = NULL,
-#' group=campp2_brca_1_meta$diagnosis,cutoff.logFC=1,cutoff.FDR=0.01,
-#' block=campp2_brca_1_meta$subtype, prefix="Test_DEA")
-#' }
+#' campp2_brca_1_DEA<-RunDEA(data=campp2_brca_1, metadata=campp2_brca_1_meta,
+#' group=campp2_brca_1_meta$diagnosis, prefix="teset2",
+#' block=campp2_brca_1_meta$subtype, batch=campp2_brca_1_meta$age,
+#' covarDEA = c("tumor_stage"))
 
 
-RunDEA <- function(data, technology, batch, covarDEA, group, cutoff.logFC, cutoff.FDR, block, prefix) {
+RunDEA <- function(data, metadata=NULL, group, batch=NULL, covarDEA=NULL, cutoff.logFC=1, cutoff.FDR=0.01, prefix, block=NULL) {
 
-    if (!(technology) %in% c("seq", "array", "ms", "other")) {
-        stop("Defined technology is not supported.")
+    ##test covarDEA parameter
+    if(!is.null(covarDEA)){
+        test<-NULL
+        for(i in 1:length(covarDEA)){
+            test[i] <- length(metadata[,colnames(metadata) %in% covarDEA[i]]) == nrow(metadata)
+        }
+        if(isFALSE(all(test))){  ##test if only TRUE is present
+            stop("Please, check if covariates are defined properly for each sample - if a number of rows with covariates is equal to number of rows of the samples and/or if the column name in metadata table and the covarDEA agrees.")
+        }
     }
 
-    # Make design matrix
-    if(is.null(covarDEA)) {
-        if (is.null(batch)) {
-            design <- model.matrix(~0+group)
-            out.name <- "_DE"
-        } else if (length(batch) != ncol(data)) {
-            stop("Batch correction selected, but batches column does not match the samples!")
-        } else {
-            design <- model.matrix(~0+group+batch)
-            out.name <- "_databatch_DE"
+    ##test batch parameter
+    if(!is.null(batch)){
+        if (length(batch) != ncol(data)) {
+            stop("Batch correction selected, but size of the batch metadata column does not match the number of samples!")
         }
-    } else {
-        if (is.null(batch)) {
-            design.str <- "model.matrix(~0+group"
-            out.name <- "_DE"
-        }
+    }
+    if(is.null(batch) && !is.null(covarDEA)){
+        stop("covarDEA cannot be defined without a batch parameter (representing one of the covariates.")
+    }
 
-        s <- lapply(split(as.matrix(df), col(df)), factor)
-        my.names <- paste0("", colnames(df))
-        my.names <- paste0(my.names, collapse = "+")
-        design <- eval(parse(text=paste0(design.str,"+",my.names,")")))
+    ###Create design matrix; alternatively, Design.Matrix function can be used.
+    if (is.null(batch) && is.null(covarDEA)) {
+        design <- model.matrix(~0+group)
+        out.name <- "_DEA"
+    } else if (!is.null(batch) && is.null(covarDEA)) {
+        design <- model.matrix(~0+group+batch)
+        out.name <- "_databatch_DEA"
+    } else if(!is.null(batch) && !is.null(covarDEA)) {
+        names<-paste0(covarDEA, collapse = "+")
+        design <- eval(parse(text=paste0("model.matrix(~0+group+batch","+",names,",data=metadata)")))
+        out.name <- "_databatch_covars_DEA"
     }
 
     # Making group contrasts
-    combinations <- data.frame(t(combn(paste0("group",levels(as.factor(group))), 2)))
+    combinations <- data.frame(t(combn(paste0("group",levels(as.factor(group))), 2)))   ##we need this because "group" is implemented in the design matrix
     combinations$contr <- apply(combinations[,colnames(combinations)], 1, paste, collapse = "-")
     contrast.matrix <- makeContrasts(contrasts=combinations$contr,levels=as.character(colnames(design)))
 
     # Apply DEA to all comparisons
-    res.DEA <- DEAFeatureApply(contrast.matrix, data, design, cutoff.logFC, cutoff.FDR, block)
+    res.DEA <- DEAFeatureApply(data, design, contrast.matrix, cutoff.logFC, cutoff.FDR, block)
+    print("res.DEA")
+    print(res.DEA)
 
-    # Write results out as .txt file
+    # Re-format res.DEA results and write results out as .txt file
     if (!is.null(res.DEA)) {
-        DEA.out <- ExportDEA(res.DEA, paste0(prefix, out.name))
+        DEA.out <- ExportDEA(res.DEA, paste0(prefix, out.name))   ###DEA.out is used as a main output
         rownames(DEA.out) <- NULL
-        res.DEA.names <- unique(DEA.out$name)
+        res.DEA.names <- unique(DEA.out$name)   ###could be used in LASSO
     } else {
         cat("No signficant DEA hits found. Check your cut-off for differential expression analysis, it may be that these are too stringent.")
     }
 
-    if (technology[1] == "seq") {
-        cnames <- colnames(data$E)
-        data <- data.frame(data$E)
-        colnames(data) <- cnames
-    }
+    return(list("DEA.out"=DEA.out,"res.DEA"=res.DEA,"res.DEA.names"=res.DEA.names)) ##keeping res.DEA this for possible troubleshooting in LASSO, WGCNA
 
-    return(list("DEA.out"=DEA.out,"res.DEA"=res.DEA,"res.DEA.names"=res.DEA.names))
 }

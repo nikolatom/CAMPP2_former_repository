@@ -15,7 +15,7 @@ ExportDEA(res.DEA, filename)
 DEA results as .txt table
 }
 \description{
-A function for exporting DEA results into a .txt file.
+A function for reformating the output from DEA and exporting the results into a .txt file.
 }
 \examples{
 \dontrun{

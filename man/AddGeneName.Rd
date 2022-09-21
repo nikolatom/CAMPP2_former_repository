@@ -2,20 +2,22 @@
 % Please edit documentation in R/AddGeneName.R
 \name{AddGeneName}
 \alias{AddGeneName}
-\title{Add Gene Name function}
+\title{Add HUGO Gene Name}
 \usage{
-AddGeneName(data, ensembl.version)
+AddGeneName(data, ensembl.version = 104, ensembl.id.column.name = "name")
 }
 \arguments{
-\item{data}{a data matrix containing a column of stable gene IDs (column must be called 'name').}
+\item{data}{a data matrix containing a column of stable gene IDs.}
 
-\item{ensembl.version}{This arugment specifies which ensembl database to use when transforming ensemble IDs into HUGO IDs using biomaRt. The argument should be specified as a number.}
+\item{ensembl.version}{a number specifying version of ENSEMBL database is used when transforming ENSEMBL IDs into HUGO IDs using biomaRt. Default is 104.}
+
+\item{ensembl.id.column.name}{a column name including ENSEMBL IDs. Default is "name" (as present in the output from DEA analysis done on limma).}
 }
 \value{
 the input dataframe merged with a column of HUGO IDs.
 }
 \description{
-A function for adding a column of HUGO IDs to a dataframe with a column of Ensemble IDs using biomaRt.
+A function for adding HUGO IDs to existing dataframe based on ENSEMBL gene IDs using biomaRt.
 }
 \examples{
 \dontrun{

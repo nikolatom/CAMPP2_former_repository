@@ -258,21 +258,25 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
     if (is.null(covariates)){
         covarDEA1 <- NULL
         covarDEA2 <- NULL
-        covarS <- NULL
-    } else {
-        covarS <-  covariates[-1]
-        if (covariates[1] == TRUE) {
-            covarDEA1 <- covariates[-1]
-            if (!is.null(data2)) {
-                covarDEA2 <- covariates[-1]
-            }
-        } else if (covariates[1] == FALSE) {
-            covarDEA1 <- NULL
-            covarDEA2 <- NULL
-        } else {
-            stop("First argument in 'survival' must be TRUE or FALSE. If TRUE, covariates will be used for both DE analysis and survival analysis. If FALSE, covariates will be used only for survival analysis.")
+        covar.survival1 <- NULL
+        covar.survival2 <- NULL
+    } else if (covariates[1] == FALSE) {
+        covarDEA1 <- NULL
+        covarDEA2 <- NULL
+        covar.survival1 <- covariates[2]
+        if(!is.null(covariates[3])){
+            covar.survival2 <- covariates[3]
         }
+    } else if (covariates[1] == TRUE) {
+        covarDEA1 <- covariates[2]
+        if(!is.null(covariates[3])){
+            covarDEA2 <- covariates[3]
+            covar.survival2 <- covariates[3]
+        }
+    } else {
+        stop("First argument in 'survival' must be TRUE or FALSE. If TRUE, covariates will be used for both DE analysis and survival analysis. If FALSE, covariates will be used only for survival analysis.")
     }
+
 
 
 
@@ -335,7 +339,7 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
           paste0("survival: ",survival),"\n",
           paste0("covarDEA1: ",covarDEA1),"\n",
           paste0("covarDEA2: ",covarDEA2),"\n",
-          paste0("covarS: ",covarS),"\n",
+          # paste0("covarS: ",covarS),"\n",
           paste0("stratify: ",stratify),"\n",
           paste0("surv.plot: ",surv.plot),"\n",
           paste0("PPI: ",PPI),"\n",
@@ -349,7 +353,7 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
                 "plot.PCA"=plot.PCA,"kmeans"=kmeans, "num.km.clusters"=num.km.clusters, "signif"=signif, "logFC1"=logFC1,"FDR1"=FDR1,
                 "logFC2"=logFC2,"FDR2"=FDR2,"block"=block,"block1"=block1,"block2"=block2,"colors"=colors,"prefix"=prefix,
                 "plot.heatmap"=plot.heatmap,"corrby"=corrby,"lasso"=lasso,"WGCNA"=WGCNA,"cutoff.WGCNA"=cutoff.WGCNA,"survival"=survival,"covarDEA1"=covarDEA1,"covarDEA2"=covarDEA2,
-                "covarS"=covarS,"stratify"=stratify,"surv.plot"=surv.plot,"PPI"=PPI,"GmiRI"=GmiRI,"DEA.allowed.type"=DEA.allowed.type,
+                "stratify"=stratify,"surv.plot"=surv.plot,"PPI"=PPI,"GmiRI"=GmiRI,"DEA.allowed.type"=DEA.allowed.type,
                 "survival.metadata"=survival.metadata,"approved.gene.IDs"=approved.gene.IDs,"approved.miR.IDs"=approved.miR.IDs,"gene.query"=gene.query,"miR.query"=miR.query,
                 "show.PCA.labels"=show.PCA.labels,"heatmap.size"=heatmap.size,"ensembl.version"=ensembl.version, "plot.DEA"=plot.DEA))
 }

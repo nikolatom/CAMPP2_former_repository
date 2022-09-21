@@ -49,7 +49,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
       plot.PCA,kmeans,num.km.clusters,signif,logFC1,FDR1,
       logFC2,FDR2,block,block1,block2,colors,prefix,plot.heatmap,corrby,
       lasso,WGCNA,cutoff.WGCNA,survival,covarDEA1,covarDEA2,
-      covarS,stratify,surv.plot,PPI,GmiRI,DEA.allowed.type,
+      stratify,surv.plot,PPI,GmiRI,DEA.allowed.type,
       survival.metadata,approved.gene.IDs,approved.miR.IDs,gene.query,miR.query,
       show.PCA.labels,heatmap.size,ensembl.version,plot.DEA) %<-% parseArguments(data1=data1, metadata1=metadata1, data2=data2, metadata2=metadata2,
                                                 technology=technology, groups=groups, batches=batches,
@@ -404,7 +404,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
     setwd("data1/")
 
     #First dataset
-    DEARes1 <- RunDEA(data1, technology[1], batch1, covarDEA1, group1, logFC1, FDR1, paste0(prefix,"1"), block1)
+    DEARes1 <- RunDEA(data1, metadata1, group1, batch1, covarDEA1, logFC1, FDR1, paste0(prefix,"1"), block1)
 
     setwd("../")
 
@@ -423,7 +423,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
         dir.create("data2")
         setwd("data2/")
 
-        DEARes2 <- RunDEA(data2, technology[2], batch2, covarDEA2, group2, logFC2, FDR2, paste0(prefix,"2"), block2)
+        DEARes2 <- RunDEA(data2, batch2, covarDEA2, group2, logFC2, FDR2, paste0(prefix,"2"), block2)
 
         setwd("../")
 

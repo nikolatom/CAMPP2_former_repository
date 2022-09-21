@@ -1,5 +1,5 @@
 #' @title Export DEA results into .txt
-#' @description A function for exporting DEA results into a .txt file.
+#' @description A function for reformating the output from DEA and exporting the results into a .txt file.
 #' @param res.DEA A list of data frames from DEA_feature_apply containing gene counts, p-values, FDRs and logFCs.
 #' @param filename The name of the output file.
 #' @export
@@ -13,16 +13,11 @@ ExportDEA <- function(res.DEA, filename) {
     if (is.null(res.DEA)) {
         cat("\nDEA yielded no results. Aren't your logFC or FDR cut-offs too strict?\n")
     } else {
-        res.DEA <- do.call(rbind, unlist(res.DEA, recursive=FALSE))
-        group.names <- gsub("1[.](.*)|2[.](.*)", "", rownames(res.DEA))
-        group.names <- gsub("group","",group.names)
-        res.DEA$comparison <- group.names
-
-        if (length(unique(res.DEA$comparison)) > 1){
-            res.DEA<-subset(res.DEA, grepl("healthy", comparison, fixed = TRUE))
-        }
-
-        write.table(res.DEA, paste0(filename,".txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+        DEA.out <- do.call(rbind, unlist(res.DEA, recursive=FALSE))  ##this should be done also outside of this function
+        group.names <- gsub("1[.](.*)|2[.](.*)", "", rownames(DEA.out))
+        group.names <- gsub("group", "", group.names) ###removing "group" from comparison column
+        DEA.out$comparison <- group.names
+        write.table(DEA.out, paste0(filename,".txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+        return(DEA.out)
     }
-    return(res.DEA)
 }

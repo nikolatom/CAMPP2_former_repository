@@ -17,13 +17,13 @@
 #' }
 
 
-DEAFeature <- function(contrast, data, design, cutoff.logFC, cutoff.FDR, block) {
+DEAFeature <- function(contrast.matrix, data, design, cutoff.logFC, cutoff.FDR, block) {
     if(is.null(block)) {
-        fit3 <- treat(contrasts.fit(lmFit(data, design), contrast))
+        fit3 <- treat(contrasts.fit(lmFit(data, design), contrast.matrix))
     }
     else {
         corfit <- duplicateCorrelation(data, design, block=block)
-        fit3 <- treat(contrasts.fit(lmFit(data, design, block = block, correlation=corfit$consensus), contrast))
+        fit3 <- treat(contrasts.fit(lmFit(data, design, block = block, correlation=corfit$consensus), contrast.matrix))
     }
     DEA.table <- topTreat(fit3, coef=1, adjust='fdr', number=nrow(data))
 

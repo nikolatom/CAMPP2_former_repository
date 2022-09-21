@@ -6,43 +6,54 @@
 \usage{
 RunDEA(
   data,
-  technology,
-  batch,
-  covarDEA,
+  metadata = NULL,
   group,
-  cutoff.logFC,
-  cutoff.FDR,
+  batch = NULL,
+  covarDEA = NULL,
+  cutoff.logFC = 1,
+  cutoff.FDR = 0.01,
   prefix,
-  block
+  block = NULL
 )
 }
 \arguments{
-\item{data}{A raw gene count matrix from seq, array, ms or other technology (with gene IDs as row names and sample IDs as columns). It's recommended to import gene counts using function "import_counts".}
+\item{data}{A raw gene count matrix from seq, array, ms or other technology
+(with gene IDs as row names and sample IDs as columns). It's recommended to
+import gene counts using function "import_counts".}
 
-\item{technology}{a string vector of length 1 defining technology used for generating the data. Allowed types are: 'array', 'seq', 'ms' or 'other'.}
+\item{metadata}{Samples' metadata table should be imported using function
+"import_metadata". Metadata must include exactly the same samples as gene
+counts (data) and samples must be sorted similarly. In case of this function,
+metadata are used to extract covariates data for each sample. Default = NULL.}
 
-\item{batch}{A list of batches in the input samples}
+\item{group}{a factor specifying group for each sample (e.g. could be
+represented by a column from a metadata file)}
 
-\item{covarDEA}{Covariates to include in the analysis If multiple of these, they should be specified as a character vector.}
+\item{batch}{a factor specifying batch for each sample (e.g. could be
+represented by a column from a metadata file). Default = NULL.}
 
-\item{group}{A string vector of specific sample groups derived from metadata column (e.g. diagnosis)}
+\item{covarDEA}{a covariate(s) to include in the analysis provided
+as a character vector. covarDEA can be defined only with a batch parameter
+(which represents one of the covariates). Default = NULL.}
 
-\item{cutoff.logFC}{A cutoff value for the logarithmic Fold Change for each data sample (ratio of changes in expression data)}
+\item{cutoff.logFC}{A cutoff value for the logarithmic fold change for each
+feature. Default = 1.}
 
-\item{cutoff.FDR}{The false discovery rate for each data sample (the corrected p-value)}
+\item{cutoff.FDR}{a false discovery rate (corrected p-value) for each feature}
 
-\item{prefix}{a character defining a prefix of output file names.}
+\item{prefix}{a character defining a prefix of output file name. Default =
+0.01.}
 
-\item{block}{A vector or factor specifying a blocking variable. The block must be of same length as data and contain 2 or more options. For 2 datasets, the block can be defined as a vector of the two seperate blocks.}
+\item{block}{a factor specifying blocking variable. The block must be of
+the same length as data and contain 2 or more options. Default = NULL.}
 }
 \value{
-a matrix of differential expression/abundance results (containing information on gene regulation and significance of comparison)
+a list of:
+1) re-formatted matrix of differential expression/abundance results
+(containing information on gene regulation and significance of comparison)
+2) original results (a list) from limma
+3) a character vector with unique feature names
 }
 \description{
 Run differential expression/abundance analysis
-}
-\examples{
-\dontrun{
-...
-}
 }
