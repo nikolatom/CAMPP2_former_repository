@@ -418,7 +418,8 @@ perform K-means clustering based on each (expected number of clusters) of
 them separately. By default, expected numbers of clusters are calculated
 automatically based on BIC (mclust package) applied to sub-sampled data sets.
 A default value for this parameter is NULL. \
-*seed* a seed for K-means clustering. Defaults is NULL. \
+*seed* a number for setting a random seed. If the argument is NULL,
+the seed won't be set. Default is NULL. \
 *pca.scale* a boolean, if TRUE then data are scaled to unit variance
 during PCA. Default is FALSE \
 \

@@ -55,7 +55,8 @@
 #' calculated automatically based on the bayesian information criterion (mclust
 #' package), applied to sub sampled data (see documentation for the whole
 #' procedure).
-#' @param seed a seed for K-means clustering. Defaults is NULL.
+#' @param seed a number for setting a random seed. If the argument is NULL,
+#' the seed won't be set. Default is NULL.
 #' @param pca.scale a boolean, if TRUE then data are scaled to unit variance
 #' during PCA. Default is FALSE
 #' @export
@@ -194,6 +195,8 @@ runKmeans <- function(data, num.subsets= "automatic", subset.size="automatic", s
         if(!is.null(seed)){
             set.seed(seed)
         }
+        print("seed")
+        print(seed)
         Kclus <- kmeans(t(data), nclus[[idx]])
         Clusters <- as.factor(paste0("C",data.frame(Kclus$cluster)$Kclus.cluster))
         res.list[[idx]] <- Clusters
