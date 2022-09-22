@@ -364,26 +364,30 @@ EstimateKmeans(t(campp2_brca_1_batchCorrected[1:2000,]))
 
 ### runKmeans
 **Description:** \
-A wrapper function for K-means clustering.
-By default, For data sets with >1000 features, multiple subsets (number of
-sets = number of features/1000; rounded up to the higher integer) will be
-generated, maximum is 10 sub-sets. A number of randomly selected features
-(e.g. genes) in 1 subset is limited to 2000. The values for number of subsets
-and size of the sub-sets might by defined manually. The option of using the
-whole dataset for the estimation of the number of the clusters is also available.
-By default, a number of clusters for each sub-set is automatically estimated (using
-mclustBIC function from mclust package) and a consensus (based on all the
-subsets) of best n k-means is returned and used for K-means clustering.
-If K-means estimation using BIC fails, a number of clusters will be based on
-the number of samples (2-6 clusters for data set with less than 100 samples;
-2-11 for data sets with 101-500 samples, and 2-16 clusters for data sets with
-more than 500 samples). The number of clusters can also be supplied manually.
-As results, an information about the clusters assigned to each sample and
-results from PCA (FactoMineR) function are provided.
-The clusters are visualized on PCA plot and saved into .png file.
-Plot of BIC values for each of the sample sub-set is saved into .png file.
-A summary describing the best model is printed on the screen during
-calculation.
+#' A wrapper function for K-means clustering.
+#' In a first step, a number of clusters is estimated.
+#' By default, for data sets with >1000 features, multiple
+#' subsets (number of sets = number of features/1000; rounded up to the higher
+#' integer) will be generated, maximum is 10 sub-sets.
+#' A number of randomly selected features (e.g. genes) in 1 subset is limited
+#' to 2000. The values for number of subsets and size of the sub-sets might by
+#' defined manually. The option of using the whole dataset for the estimation
+#' of the number of the clusters is also available. By default, a number of
+#' clusters for each sub-set is automatically estimated (using
+#' mclustBIC function from mclust package) and a consensus (based on all the
+#' subsets) of best n k-means is returned and used for K-means clustering.
+#' If K-means estimation using BIC fails, a number of clusters will be based on
+#' the number of samples (2-6 clusters for data set with less than 100 samples;
+#' 2-11 for data sets with 101-500 samples, and 2-16 clusters for data sets with
+#' more than 500 samples). The number of clusters can also be supplied manually.
+#' In the next step, K-means clustering using the information about the number
+#' of clusters is done.
+#' As results, an information about the clusters assigned to each sample and
+#' results from PCA (FactoMineR) function are provided.
+#' The clusters are visualized on PCA plot and saved into .png file.
+#' Plot of BIC values for each of the sample sub-set is saved into .png file.
+#' A summary describing the best model is printed on the screen during
+#' calculation.
 \
 **Parameters:** \
 *data* a data.frame of feature (e.g. gene) counts \
