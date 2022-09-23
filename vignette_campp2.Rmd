@@ -86,6 +86,7 @@ List of dependencies: (KEEP THIS? if yes, needs to be updated)
 
 &nbsp;
 
+
 <!-- THIS SHOULD BE UPDATED -->
 | Analysis Packages         |   
 |---------------------------|---------------------------------------------------------------------------------------------------|
@@ -192,6 +193,7 @@ technology=c("seq","seq"))
 **PPint**: Argument specifying that protein-protein interaction networks should be generated using the results of the differential expression analysis. This argument must be a character vector of length two. The first element in this list must be a string specifying the type of gene identifier in the gene counts file provided. Allowed identifiers are: "ensembl_peptide_id", "hgnc_symbol", "ensembl_gene_id", "ensembl_transcript_id", "uniprotswissprot". The second element is a string specifying version of the stringDB to use. Currently only version supported is: 11.0. Default is FALSE (do not run).
 
 **gene.miR.int**: Argument specifying that gene-miRNA interaction networks should be generated using the results of the differential expression analysis. This argument must be a character vector of length two. The first element in this list must be a string specifying the type of miRNA identifier in the gene counts data file. Allowed identifiers are: "mature_mirna_ids", "mature_mirna_accession". The second element must be a string specifying the miRNA-gene database to use, currently options are: "targetscan" (validated miRNAs), "mirtarbase" (predicted miRNAs), "tarscanbase" (validated + predicted miRNAs)". Default is FALSE (do not run).
+
 
 
 
@@ -340,6 +342,106 @@ PCAPlot(campp2_brca_1_batchCorrected, as.factor(campp2_brca_1_meta$subtype), sho
 ```
 \
 
+### EstimateKmeans
+**Description:** \
+A function to estimate the number of K-means. A Number of K-means is based 
+on the Bayesian information criterion (BIC) provided by mclust package. 
+A summary describing the best model is printed on the screen during the 
+calculation.
+\
+**Parameters:** \
+*data* a data.frame of feature (e.g. gene) counts \
+**Output from the function:** \
+a data frame with the number of clusters \
+\
+**An example run:** \
+##Estimate number of K-means 
+```
+###Sub-sampled (the first 2000 genes) normalized and batch corrected data ("campp2_brca_1_batchCorrected" generated before) are used as an input.
+EstimateKmeans(t(campp2_brca_1_batchCorrected[1:2000,]))
+```
+\
+
+### runKmeans
+**Description:** \
+#' A wrapper function for K-means clustering.
+#' In a first step, a number of clusters is estimated.
+#' By default, for data sets with >1000 features, multiple
+#' subsets (number of sets = number of features/1000; rounded up to the higher
+#' integer) will be generated, maximum is 10 sub-sets.
+#' A number of randomly selected features (e.g. genes) in 1 subset is limited
+#' to 2000. The values for number of subsets and size of the sub-sets might by
+#' defined manually. The option of using the whole dataset for the estimation
+#' of the number of the clusters is also available. By default, a number of
+#' clusters for each sub-set is automatically estimated (using
+#' mclustBIC function from mclust package) and a consensus (based on all the
+#' subsets) of best n k-means is returned and used for K-means clustering.
+#' If K-means estimation using BIC fails, a number of clusters will be based on
+#' the number of samples (2-6 clusters for data set with less than 100 samples;
+#' 2-11 for data sets with 101-500 samples, and 2-16 clusters for data sets with
+#' more than 500 samples). The number of clusters can also be supplied manually.
+#' In the next step, K-means clustering using the information about the number
+#' of clusters is done.
+#' As results, an information about the clusters assigned to each sample and
+#' results from PCA (FactoMineR) function are provided.
+#' The clusters are visualized on PCA plot and saved into .png file.
+#' Plot of BIC values for each of the sample sub-set is saved into .png file.
+#' A summary describing the best model is printed on the screen during
+#' calculation.
+\
+**Parameters:** \
+*data* a data.frame of feature (e.g. gene) counts \
+*num.subsets* a number of sub-sets to be generated for the estimation of
+the number of clusters. This parameter has several options:
+1) a numeric (integer) value estimated by the user.
+2) a string "automatic" will let CAMPP2 estimate the number of the sub-sets.
+3) NULL option will use the whole set for the estimation
+of the number of clusters. If using this option, subset.size must be also NULL.
+Defaults is NULL. \
+*subset.size* a number of features included in each sub-set. This
+parameter has several options:
+1) a numeric (integer) value estimated by the user.
+2) a string "automatic" will let CAMPP2 estimate the size of the sub-sets.
+3) NULL option will use all the features (no sub-sampling) for the estimation
+of the number of clusters. If using this option, num.subsets must be also NULL.
+Defaults is "automatic" \
+*show.PCA.labels* s a boolean value (TRUE or FALSE) specifying if elements
+(e.g. samples) should be labelled in the PCA plot including information about
+the clusters. Labeling is based on column names of the input data.
+Default value is FALSE. \
+*colors* a vector of colors (one color for each cluster) \
+*prefix* a character string defining a prefix of output file. \
+*num.km.clusters* a vector of numbers of clusters expected in the data.
+Clusters can be represented e.g., by sample groups, sub-types, etc.
+If multiple values provided, the function will automatically
+perform K-means clustering based on each (expected number of clusters) of
+them separately. By default, expected numbers of clusters are calculated
+automatically based on BIC (mclust package) applied to sub-sampled data sets.
+A default value for this parameter is NULL. \
+*seed* a number for setting a random seed. If the argument is NULL,
+the seed won't be set. Default is NULL. \
+*pca.scale* a boolean, if TRUE then data are scaled to unit variance
+during PCA. Default is FALSE \
+\
+**Output from the function:** \
+1) a list including: \
+   a) a data.frame with cluster information assigned to each sample; \
+   b) a PCA object including data for generating PCA plots with cluster \
+   information (generated by PCA function from FactoMineR package); \
+2) 2D PCA plot(s) projecting samples (labeled with cluster number) over first 2 
+   principal components saved into .png.
+3) plots of BIC values for each sample sub-set saved into .png file\
+\
+
+**An example run:** \
+
+##Estimate number of K-means and assign a specific cluster to each sample
+```
+###Normalized and batch corrected data ("campp2_brca_1_batchCorrected" generated in a previous step) are used as an input.
+Kmeans.output<-runKmeans(campp2_brca_1_batchCorrected[1:2000,], num.subsets= NULL, subset.size=NULL, show.PCA.labels = FALSE, colors=NULL, prefix="test", num.km.clusters=NULL, seed=123, pca.scale=FALSE)
+```
+
+
 
 
  
@@ -407,6 +509,7 @@ metadataset 2.
 
 ## Other Arguments
 \
+
 <!-- MDS removed -->
 
 **Data Transformation** (transform): The flag -t may be set if the user

@@ -49,7 +49,7 @@ parseArguments(
 
 \item{technology}{Technology used for the analysis of biological input. Current options are 'array', 'seq', 'ms' or 'other'. This argument is mandatory and depending on which option is chosen, data is transformed differently. If a second dataset is provided, the option should be specified for each dataset, provided as a character vector.}
 
-\item{batches}{Specifies which metadata should be used for a batch correction (sequencing run/tissue/interstitial fluid/etc.). Argument takes a character vector of length 1 (one dataset) or 2 (two datasets), where the string(s) match a column name(s) in the metadata file(s). Default is NULL.}
+\item{batches}{Specifies which metadata should be used for a batch correction (sequencing run/tissue/interstitial fluid/etc.). Argument takes a character vector of length 1 (one data set) or 2 (two data sets), where the string(s) match a column name(s) in the metadata file(s). In case batch correction should be performed only in 1 out of 2 data sets, a data set without the batch correction (1st one in the example) should be define as "", e.g. batches(c("","column_name")). Default is NULL.}
 
 \item{data.check}{Distributional checks of the input data is activated using logical argument (TRUE/FALSE). If activated, Cullen-Frey graphs will be made for 10 randomly selected variables to check data distributions. This argument is per default set to TRUE.}
 

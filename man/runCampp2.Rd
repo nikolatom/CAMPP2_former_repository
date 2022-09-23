@@ -61,13 +61,15 @@ runCampp2(
 
 \item{plot.heatmap}{Argument for heatmap specified as either: "DE", "DA", "LASSO", "EN" or "Consensus". Defaults is FALSE (do not run).}
 
-\item{kmeans}{Argument for kmeans clustering. The parameter must be specified as a character vector matching the name of a column in the metadata file, denoting the labeling of points on the MDS plot(s). If a parameter is set to "TRUE" (no column name specified) no labels will be added to the plot. Works only for the first dataset (data1). Default is FALSE (do not run).}
+\item{kmeans}{Argument specifies ("TRUE" or "FALSE") if a k-means clustering should be performed. Default is FALSE (do not run).}
+
+\item{num.km.clusters}{a vector of manually defined number(s) of clusters. This vector represent a number of groups, sub types, etc. expected in the data. If multiple values provided, the function will automatically perform K-means clustering based on each (expected number of clusters) of them separately. By default, possible numbers of clusters are calculated automatically based on BIC (mclust package) applied to sub sampled data. A default value for this parameter is NULL.}
 
 \item{signif}{Cut-offs for log fold change (logFC) and corrected p-value (fdr), defining significant hits (proteins, genes, miRNAs or N-features). If argument is set, it must be a numeric vector, where the first element specifies the cut-off for logFC and the second element specifies the cut-off for corrected p-value (fdr).  In case of 2 datasets, vector must be of length 4. By default, cutoffs will be set to -1 > logFC > 1 and corrected p-values < 0.05.}
 
 \item{block}{A vector or factor specifying a blocking variable for differential expression analysis. The block must be of same length as the belonging dataset and contain 2 or more options. For 2 datasets the block can be defined as a list of factors or vectors.}
 
-\item{colors}{Custom color pallet for MDS and heatmaps. Must be the same length as number of groups used for comparison (e.g. two groups = two colors) and must be defined as character vector. See R site for avalibe colors http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf. Default is NULL.}
+\item{colors}{Custom color palette for PCA and heatmaps. Must be the same length as number of groups used for comparison (e.g. two groups = two colors) and must be defined as character vector. See R site for avalibe colors http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf. Default is NULL.}
 
 \item{prefix}{Prefix for the results' files and results folder. Defalt is "Results".}
 
