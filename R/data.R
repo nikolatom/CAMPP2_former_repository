@@ -102,7 +102,7 @@
 #'
 #' A dataset with batch corrected data generated using "BatchCorrect" function.
 #' This dataset is based on "campp2_brca_1_normalized". For more details, see the
-#' vignette. For more details, see the vignette.
+#' vignette.
 #'
 #' @format A matrix with 9046 rows (genes) and 30 columns (samples).
 #' \describe{
@@ -111,3 +111,22 @@
 "campp2_brca_1_batchCorrected"
 
 
+#' campp2_brca_1_DEA - example data
+#'
+#' A results from differential gene expression analysis provided by
+#' RunDEA function using the provided example script:
+#' campp2_brca_1_DEA<-RunDEA(data=campp2_brca_1, metadata=campp2_brca_1_meta,
+#' group=campp2_brca_1_meta$subtype, prefix="test",
+#' block=campp2_brca_1_meta$subtype, batch=campp2_brca_1_meta$age,
+#' covarDEA = c("tumor_stage"), cutoff.logFC=1, cutoff.FDR=0.01)
+#' @format a list of:
+#' 1) a data frame (2670 x 8) - re-formatted matrix of differential
+#' expression/abundance results from limma.
+#' 2) a list of original results (a list) from limma
+#' 3) a character vector with unique feature names
+#' 4) a design matrix
+#' 5) a contrast matrix
+#' #' \describe{
+#' }
+#'
+"campp2_brca_1_DEA"

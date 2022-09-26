@@ -4,11 +4,9 @@
 \alias{DEAFeature}
 \title{DEA_feature}
 \usage{
-DEAFeature(contrast, data, design, cutoff.logFC, cutoff.FDR, block)
+DEAFeature(contrast.matrix, data, design, cutoff.logFC, cutoff.FDR, block)
 }
 \arguments{
-\item{contrast}{an array containing contrasts between groups of interest.}
-
 \item{data}{A raw gene count matrix from seq, array, ms or other technology (with gene IDs as row names and sample IDs as columns). It's recommended to import gene counts using function "import_counts".}
 
 \item{design}{a design matrix with all comparisons.}
@@ -18,6 +16,8 @@ DEAFeature(contrast, data, design, cutoff.logFC, cutoff.FDR, block)
 \item{cutoff.FDR}{a number specifying the cutoff for FDR.}
 
 \item{block}{A vector or factor specifying a blocking variable. The block must be of same length as data and contain 2 or more options. For 2 datasets, the block can be defined as a vector of the two seperate blocks.}
+
+\item{contrast}{an array containing contrasts between groups of interest.}
 }
 \value{
 DEA features

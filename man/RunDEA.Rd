@@ -2,7 +2,7 @@
 % Please edit documentation in R/Run_DEA.R
 \name{RunDEA}
 \alias{RunDEA}
-\title{Run differential expression/abundance analysis}
+\title{A wrapper for differential expression/abundance analysis}
 \usage{
 RunDEA(
   data,
@@ -17,14 +17,15 @@ RunDEA(
 )
 }
 \arguments{
-\item{data}{A raw gene count matrix from seq, array, ms or other technology
-(with gene IDs as row names and sample IDs as columns). It's recommended to
-import gene counts using function "import_counts".}
+\item{data}{a raw feature count matrix from "seq", "array", "ms" or "other"
+technology (with feature IDs as row names and sample IDs as columns). It's
+recommended to import feature counts using function "import_counts".}
 
-\item{metadata}{Samples' metadata table should be imported using function
+\item{metadata}{a samples' metadata table should be imported using function
 "import_metadata". Metadata must include exactly the same samples as gene
-counts (data) and samples must be sorted similarly. In case of this function,
-metadata are used to extract covariates data for each sample. Default = NULL.}
+counts (data) and samples must be sorted similarly. In this function,
+metadata are optional and are used to extract covariates for each sample.
+Default = NULL.}
 
 \item{group}{a factor specifying group for each sample (e.g. could be
 represented by a column from a metadata file)}
@@ -32,28 +33,29 @@ represented by a column from a metadata file)}
 \item{batch}{a factor specifying batch for each sample (e.g. could be
 represented by a column from a metadata file). Default = NULL.}
 
-\item{covarDEA}{a covariate(s) to include in the analysis provided
-as a character vector. covarDEA can be defined only with a batch parameter
-(which represents one of the covariates). Default = NULL.}
+\item{covarDEA}{a character vector of covariate(s) to include in the analysis.
+covarDEA can be defined only together with a batch parameter (which
+represents one of the covariates). Default = NULL.}
 
-\item{cutoff.logFC}{A cutoff value for the logarithmic fold change for each
-feature. Default = 1.}
+\item{cutoff.logFC}{A cutoff value for the logarithmic fold change applied
+to each feature. Default = 1.}
 
-\item{cutoff.FDR}{a false discovery rate (corrected p-value) for each feature}
+\item{cutoff.FDR}{a cutoff value for the false discovery rate (corrected
+p-value) applied to each feature. Default = 0.01.}
 
-\item{prefix}{a character defining a prefix of output file name. Default =
-0.01.}
+\item{prefix}{a character vector defining prefix of output file name.}
 
 \item{block}{a factor specifying blocking variable. The block must be of
-the same length as data and contain 2 or more options. Default = NULL.}
+the same length as data and contain 2 or more options (e.g. could be
+represented by a column from a metadata file). Default = NULL.}
 }
 \value{
 a list of:
-1) re-formatted matrix of differential expression/abundance results
-(containing information on gene regulation and significance of comparison)
+1) re-formatted matrix of differential expression/abundance results from
+limma.
 2) original results (a list) from limma
 3) a character vector with unique feature names
 }
 \description{
-Run differential expression/abundance analysis
+A wrapper for differential expression/abundance analysis
 }
