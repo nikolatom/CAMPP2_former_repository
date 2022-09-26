@@ -22,7 +22,7 @@
 #' @param plot.DEA This argument specifies ("TRUE" or "FALSE") whether visualizations should be made for the differential expression analysis.
 #' @param plot.PCA This argument specifies ("TRUE" or "FALSE") if a preliminary PCAplot should be made for data overview. Default is FALSE (do not run).
 #' @param show.PCA.labels a boolean value (TRUE or FALSE) specifying if elements (e.g. samples) should be labelled (for PCAPlot and runKmeans functions). Labeling is based on column names of the input data. Default value is FALSE.
-#' @param covariates Covariates to include in the analysis. If multiple of these, they should be specified as a character vector. The first element in this list must be either TRUE or FALSE. If TRUE is specified then covariates will be included in both DE/DA analysis and Survival Analsysis. If FALSE is specified covariates will ONLY be used for Survival Analsysis. Names of covariates should match the desired columns in the metadata file. Default is NULL.
+#' @param covariates Covariates are specified as a character vector. The first element must be either TRUE or FALSE. If TRUE is specified then covariates will be included in both DEA analysis and survival analsysis. If FALSE is specified covariates will ONLY be used for survival analysis. Names of covariates should match the desired columns in the metadata file. Only one covariate for each dataset is allowed (multiple covariates are allowed when using RunDEA function out of this wrapper). Default is NULL.
 #' @param stratify This argument may be used if some of the categorical (NOT continous) covariates violate the cox proportional assumption. The workflow checks for proportional hazard and will retun the covariates that fail the PH test. You may then rerun the workflow with this argument followed by the names of the categorical covariates which failed and these will be stratified. Default is NULL.
 #' @param block A vector or factor specifying a blocking variable for differential expression analysis. The block must be of same length as the data and contain 2 or more options. For 2 datasets, the block can be defined as a list of two vectors or factors.
 #' @param colors Custom color pallet for PCA and heatmaps. Must be the same length as number of groups used for comparison (e.g. two groups = two colors) and must be defined as character vector. See R site for avalibe colors http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf. Default is NULL.
@@ -264,17 +264,17 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
         covarDEA1 <- NULL
         covarDEA2 <- NULL
         covar.survival1 <- covariates[2]
-        if(!is.null(covariates[3])){
+        if(!is.null(data2) && !is.null(covariates[3])){
             covar.survival2 <- covariates[3]
         }
     } else if (covariates[1] == TRUE) {
         covarDEA1 <- covariates[2]
-        if(!is.null(covariates[3])){
+        if(!is.null(data2) && !is.null(covariates[3])){
             covarDEA2 <- covariates[3]
             covar.survival2 <- covariates[3]
         }
     } else {
-        stop("First argument in 'survival' must be TRUE or FALSE. If TRUE, covariates will be used for both DE analysis and survival analysis. If FALSE, covariates will be used only for survival analysis.")
+        stop("First argument in 'covariates' parameter must be TRUE or FALSE. If TRUE, covariates will be used for both DEA analysis and survival analysis. If FALSE, covariates will be used only for survival analysis.")
     }
 
 
