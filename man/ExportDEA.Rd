@@ -7,20 +7,23 @@
 ExportDEA(res.DEA, prefix)
 }
 \arguments{
-\item{res.DEA}{a list of data frames containing results from different group comparisons in limma format.}
+\item{res.DEA}{a list of data frames containing results from different group
+comparisons in limma format.}
 
 \item{prefix}{a character vector defining prefix of output file name.}
 }
 \value{
-DEA results as .txt table
+1) a data frame of DEA results
+2) a .txt table of exported DEA results
 }
 \description{
-A function for re-formating the output from DEA generated based on the
-workflow: (runDEA - DEAFeatureApply - DEAFeature - limma); and exporting
-the results into a .txt file.
+A function for re-formatting the output from DEA generated based
+on the workflow: (runDEA - DEAFeatureApply - DEAFeature - limma); and
+exporting the results into a .txt file.
 }
 \examples{
 \dontrun{
-...
+campp2_brca_1_DEA_out<-ExportDEA(res.DEA = campp2_brca_1_DEA$res.DEA,
+prefix="test")
 }
 }

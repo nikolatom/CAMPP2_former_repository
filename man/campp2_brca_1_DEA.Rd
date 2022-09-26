@@ -6,10 +6,12 @@
 \title{campp2_brca_1_DEA - example data}
 \format{
 a list of:
-1) a data frame (311 x 8) - re-formatted matrix of differential
+1) a data frame (2670 x 8) - re-formatted matrix of differential
 expression/abundance results from limma.
 2) a list of original results (a list) from limma
 3) a character vector with unique feature names
+4) a design matrix
+5) a contrast matrix
 #' \describe{
 }
 }
@@ -18,7 +20,10 @@ campp2_brca_1_DEA
 }
 \description{
 A results from differential gene expression analysis provided by
-RunDEA function using the provided example script. For more details, see the
-vignette.
+RunDEA function using the provided example script:
+campp2_brca_1_DEA<-RunDEA(data=campp2_brca_1, metadata=campp2_brca_1_meta,
+group=campp2_brca_1_meta$subtype, prefix="test",
+block=campp2_brca_1_meta$subtype, batch=campp2_brca_1_meta$age,
+covarDEA = c("tumor_stage"), cutoff.logFC=1, cutoff.FDR=0.01)
 }
 \keyword{datasets}

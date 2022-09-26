@@ -1,5 +1,5 @@
 #' @title A wrapper for differential expression/abundance analysis
-#' @descriptionA A function for running differential expression/abundance
+#' @description A function for running differential expression/abundance
 #' analysis using a matrix of features (e.g., genes) counts as a mandatory
 #' input. In the function, user is allowed to take advantage of defining multiple
 #' covariates, thresholds for a log fold change (logFC), a false discovery

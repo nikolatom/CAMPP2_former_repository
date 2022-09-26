@@ -51,7 +51,9 @@ features' IDs are output.
 }
 \examples{
 \dontrun{
-...
-###SHOULD I create an input data (part of the package) for this function? Meaning design and contrast matrix?
+DEAFeatureApply(data = campp2_brca_1, design.matrix =
+campp2_brca_1_DEA$DEA.design.matrix, contrast.matrix =
+campp2_brca_1_DEA$DEA.contrast.matrix, cutoff.logFC =1, cutoff.FDR =0.01,
+block = campp2_brca_1_meta$subtype, vector = FALSE)
 }
 }

@@ -55,7 +55,17 @@ a list of:
 limma.
 2) original results (a list) from limma
 3) a character vector with unique feature names
+4) a design matrix
+5) a contrast matrix
 }
 \description{
-A wrapper for differential expression/abundance analysis
+A function for running differential expression/abundance
+analysis using a matrix of features (e.g., genes) counts as a mandatory
+input. In the function, user is allowed to take advantage of defining multiple
+covariates, thresholds for a log fold change (logFC), a false discovery
+rate (FDR) and a blocking variable.
+The differential expression/abundance analysis is based on voom
+transformation and limma.
+Results are provided in the form of tables with differentially expressed/
+abundant features. Design a contrast matrices are also provided.
 }

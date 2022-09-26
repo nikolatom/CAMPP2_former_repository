@@ -24,7 +24,7 @@
 #' @import statmod
 #' @import limma
 #' @seealso
-#' @return DEA features
+#' @return a list of up and donw-regulated features in limma format
 #' @examples \dontrun{
 #' DEAFeature(contrast.matrix = campp2_brca_1_DEA$DEA.contrast.matrix[,1],
 #' data = campp2_brca_1, design.matrix = campp2_brca_1_DEA$DEA.design.matrix,
@@ -51,7 +51,7 @@ DEAFeature <- function(contrast.matrix, data, design.matrix, cutoff.logFC = 1, c
     up.reg$dir <- rep("up.reg", nrow(up.reg))
     down.reg$dir <- rep("down.reg", nrow(down.reg))
 
-    all.reg <- list(up.reg, down.reg)
+    DEA.features.list <- list(up.reg, down.reg)
 
-    return(all.reg)
+    return(DEA.features.list)
 }
