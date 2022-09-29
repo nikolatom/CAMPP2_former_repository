@@ -6,10 +6,12 @@
 #' @param metadata2 Metadata for a second dataset.
 #' @param technology Technology used for the analysis of biological input. Current options are 'array', 'seq', 'ms' or 'other'. This argument is mandatory and depending on which option is chosen, data is transformed differently. If a second dataset is provided, the option should be specified for each dataset, provided as a character vector.
 #' @param groups Argument defining groups of samples should be specified as a character vector. The first element specifying the name of the column in the metadata file containing sample IDs and the second element specifying the name of the column which contains the groups for the DE/DA analysis.
+#' @param control.group A string vector defining control group name (e.g., "healthy" or "normal"). In case of subtype analysis (>2 groups), the output of the main wrapper will include comparisons between control group and each subtype.
 #' @param data.check Distributional checks of the input data is activated using logical argument (TRUE/FALSE). If activated, Cullen-Frey graphs will be made for 10 randomly selected variables to check data distributions. This argument is per default set to TRUE.
 #' @param batches Specifies which metadata should be used for a batch correction (sequencing run/tissue/interstitial fluid/etc.). Argument takes a character vector of length 1 (one dataset) or 2 (two datasets), where the string(s) match a column name(s) in the metadata file(s). Default is NULL.
-#' @param plot.heatmap Argument for heatmap specified as either: "DEA", "LASSO", "EN" or "Consensus". Defaults is FALSE (do not run).
-#' @param heatmap.size Argument specifying how many genes will be plotted in the heatmap if plot.heatmap is TRUE. The input must be specified as an even number.
+#' @param plot.heatmap Argument defining which data will be used for the selection of the top x features to be plotted on the heatmap. Options are:"DEA", "LASSO", "EN" or "Consensus".
+#' @param heatmap.size Argument specifying how many genes will be selected to be plotted on the heatmap if plot.heatmap is TRUE. The input must be specified as an even number.#' @param show.PCA.labels a boolean value (TRUE or FALSE) specifying if elements (e.g. samples) should be labelled (for PCAPlot and runKmeans functions). Labeling is based on column names of the input data. Default value is FALSE.
+#' @param viridis.palette Argument specifying viridis color palette used for heatmaps. Default is "turbo".
 #' @param kmeans Argument specifies ("TRUE" or "FALSE") if a k-means clustering should be performed. Default is FALSE (do not run).
 #' @param num.km.clusters a vector of manually defined number(s) of clusters. By default, the values(s) are calculated automatically (a default value is NULL).
 #' @param correlation Argument for correlation analysis. String specify which features should be correlated, options are: "ALL", "DE", "DA", "LASSO", "EN" or "Consensus". For this type of analysis, 2 datasets must include the same samples, e.g. tumor1-normal vs tumor2-normal (3 samples from 1 patient needed). Default is FALSE (do not run).
@@ -38,7 +40,7 @@
 #' }
 
 
-parseArguments <- function(data1, data2, metadata1, metadata2, groups, technology, batches, data.check, standardize, transform, plot.PCA, plot.heatmap, plot.DEA, ensembl.version, heatmap.size, kmeans, num.km.clusters, signif, colors, block, prefix, correlation, lasso, WGCNA, cutoff.WGCNA, survival, covariates, stratify, surv.plot, PPint, gene.miR.int, show.PCA.labels){
+parseArguments <- function(data1, data2, metadata1, metadata2, groups, control.group, technology, batches, data.check, standardize, transform, plot.PCA, plot.heatmap, plot.DEA, ensembl.version, heatmap.size, viridis.palette, kmeans, num.km.clusters, signif, colors, block, prefix, correlation, lasso, WGCNA, cutoff.WGCNA, survival, covariates, stratify, surv.plot, PPint, gene.miR.int, show.PCA.labels){
 
     # For DEA analysis, survival analysis and correlation analysis
     DEA.allowed.type <- c("ALL","EN", "LASSO", "DEA", "Consensus",FALSE)
@@ -78,6 +80,7 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
     }
 
 
+
     # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     ### OPTIONAL ARGUMENTS ###
     # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -107,6 +110,22 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
 
     }
 
+
+    # control group
+    if ((!isFALSE(plot.DEA) && is.null(control.group))){
+        stop("For DEA fisualizations, control.group parameter must be defined.")
+    }
+
+    if(!is.null(control.group)){
+        control.group1<-control.group[1]
+        if (!is.null(control.group[2])){
+            control.group2<-control.group[2]
+        } else {
+            control.group2<-NULL
+        }
+    } else {
+        control.group1<-NULL
+    }
 
 
     # Batches
@@ -153,28 +172,28 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
 
     # Significance
 
-    logFC1=NULL
-    logFC2=NULL
-    FDR1=NULL
-    FDR2=NULL
+    cutoff.logFC1=NULL
+    cutoff.logFC2=NULL
+    cutoff.FDR1=NULL
+    cutoff.FDR2=NULL
     if (is.null(signif)){
         cat("\n- No cut-off for significant hits has been chosen. Cutoffs will be set to -1 > logFC > 1 and corrected p-value (fdr) < 0.05.")
-        logFC1 <- 1
-        FDR1 <- 0.05
-        logFC2 <- 1
-        FDR2 <- 0.05
+        cutoff.logFC1 <- 1
+        cutoff.FDR1 <- 0.05
+        cutoff.logFC2 <- 1
+        cutoff.FDR2 <- 0.05
     }
     else {
         signif <- as.numeric(signif)
         if (length(signif) == 2) {
-            logFC1 <- signif[1]
-            FDR1 <- signif[2]
+            cutoff.logFC1 <- signif[1]
+            cutoff.FDR1 <- signif[2]
         }
         else if (length(signif) == 4) {
-            logFC1 <- signif[1]
-            FDR1 <- signif[2]
-            logFC2 <- signif[3]
-            FDR2 <- signif[4]
+            cutoff.logFC1 <- signif[1]
+            cutoff.FDR1 <- signif[2]
+            cutoff.logFC2 <- signif[3]
+            cutoff.FDR2 <- signif[4]
         }
         else {
             stop("If argument signif is set, it must be a vector of length 2 OR 2*2 = 4 , if two datasets are used, (with quotes and parenthesis!) where the first element specifies the cut-off for logFC and the second element specifies the cut-off for corrected p-value (fdr) for each set. If signif is not specified defaults will be used. Cutoffs will be set to -1 > logFC > 1 and corrected p-value (fdr) < 0.05.")
@@ -305,6 +324,8 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
           #         paste0("group1: ",group1),"\n",
           #         paste0("group2: ",group2),"\n",
           #         paste0("ids: ",ids),"\n",
+          paste0("control.group1: ", control.group1), "\n",
+          paste0("control.group2: ", control.group2), "\n",
           paste0("batches: ",batches),"\n",
           #         paste0("batch1: ",batch1),"\n",
           #         paste0("batch2: ",batch2),"\n",
@@ -318,10 +339,10 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
           paste0("kmeans: ",kmeans),"\n",
           paste0("num.km.clusters: ",num.km.clusters),"\n",
           paste0("signif: ",signif),"\n",
-          paste0("logFC1: ",logFC1),"\n",
-          paste0("FDR1: ",FDR1),"\n",
-          paste0("logFC12: ",logFC2),"\n",
-          paste0("FDR2: ",FDR2),"\n",
+          paste0("cutoff.logFC1: ",cutoff.logFC1),"\n",
+          paste0("cutoff.FDR1: ",cutoff.FDR1),"\n",
+          paste0("cutoff.logFC12: ",cutoff.logFC2),"\n",
+          paste0("cutoff.FDR2: ",cutoff.FDR2),"\n",
           # paste0("slogFC: ",slogFC),"\n",
           # paste0("sFDR: ",sFDR),"\n",
           paste0("blocks:", block),"\n",
@@ -332,6 +353,7 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
           paste0("plot.heatmap: ",plot.heatmap),"\n",
           paste0("ensembl.version: ",ensembl.version),"\n",
           paste0("heatmap.size:",heatmap.size),"\n",
+          paste0("viridis.palette:",viridis.palette), "\n",
           paste0("corrby: ",corrby),"\n",
           paste0("lasso: ",lasso),"\n",
           paste0("WGCNA: ",WGCNA),"\n",
@@ -348,13 +370,13 @@ parseArguments <- function(data1, data2, metadata1, metadata2, groups, technolog
     ))
 
     return(list("data1"=data1,"data2"=data2,"metadata1"=metadata1,"metadata2"=metadata2, "technology"=technology, "groups"=groups,
-                "group1"=group1,"group2"=group2,"ids"=ids,"batches"=batches,"databatch1"=databatch1,"databatch2"=databatch2,
+                "group1"=group1,"group2"=group2, 'control.group1' = control.group1,'control.group2' = control.group2, "ids"=ids,"batches"=batches,"databatch1"=databatch1,"databatch2"=databatch2,
                 "batch1"=batch1, "batch2"=batch2, "standardize"=standardize,"transform"=transform,"data.check"=data.check,
-                "plot.PCA"=plot.PCA,"kmeans"=kmeans, "num.km.clusters"=num.km.clusters, "signif"=signif, "logFC1"=logFC1,"FDR1"=FDR1,
-                "logFC2"=logFC2,"FDR2"=FDR2,"block"=block,"block1"=block1,"block2"=block2,"colors"=colors,"prefix"=prefix,
+                "plot.PCA"=plot.PCA,"kmeans"=kmeans, "num.km.clusters"=num.km.clusters, "signif"=signif, "cutoff.logFC1"=cutoff.logFC1,"cutoff.FDR1"=cutoff.FDR1,
+                "cutoff.logFC2"=cutoff.logFC2,"cutoff.FDR2"=cutoff.FDR2,"block"=block,"block1"=block1,"block2"=block2,"colors"=colors,"prefix"=prefix,
                 "plot.heatmap"=plot.heatmap,"corrby"=corrby,"lasso"=lasso,"WGCNA"=WGCNA,"cutoff.WGCNA"=cutoff.WGCNA,"survival"=survival,"covarDEA1"=covarDEA1,"covarDEA2"=covarDEA2,
                 "stratify"=stratify,"surv.plot"=surv.plot,"PPI"=PPI,"GmiRI"=GmiRI,"DEA.allowed.type"=DEA.allowed.type,
                 "survival.metadata"=survival.metadata,"approved.gene.IDs"=approved.gene.IDs,"approved.miR.IDs"=approved.miR.IDs,"gene.query"=gene.query,"miR.query"=miR.query,
-                "show.PCA.labels"=show.PCA.labels,"heatmap.size"=heatmap.size,"ensembl.version"=ensembl.version, "plot.DEA"=plot.DEA))
+                "show.PCA.labels"=show.PCA.labels,"heatmap.size"=heatmap.size,"viridis.palette"=viridis.palette,"ensembl.version"=ensembl.version, "plot.DEA"=plot.DEA))
 }
 

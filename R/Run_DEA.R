@@ -51,9 +51,22 @@
 
 RunDEA <- function(data, metadata=NULL, group, batch=NULL, covarDEA=NULL, cutoff.logFC=1, cutoff.FDR=0.01, prefix, block=NULL) {
 
+    ##test batch parameter
+    if(!is.null(batch)){
+        if (length(batch) != ncol(data)) {
+            stop("Batch correction selected, but size of the batch metadata column does not match the number of samples!")
+        }
+    }
+
+    ##test if both batch and covarDEA are defined
+    if(is.null(batch) && !is.null(covarDEA)){
+        stop("covarDEA cannot be defined without a batch parameter (representing one of the covariates.")
+    }
+
     ####Test if the covarDEA value(s) is present in the metadata
     if(!is.null(covarDEA)){
         test<-NULL
+
         for(i in 1:length(covarDEA)){
             test[i] <- length(metadata[,colnames(metadata) %in% covarDEA[i]]) == nrow(metadata)
         }
@@ -62,15 +75,6 @@ RunDEA <- function(data, metadata=NULL, group, batch=NULL, covarDEA=NULL, cutoff
         }
     }
 
-    ##test batch parameter
-    if(!is.null(batch)){
-        if (length(batch) != ncol(data)) {
-            stop("Batch correction selected, but size of the batch metadata column does not match the number of samples!")
-        }
-    }
-    if(is.null(batch) && !is.null(covarDEA)){
-        stop("covarDEA cannot be defined without a batch parameter (representing one of the covariates.")
-    }
 
     ###Create design matrix;f alternatively, Design.Matrix function from CAMPP2 can be used.
     if (is.null(batch) && is.null(covarDEA)) {

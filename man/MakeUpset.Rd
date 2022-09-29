@@ -4,23 +4,26 @@
 \alias{MakeUpset}
 \title{Upset Plot}
 \usage{
-MakeUpset(prefix, sets_list, names_sets)
+MakeUpset(prefix, groups.feature.list)
 }
 \arguments{
 \item{prefix}{A prefix for the output filename.}
 
-\item{sets_list}{A list of sets containing the gene names for each subtype to compare.}
-
-\item{names_sets}{A vector of the corresponding names of each subtype in sets_list. names_sets must be same length as sets_list.}
+\item{groups.feature.list}{A list of character vectors (each character
+vector named by its group name, e.g., "LumA") including feature names
+characteristic for each group of interest (e.g., subtype).}
 }
 \value{
-An Upset plot showcasing the intersection size of differentially expressed genes across the input sets.
+an Upset plot showcasing the size of intersections of the features
+between the sample groups
 }
 \description{
-A function for making Upset plots to visualize the intersection size of significantly differentially expressed genes between 2 or more subtypes. The genes to compare is gathered from the results provided by DEA using CAMPP2.
+A function for making Upset plots to visualize the size of
+intersections of the features present each group
+(e.g., differentially expressed genes for each subtype)
 }
 \examples{
 \dontrun{
-...
+MakeUpset("testUpset",campp2_brca_1_DEA_HUGO_features_per_group)
 }
 }

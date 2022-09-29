@@ -7,20 +7,26 @@
 AddGeneName(data, ensembl.version = 104, ensembl.id.column.name = "name")
 }
 \arguments{
-\item{data}{a data matrix containing a column of stable gene IDs.}
+\item{data}{a data frame containing a column of ENSEMBL IDs.}
 
-\item{ensembl.version}{a number specifying version of ENSEMBL database is used when transforming ENSEMBL IDs into HUGO IDs using biomaRt. Default is 104.}
+\item{ensembl.version}{a number specifying version of ENSEMBL database used
+for obtaining HUGO IDs using biomaRt. Default is 104.}
 
-\item{ensembl.id.column.name}{a column name including ENSEMBL IDs. Default is "name" (as present in the output from DEA analysis done on limma).}
+\item{ensembl.id.column.name}{a column name including ENSEMBL IDs. Default
+is "name" (based on limma output format).}
 }
 \value{
-the input dataframe merged with a column of HUGO IDs.
+a data frame with a column of HUGO IDs.
 }
 \description{
-A function for adding HUGO IDs to existing dataframe based on ENSEMBL gene IDs using biomaRt.
+A function for adding HUGO IDs ("external_gene_name") to
+existing data frame based on ENSEMBL gene IDs using biomaRt. The input is
+typically an output from RunDEA (re-formatted matrix of
+differential expression/abundance results from limma, please, check RunDEA
+for more details). The output is a data frame with a column containing HUGO IDs
 }
 \examples{
 \dontrun{
-...
+campp2_brca_1_DEA_HUGO <- AddGeneName(campp2_brca_1_DEA$DEA.out, 104)
 }
 }

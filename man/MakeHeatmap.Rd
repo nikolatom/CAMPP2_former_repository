@@ -4,25 +4,42 @@
 \alias{MakeHeatmap}
 \title{Make Heatmap}
 \usage{
-MakeHeatmap(data, groups, prefix, gradient = viridis(300, option = "cividis"))
+MakeHeatmap(
+  data,
+  groups,
+  prefix,
+  viridis.palette = "turbo",
+  data.type = "Feature counts"
+)
 }
 \arguments{
-\item{data}{A dataframe containing expression values for genes within a set of samples.}
+\item{data}{a feature count matrix (ideally normalized and batch corrected)
+from "seq", "array", "ms" or "other" technology (with feature IDs as row
+names and sample IDs as columns). It's recommended to import feature counts
+using function "import_counts".}
 
-\item{prefix}{A prefix for the output filename.}
+\item{prefix}{a character vector defining prefix of output file name.}
 
-\item{gradient}{A color gradient to use for the heatmap. Default is 'blue' using the viridis library.}
+\item{viridis.palette}{a character vector specifying color gradient to use for
+the heatmap. Default option for viridis color palettes is 'turbo'. For more
+options, see viridis vignette.}
 
-\item{group}{a factor derived from metadata column selected as a sample group (e.g. diagnosis), which will be used to color and split the heatmap by. Length should be equal to ncol(data)).}
-}
-\value{
-Heatmap
+\item{data.type}{a character vector (used in the heatmap legend) describing
+type of the data being visualized. Default = "Feature counts".}
+
+\item{group}{a factor specifying group for each sample (e.g. could be
+represented by a column from a metadata file). Group's information
+will be used in clustering the samples.}
 }
 \description{
-A function for making heatmaps to showcase the difference in expression values across samples.
+A function for making heatmaps to showcase the difference in
+expression/abundance of features across samples and sample groups and to
+visualise relations between them.
 }
 \examples{
 \dontrun{
-...
+MakeHeatmap(data=campp2_brca_1_batchCorrected,
+group=campp2_brca_1_meta$subtype, prefix="test", viridis.palette = "turbo",
+data.type = "Feature counts")
 }
 }

@@ -493,6 +493,206 @@ function
 campp2_brca_1_DEA_out<-ExportDEA(res.DEA = campp2_brca_1_DEA$res.DEA,
 prefix="test")
 ```
+\
+
+
+### RunDEAVisuals
+**Description:** \
+This function wraps several functions for the visualisation
+of DEA results:
+1) A function for making volcano plots from DEA results.
+The input is typically an output from RunDEA (re-formatted matrix of
+differential expression/abundance results from limma, please, check RunDEA
+for more details). By default, top 15 up- and down-regulated features
+will be labeled on the Volcano plot. Important: Features are selected from
+the table with all the groups' comparisons.
+2) A function for making Venn diagrams to visualize the size of
+intersections of the features between the groups
+(e.g., differentially expressed genes for each subtype)
+3) A function for making Upset plots to visualize the size of
+intersections of the features present each group
+(e.g., differentially expressed genes for each subtype) \
+**Parameters:** \
+*data* A data frame from RunDEA containing genes and their
+corresponding AveExpr, logFC, p.value, adj.p.value ect. Mandatory columns
+are "logFC", "adj.P.Val" and "HUGO_ID." HUGO_ID could be obtained using
+AddGeneName function. \
+*prefix* a prefix for the output filename. \
+*cutoff.FDR* a numeric value for adj.P.Val cutoff. Default = 0.01 \
+*cutoff.logFC* a numeric value for logFC cutoff. Default = 1 \
+*n.labeled.features* a number of the most up-/down- regulated features
+labeled in the volcano plot. Default = 15 \
+*control.group* A string vector defining control group name for each
+dataset (e.g., "healthy" or "normal"). \
+**Output from the function:** 
+several .png files with: \
+1) Volcano plot of differentially expressed features saved into .png \
+2) Venn Diagram showcasing the size of intersections of the features
+between the sample groups \
+3) Upset plot showcasing the size of intersections of the features
+between the sample groups \
+**An example run:** \
+##Create a volcano plot, venn diagram, upset plots based on results from RunDEA 
+and AddGeneName functions.
+```
+RunDEAVisuals(campp2_brca_1_DEA_HUGO, cutoff.FDR = 0.01, cutoff.logFC = 1,
+n.labeled.features = 15, control.group= "healthy", prefix="test_DEA_visuals")
+```
+\
+
+
+### MakeVolcano
+**Description:** \
+A function for making volcano plots from DEA results.
+The input is typically an output from RunDEA (re-formatted matrix of
+differential expression/abundance results from limma, please, check RunDEA
+for more details). By default, top 15 up- and down-regulated features
+will be labeled on the Volcano plot. Important: Features are selected from
+the table with all the groups' comparisons. \
+**Parameters:** \
+*data* A data frame from RunDEA containing genes and their
+corresponding AveExpr, logFC, p.value, adj.p.value ect. Mandatory columns
+are "logFC", "adj.P.Val" and "HUGO_ID." HUGO_ID could be obtained using
+AddGeneName function. \
+*prefix* a prefix for the output filename \
+*cutoff.FDR* a numeric value for adj.P.Val cutoff. Default = 0.01 \
+*cutoff.logFC* a numeric value for logFC cutoff. Default = 1 \
+*n.labeled.features* a number of the most up-/down- regulated features
+labeled in the volcano plot. Default = 15 \
+**Output from the function:** \
+Volcano plot of differentially expressed features saved into .png \
+\
+**An example run:** \
+##Create a volcano plot based on results from RunDEA and 
+AddGeneName functions.
+```
+MakeVolcano(campp2_brca_1_DEA_HUGO, prefix = "test_volcano",
+cutoff.logFC = 1, cutoff.FDR = 0.01, n.labeled.features = 15)
+
+```
+\
+
+
+### MakeUpset
+**Description:** \
+A function for making Upset plots to visualize the size of
+intersections of the features present each group
+(e.g., differentially expressed genes for each subtype) \
+**Parameters:** \
+*prefix* A prefix for the output filename. \
+*groups.feature.list* A list of character vectors (each character
+vector named by its group name, e.g., "LumA") including feature names
+characteristic for each group of interest (e.g., for subtype). \
+**Output from the function:** \
+An Upset plot showcasing the size of intersections of the features between the 
+sample groups \
+\
+**An example run:** \
+##Create an Upset plot based on a list of the features characteristic for each 
+group
+```
+MakeUpset("testUpset",campp2_brca_1_DEA_HUGO_features_per_group)
+```
+\
+
+
+### MakeVennDiagram
+**Description:** \
+A function for making Venn diagrams to visualize the size of
+intersections of the features between the groups
+(e.g., differentially expressed genes for each subtype) \
+**Parameters:** \
+*prefix* A prefix for the output filename. \
+*groups.feature.list* A list of character vectors (each character
+vector named by its group name, e.g., "LumA") including feature names
+characteristic for each group of interest (e.g., for subtype). \
+**Output from the function:** \
+An Upset plot showcasing the size of intersections of the features between the 
+sample groups \
+\
+**An example run:** \
+##Create an Venn diagram based on a list of the features characteristic for each 
+group
+```
+MakeVennDiagram("test_Venn", campp2_brca_1_DEA_HUGO_features_per_group)
+```
+\
+
+
+### RunHeatmap
+ **Description:** \
+ A function for making heatmaps to showcase the difference in
+expression/abundance of features across samples and sample groups and to
+visualise relations between them. \
+**Parameters:** \
+*feature.counts* a feature count matrix (ideally normalized and batch corrected)
+from "seq", "array", "ms" or "other" technology (with feature IDs as row
+names and sample IDs as columns). It's recommended to import feature counts
+using function "import_counts". \
+*DEA.out* a data frame from RunDEA containing genes and their
+corresponding AveExpr, logFC, p.value, adj.p.value ect. Mandatory columns
+are "logFC". \
+*group* a factor specifying group for each sample (e.g. could be
+represented by a column from a metadata file). Group's information
+will be used in clustering the samples. \
+*heatmap.size* an argument specifying how many genes will be selected
+to be plotted on the heatmap if plot.heatmap is TRUE. The input must be
+specified as an even number. \
+*viridis.palette* a character vector specifying color gradient to use for
+the heatmap. Default option for viridis color palettes is 'turbo'. For more
+options, see viridis vignette. \
+*plot.heatmap* an argument defining which data will be used for
+the selection of the top x features to be plotted on the heatmap.
+Options are:"DEA", "LASSO", "EN" or "Consensus". \
+**Output from the function:** \
+a .png file with a heatmap \
+\
+**An example run:** \
+##Create and print heatmap based on the raw gene counts 
+```
+RunHeatmap(campp2_brca_1_batchCorrected, campp2_brca_1_DEA_HUGO,
+campp2_brca_1_meta$subtype, heatmap.size=30, viridis.palette="turbo",
+plot.heatmap="DEA", "test_heatmap")
+```
+\
+
+
+### MakeHeatmap
+ **Description:** \
+A function for making heatmaps to showcase the difference in
+expression/abundance of features across samples and sample groups and to
+visualise relations between them. \
+**Parameters:** \
+*data* a feature count matrix (ideally normalized and batch corrected)
+from "seq", "array", "ms" or "other" technology (with feature IDs as row
+names and sample IDs as columns). It's recommended to import feature counts
+using function "import_counts". \
+*group* a factor specifying group for each sample (e.g. could be
+represented by a column from a metadata file). Group's information
+will be used in clustering the samples. \
+*prefix* a character vector defining prefix of output file name. \
+*viridis.palette* a character vector specifying color gradient to use for
+the heatmap. Default option for viridis color palettes is 'turbo'. For more
+options, see viridis vignette. \
+*data.type* a character vector (used in the heatmap legend) describing
+type of the data being visualized. Default = "Feature counts". \
+**Output from the function:** \
+a .png file with a heatmap \
+\
+**An example run:** \
+##Create and print heatmap based on the raw gene counts 
+```
+MakeHeatmap(data=campp2_brca_1_batchCorrected, group=campp2_brca_1_meta$subtype, 
+prefix="test_heatmap", viridis.opt = "turbo", data.type = "Feature counts")
+
+```
+\
+
+
+
+
+
+
 
 
 

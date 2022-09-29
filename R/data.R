@@ -126,7 +126,50 @@
 #' 3) a character vector with unique feature names
 #' 4) a design matrix
 #' 5) a contrast matrix
-#' #' \describe{
+#' \describe{
 #' }
 #'
 "campp2_brca_1_DEA"
+
+
+#' campp2_brca_1_DEA_HUGO - example data
+#'
+#' A results from differential gene expression analysis provided by
+#' RunDEA, filtering on group comparisons and applying AddGeneName:
+#' step1:
+#' campp2_brca_1_DEA<-RunDEA(data=campp2_brca_1, metadata=campp2_brca_1_meta,
+#' group=campp2_brca_1_meta$subtype, prefix="test",
+#' block=campp2_brca_1_meta$subtype, batch=campp2_brca_1_meta$age,
+#' covarDEA = c("tumor_stage"), cutoff.logFC=1, cutoff.FDR=0.01)
+#' step2:
+#' campp2_brca_1_DEA_HUGO<-subset(campp2_brca_1_DEA, grepl("healthy",
+#' comparison, fixed = TRUE))
+#' step3:
+#' campp2_brca_1_DEA_HUGO<-AddGeneName(campp2_brca_1_DEA_HUGO,ensembl.version)
+#' @format
+#' a data frame (2054 x 9)
+#' \describe{
+#' }
+#'
+"campp2_brca_1_DEA_HUGO"
+
+
+#' campp2_brca_1_DEA_HUGO_features_per_group - example data
+#'
+#' This object represents a list of the features characteristic for each group
+#' and was created based on campp2_brca_1_DEA_HUGO (described above) following
+#' these steps:
+#' control.group="healthy"
+#' groups.full.list <- split.data.frame(campp2_brca_1_DEA_HUGO, campp2_brca_1_DEA_HUGO$comparison)
+#' campp2_brca_1_DEA_HUGO_features_per_group=list()
+#' for (features in groups.full.list){
+#'     campp2_brca_1_DEA_HUGO_features_per_group <- append(campp2_brca_1_DEA_HUGO_features_per_group,list(features$name))
+#' }
+#' names(campp2_brca_1_DEA_HUGO_features_per_group) <- gsub("-","",gsub(control.group,"",names(groups.full.list)))
+#' @format
+#' a list of 4 character vectors (1341, 395, 55, 263)
+#' \describe{
+#' }
+#'
+"campp2_brca_1_DEA_HUGO_features_per_group"
+

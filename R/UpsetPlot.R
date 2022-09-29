@@ -1,28 +1,29 @@
 #' @title Upset Plot
-#' @description A function for making Upset plots to visualize the intersection size of significantly differentially expressed genes between 2 or more subtypes. The genes to compare is gathered from the results provided by DEA using CAMPP2.
+#' @description A function for making Upset plots to visualize the size of
+#' intersections of the features present each group
+#' (e.g., differentially expressed genes for each subtype)
 #' @param prefix A prefix for the output filename.
-#' @param sets_list A list of sets containing the gene names for each subtype to compare.
-#' @param names_sets A vector of the corresponding names of each subtype in sets_list. names_sets must be same length as sets_list.
+#' @param groups.feature.list A list of character vectors (each character
+#' vector named by its group name, e.g., "LumA") including feature names
+#' characteristic for each group of interest (e.g., subtype).
 #' @export
 #' @import ComplexHeatmap
 #' @import viridis
 #' @seealso
-#' @return An Upset plot showcasing the intersection size of differentially expressed genes across the input sets.
+#' @return an Upset plot showcasing the size of intersections of the features
+#' between the sample groups
 #' @examples \dontrun{
-#' ...
+#' MakeUpset("testUpset",campp2_brca_1_DEA_HUGO_features_per_group)
 #' }
 
-MakeUpset <- function(prefix,sets_list,names_sets) {
+MakeUpset <- function(prefix,groups.feature.list) {
 
     png(file = paste0(prefix,"_UpsetPlot.png"))
 
-    names_sets <- gsub("-","",gsub("healthy","",names_sets)) #As the input genes are based on DEA, the names_sets are actually comparisons, e.g. CN_high-healthy. Here we are removing everything but the subtype names to get a prettier output
-    names(sets_list) <- names_sets
-    comb_mat <- make_comb_mat(sets_list)
-    n_col <- max(comb_degree(comb_mat))
+    comb_mat <- make_comb_mat(groups.feature.list)
 
-    upset_p <- UpSet(comb_mat,set_order = names(sets_list),pt_size = unit(2,"mm"),
-                lwd = 1,height = unit(4,"cm"),comb_col = rainbow(length(sets_list))[comb_degree(comb_mat)],
+    upset_plot <- UpSet(comb_mat,set_order = names(groups.feature.list),pt_size = unit(2,"mm"),
+                lwd = 1,height = unit(4,"cm"),comb_col = rainbow(length(groups.feature.list))[comb_degree(comb_mat)],
                 top_annotation = upset_top_annotation(comb_mat,height = unit(12,"cm"),
                 ylim = c(0,max(comb_size(comb_mat))),bar_width = 0.7,
                 axis_param = list(side = "left",at = seq(from = 0,to = max(comb_size(comb_mat)),
@@ -33,7 +34,7 @@ MakeUpset <- function(prefix,sets_list,names_sets) {
                 to = max(set_size(comb_mat)),by = 2000)),annotation_name_offset = unit(1,"cm")),
                 row_names_gp = gpar(fontsize = 10))
 
-    draw_upset <- draw(upset_p)
+    draw_upset <- draw(upset_plot)
     order <- column_order(draw_upset)
     size <- comb_size(comb_mat)
 

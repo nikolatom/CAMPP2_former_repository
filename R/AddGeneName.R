@@ -1,21 +1,27 @@
 #' @title Add HUGO Gene Name
-#' @description A function for adding HUGO IDs to existing dataframe based on ENSEMBL gene IDs using biomaRt.
-#' @param data a data matrix containing a column of stable gene IDs.
-#' @param ensembl.version a number specifying version of ENSEMBL database is used when transforming ENSEMBL IDs into HUGO IDs using biomaRt. Default is 104.
-#' @param ensembl.id.column.name a column name including ENSEMBL IDs. Default is "name" (as present in the output from DEA analysis done on limma).
+#' @description A function for adding HUGO IDs ("external_gene_name") to
+#' existing data frame based on ENSEMBL gene IDs using biomaRt. The input is
+#' typically an output from RunDEA (re-formatted matrix of
+#' differential expression/abundance results from limma, please, check RunDEA
+#' for more details). The output is a data frame with a column containing HUGO IDs
+#' @param data a data frame containing a column of ENSEMBL IDs.
+#' @param ensembl.version a number specifying version of ENSEMBL database used
+#' for obtaining HUGO IDs using biomaRt. Default is 104.
+#' @param ensembl.id.column.name a column name including ENSEMBL IDs. Default
+#' is "name" (based on limma output format).
 #' @export
 #' @import biomaRt
 #' @seealso
-#' @return the input dataframe merged with a column of HUGO IDs.
+#' @return a data frame with a column of HUGO IDs.
 #' @examples \dontrun{
-#' ...
+#' campp2_brca_1_DEA_HUGO <- AddGeneName(campp2_brca_1_DEA$DEA.out, 104)
 #' }
 
 AddGeneName <- function(data, ensembl.version = 104, ensembl.id.column.name="name") {
 
     ensembl <- useEnsembl(biomart = 'genes', dataset = 'hsapiens_gene_ensembl',version = ensembl.version)
 
-    ensembl_id <- as.data.frame(data$ensembl.id.column.name)
+    ensembl_id <- as.data.frame(data[ensembl.id.column.name])
     colnames(ensembl_id) <- "Gene stable ID"
 
     gene_names <- getBM(attributes = c('ensembl_gene_id', 'external_gene_name'),
@@ -25,14 +31,14 @@ AddGeneName <- function(data, ensembl.version = 104, ensembl.id.column.name="nam
                         uniqueRows = TRUE,
                         bmHeader = T)
 
-    names(data)[names(data) == ensembl.id.column.name] <- "Gene stable ID"
-    data_merged <- merge(data, gene_names, by="Gene stable ID", all = TRUE)
+    names(gene_names)[1]<-ensembl.id.column.name
+    names(gene_names)[2]<-"HUGO_ID"
 
-    colnames(data_merged)[1] <- ensembl.id.column.name
-    data_merged$Ensembl_ID <- data_merged$name
-    colnames(data_merged)[which(names(data_merged) == "Gene name")] <- "HUGO_ID"
+    data.HUGO <- merge(data, gene_names, by=ensembl.id.column.name, all = TRUE)
 
-    print(paste0(" - You have chosen to use HUGO IDs for annotation. *Note that ",sum(is.na(data_merged))," genes will be lost!"))
+    data.HUGO <- data.HUGO[,c(2,3,4,5,6,1,7,8,9)]  ##reorder the columns to the original format with HUGO as last
 
-    return(data_merged)
+    print(paste0(" - You have chosen to use HUGO IDs for annotation. *Note that ",sum(is.na(data.HUGO))," genes will be lost due to the lack of HUGO for a given ENSEMBL ID!"))
+
+    return(data.HUGO)
 }

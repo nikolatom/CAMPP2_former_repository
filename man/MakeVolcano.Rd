@@ -2,27 +2,46 @@
 % Please edit documentation in R/VolcanoPlot.R
 \name{MakeVolcano}
 \alias{MakeVolcano}
-\title{Make Volcano Plot}
+\title{Make Volcano Plot of DEA features}
 \usage{
-MakeVolcano(data, prefix, cutoff.logFC, cutoff.FDR)
+MakeVolcano(
+  data,
+  prefix,
+  cutoff.logFC = 1,
+  cutoff.FDR = 0.01,
+  n.labeled.features = 15
+)
 }
 \arguments{
-\item{data}{A data matrix from RunDEA containing genes and their corresponding AveExpr, logFCs, p.value, adj.p.value ect. Mandatory columns are logFC, adj.P.Val and HUGO_ID. N.B. columns logFC and adj.P.Val must contain numeric values!}
+\item{data}{A data frame from RunDEA containing genes and their
+corresponding AveExpr, logFC, p.value, adj.p.value ect. Mandatory columns
+are "logFC", "adj.P.Val" and "HUGO_ID." HUGO_ID could be obtained using
+AddGeneName function.}
 
-\item{prefix}{A prefix for the output filename.}
+\item{prefix}{a prefix for the output filename.}
 
-\item{cutoff.logFC}{A cut-off value for log fold change}
+\item{cutoff.logFC}{a numeric value for logFC cutoff. Default = 1}
 
-\item{cutoff.FDR}{A cut-off value for  corrected adj.P.Val}
+\item{cutoff.FDR}{a numeric value for adj.P.Val cutoff. Default = 0.01}
+
+\item{n.labeled.features}{a number of the most up-/down- regulated features
+labeled in the volcano plot. Default = 15}
 }
 \value{
-Volcano plot
+Volcano plot of differentially expressed features saved into .png
 }
 \description{
 A function for making volcano plots from DEA results.
+The input is typically an output from RunDEA (re-formatted matrix of
+differential expression/abundance results from limma, please, check RunDEA
+for more details). By default, top 15 up- and down-regulated features
+will be labeled on the Volcano plot. Important: Features are selected from
+the table with all the groups' comparisons.
 }
 \examples{
 \dontrun{
-...
+##The input is made by example script from AddGeneName function
+MakeVolcano(campp2_brca_1_DEA_HUGO, prefix = "test_volcano",
+cutoff.logFC = 1, cutoff.FDR = 0.01, n.labeled.features = 15)
 }
 }
