@@ -23,7 +23,6 @@ runCampp2(
   colors = NULL,
   prefix = "Results",
   correlation = FALSE,
-  lasso = FALSE,
   WGCNA = FALSE,
   cutoff.WGCNA = NULL,
   survival = FALSE,
@@ -31,7 +30,10 @@ runCampp2(
   stratify = NULL,
   surv.plot = 50,
   PPint = FALSE,
-  gene.miR.int = FALSE
+  gene.miR.int = FALSE,
+  alpha.lasso = FALSE,
+  min.coef.lasso = NULL,
+  nfolds.lasso = NULL
 )
 }
 \arguments{
@@ -71,8 +73,6 @@ runCampp2(
 
 \item{correlation}{Argument for correlation analysis. String specify which features should be correlated, options are: "ALL", "DE", "DA", "LASSO", "EN" or "Consensus". For this type of analysis, 2 datasets must include the same samples, e.g. tumor1-normal vs tumor2-normal (3 samples from 1 patient needed). Default is FALSE (do not run).}
 
-\item{lasso}{Argument specifying parameters for LASSO or Elastic net regression. This argument may be set to 1 for LASSO or >0 & <1 for Elastic Net, but NOT to 0 exactly (Ridge Regression). Defaults is FALSE (do not run).}
-
 \item{WGCNA}{Argument specifying parameter for Weighed Gene Co-expression Network Analysis. It takes a string, either "DA", "DE" or "ALL" specifying if all variables should be included in WGCNA or only differentially expressed / abundant variables. Defaults is FALSE (do not run).}
 
 \item{cutoff.WGCNA}{Argument specifying the cutoff values for WGCNA. The argument takes a numuric vector of three values: (I) minimum modules size, (II) maximum percentage of dissimilarity for merging of modules, and (III) percentage of top most interconnected genes (or other features) to return, from each modules identified in the Weighed Gene Co-expression Network Analysis. Default values are 10,25,25.}
@@ -88,6 +88,12 @@ runCampp2(
 \item{PPint}{Argument specifying that protein-protein interaction networks should be generated using the results of the differential expression analysis. This argument must be a character vector of length two. The first element in this list must be a string specifying the type of gene identifier in the gene counts file provided. Allowed identifiers are: "ensembl_peptide_id", "hgnc_symbol", "ensembl_gene_id", "ensembl_transcript_id", "uniprotswissprot". The second element is a string specifying version of the stringDB to use. Currently only version supported is: 11.0. Default is FALSE (do not run).}
 
 \item{gene.miR.int}{Argument specifying that gene-miRNA interaction networks should be generated using the results of the differential expression analysis. This argument must be a character vector of length two. The first element in this list must be a string specifying the type of miRNA identifier in the gene counts data file. Allowed identifiers are: "mature_mirna_ids", "mature_mirna_accession". The second element must be a string specifying the miRNA-gene database to use, currently options are: "targetscan" (validated miRNAs), "mirtarbase" (predicted miRNAs), "tarscanbase" (validated + predicted miRNAs)". Default is FALSE (do not run).}
+
+\item{alpha.lasso}{a numeric vector specifying hyperparameter alpha for LASSO/Elastic network/Ridge regression. This value must be set to 0.0 < x < 1.0 for Elastic Net or to 1.0 for LASSO regression or to 0.0 for Ridge regression. Defaults is FALSE (do not run).}
+
+\item{min.coef.lasso}{a numeric vector specifying a threshold for features' filtering (e.g. genes) based on the coefficients which are calculated during model fitting. Default value is > 0.}
+
+\item{nfolds.lasso}{a numeric vector describing number of folds during Lambda estimation which is based on a cross-validation. Although nfolds can be as large as the sample size (leave-one-out CV), it is not recommended for large datasets. Smallest value allowable is nfolds=3. Default is 10.}
 }
 \value{
 CAMPP2 results
@@ -97,7 +103,7 @@ CAMPP2 is a tool for quantitative data analysis
 }
 \examples{
 \dontrun{
-runCampp2(batches=c("tumor_stage","tumor_stage"),prefix="test_CAMPP2", data1=campp2_brca_1, data2=campp2_brca_2, metadata1=campp2_brca_1_meta,metadata2=campp2_brca_2_meta, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"))
+runCampp2(batches=c("tumor_stage","tumor_stage"),prefix="test_CAMPP2", data1=campp2_brca_1, data2=campp2_brca_2, metadata1=campp2_brca_1_meta,metadata2=campp2_brca_2_meta, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"),alpha.lasso=0.5)
 }
 
 }

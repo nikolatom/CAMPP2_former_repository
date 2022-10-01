@@ -431,8 +431,14 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
         if (databatch1 == TRUE){
             LASSO1.results <- runLASSO(data1.batch, group1, alpha.lasso, min.coef.lasso, nfolds.lasso, prefix)
         } else {
-            LASSO1.results <- runLASSO(data1, group1, alpha.lasso, min.coef.lasso, nfolds.lasso, prefix)
+            LASSO1.results <- runLASSO(data1$E, group1, alpha.lasso, min.coef.lasso, nfolds.lasso, prefix)
         }
+
+        print("Analysing DEA vs LASSO consensus1")
+        consensus1<-RunDEA_LASSO_consensus(DEA1.out, LASSO1.results, group1, viridis.palette="turbo", paste0(prefix,"_1"))
+        write.table(consensus1, paste0(prefix,"_DEA_LASSO_consensus1.txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+        write.table(LASSO1.results$VarsSelect, paste0(prefix,"_LASSO1.txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+
 
         #processing second dataset
         if (!is.null(data2)){
@@ -441,77 +447,17 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
             } else {
                 LASSO2.results <- runLASSO(data2, group2, alpha.lasso, min.coef.lasso, nfolds.lasso, prefix)
             }
+            print("Analysing DEA vs LASSO consensus2")
+            consensus2<-RunDEA_LASSO_consensus(DEA2.out, LASSO2.results, group2, viridis.palette="turbo", paste0(prefix,"_2"))
+            write.table(consensus2, paste0(prefix,"_DEA_LASSO_consensus2.txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+            write.table(LASSO2.results$VarsSelect, paste0(prefix,"_LASSO2.txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+
         }else{
             LASSO2.results<-NA
         }
 
 
-
-        # Consensus DEA and LASSO
-        # consensus1 <- DEA1.out[DEA1.out$name %in% LASSO1.results$VarsSelect,]  #original
-        consensus1 <- DEA1.out[DEA1.out$name %in% LASSO1.results$VarsSelect[,1],]
-        print("consensus1")
-        print(consensus1)
-
-        DEA_name<-DEA1.out$name[1:1000]
-        lasso_test<-LASSO1.results$VarsSelect[1:100,1]
-        print("DEA_name")
-        print(DEA_name)
-        print("lasso_test")
-        print(lasso_test)
-        print("CONSENSUS")
-        print(DEA_name[DEA_name %in% lasso_test])
-
-        if (nrow(consensus1) > 0) {
-            write.table(consensus1, paste0(prefix,"_DEA_LASSO_Consensus1.txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
-            pdf(paste0(prefix, "_overlap_DEA_LASSO1.pdf"), height=8, width=12)
-            if (length(levels(group1)) == 2) {
-                venn1 <- venn.diagram(list(A=unique(as.character(DEA1.out[DEA1.out$dir =="up.reg",]$name)), B=unique(as.character(DEA1.out[DEA1.out$dir =="down.reg",]$name)), C=as.character(LASSO1.results$VarsSelect[,1])), category.names = c("DEA Analysis Up", "DEA Analysis Down", "LASSO/EN/Ridge Regression"), filename=NULL, lwd = 0.7, cat.pos=0, sub.cex = 2, cat.cex= 1.5, cex=1.5, fill=viridis(3, begin = 0.2, end = 0.8, option="cividis"))
-
-            } else {
-                venn1 <- venn.diagram(list(A=unique(as.character(DEA1.out$name)), B=as.character(VarsSelect$LASSO.Var.Select)), category.names = c("DEA Analysis All", "LASSO/EN/Ridge regression"), filename=NULL, lwd = 0.7, cat.pos=0, sub.cex = 2, cat.cex= 1.5, cex=1.5, fill=viridis(2, begin = 0.2, end = 0.8, option="cividis"))  ##double check this
-
-            }
-            grid.draw(venn1)
-            dev.off()
-        } else {
-            cat("There is no consensus between LASSO/EN/Ridge regression and DEA in dataset1.")
-        }
-
-        print("Analysing CONSENSUS2") #will be removed
-#############CONSENSUS2
-        if(!is.na(LASSO2.results)) {
-            consensus2 <- DEA2.out[DEA2.out$name %in% LASSO2.results$VarsSelect[,1],]
-            if (nrow(consensus2) > 0) {
-                write.table(consensus2, paste0(prefix,"_DEA_LASSO_Consensus2.txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
-                pdf(paste0(prefix, "_overlap_DEA_LASSO2.pdf"), height=8, width=12)
-                if (length(levels(group2)) == 2) {
-                    venn2 <- venn.diagram(list(A=unique(as.character(DEA2.out[DEA2.out$dir =="up.reg",]$name)), B=unique(as.character(DEA2.out[DEA2.out$dir =="down.reg",]$name)), C=as.character(LASSO2.results$VarsSelect)), category.names = c("DEA Analysis Up", "DEA Analysis Down", "LASSO/EN/Rigde Regression"), filename=NULL, lwd = 0.7, cat.pos=0, sub.cex = 2, cat.cex= 1.5, cex=1.5, fill=viridis(3, begin = 0.2, end = 0.8, option="cividis"))
-
-                } else {
-                    venn2 <- venn.diagram(list(A=unique(as.character(DEA2.out$name)), B=as.character(VarsSelect$LASSO.Var.Select)), category.names = c("DEA Analysis All", "LASSO/EN/Ridge regression"), filename=NULL, lwd = 0.7, cat.pos=0, sub.cex = 2, cat.cex= 2.5, cex=1.5, fill=viridis(2, begin = 0.2, end = 0.8, option="cividis"))  ##double check this
-
-                }
-                grid.draw(venn2)
-                dev.off()
-            } else {
-                cat("There is no consensus between LASSO/EN/Ridge regression and DEA in dataset2.")
-            }
-        }else{
-            print("LASSO/EN/Ridge regression for dataset2 is not calculated.")
-        }
-############
-
-        ###Save results
-        ###check printing messages
-
-        print("saving varselect")
-        ###save variable names from LASSO
-        write.table(LASSO1.results$VarsSelect, paste0(prefix,"_LASSO1.txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
-        if(!is.na(LASSO2.results)){
-            write.table(LASSO2.results$VarsSelect, paste0(prefix,"_LASSO2.txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
-        }
-
+        ##Saving AUC/ROC - only if all the sample groups are large enough
         print("saving roc")
 
         ###save AUC results
@@ -531,16 +477,16 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
         print("saving cv.error")
 
-        ###save cross validation error rate results
+        ###save cross validation error rate results - only if all the sample groups are large enough
         if(!is.na(LASSO1.results$cv.error)){
-            write.table(LASSO1.results$cv.error, paste0(prefix,"_AUC1.txt"), row.names=FALSE, col.names = TRUE, quote = FALSE)
+            write.table(LASSO1.results$cv.error, paste0(prefix,"_crossVal_error_1.txt"), row.names=FALSE, col.names = TRUE, quote = FALSE)
         }else{
             print("Cross validation error rate for dataset1 are not available")
         }
 
         if(!is.na(LASSO2.results)){
             if(!is.na(LASSO2.results$cv.error)){
-                write.table(LASSO2.results$cv.error, paste0(prefix,"_AUC2.txt"), row.names=FALSE, col.names = TRUE, quote = FALSE)
+                write.table(LASSO2.results$cv.error, paste0(prefix,"_crossVal_error_2.txt"), row.names=FALSE, col.names = TRUE, quote = FALSE)
             }else{
                 print("Cross validation error rate for dataset2 is not available")
             }

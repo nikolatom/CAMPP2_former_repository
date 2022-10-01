@@ -1,24 +1,58 @@
-#' @title A function for LASSO/Elastic net/Ridge regression
-#' @description The function runs LASSO/Elastic net/Ridge regression (depending on a hyperparameter alpha value). Parameter Lambda is automatically estimated using k-fold cross-validation (cv.glmnet) by default.
-#' The function optionally calculates also double cross-validation using a test set.
-#' @param data a data frame of expression/abundance counts. It's recommended to use normalized and batch corrected data.
-#' @param group a factor specifying group for each sample (e.g. could be represented by a column from a metadata file)
-#' @param alpha a numeric vector specifying hyperparameter alpha. This value must be set to 0.0 < x < 1.0 for Elastic Net (0.5 is default) or to 1.0 for LASSO regression or to 0.0 for Ridge regression.
-#' @param min.coef a numeric vector specifying a threshold for features' filtering (e.g. genes) based on the coefficients which are calculated during model fitting. Default value is > 0.
-#' @param nfolds a numeric vector describing number of folds during Lambda estimation which is based on a cross-validation. Although nfolds can be as large as the sample size (leave-one-out CV), it is not recommended for large datasets. Smallest value allowable is nfolds=3. Default is 10.
+#' @title A wrapper function for LASSO/Elastic net/Ridge regression
+#' @description The function runs LASSO/Elastic net/Ridge regression (depending
+#' on a hyperparameter alpha value. For Ridge regression, alpha = 0;
+#' for Elastic net, alpha >0 & <1; for LASSO, alpha = 1).
+#' The regression is calculated 10 times for 10 random seeds and the intersect
+#' of the significant features (e.g., genes) is obtained.
+#' Parameter Lambda is automatically
+#' estimated using k-fold cross-validation (cv.glmnet) by default.
+#' The function optionally (>20 samples) calculates a double
+#' cross-validation using a validation set which represents 1/4 of the samples
+#' from each group.
+#' Results are provided in the form of:
+#' 1) the names of the significant features passing filters based on their
+#' coefficient values
+#' 2) classification error rate (datasets of >20 samples)
+#' 3) roc.res - AUC value (datasets of >20 samples)
+#' 4) cross validation error plot
+#' @param data a data frame of expression/abundance counts. It's recommended
+#' to use normalized and batch corrected data.
+#' @param group a factor specifying group for each sample (e.g. could be
+#' represented by a column from a metadata file)
+#' @param alpha a numeric vector specifying hyperparameter alpha. This value
+#' must be set to 0.0 < x < 1.0 for Elastic Net (0.5 is default) or to 1.0
+#' for LASSO regression or to 0.0 for Ridge regression.
+#' @param min.coef a numeric vector specifying a threshold for features'
+#' filtering (e.g. genes) based on the coefficients which are calculated during
+#' model fitting. Default value is > 0.
+#' @param nfolds a numeric vector describing number of folds during Lambda
+#' estimation which is based on a cross-validation. Although nfolds can be
+#' as large as the sample size (leave-one-out CV), it is not recommended for
+#' large datasets. Smallest value allowable is nfolds=3. Default is 10.
 #' @param prefix a character string defining a prefix of output file.
 #' @export
 #' @import glmnet
 #' @import parallel
 #' @import doMC
+#' @import viridis
+#' @import pROC
+#' @import ggplot2
+#' @import grid
 #' @seealso
 #' @return a list of:
-#' 1) coef.ma - a matrix of feature names having coefficients of best model passing the filters (threshold defined by min.coef)
-#' 2) class.error - logical/numeric value describing miss classification error rate
-#' 3) fit - cv.glmnet object
-#' 4) plots
+#' 1) VarSelect - a matrix of feature names having coefficients of best model
+#' passing the filters (threshold defined by min.coef)
+#' 2) cv.error - logical/numeric value describing miss classification error
+#' rate (datasets of >20 samples)
+#' 3) roc.res - AUC value (datasets of >20 samples)
+#' 4) cross validation error plot
 #' @examples \dontrun{
-#' runLASSO(data=campp2_brca_1, group=campp2_brca_1_meta$diagnosis, alpha=0.5, min.coef=0, nfolds=10, prefix=test)
+#' ##run regression using small batch corrected dataset - no double cross validation
+#' runLASSO(data=campp2_brca_1_batchCorrected, group=campp2_brca_1_meta$diagnosis, alpha=0.5, min.coef=0, nfolds=10, prefix="test")
+#' ##run regression using large batch corrected dataset suitable for double cross validation
+#' campp_test_data_LASSO<-cbind(campp2_brca_1_batchCorrected,campp2_brca_2_batchCorrected)
+#' campp_test_metadata_LASSO<-c(campp2_brca_1_meta$diagnosis, campp2_brca_2_meta$diagnosis)
+#' runLASSO(data=campp_test_data_LASSO, group=campp_test_metadata_LASSO, alpha=0.5, min.coef=0, nfolds=10, prefix="test")
 #' }
 
 
@@ -51,7 +85,7 @@ runLASSO <- function(data, group, alpha, min.coef=0, nfolds=10, prefix=NULL){
     }
 
 
-    ###Seting up the seeds
+    ###Setting up the seeds
     seeds <- sample(1:1000, 10) #generate 10 random seeds between 1:1000
     LASSO.res <- list()
 
@@ -90,9 +124,8 @@ runLASSO <- function(data, group, alpha, min.coef=0, nfolds=10, prefix=NULL){
     }else{
         run.number <- as.character(1:10)
         cross.val.error.mean <- round(unlist(lapply(LASSO.res, '[[', 2)), digits = 4) ##print error means from the results
-        cat(paste0("\nThe average (the analysis was run with 10 random seeds) cross validation error for LASSO/Elastic net/Ridge regression was: ", mean(cross.val.error.mean), "% and the higest error returned from any of the 10 runs was: ", max(cross.val.error.mean),"%. Generally the cross validation error should be low ~ 5.0 %, as large errors may indicate a poor model and/or very heterogeneous data. On the other hand, an error of 0 might indicate over-fitting. \n\n"))
+        cat(paste0("The average (the analysis was run with 10 random seeds) cross validation error for LASSO/Elastic net/Ridge regression was: ", mean(cross.val.error.mean), "% and the higest error returned from any of the 10 runs was: ", max(cross.val.error.mean),"%. Generally the cross validation error should be low ~ 5.0 %, as large errors may indicate a poor model and/or very heterogeneous data. On the other hand, an error of 0 might indicate over-fitting. \n\n"))
         ## originally, it was saying "leave-one-out cross validation error" - I think it's not true
-
         cv.error <- data.frame(cbind(cross.val.error.mean, run.number)) #cv.error - percentage of cross validation error
         cv.error.plot <- ggplot(data=cv.error, aes(x=run.number, y=cross.val.error.mean)) + geom_bar(aes(fill = as.factor(run.number)), stat="identity") + theme_minimal() + scale_x_discrete(limits=c(run.number)) + scale_fill_viridis(begin = 0.0, end = 0.0, discrete=TRUE, option="cividis" ) + theme(legend.position="none") + ylab("cross.val.error.mean in %") + theme(axis.text = element_text(size=14), axis.title = element_text(size=16))
         ggsave(paste0(prefix, "_CrossValidationPlot.pdf"), plot = cv.error.plot)
@@ -101,11 +134,10 @@ runLASSO <- function(data, group, alpha, min.coef=0, nfolds=10, prefix=NULL){
 
 
     ### Area under the curve AUC performed only if all the sample groups are large enough
-    if(!FALSE %in% test.train) {   ##If FALSE not in test.train
+    if(!FALSE %in% test.train) {
 
         ll <- list()
         llev <- levels(as.factor(group))
-
         for (idx in 1:length(llev)) {
             pos <- which(group == as.character(llev[idx]))
             ll[[idx]] <- pos
@@ -113,10 +145,10 @@ runLASSO <- function(data, group, alpha, min.coef=0, nfolds=10, prefix=NULL){
 
         samp <- unlist(lapply(ll, function(x) sample(x, ceiling((length(x)/4)))))
 
-        testD <- data.frame(t(data[rownames(data) %in% as.character(VarsSelect$LASSO.Var.Select), samp]))
+        testD <- data.frame(t(data[rownames(data) %in% as.character(VarsSelect[,1]), samp]))
         testG <- as.character(group[samp])
 
-        trainD <- data.frame(t(data[rownames(data) %in% as.character(VarsSelect$LASSO.Var.Select), -samp]))
+        trainD <- data.frame(t(data[rownames(data) %in% as.character(VarsSelect[,1]), -samp]))
         trainG <- as.character(group[-samp])
 
         mn.net <- nnet::multinom(trainG ~ ., data=trainD)  ##is multinom correct?

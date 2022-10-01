@@ -2,7 +2,7 @@
 % Please edit documentation in R/Run_LASSO.R
 \name{runLASSO}
 \alias{runLASSO}
-\title{A function for LASSO/Elastic net/Ridge regression}
+\title{A wrapper function for LASSO/Elastic net/Ridge regression}
 \usage{
 runLASSO(data, group, alpha, min.coef = 0, nfolds = 10, prefix = NULL)
 }
@@ -21,17 +21,33 @@ runLASSO(data, group, alpha, min.coef = 0, nfolds = 10, prefix = NULL)
 }
 \value{
 a list of:
-1) coef.ma - a matrix of feature names having coefficients of best model passing the filters (threshold defined by min.coef)
-2) class.error - logical/numeric value describing miss classification error rate
-3) fit - cv.glmnet object
-4) plots
+1) VarSelect - a matrix of feature names having coefficients of best model passing the filters (threshold defined by min.coef)
+2) cv.error - logical/numeric value describing miss classification error rate (datasets of >20 samples)
+3) roc.res - AUC value (datasets of >20 samples)
+4) cross validation error plot
 }
 \description{
-The function runs LASSO/Elastic net/Ridge regression (depending on a hyperparameter alpha value). Parameter Lambda is automatically estimated using k-fold cross-validation (cv.glmnet) by default.
-The function optionally calculates also double cross-validation using a test set.
+The function runs LASSO/Elastic net/Ridge regression (depending
+on a hyperparameter alpha value. For Ridge regression, alpha = 0;
+for Elastic net, alpha >0 & <1; for LASSO, alpha = 1).
+
+The regression is calculated 10x for 10 random seeds and the intersect of the
+results is obtained.
+
+Parameter Lambda is automatically
+estimated using k-fold cross-validation (cv.glmnet) by default.
+
+The function optionally (>20 samples) calculates also double
+cross-validation using a validation set.
 }
 \examples{
 \dontrun{
-...
+##run using small dataset - no double cross validation
+runLASSO(data=campp2_brca_1, group=campp2_brca_1_meta$diagnosis, alpha=0.5, min.coef=0, nfolds=10, prefix="test")
+##run using dataset for double cross validation
+campp_testdata1<-cbind(campp2_brca_1,campp2_brca_2)
+campp_test_metadata1<-c(campp2_brca_1_meta$diagnosis, campp2_brca_2_meta$diagnosis)
+runLASSO(data=campp_testdata1, group=campp_test_metadata1, alpha=0.5, min.coef=0, nfolds=10, prefix="test")
+
 }
 }

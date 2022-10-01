@@ -1,24 +1,49 @@
 #' @title A function for LASSO/Elastic net/Ridge regression
-#' @description The function runs LASSO/Elastic net/Ridge regression (depending on a hyperparameter alpha value). Parameter Lambda is automatically estimated using k-fold cross-validation (cv.glmnet) by default.
-#' The function optionally calculates also double cross-validation using a test set.
-#' @param seed an integer vector containing the random number generator (RNG) state for random number generation. Default is 123
-#' @param data a data frame of expression/abundance counts. It's recommended to use normalized and batch corrected data.
-#' @param group a factor specifying group for each sample (e.g. could be represented by a column from a metadata file)
-#' @param alpha a numeric vector specifying hyperparameter alpha. This value must be set to 0.0 < x < 1.0 for Elastic Net (0.5 is default) or to 1.0 for LASSO regression or to 0.0 for Ridge regression.
-#' @param validation a boolean value for performing double cross-validation. Validation (test) set represents 1/4 of the samples in each group. As a result, cross validation error rate is provided. Default value is FALSE.
-#' @param min.coef a numeric vector specifying a threshold for features' filtering (e.g. genes) based on the coefficients which are calculated during model fitting. Default value is > 0.
-#' @param nfolds a numeric vector describing number of folds during Lambda estimation which is based on a cross-validation. Although nfolds can be as large as the sample size (leave-one-out CV), it is not recommended for large datasets. Smallest value allowable is nfolds=3. Default is 10.
+#' @description The function runs LASSO/Elastic net/Ridge regression
+#' (depending on a hyperparameter alpha value). Parameter Lambda is
+#' automatically estimated using k-fold cross-validation (cv.glmnet) by default.
+#' The function optionally calculates also double cross-validation using
+#' a test set. aValidation (test) set represents 1/4 of the samples from each
+#' group.
+#' Results are provided in the form of:
+#' 1) the ames of the signifficant features passing filters based on their
+#' coefficient values
+#' 2) classification error rate (calculated if "validation=TRUE")
+#' 3) cv.glmnet object.
+#' @param seed an integer vector containing the random number generator (RNG)
+#' state. Default is 123.
+#' @param data a data frame of expression/abundance counts.
+#' It's recommended to use normalized and batch corrected data.
+#' @param group a factor specifying group for each sample (e.g. could be
+#' represented by a column from a metadata file)
+#' @param alpha a numeric vector specifying hyperparameter alpha. This value
+#' must be set to 0.0 < x < 1.0 for Elastic Net (0.5 is default) or to 1.0 for
+#' LASSO regression or to 0.0 for Ridge regression.
+#' @param validation a boolean value for performing double cross-validation.
+#' Validation (test) set represents 1/4 of the samples in each group.
+#' As a result, cross validation error rate is provided. Default value is FALSE.
+#' @param min.coef a numeric vector specifying a threshold for features'
+#' filtering (e.g. genes) based on the coefficients which are calculated during
+#' model fitting. Default value is > 0.
+#' @param nfolds a numeric vector describing number of folds during Lambda
+#' estimation which is based on a cross-validation. Although nfolds can be
+#' as large as the sample size (leave-one-out CV), it is not recommended for
+#' large datasets. Smallest value allowable is nfolds=3. Default is 10.
 #' @export
 #' @import glmnet
 #' @import parallel
 #' @import doMC
 #' @seealso
 #' @return a list of:
-#' 1) coef.ma - a matrix of feature names having coefficients of best model passing the filters (threshold defined by min.coef)
-#' 2) class.error - logical/numeric value describing miss classification error rate
+#' 1) coef.ma - a matrix of feature names having coefficients of best model
+#' passing the filters (threshold defined by min.coef)
+#' 2) class.error - logical/numeric value describing miss classification error
+#' rate
 #' 3) fit - cv.glmnet object
 #' @examples \dontrun{
-#' LASSOFeature(seed=123, data=campp2_brca_1, group=campp2_brca_1_meta$diagnosis, alpha=0.5, validation=TRUE, min.coef = 0, nfolds=10)
+#' LASSOFeature(seed=123, data=campp2_brca_1,
+#' group=campp2_brca_1_meta$diagnosis, alpha=0.5, validation=TRUE,
+#' min.coef = 0, nfolds=10)
 #' }
 
 
@@ -87,7 +112,7 @@
 
 
         coef.ma <- names(coef.ma[coef.ma[,1] >min.coef, ]) ##original - obtain only names
-        # coef.ma <- coef.ma[coef.ma[,1] >min.coef, ] #genes with coefficients
+        # coef.ma <- coef.ma[coef.ma[,1] >min.coef, ] #genes with coefficients - Should we rather consider this?
 
         ## return genes and coefficients, classification error rates and model
         return(list(coef.ma, class.error, fit))
