@@ -16,10 +16,12 @@ Description: The CAncer bioMarker Prediction Pipeline2 (CAMPP2) is a simple
 License: GPL
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1
 biocViews:
 Depends: R (>= 4.0.0)
 Imports:
+ M3C,
+ FactoMineR,
  statmod,
  edgeR,
  glmnet,
@@ -35,9 +37,7 @@ Imports:
  squash,  
  survcomp,  
  scales,  
- rms,  
  GO.db,  
- WGCNA, 
  fitdistrplus,  
  impute,  
  pcaMethods,  
