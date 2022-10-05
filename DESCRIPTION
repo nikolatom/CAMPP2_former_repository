@@ -20,6 +20,11 @@ RoxygenNote: 7.2.0
 biocViews:
 Depends: R (>= 4.0.0)
 Imports:
+ pca3d,
+ factoextra,
+ WGCNA,
+ M3C,
+ FactoMineR,
  statmod,
  edgeR,
  glmnet,
