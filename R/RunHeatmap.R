@@ -45,10 +45,10 @@ RunHeatmap<-function(feature.counts, DEA.out, group, heatmap.size=30, viridis.pa
         print(paste0("Top ", heatmap.size, " DEA features will be selected for heatplot based on their logFC values. Please, consider that some of the TOP DEA features might be present multiple times DEA output due to the multiple groups comparisons - on the heatmap, gene will be projected only once. "))
         print(paste0("Number of duplicates in the top ", heatmap.size, " DEA features is: ", (length(signif_features)-nrow(feature.counts))))
     } else if (plot.heatmap == "Consensus") {
-                feature.counts <- feature.counts[rownames(feature.counts) %in% as.character(consensus$name),]
+                feature.counts <- feature.counts[rownames(feature.counts) %in% as.character(DEA.out$name),]  ##NOT TESTED
                 print(paste0("\n Top ", heatmap.size, " consensual (DEA vs LASSO/EN) features will be considered in the heatplot. DEA features are selected based on their logFC values from the DEA output including all the comparisons."))
     } else if (plot.heatmap %in% c("EN", "LASSO")) {
-                feature.counts <- feature.counts[rownames(feature.counts) %in% as.character(VarsSelect$LASSO.Var.Select),]
+                feature.counts <- feature.counts[rownames(feature.counts) %in% as.character(DEA.out),] ##NOT TESTED
                 print(paste0("\n Top ", heatmap.size, " LASSO/EN features will be considered in the heatplot."))
     } else {
                 stop("You have specified argument plot.heatmap which will produce a heatmap with results from either DEA analysis, LASSO/Elastic-Net Regression or the Consensus of these. Input to argument plot.heatmap must be a string specifying which results to plot, options are: DEA, LASSO, EN, Consensus")
