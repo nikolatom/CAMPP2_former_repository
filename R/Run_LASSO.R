@@ -50,9 +50,15 @@
 #' ##run regression using small batch corrected dataset - no double cross validation
 #' runLASSO(data=campp2_brca_1_batchCorrected, group=campp2_brca_1_meta$diagnosis, alpha=0.5, min.coef=0, nfolds=10, prefix="test")
 #' ##run regression using large batch corrected dataset suitable for double cross validation
-#' campp_test_data_LASSO<-cbind(campp2_brca_1_batchCorrected,campp2_brca_2_batchCorrected)
-#' campp_test_metadata_LASSO<-c(campp2_brca_1_meta$diagnosis, campp2_brca_2_meta$diagnosis)
-#' runLASSO(data=campp_test_data_LASSO, group=campp_test_metadata_LASSO, alpha=0.5, min.coef=0, nfolds=10, prefix="test")
+#' ###create a large dataset
+#' campp2_test_data_LASSO<-cbind(campp2_brca_1,campp2_brca_2)
+#' campp2_test_metadata_LASSO<-rbind(campp2_brca_1_meta, campp2_brca_2_meta)
+#' campp2_test_data_LASSO_replaceNAs<-ReplaceNAs(data=campp2_test_data_LASSO)
+#' campp2_test_data_LASSO_zeroFix<-FixZeros(data=campp2_test_data_LASSO_replaceNAs,group=campp2_test_metadata_LASSO$diagnosis, remove.sparse.features=TRUE)
+#' campp2_test_data_LASSO_normalized<-NormalizeData(data=campp2_test_data_LASSO_zeroFix,group=campp2_test_metadata_LASSO$diagnosis,standardize="TMM",transform="voom",technology="seq")
+#' campp2_test_data_LASSO_batchCorrected<-BatchCorrect(data=campp2_test_data_LASSO_normalized,batch=campp2_test_metadata_LASSO$tumor_stage,group=campp2_test_metadata_LASSO$diagnosis,technology="seq")
+#' ###run lasso on a large dataset
+#' runLASSO(data=campp2_test_data_LASSO_batchCorrected, group=campp2_test_metadata_LASSO$diagnosis, alpha=0.5, min.coef=0, nfolds=10, prefix="test")
 #' }
 
 
@@ -64,7 +70,7 @@ runLASSO <- function(data, group, alpha, min.coef=0, nfolds=10, prefix=NULL){
     }else if (alpha == 0.0 ){
         print("According to parameter alpha, Ridge regression will be run.")
     }else if (alpha > 0.0 && alpha < 1){
-        print("According to parameter alpha, Elastic network will be run.")
+        print("According to parameter alpha, Elastic net will be run.")
     }else if (alpha == 1){
         print("According to parameter alpha, LASSO will be run.")
     }
@@ -155,8 +161,10 @@ runLASSO <- function(data, group, alpha, min.coef=0, nfolds=10, prefix=NULL){
         mn.pred <- predict(mn.net, newdata=testD, type="prob")
         roc.res <- multiclass.roc(testG, mn.pred)
         roc.res <- data.frame(round(as.numeric(sub(".*: ", "", roc.res$auc)), digits = 2))
+
         colnames(roc.res) <- "AUC"
-        cat(paste0("Are under the curve (AUC) for variables selected (based on intersection) from 10 LASSO/EN/Rigge regression runs was: ", roc.res$AUC))
+
+        cat(paste0("The area under the curve (AUC) for variables selected (based on intersection) from 10 LASSO/EN/Rigge regression runs was: ", roc.res,". \n"))
     } else{
         roc.res=NA
     }

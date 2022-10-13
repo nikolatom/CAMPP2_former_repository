@@ -30,11 +30,13 @@ options, see viridis vignette.}
 \value{
 1) a data frame of features common for both DEA and LASSO which are extracted
 from DEAout table
-2) a .txt table including features common for both DEA and LASSO
-3) a .png with a venn diagram of features' intersections between DEA and LASSO
+2) a .png with a venn diagram of features' intersections between DEA and LASSO
 }
 \description{
-A function for creating consensus between DEA and LASSO
+This function creates a consensus between the results from
+DEA and LASSO/Elastic net/Ridge regression. Specifically, only the features
+present in LASSO results are kept in the DEA results table.
+Additionally, a Venn diagram visualizing overlaps is generated.
 }
 \examples{
 \dontrun{

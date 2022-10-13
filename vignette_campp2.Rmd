@@ -352,9 +352,15 @@ rate (datasets of >20 samples) \
 ##run regression using small batch corrected dataset - no double cross validation
 runLASSO(data=campp2_brca_1_batchCorrected, group=campp2_brca_1_meta$diagnosis, alpha=0.5, min.coef=0, nfolds=10, prefix="test")
 ##run regression using large batch corrected dataset suitable for double cross validation
-campp_test_data_LASSO<-cbind(campp2_brca_1_batchCorrected,campp2_brca_2_batchCorrected)
-campp_test_metadata_LASSO<-c(campp2_brca_1_meta$diagnosis, campp2_brca_2_meta$diagnosis)
-runLASSO(data=campp_test_data_LASSO, group=campp_test_metadata_LASSO, alpha=0.5, min.coef=0, nfolds=10, prefix="test")
+###create a large dataset
+campp2_test_data_LASSO<-cbind(campp2_brca_1,campp2_brca_2)
+campp2_test_metadata_LASSO<-rbind(campp2_brca_1_meta, campp2_brca_2_meta)
+campp2_test_data_LASSO_replaceNAs<-ReplaceNAs(data=campp2_test_data_LASSO)
+campp2_test_data_LASSO_zeroFix<-FixZeros(data=campp2_test_data_LASSO_replaceNAs,group=campp2_test_metadata_LASSO$diagnosis, remove.sparse.features=TRUE)
+campp2_test_data_LASSO_normalized<-NormalizeData(data=campp2_test_data_LASSO_zeroFix,group=campp2_test_metadata_LASSO$diagnosis,standardize="TMM",transform="voom",technology="seq")
+campp2_test_data_LASSO_batchCorrected<-BatchCorrect(data=campp2_test_data_LASSO_normalized,batch=campp2_test_metadata_LASSO$tumor_stage,group=campp2_test_metadata_LASSO$diagnosis,technology="seq")
+###run lasso on a large dataset
+runLASSO(data=campp2_test_data_LASSO_batchCorrected, group=campp2_test_metadata_LASSO$diagnosis, alpha=0.5, min.coef=0, nfolds=10, prefix="test")
 }
 ```
 \
@@ -396,11 +402,13 @@ as large as the sample size (leave-one-out CV), it is not recommended for
 large datasets. Smallest value allowable is nfolds=3. Default is 10. \
 **Output from the function:** \
 a list of:
-1) coef.ma - a matrix of feature names having coefficients of best model
+1) coef.ma.names - a matrix of feature names having coefficients of best model
 passing the filters (threshold defined by min.coef)
 2) class.error - logical/numeric value describing miss classification error
 rate
 3) fit - cv.glmnet object \
+4) coef.ma - a matrix of the features' coefficients (best model)
+passing the filters (threshold defined by min.coef) \
 **An example run:** \
 
 ##Run Ridge/elastic net/LASSO regression
@@ -433,8 +441,8 @@ options, see viridis vignette. \
 **Output from the function:** \
 a list of:
 1) a data frame of features common for both DEA and LASSO which are extracted
-from DEAout table
-2) a .png with a venn diagram of features' intersections between DEA and LASSO
+from DEAout table \
+2) a .png with a venn diagram of features' intersections between DEA and LASSO \
 **An example run:** \
 \
 

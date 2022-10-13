@@ -35,11 +35,13 @@
 #' @import doMC
 #' @seealso
 #' @return a list of:
-#' 1) coef.ma - a matrix of feature names having coefficients of best model
+#' 1) coef.ma.names - a matrix of feature names having coefficients of best model
 #' passing the filters (threshold defined by min.coef)
 #' 2) class.error - logical/numeric value describing miss classification error
 #' rate
 #' 3) fit - cv.glmnet object
+#' 4) coef.ma - a matrix of the features' coefficients (best model)
+#' passing the filters (threshold defined by min.coef)
 #' @examples \dontrun{
 #' LASSOFeature(seed=123, data=campp2_brca_1,
 #' group=campp2_brca_1_meta$diagnosis, alpha=0.5, validation=TRUE,
@@ -111,11 +113,11 @@
         }
 
 
-        coef.ma <- names(coef.ma[coef.ma[,1] >min.coef, ]) ##original - obtain only names
-        # coef.ma <- coef.ma[coef.ma[,1] >min.coef, ] #genes with coefficients - Should we rather consider this?
+        coef.ma.names <- names(coef.ma[coef.ma[,1] >min.coef, ]) ##original - obtain only names
+        coef.ma <- as.data.frame(coef.ma[coef.ma[,1] >min.coef, ])[,1] #coefficients
 
         ## return genes and coefficients, classification error rates and model
-        return(list(coef.ma, class.error, fit))
+        return(list("coef.ma.names"=coef.ma.names, "class.error"=class.error, "fit"=fit, "coef.ma"=coef.ma))
 
     }
 

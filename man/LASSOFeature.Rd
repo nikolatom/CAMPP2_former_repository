@@ -43,19 +43,21 @@ large datasets. Smallest value allowable is nfolds=3. Default is 10.}
 }
 \value{
 a list of:
-1) coef.ma - a matrix of feature names having coefficients of best model
+1) coef.ma.names - a matrix of feature names having coefficients of best model
 passing the filters (threshold defined by min.coef)
 2) class.error - logical/numeric value describing miss classification error
 rate
 3) fit - cv.glmnet object
+4) coef.ma - a matrix of the features' coefficients (best model)
+passing the filters (threshold defined by min.coef)
 }
 \description{
 The function runs LASSO/Elastic net/Ridge regression
 (depending on a hyperparameter alpha value). Parameter Lambda is
 automatically estimated using k-fold cross-validation (cv.glmnet) by default.
 The function optionally calculates also double cross-validation using
-a test set.
-Validation (test) set represents 1/4 of the samples in each group.
+a test set. aValidation (test) set represents 1/4 of the samples from each
+group.
 Results are provided in the form of:
 1) the ames of the signifficant features passing filters based on their
 coefficient values

@@ -7,22 +7,33 @@
 runLASSO(data, group, alpha, min.coef = 0, nfolds = 10, prefix = NULL)
 }
 \arguments{
-\item{data}{a data frame of expression/abundance counts. It's recommended to use normalized and batch corrected data.}
+\item{data}{a data frame of expression/abundance counts. It's recommended
+to use normalized and batch corrected data.}
 
-\item{group}{a factor specifying group for each sample (e.g. could be represented by a column from a metadata file)}
+\item{group}{a factor specifying group for each sample (e.g. could be
+represented by a column from a metadata file)}
 
-\item{alpha}{a numeric vector specifying hyperparameter alpha. This value must be set to 0.0 < x < 1.0 for Elastic Net (0.5 is default) or to 1.0 for LASSO regression or to 0.0 for Ridge regression.}
+\item{alpha}{a numeric vector specifying hyperparameter alpha. This value
+must be set to 0.0 < x < 1.0 for Elastic Net (0.5 is default) or to 1.0
+for LASSO regression or to 0.0 for Ridge regression.}
 
-\item{min.coef}{a numeric vector specifying a threshold for features' filtering (e.g. genes) based on the coefficients which are calculated during model fitting. Default value is > 0.}
+\item{min.coef}{a numeric vector specifying a threshold for features'
+filtering (e.g. genes) based on the coefficients which are calculated during
+model fitting. Default value is > 0.}
 
-\item{nfolds}{a numeric vector describing number of folds during Lambda estimation which is based on a cross-validation. Although nfolds can be as large as the sample size (leave-one-out CV), it is not recommended for large datasets. Smallest value allowable is nfolds=3. Default is 10.}
+\item{nfolds}{a numeric vector describing number of folds during Lambda
+estimation which is based on a cross-validation. Although nfolds can be
+as large as the sample size (leave-one-out CV), it is not recommended for
+large datasets. Smallest value allowable is nfolds=3. Default is 10.}
 
 \item{prefix}{a character string defining a prefix of output file.}
 }
 \value{
 a list of:
-1) VarSelect - a matrix of feature names having coefficients of best model passing the filters (threshold defined by min.coef)
-2) cv.error - logical/numeric value describing miss classification error rate (datasets of >20 samples)
+1) VarSelect - a matrix of feature names having coefficients of best model
+passing the filters (threshold defined by min.coef)
+2) cv.error - logical/numeric value describing miss classification error
+rate (datasets of >20 samples)
 3) roc.res - AUC value (datasets of >20 samples)
 4) cross validation error plot
 }
@@ -30,24 +41,33 @@ a list of:
 The function runs LASSO/Elastic net/Ridge regression (depending
 on a hyperparameter alpha value. For Ridge regression, alpha = 0;
 for Elastic net, alpha >0 & <1; for LASSO, alpha = 1).
-
-The regression is calculated 10x for 10 random seeds and the intersect of the
-results is obtained.
-
+The regression is calculated 10 times for 10 random seeds and the intersect
+of the significant features (e.g., genes) is obtained.
 Parameter Lambda is automatically
 estimated using k-fold cross-validation (cv.glmnet) by default.
-
-The function optionally (>20 samples) calculates also double
-cross-validation using a validation set.
+The function optionally (>20 samples) calculates a double
+cross-validation using a validation set which represents 1/4 of the samples
+from each group.
+Results are provided in the form of:
+1) the names of the significant features passing filters based on their
+coefficient values
+2) classification error rate (datasets of >20 samples)
+3) roc.res - AUC value (datasets of >20 samples)
+4) cross validation error plot
 }
 \examples{
 \dontrun{
-##run using small dataset - no double cross validation
-runLASSO(data=campp2_brca_1, group=campp2_brca_1_meta$diagnosis, alpha=0.5, min.coef=0, nfolds=10, prefix="test")
-##run using dataset for double cross validation
-campp_testdata1<-cbind(campp2_brca_1,campp2_brca_2)
-campp_test_metadata1<-c(campp2_brca_1_meta$diagnosis, campp2_brca_2_meta$diagnosis)
-runLASSO(data=campp_testdata1, group=campp_test_metadata1, alpha=0.5, min.coef=0, nfolds=10, prefix="test")
-
+##run regression using small batch corrected dataset - no double cross validation
+runLASSO(data=campp2_brca_1_batchCorrected, group=campp2_brca_1_meta$diagnosis, alpha=0.5, min.coef=0, nfolds=10, prefix="test")
+##run regression using large batch corrected dataset suitable for double cross validation
+###create a large dataset
+campp2_test_data_LASSO<-cbind(campp2_brca_1,campp2_brca_2)
+campp2_test_metadata_LASSO<-rbind(campp2_brca_1_meta, campp2_brca_2_meta)
+campp2_test_data_LASSO_replaceNAs<-ReplaceNAs(data=campp2_test_data_LASSO)
+campp2_test_data_LASSO_zeroFix<-FixZeros(data=campp2_test_data_LASSO_replaceNAs,group=campp2_test_metadata_LASSO$diagnosis, remove.sparse.features=TRUE)
+campp2_test_data_LASSO_normalized<-NormalizeData(data=campp2_test_data_LASSO_zeroFix,group=campp2_test_metadata_LASSO$diagnosis,standardize="TMM",transform="voom",technology="seq")
+campp2_test_data_LASSO_batchCorrected<-BatchCorrect(data=campp2_test_data_LASSO_normalized,batch=campp2_test_metadata_LASSO$tumor_stage,group=campp2_test_metadata_LASSO$diagnosis,technology="seq")
+###run lasso on a large dataset
+runLASSO(data=campp2_test_data_LASSO_batchCorrected, group=campp2_test_metadata_LASSO$diagnosis, alpha=0.5, min.coef=0, nfolds=10, prefix="test")
 }
 }
