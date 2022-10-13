@@ -1,12 +1,12 @@
 #' @title Apply DEA to all group comparisons
 #' @description a function for applying differential expression/abundance
-#' analysis to all group comparisons at once. The analysis is based on feature
-#' counts (e.g., genes), design matrix and contrast matrix. Cutoffs for logFC
-#' and FDR; and blocking variable are optional. Using parameter vector=TRUE, only
-#' features' IDs are output.
-#' @param data a raw feature count matrix from "seq", "array", "ms" or "other"
-#' technology (with feature IDs as row names and sample IDs as columns). It's
-#' recommended to import feature counts using function "import_counts".
+#' analysis to all group comparisons at once. The analysis is usually based on
+#' normalized feature counts (e.g., genes), design matrix and contrast matrix.
+#' Cutoffs for logFC and FDR; and blocking variable are optional. Using
+#' parameter vector=TRUE, only features' IDs are output.
+#' @param data a matrix of (transformed and normalized) feature counts from
+#' "seq", "array", "ms" or "other" technology (with feature IDs as row names
+#' and sample IDs as columns).
 #' @param design.matrix a design matrix based on samples metadata (groups, covariates,
 #' etc.).
 #' @param contrast.matrix an array containing contrast.matrix between groups of
@@ -27,8 +27,8 @@
 #' @return a list (a vector in case vector=TRUE) of DEA features for all
 #' comparisons
 #' @examples \dontrun{
-#' DEAFeatureApply(data = campp2_brca_1, design.matrix =
-#' campp2_brca_1_DEA$DEA.design.matrix, contrast.matrix =
+#' DEA_all_comparisons <- DEAFeatureApply(data = campp2_brca_1_normalized,
+#' design.matrix = campp2_brca_1_DEA$DEA.design.matrix, contrast.matrix =
 #' campp2_brca_1_DEA$DEA.contrast.matrix, cutoff.logFC =1, cutoff.FDR =0.01,
 #' block = campp2_brca_1_meta$subtype, vector = FALSE)
 #' }

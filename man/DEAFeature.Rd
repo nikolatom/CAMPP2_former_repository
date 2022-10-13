@@ -18,12 +18,12 @@ DEAFeature(
 \item{contrast.matrix}{an array containing contrast.matrix between groups of
 interest.}
 
-\item{data}{a raw feature count matrix from "seq", "array", "ms" or "other"
-technology (with feature IDs as row names and sample IDs as columns). It's
-recommended to import feature counts using function "import_counts".}
+\item{data}{a matrix of (transformed and normalized) feature counts from
+"seq", "array", "ms" or "other" technology (with feature IDs as row names
+and sample IDs as columns).}
 
-\item{design.matrix}{a design matrix based on samples metadata (groups, covariates,
-etc.).}
+\item{design.matrix}{a design matrix based on samples metadata (groups,
+covariates, etc.).}
 
 \item{cutoff.logFC}{A cutoff value for the logarithmic fold change applied
 to each feature. Default = 1.}
@@ -40,14 +40,16 @@ a list of up and donw-regulated features in limma format
 }
 \description{
 a function for applying differential expression/abundance
-analysis using voom transform and limma. The analysis is based on feature
+analysis using limma. The analysis is usually based on normalized feature
 counts (e.g., genes), design matrix and contrast matrix (using only 1
 contrast). Cutoffs for logFC and FDR; and blocking variable are optional.
 }
 \examples{
 \dontrun{
+DEA_one_comparison <-
 DEAFeature(contrast.matrix = campp2_brca_1_DEA$DEA.contrast.matrix[,1],
-data = campp2_brca_1, design.matrix = campp2_brca_1_DEA$DEA.design.matrix,
+data = campp2_brca_1_normalized,
+design.matrix = campp2_brca_1_DEA$DEA.design.matrix,
 cutoff.logFC =1, cutoff.FDR =0.01, block = campp2_brca_1_meta$subtype)
 }
 }

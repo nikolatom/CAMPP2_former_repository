@@ -4,14 +4,30 @@
 \alias{MakeUpset}
 \title{Upset Plot}
 \usage{
-MakeUpset(prefix, groups.feature.list)
+MakeUpset(
+  prefix,
+  groups.feature.list,
+  label = "",
+  label.vertical.position = 15,
+  y.axis.by = 100,
+  set.size.by = 200
+)
 }
 \arguments{
-\item{prefix}{A prefix for the output filename.}
+\item{prefix}{a prefix for the output filename.}
 
-\item{groups.feature.list}{A list of character vectors (each character
+\item{groups.feature.list}{a list of character vectors (each character
 vector named by its group name, e.g., "LumA") including feature names
-characteristic for each group of interest (e.g., subtype).}
+characteristic for each group of interest (e.g., subtype)}
+
+\item{label}{a character vector used as a label for the upset plot. Default
+is "".}
+
+\item{y.axis.by}{an integer describing interval used for labeling Y-axis.
+Defaults is 100.}
+
+\item{set.size.by}{an integer describing interval used for labeling the
+set size axis. Defaults is 200.}
 }
 \value{
 an Upset plot showcasing the size of intersections of the features
@@ -20,10 +36,12 @@ between the sample groups
 \description{
 A function for making Upset plots to visualize the size of
 intersections of the features present each group
-(e.g., differentially expressed genes for each subtype)
+(e.g., differentially expressed genes for each subtype).
 }
 \examples{
 \dontrun{
-MakeUpset("testUpset",campp2_brca_1_DEA_HUGO_features_per_group)
+MakeUpset("testUpSet",campp2_brca_1_DEA_HUGO_features_per_group,
+label="test_UpSet",label.vertical.position=16.5,
+y.axis.by=300,set.size.by=250)
 }
 }

@@ -17,9 +17,9 @@ RunDEA(
 )
 }
 \arguments{
-\item{data}{a raw feature count matrix from "seq", "array", "ms" or "other"
-technology (with feature IDs as row names and sample IDs as columns). It's
-recommended to import feature counts using function "import_counts".}
+\item{data}{a matrix of (transformed and normalized) feature counts from
+"seq", "array", "ms" or "other" technology (with feature IDs as row names
+and sample IDs as columns).}
 
 \item{metadata}{a samples' metadata table should be imported using function
 "import_metadata". Metadata must include exactly the same samples as gene

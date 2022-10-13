@@ -27,7 +27,7 @@ will be used in clustering the samples.}
 to be plotted on the heatmap if plot.heatmap is TRUE. The input must be
 specified as an even number.}
 
-\item{viridis.palette}{A=a character vector specifying color gradient to use for
+\item{viridis.palette}{a character vector specifying color gradient to use for
 the heatmap. Default option for viridis color palettes is 'turbo'. For more
 options, see viridis vignette.}
 
@@ -44,6 +44,8 @@ visualise relations between them.
 }
 \examples{
 \dontrun{
-
+RunHeatmap(campp2_brca_1_batchCorrected, campp2_brca_1_DEA_HUGO,
+campp2_brca_1_meta$subtype, heatmap.size=30, viridis.palette="turbo",
+plot.heatmap="DEA", "test_heatmap")
 }
 }

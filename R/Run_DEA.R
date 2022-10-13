@@ -8,9 +8,9 @@
 #' transformation and limma.
 #' Results are provided in the form of tables with differentially expressed/
 #' abundant features. Design a contrast matrices are also provided.
-#' @param data a raw feature count matrix from "seq", "array", "ms" or "other"
-#' technology (with feature IDs as row names and sample IDs as columns). It's
-#' recommended to import feature counts using function "import_counts".
+#' @param data a matrix of (transformed and normalized) feature counts from
+#' "seq", "array", "ms" or "other" technology (with feature IDs as row names
+#' and sample IDs as columns).
 #' @param metadata a samples' metadata table should be imported using function
 #' "import_metadata". Metadata must include exactly the same samples as gene
 #' counts (data) and samples must be sorted similarly. In this function,
@@ -43,7 +43,8 @@
 #' 4) a design matrix
 #' 5) a contrast matrix
 #' @examples \dontrun{
-#' campp2_brca_1_DEA<-RunDEA(data=campp2_brca_1, metadata=campp2_brca_1_meta,
+#' campp2_brca_1_DEA<-RunDEA(data=campp2_brca_1_normalized,
+#' metadata=campp2_brca_1_meta,
 #' group=campp2_brca_1_meta$subtype, prefix="test",
 #' block=campp2_brca_1_meta$subtype, batch=campp2_brca_1_meta$age,
 #' covarDEA = c("tumor_stage"), cutoff.logFC=1, cutoff.FDR=0.01)

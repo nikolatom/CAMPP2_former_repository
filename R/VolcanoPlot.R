@@ -39,7 +39,7 @@ MakeVolcano <- function(data, prefix, cutoff.logFC = 1, cutoff.FDR = 0.01, n.lab
     ##Label xx most important DOWN-regulated genes
     data[1:n.labeled.features,]$DEAlabel <- head(data,n=n.labeled.features)$"HUGO_ID" ##assign labels to xx most significantly differentially expressed features
 
-    ##Check how many of the features from top x downregulated genes are not significant based on logFC and FDR cutoffs
+    ##Check how many of the features from top x down-regulated genes are not significant based on logFC and FDR cutoffs
     if(sum(data[1:n.labeled.features,]$diffexpressed == "DOWN") != n.labeled.features){
         num.nonsig <- n.labeled.features - (sum(data[1:n.labeled.features,]$diffexpressed == "DOWN"))
         print(paste0("Warning: ",num.nonsig, " out of ",n.labeled.features," downregulated features labeled on the Volcano plot are non-signifficant according to the FDR and logFC cutoffs."))
@@ -50,7 +50,7 @@ MakeVolcano <- function(data, prefix, cutoff.logFC = 1, cutoff.FDR = 0.01, n.lab
     ##Label xx most important UP-regulated genes (taken from the end of the sorted data)
     data[(nrow(data)-(n.labeled.features-1)):(nrow(data)),]$DEAlabel <- tail(data,n=n.labeled.features)$"HUGO_ID" ##assign labels to xx most significantly differentially expressed features
 
-    ##Check how many of the features from top x downregulated genes are not significant based on logFC and FDR cutoffs
+    ##Check how many of the features from top x up-regulated genes are not significant based on logFC and FDR cutoffs
     if(sum(data[(nrow(data)-(n.labeled.features-1)):(nrow(data)),]$diffexpressed == "UP") != n.labeled.features){
         num.nonsig <- n.labeled.features - (sum(data[1:n.labeled.features,]$diffexpressed == "UP"))
         print(paste0("Warning: ",num.nonsig, " out of ",n.labeled.features," upregulated features labeled on the Volcano plot are non-signifficant according to the FDR and logFC cutoffs."))
