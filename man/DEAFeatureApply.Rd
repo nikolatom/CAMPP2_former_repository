@@ -2,41 +2,58 @@
 % Please edit documentation in R/DEA_Feature_apply.R
 \name{DEAFeatureApply}
 \alias{DEAFeatureApply}
-\title{Apply DEA_Feature}
+\title{Apply DEA to all group comparisons}
 \usage{
 DEAFeatureApply(
-  contrast.matrix,
   data,
-  design,
-  coLFC,
-  coFDR,
+  design.matrix,
+  contrast.matrix,
+  cutoff.logFC,
+  cutoff.FDR,
   block,
   vector = FALSE
 )
 }
 \arguments{
-\item{contrast.matrix}{an array containing contrast.matrixs between groups of interest.}
+\item{data}{a matrix of (transformed and normalized) feature counts from
+"seq", "array", "ms" or "other" technology (with feature IDs as row names
+and sample IDs as columns).}
 
-\item{data}{A raw gene count matrix from seq, array, ms or other technology (with gene IDs as row names and sample IDs as columns). It's recommended to import gene counts using function "import_counts".}
+\item{design.matrix}{a design matrix based on samples metadata (groups, covariates,
+etc.).}
 
-\item{design}{a design matrix with all comparisons.}
+\item{contrast.matrix}{an array containing contrast.matrix between groups of
+interest.}
 
-\item{coLFC}{a number specifying the cutoff for LogFC.}
+\item{cutoff.logFC}{A cutoff value for the logarithmic fold change applied
+to each feature. Default = 1.}
 
-\item{coFDR}{a number specifying the cutoff for FDR.}
+\item{cutoff.FDR}{a cutoff value for the false discovery rate (corrected
+p-value) applied to each feature. Default = 0.01.}
 
-\item{block}{A vector or factor specifying a blocking variable. The block must be of same length as data and contain 2 or more options. For 2 datasets, the block can be defined as a vector of the two seperate blocks.}
+\item{block}{a factor specifying blocking variable. The block must be of
+the same length as data and contain 2 or more options (e.g. could be
+represented by a column from a metadata file). Default = NULL.}
 
-\item{vector}{a vector of patient IDs; TRUE/FALSE statement specifying output format. If TRUE the function return a vector of feature IDs only.}
+\item{vector}{a boolean value. If TRUE, only a vector of unique features IDs
+will be output. Default = FALSE.}
 }
 \value{
-DEA features for all comparisons
+a list (a vector in case vector=TRUE) of DEA features for all
+comparisons
 }
 \description{
-A function for applying differential expression/abundance analysis to all comparisons at once.
+a function for applying differential expression/abundance
+analysis to all group comparisons at once. The analysis is usually based on
+normalized feature counts (e.g., genes), design matrix and contrast matrix.
+Cutoffs for logFC and FDR; and blocking variable are optional. Using
+parameter vector=TRUE, only features' IDs are output.
 }
 \examples{
 \dontrun{
-...
+DEA_all_comparisons <- DEAFeatureApply(data = campp2_brca_1_normalized,
+design.matrix = campp2_brca_1_DEA$DEA.design.matrix, contrast.matrix =
+campp2_brca_1_DEA$DEA.contrast.matrix, cutoff.logFC =1, cutoff.FDR =0.01,
+block = campp2_brca_1_meta$subtype, vector = FALSE)
 }
 }

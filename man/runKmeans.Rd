@@ -6,8 +6,8 @@
 \usage{
 runKmeans(
   data,
-  num.subsets = NULL,
-  subset.size = NULL,
+  num.subsets = "automatic",
+  subset.size = "automatic",
   show.PCA.labels = FALSE,
   prefix,
   colors = NULL,
@@ -22,7 +22,8 @@ runKmeans(
 \item{num.subsets}{a number of sub-sets to be generated for the estimation of
 the number of clusters. This parameter has several options:
 1) a numeric (integer) value estimated by the user.
-2) a string "automatic" will let CAMPP2 estimate the number of the sub-sets.
+2) a string "automatic" will let CAMPP2 estimate the number of the sub-sets
+based on the number of features.
 3) NULL option will use the whole set for the estimation
 of the number of clusters. If using this option, subset.size must be also NULL.
 Defaults is NULL.}
@@ -30,7 +31,8 @@ Defaults is NULL.}
 \item{subset.size}{a number of features included in each sub-set. This
 parameter has several options:
 1) a numeric (integer) value estimated by the user.
-2) a string "automatic" will let CAMPP2 estimate the size of the sub-sets.
+2) a string "automatic" will let CAMPP2 estimate the size of the sub-sets
+based on the number of features.
 3) NULL option will use all the features (no sub-sampling) for the estimation
 of the number of clusters. If using this option, num.subsets must be also NULL.
 Defaults is "automatic"}
@@ -44,15 +46,18 @@ Default value is "automatic".}
 
 \item{colors}{a vector of colors (one color for each cluster)}
 
-\item{num.km.clusters}{a vector of numbers of clusters expected in the data.
-Clusters can be represented e.g., by sample groups, sub-types, etc.
-If multiple values provided, the function will automatically
-perform K-means clustering based on each (expected number of clusters) of
-them separately. By default, expected numbers of clusters are calculated
-automatically based on BIC (mclust package) applied to sub-sampled data sets.
-A default value for this parameter is NULL.}
+\item{num.km.clusters}{either a vector of manually defined number(s) of
+clusters, or NULL. Each number in this vector represent a plausible number
+of clusters that the user would expected to be present in the data. If
+multiple values provided, the function will automatically perform K-means
+clustering using each of them as k (expected number of clusters) separately.
+If this argument is NULL (default), optimal numbers of clusters are
+calculated automatically based on the bayesian information criterion (mclust
+package), applied to sub sampled data (see documentation for the whole
+procedure).}
 
-\item{seed}{a seed for K-means clustering. Defaults is NULL.}
+\item{seed}{a number for setting a random seed. If the argument is NULL,
+the seed won't be set. Default is NULL.}
 
 \item{pca.scale}{a boolean, if TRUE then data are scaled to unit variance
 during PCA. Default is FALSE}
@@ -68,19 +73,23 @@ during PCA. Default is FALSE}
 }
 \description{
 A wrapper function for K-means clustering.
-By default, For data sets with >1000 features, multiple subsets (number of
-sets = number of features/1000; rounded up to the higher integer) will be
-generated, maximum is 10 sub-sets. A number of randomly selected features
-(e.g. genes) in 1 subset is limited to 2000. The values for number of subsets
-and size of the sub-sets might by defined manually. The option of using the
-whole dataset for the estimation of the number of the clusters is also available.
-By default, a number of clusters for each sub-set is automatically estimated (using
+In a first step, a number of clusters is estimated.
+By default, for data sets with >1000 features, multiple
+subsets (number of sets = number of features/1000; rounded up to the higher
+integer) will be generated, maximum is 10 sub-sets.
+A number of randomly selected features (e.g. genes) in 1 subset is limited
+to 2000. The values for number of subsets and size of the sub-sets might by
+defined manually. The option of using the whole dataset for the estimation
+of the number of the clusters is also available. By default, a number of
+clusters for each sub-set is automatically estimated (using
 mclustBIC function from mclust package) and a consensus (based on all the
 subsets) of best n k-means is returned and used for K-means clustering.
 If K-means estimation using BIC fails, a number of clusters will be based on
 the number of samples (2-6 clusters for data set with less than 100 samples;
 2-11 for data sets with 101-500 samples, and 2-16 clusters for data sets with
 more than 500 samples). The number of clusters can also be supplied manually.
+In the next step, K-means clustering using the information about the number
+of clusters is done.
 As results, an information about the clusters assigned to each sample and
 results from PCA (FactoMineR) function are provided.
 The clusters are visualized on PCA plot and saved into .png file.

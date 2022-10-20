@@ -342,25 +342,6 @@ PCAPlot(campp2_brca_1_batchCorrected, as.factor(campp2_brca_1_meta$subtype), sho
 ```
 \
 
-### EstimateKmeans
-**Description:** \
-A function to estimate the number of K-means. A Number of K-means is based 
-on the Bayesian information criterion (BIC) provided by mclust package. 
-A summary describing the best model is printed on the screen during the 
-calculation.
-\
-**Parameters:** \
-*data* a data.frame of feature (e.g. gene) counts \
-**Output from the function:** \
-a data frame with the number of clusters \
-\
-**An example run:** \
-##Estimate number of K-means 
-```
-###Sub-sampled (the first 2000 genes) normalized and batch corrected data ("campp2_brca_1_batchCorrected" generated before) are used as an input.
-EstimateKmeans(t(campp2_brca_1_batchCorrected[1:2000,]))
-```
-\
 
 ### runKmeans
 **Description:** \
@@ -440,11 +421,399 @@ during PCA. Default is FALSE \
 ###Normalized and batch corrected data ("campp2_brca_1_batchCorrected" generated in a previous step) are used as an input.
 Kmeans.output<-runKmeans(campp2_brca_1_batchCorrected[1:2000,], num.subsets= NULL, subset.size=NULL, show.PCA.labels = FALSE, colors=NULL, prefix="test", num.km.clusters=NULL, seed=123, pca.scale=FALSE)
 ```
+\
 
 
+### EstimateKmeans
+**Description:** \
+A function to estimate the number of K-means. A Number of K-means is based 
+on the Bayesian information criterion (BIC) provided by mclust package. 
+A summary describing the best model is printed on the screen during the 
+calculation.
+\
+**Parameters:** \
+*data* a data.frame of feature (e.g. gene) counts \
+**Output from the function:** \
+a data frame with the number of clusters \
+\
+**An example run:** \
+##Estimate number of K-means 
+```
+###Sub-sampled (the first 2000 genes) normalized and batch corrected data ("campp2_brca_1_batchCorrected" generated before) are used as an input.
+EstimateKmeans(t(campp2_brca_1_batchCorrected[1:2000,]))
+```
+\
 
+
+### RunDEA
+**Description:** \
+A function for running differential expression/abundance
+analysis using a matrix of features (e.g., genes) counts as a mandatory
+input. In the function, user is allowed to take advantage of defining multiple
+covariates, thresholds for a log fold change (logFC), a false discovery
+rate (FDR) and a blocking variable.
+The differential expression/abundance analysis is based on voom
+transformation and limma.
+Results are provided in the form of tables with differentially expressed/
+abundant features. Design a contrast matrices are also provided.
+\
+**Parameters:** \
+*data* a matrix of (transformed and normalized) feature counts from "seq", "array", "ms" or 
+"other" technology (with feature IDs as row names and sample IDs as columns). 
+\
+*metadata* a samples' metadata table should be imported using function
+"import_metadata". Metadata must include exactly the same samples as gene
+counts (data) and samples must be sorted similarly. In this function,
+metadata are optional and are used to extract covariates for each sample.
+Default = NULL. \
+*batch* a factor specifying batch for each sample (e.g. could be
+represented by a column from a metadata file). Default = NULL. \
+*covarDEA* a character vector of covariate(s) to include in the analysis.
+covarDEA can be defined only together with a batch parameter (which
+represents one of the covariates). Default = NULL. \
+*group* a factor specifying group for each sample (e.g. could be
+represented by a column from a metadata file) \
+*cutoff.logFC* A cutoff value for the logarithmic fold change applied
+to each feature. Default = 1. \
+*cutoff.FDR* a cutoff value for the false discovery rate (corrected
+p-value) applied to each feature. Default = 0.01. \
+*prefix* a character vector defining prefix of output file name. \
+*block* a factor specifying blocking variable. The block must be of
+the same length as data and contain 2 or more options (e.g. could be
+represented by a column from a metadata file). Default = NULL. \
+**Output from the function:** \
+a list of:
+1) re-formatted matrix of differential expression/abundance results from
+limma.
+2) original results (a list) from limma
+3) a character vector with unique feature names
+4) a design matrix
+5) a contrast matrix
+\
+**An example run:** \
+##Run a wrapper for differential gene expression analysis on a raw gene counts
+```
+campp2_brca_1_DEA<-RunDEA(data=campp2_brca_1_normalized, 
+metadata=campp2_brca_1_meta,
+group=campp2_brca_1_meta$subtype, prefix="test",
+block=campp2_brca_1_meta$subtype, batch=campp2_brca_1_meta$age,
+covarDEA = c("tumor_stage"), cutoff.logFC=1, cutoff.FDR=0.01)
+```
+\
 
  
+### DEAFeatureApply
+**Description:** \
+A function for applying differential expression/abundance
+analysis to all group comparisons at once. The analysis is based on feature
+counts (e.g., genes), design matrix and contrast matrix. Cutoffs for logFC
+and FDR; and blocking variable are optional. Using parameter vector=TRUE, only
+features' IDs are output.
+\
+**Parameters:** \
+*data* a matrix of (transformed and normalized) feature counts from "seq", "array", "ms" or 
+"other" technology (with feature IDs as row names and sample IDs as columns). 
+\
+*design.matrix* a design matrix based on samples metadata (groups, covariates,
+etc.). \
+*contrast.matrix* an array containing contrast.matrix between groups of
+interest. \
+*cutoff.logFC* A cutoff value for the logarithmic fold change applied
+to each feature. Default = 1. \
+*cutoff.FDR* a cutoff value for the false discovery rate (corrected
+p-value) applied to each feature. Default = 0.01. \
+*block* a factor specifying blocking variable. The block must be of
+the same length as data and contain 2 or more options (e.g. could be
+represented by a column from a metadata file). Default = NULL. \
+*vector* a boolean value. If TRUE, only a vector of unique features IDs
+will be output. Default = FALSE. \
+**Output from the function:** \
+a list (a vector in case vector=TRUE) of DEA features for all
+comparisons\
+\
+**An example run:** \
+## Run differential gene expression on all groups comparasons
+```
+DEA_all_comparisons <- DEAFeatureApply(data = campp2_brca_1_normalized, 
+design.matrix = campp2_brca_1_DEA$DEA.design.matrix, contrast.matrix =
+campp2_brca_1_DEA$DEA.contrast.matrix, cutoff.logFC =1, cutoff.FDR =0.01,
+block = campp2_brca_1_meta$subtype, vector = FALSE)
+```
+\
+ 
+ 
+### DEA_feature
+ **Description:** \
+A function for applying differential expression/abundance
+analysis using limma. The analysis is usually based on normalized feature
+counts (e.g., genes), design matrix and contrast matrix (using only 1
+contrast). Cutoffs for logFC and FDR; and blocking variable are optional. \
+\
+**Parameters:** \
+*contrast.matrix* an array containing contrast.matrix between groups of
+interest. \
+*data* a matrix of (transformed and normalized) feature counts from "seq", "array", "ms" or 
+"other" technology (with feature IDs as row names and sample IDs as columns). 
+\
+*design.matrix* a design matrix based on samples metadata (groups, covariates,
+etc.). \
+*cutoff.logFC* A cutoff value for the logarithmic fold change applied
+to each feature. Default = 1. \
+*cutoff.FDR* a cutoff value for the false discovery rate (corrected
+p-value) applied to each feature. Default = 0.01. \
+*block* a factor specifying blocking variable. The block must be of
+the same length as data and contain 2 or more options (e.g. could be
+represented by a column from a metadata file). Default = NULL. \
+**Output from the function:** \
+a list of up and down-regulated features in limma format
+\
+**An example run:** \
+##Run differential gene expression on the first group comparison (using 1st 
+column from provided contrast matrix).
+```
+DEA_one_comparison <- 
+DEAFeature(contrast.matrix = campp2_brca_1_DEA$DEA.contrast.matrix[,1],
+data = campp2_brca_1_normalized, 
+design.matrix = campp2_brca_1_DEA$DEA.design.matrix,
+cutoff.logFC =1, cutoff.FDR =0.01, block = campp2_brca_1_meta$subtype)
+```
+\
+
+
+### ExportDEA
+ **Description:** \
+A function for re-formatting the output from DEA generated based
+on the workflow: (runDEA - DEAFeatureApply - DEAFeature - limma); and 
+exporting the results into a .txt file. \
+**Parameters:** \
+*res.DEA* a list of data frames containing results from different group
+comparisons in limma format.
+*prefix* a character vector defining prefix of output file name. \
+**Output from the function:** \
+1) a data frame of DEA results \
+2) a .txt table of exported DEA results \
+\
+**An example run:** \
+##Reformat and export results from DEA generated by limma in DEA_feature 
+function
+```
+campp2_brca_1_DEA_out<-ExportDEA(res.DEA = campp2_brca_1_DEA$res.DEA,
+prefix="test")
+```
+\
+
+
+### RunDEAVisuals
+**Description:** \
+This function wraps several functions for the visualisation
+of DEA results:
+1) A function for making volcano plots from DEA results.
+The input is typically an output from RunDEA (re-formatted matrix of
+differential expression/abundance results from limma, please, check RunDEA
+for more details). By default, top 15 up- and down-regulated features
+will be labeled on the Volcano plot. Important: Features are selected from
+the table with all the groups' comparisons.
+2) A function for making Venn diagrams to visualize the size of
+intersections of the features between the groups
+(e.g., differentially expressed genes for each subtype)
+3) A function for making Upset plots to visualize the size of
+intersections of the features present each group
+(e.g., differentially expressed genes for each subtype) \
+**Parameters:** \
+*data* A data frame from RunDEA containing genes and their
+corresponding AveExpr, logFC, p.value, adj.p.value ect. Mandatory columns
+are "logFC", "adj.P.Val" and "HUGO_ID." HUGO_ID could be obtained using
+AddGeneName function. \
+*prefix* a prefix for the output filename. \
+*cutoff.FDR* a numeric value for adj.P.Val cutoff. Default = 0.01 \
+*cutoff.logFC* a numeric value for logFC cutoff. Default = 1 \
+*n.labeled.features* a number of the most up-/down- regulated features
+labeled in the volcano plot. Default = 15 \
+*control.group* A string vector defining control group name for each
+dataset (e.g., "healthy" or "normal"). \
+**Output from the function:** 
+several .png files with: \
+1) Volcano plot of differentially expressed features saved into .png \
+2) Venn Diagram showcasing the size of intersections of the features
+between the sample groups \
+3) Upset plot showcasing the size of intersections of the features
+between the sample groups \
+**An example run:** \
+##Create a volcano plot, venn diagram, upset plots based on results from RunDEA 
+and AddGeneName functions.
+```
+RunDEAVisuals(campp2_brca_1_DEA_HUGO, cutoff.FDR = 0.01, cutoff.logFC = 1,
+n.labeled.features = 15, control.group= "healthy", prefix="test_DEA_visuals")
+```
+\
+
+
+### MakeVolcano
+**Description:** \
+A function for making volcano plots from DEA results.
+The input is typically an output from RunDEA (re-formatted matrix of
+differential expression/abundance results from limma, please, check RunDEA
+for more details). By default, top 15 up- and down-regulated features
+will be labeled on the Volcano plot. Important: Features are selected from
+the table with all the groups' comparisons. \
+**Parameters:** \
+*data* A data frame from RunDEA containing genes and their
+corresponding AveExpr, logFC, p.value, adj.p.value ect. Mandatory columns
+are "logFC", "adj.P.Val" and "HUGO_ID." HUGO_ID could be obtained using
+AddGeneName function. \
+*prefix* a prefix for the output filename \
+*cutoff.FDR* a numeric value for adj.P.Val cutoff. Default = 0.01 \
+*cutoff.logFC* a numeric value for logFC cutoff. Default = 1 \
+*n.labeled.features* a number of the most up-/down- regulated features
+labeled in the volcano plot. Default = 15 \
+**Output from the function:** \
+Volcano plot of differentially expressed features saved into .png \
+\
+**An example run:** \
+##Create a volcano plot based on results from RunDEA and 
+AddGeneName functions.
+```
+MakeVolcano(campp2_brca_1_DEA_HUGO, prefix = "test_volcano",
+cutoff.logFC = 1, cutoff.FDR = 0.01, n.labeled.features = 15)
+
+```
+\
+
+
+### MakeUpset
+**Description:** \
+A function for making Upset plots to visualize the size of
+intersections of the features present each group
+(e.g., differentially expressed genes for each subtype) \
+**Parameters:** \
+*prefix* A prefix for the output filename. \
+*groups.feature.list* A list of character vectors (each character
+vector named by its group name, e.g., "LumA") including feature names
+characteristic for each group of interest (e.g., for subtype). \
+*label* a character vector used as a label for the upset plot. Default
+is "". \
+*label.vertical.position* a numeric value describing vertical position of
+the label. Default is 15.0 (cm). \
+*y.axis.by* an integer describing interval used for labeling Y-axis.
+Defaults is 100. \
+*set.size.by* an integer describing interval used for labeling the
+set size axis. Defaults is 200. \
+**Output from the function:** \
+An Upset plot showcasing the size of intersections of the features between the 
+sample groups \
+\
+**An example run:** \
+##Create an Upset plot based on a list of the features characteristic for each group
+```
+MakeUpset("testUpSet",campp2_brca_1_DEA_HUGO_features_per_group,
+label="test_UpSet",label.vertical.position=16.5,
+y.axis.by=300,set.size.by=250)
+```
+\
+
+
+### MakeVennDiagram
+**Description:** \
+A function for making Venn diagrams to visualize the size of
+intersections of the features between the groups
+(e.g., differentially expressed genes for each subtype) \
+**Parameters:** \
+*prefix* A prefix for the output filename. \
+*groups.feature.list* A list of character vectors (each character
+vector named by its group name, e.g., "LumA") including feature names
+characteristic for each group of interest (e.g., for subtype). \
+**Output from the function:** \
+An Upset plot showcasing the size of intersections of the features between the 
+sample groups \
+\
+**An example run:** \
+##Create an Venn diagram based on a list of the features characteristic for each 
+group
+```
+MakeVennDiagram("test_Venn", campp2_brca_1_DEA_HUGO_features_per_group)
+```
+\
+
+
+### RunHeatmap
+ **Description:** \
+ A function for making heatmaps to showcase the difference in
+expression/abundance of features across samples and sample groups and to
+visualise relations between them. \
+**Parameters:** \
+*feature.counts* a feature count matrix (ideally normalized and batch corrected)
+from "seq", "array", "ms" or "other" technology (with feature IDs as row
+names and sample IDs as columns). It's recommended to import feature counts
+using function "import_counts". \
+*DEA.out* a data frame from RunDEA containing genes and their
+corresponding AveExpr, logFC, p.value, adj.p.value ect. Mandatory columns
+are "logFC". \
+*group* a factor specifying group for each sample (e.g. could be
+represented by a column from a metadata file). Group's information
+will be used in clustering the samples. \
+*heatmap.size* an argument specifying how many genes will be selected
+to be plotted on the heatmap if plot.heatmap is TRUE. The input must be
+specified as an even number. \
+*viridis.palette* a character vector specifying color gradient to use for
+the heatmap. Default option for viridis color palettes is 'turbo'. For more
+options, see viridis vignette. \
+*plot.heatmap* an argument defining which data will be used for
+the selection of the top x features to be plotted on the heatmap.
+Options are:"DEA", "LASSO", "EN" or "Consensus". \
+**Output from the function:** \
+a .png file with a heatmap \
+\
+**An example run:** \
+##Create and print heatmap based on the raw gene counts 
+```
+RunHeatmap(campp2_brca_1_batchCorrected, campp2_brca_1_DEA_HUGO,
+campp2_brca_1_meta$subtype, heatmap.size=30, viridis.palette="turbo",
+plot.heatmap="DEA", "test_heatmap")
+```
+\
+
+
+### MakeHeatmap
+ **Description:** \
+A function for making heatmaps to showcase the difference in
+expression/abundance of features across samples and sample groups and to
+visualise relations between them. \
+**Parameters:** \
+*data* a feature count matrix (ideally normalized and batch corrected)
+from "seq", "array", "ms" or "other" technology (with feature IDs as row
+names and sample IDs as columns). It's recommended to import feature counts
+using function "import_counts". \
+*group* a factor specifying group for each sample (e.g. could be
+represented by a column from a metadata file). Group's information
+will be used in clustering the samples. \
+*prefix* a character vector defining prefix of output file name. \
+*viridis.palette* a character vector specifying color gradient to use for
+the heatmap. Default option for viridis color palettes is 'turbo'. For more
+options, see viridis vignette. \
+*data.type* a character vector (used in the heatmap legend) describing
+type of the data being visualized. Default = "Feature counts". \
+**Output from the function:** \
+a .png file with a heatmap \
+\
+**An example run:** \
+##Create and print heatmap based on the raw gene counts 
+```
+MakeHeatmap(data=campp2_brca_1_batchCorrected, group=campp2_brca_1_meta$subtype, 
+prefix="test_heatmap", viridis.opt = "turbo", data.type = "Feature counts")
+
+```
+\
+
+
+
+
+
+
+
+
+
+
+
 ================================================================================================
 (THE REST WILL BE CONSIDERED - WE CAN USE SOME INFO TO BETTER DESCRIBE THE ARGUMENTS ABOVE)
 **1. Quantitative data (counts) **: An .xlsx (or .txt) file containing feature expression/abundance.

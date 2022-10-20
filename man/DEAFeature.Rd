@@ -2,31 +2,54 @@
 % Please edit documentation in R/DEA_Feature.R
 \name{DEAFeature}
 \alias{DEAFeature}
-\title{DEA_feature}
+\title{DEA_feature - calculation of differential expression/abundance
+based on one comparison}
 \usage{
-DEAFeature(contrast, data, design, coLFC, coFDR, block)
+DEAFeature(
+  contrast.matrix,
+  data,
+  design.matrix,
+  cutoff.logFC = 1,
+  cutoff.FDR = 0.01,
+  block = NULL
+)
 }
 \arguments{
-\item{contrast}{an array containing contrasts between groups of interest.}
+\item{contrast.matrix}{an array containing contrast.matrix between groups of
+interest.}
 
-\item{data}{A raw gene count matrix from seq, array, ms or other technology (with gene IDs as row names and sample IDs as columns). It's recommended to import gene counts using function "import_counts".}
+\item{data}{a matrix of (transformed and normalized) feature counts from
+"seq", "array", "ms" or "other" technology (with feature IDs as row names
+and sample IDs as columns).}
 
-\item{design}{a design matrix with all comparisons.}
+\item{design.matrix}{a design matrix based on samples metadata (groups,
+covariates, etc.).}
 
-\item{coLFC}{a number specifying the cutoff for LogFC.}
+\item{cutoff.logFC}{A cutoff value for the logarithmic fold change applied
+to each feature. Default = 1.}
 
-\item{coFDR}{a number specifying the cutoff for FDR.}
+\item{cutoff.FDR}{a cutoff value for the false discovery rate (corrected
+p-value) applied to each feature. Default = 0.01.}
 
-\item{block}{A vector or factor specifying a blocking variable. The block must be of same length as data and contain 2 or more options. For 2 datasets, the block can be defined as a vector of the two seperate blocks.}
+\item{block}{a factor specifying blocking variable. The block must be of
+the same length as data and contain 2 or more options (e.g. could be
+represented by a column from a metadata file). Default = NULL.}
 }
 \value{
-DEA features
+a list of up and donw-regulated features in limma format
 }
 \description{
-A function for returning DEA features for DEAFeatureApply function.
+a function for applying differential expression/abundance
+analysis using limma. The analysis is usually based on normalized feature
+counts (e.g., genes), design matrix and contrast matrix (using only 1
+contrast). Cutoffs for logFC and FDR; and blocking variable are optional.
 }
 \examples{
 \dontrun{
-...
+DEA_one_comparison <-
+DEAFeature(contrast.matrix = campp2_brca_1_DEA$DEA.contrast.matrix[,1],
+data = campp2_brca_1_normalized,
+design.matrix = campp2_brca_1_DEA$DEA.design.matrix,
+cutoff.logFC =1, cutoff.FDR =0.01, block = campp2_brca_1_meta$subtype)
 }
 }
