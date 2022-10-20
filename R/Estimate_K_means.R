@@ -1,23 +1,27 @@
-#' @title Estimate Kmeans
-#' @description Function for Estimating Kmeans; Number of kmeans will be based on the bayesian information criterion(BIC); RNAseq with
-#' many genes, multiple samples of 3000 variables will be generated
-#' and tested to overcome issues with computational time and the
-#' consensus of best n kmeans will be returned.
-#' Clustering may only be performed one dataset at a time!
-#' @param my.data a dataframe of expression/abundance counts
-#' @param n = number of sample subsets to generate (The number of clusters tested will be based on number of samples, fewer samples will result in fewer kmeans tested.)
+#' @title Estimate K-means clusters
+#' @description A function to estimate the number of K-means.
+#' Number of K-means is based on the Bayesian information criterion (BIC)
+#' provided by mclust package. A summary describing the best model is printed on
+#' the screen during the calculation.
+#' @param data a data frame of feature (e.g. gene) counts
 #' @export
 #' @import mclust
 #' @seealso
-#' @return clustering results and plots
+#' @return a list including:
+#' 1) a data frame with a number of clusters corresponding to G from BIC object.
+#' G represents a number of mixture components in the model corresponding to
+#' the optimal BIC
+#' 2) an 'mclustBIC' object, which is the result of applying mclustBIC to data
 #' @examples \dontrun{
-#' ...
+#' EstimateKmeans(t(campp2_brca_1_batchCorrected[1:2000,]))
 #' }
 
-EstimateKmeans <- function(df, n) {
-    BIC <- mclustBIC(df)
-    mod1 <- Mclust(df, x = BIC)
-    Ks <- as.numeric(summary(mod1, parameters = TRUE)$G)
-    cat(paste0("\nCluster run complete - out of ", length(n), " in total..."))
-    return(Ks)
+EstimateKmeans <- function(data) {
+    BIC <- mclustBIC(data)
+    mod1 <- Mclust(data, x = BIC) #obtained model
+    num.km.clusters <- as.numeric(mod1$G)  #number of clusters according to the best model
+    print(paste0("number of clusters according to the best model, G: ",num.km.clusters))
+    summary.clust<-summary(mod1, parameters = FALSE) #summary for the best model
+    print(summary.clust)
+    return(list("num.km.clusters"=num.km.clusters, "BIC"=BIC))
 }
