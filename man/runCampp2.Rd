@@ -74,7 +74,7 @@ runCampp2(
 
 \item{plot.DEA}{This argument specifies ("TRUE" or "FALSE") whether visualizations should be made for the differential expression analysis. Visualizations include a Volcano plot for the groups of samples and an Upset plot and Venn diagram for sample subtypes in the input data if subtypes are present.}
 
-\item{heatmap.size}{Argument specifying how many genes will be selected to be plotted on the heatmap if plot.heatmap is TRUE. The input must be specified as an even number.#' @param show.PCA.labels a boolean value (TRUE or FALSE) specifying if elements (e.g. samples) should be labelled (for PCAPlot and runKmeans functions). Labeling is based on column names of the input data. Default value is FALSE.}
+\item{heatmap.size}{Argument specifying how many genes will be selected to be plotted on the heatmap if plot.heatmap is TRUE. The input must be specified as an even number.}
 
 \item{viridis.palette}{Argument specifying viridis color palette used for heatmaps. Default is "turbo".}
 
