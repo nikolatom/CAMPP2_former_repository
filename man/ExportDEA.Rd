@@ -2,23 +2,28 @@
 % Please edit documentation in R/Export_DEA.R
 \name{ExportDEA}
 \alias{ExportDEA}
-\title{Export DEA results into .txt}
+\title{Reformat and Export DEA results into .txt}
 \usage{
-ExportDEA(res.DEA, filename)
+ExportDEA(res.DEA, prefix)
 }
 \arguments{
-\item{res.DEA}{A list of data frames from DEA_feature_apply containing gene counts, p-values, FDRs and logFCs.}
+\item{res.DEA}{a list of data frames containing results from different group
+comparisons in limma format.}
 
-\item{filename}{The name of the output file.}
+\item{prefix}{a character vector defining prefix of output file name.}
 }
 \value{
-DEA results as .txt table
+1) a data frame of DEA results
+2) a .txt table of exported DEA results
 }
 \description{
-A function for exporting DEA results into a .txt file.
+A function for re-formatting the output from DEA generated based
+on the workflow: (runDEA - DEAFeatureApply - DEAFeature - limma); and
+exporting the results into a .txt file.
 }
 \examples{
 \dontrun{
-...
+campp2_brca_1_DEA_out<-ExportDEA(res.DEA = campp2_brca_1_DEA$res.DEA,
+prefix="test")
 }
 }

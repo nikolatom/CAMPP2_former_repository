@@ -1,7 +1,8 @@
 #' @title A function for creating consensus between DEA and LASSO
 #' @description This function creates a consensus between the results from
 #' DEA and LASSO/Elastic net/Ridge regression. Specifically, only the features
-#' present in LASSO results are kept in the DEA results table.
+#' present in LASSO results are kept in the DEA results table and are sorted
+#' based on DEA results.
 #' Additionally, a Venn diagram visualizing overlaps is generated.
 #' @param DEA.out a data frame from RunDEA containing features and their
 #' corresponding AveExpr, logFC, p.value, adj.p.value ect. Mandatory column
@@ -25,7 +26,7 @@
 
 
 RunDEA_LASSO_consensus<-function(DEA.out, LASSO.results, group, viridis.palette="turbo", prefix){
-    consensus <- DEA.out[DEA.out$name %in% LASSO.results$VarsSelect[,1],]
+    consensus <- DEA.out[DEA.out$name %in% LASSO.results$VarsSelect[,1],]  ##list is sorted based on logFC in DEA.out
 
     if (nrow(consensus) > 0) {
         pdf(paste0(prefix, "_overlap_DEA_LASSO.pdf"), height=8, width=12)

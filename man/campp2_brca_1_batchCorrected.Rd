@@ -15,6 +15,6 @@ campp2_brca_1_batchCorrected
 \description{
 A dataset with batch corrected data generated using "BatchCorrect" function.
 This dataset is based on "campp2_brca_1_normalized". For more details, see the
-vignette. For more details, see the vignette.
+vignette.
 }
 \keyword{datasets}

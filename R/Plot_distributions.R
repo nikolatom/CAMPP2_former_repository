@@ -1,7 +1,7 @@
 #' @title Plotting Distributions
 #' @description Plotting the counts' Distributions
-#' @param my.data a dataframe of expression/abundance counts, N.B only a subset of variables should be input, not intended for the full expression matrix!(See "Fitting Data Distributions" above)
-#' @param list.of.lists an output from the function "Fitting Data Distributions". The my.data and list.of.list should have the same dimentions, e.g. length of list == nrows of dataframe.
+#' @param data a data.frame of expression/abundance counts. N.B only a subset of variables should be input, not intended for the full expression matrix!(See function "FitDistributions")
+#' @param fitted.data a list of lists obtained as output from the function "FitDistributions". The data and fitted.data must have the same dimensions, e.g. length(fitted.data) == nrows(data).
 #' @export
 #' @import ggplot2
 #' @import squash
@@ -12,32 +12,32 @@
 #' ...
 #' }
 
-PlotDistributions <- function(my.data, list.of.lists) {
-    discretetype <- unique(as.vector(apply(my.data, 1, function(x) x%%1==0)))
-    hasNeg <- unique(as.vector(my.data < 0))
-    for(idx in 1:length(list.of.lists)) {
-        pdf(paste0(names(list.of.lists)[idx], ".pdf"), height = 8, width = 12)
+PlotDistributions <- function(data, fitted.data) {
+    discretetype <- unique(as.vector(apply(data, 1, function(x) x%%1==0)))
+    hasNeg <- unique(as.vector(data < 0))
+    for(idx in 1:length(fitted.data)) {
+        pdf(paste0(names(fitted.data)[idx], ".pdf"), height = 8, width = 12)
         par(mfrow=c(2,3))
         if (FALSE %in% discretetype) {
             if (TRUE %in% hasNeg) {
-                descdist(as.numeric(my.data[idx,]), discrete = FALSE, boot = 500, obs.col = viridis(1), boot.col = viridis(5)[4])
+                descdist(as.numeric(data[idx,]), discrete = FALSE, boot = 500, obs.col = viridis(1), boot.col = viridis(5)[4])
                 plot.legend <- c("norm")
                 plot.colors <- viridis(1)
             } else {
-                descdist(as.numeric(my.data[idx,]), discrete = FALSE, boot = 500, obs.col = viridis(1), boot.col = viridis(5)[4])
+                descdist(as.numeric(data[idx,]), discrete = FALSE, boot = 500, obs.col = viridis(1), boot.col = viridis(5)[4])
                 plot.legend <- c("Weibull", "lognormal", "gamma", "norm")
                 plot.colors <- viridis(4)
             }
         }
         if (!FALSE %in% discretetype) {
-            descdist(as.vector(my.data[idx,]), discrete = TRUE,  boot = 500, obs.col = viridis(1), boot.col = viridis(5)[4])
+            descdist(as.vector(data[idx,]), discrete = TRUE,  boot = 500, obs.col = viridis(1), boot.col = viridis(5)[4])
             plot.legend <- c("poisson", "norm")
             plot.colors <- viridis(2)
         }
-        denscomp(list.of.lists[[idx]], legendtext = plot.legend, fitcol = plot.colors)
-        cdfcomp (list.of.lists[[idx]], legendtext = plot.legend, fitcol = plot.colors, datapch=16)
-        qqcomp  (list.of.lists[[idx]], legendtext = plot.legend, fitcol = plot.colors, fitpch=16)
-        ppcomp  (list.of.lists[[idx]], legendtext = plot.legend, fitcol = plot.colors, fitpch=16)
+        denscomp(fitted.data[[idx]], legendtext = plot.legend, fitcol = plot.colors)
+        cdfcomp (fitted.data[[idx]], legendtext = plot.legend, fitcol = plot.colors, datapch=16)
+        qqcomp  (fitted.data[[idx]], legendtext = plot.legend, fitcol = plot.colors, fitpch=16)
+        ppcomp  (fitted.data[[idx]], legendtext = plot.legend, fitcol = plot.colors, fitpch=16)
         dev.off()
     }
 }

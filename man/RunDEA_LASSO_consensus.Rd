@@ -35,7 +35,8 @@ from DEAout table
 \description{
 This function creates a consensus between the results from
 DEA and LASSO/Elastic net/Ridge regression. Specifically, only the features
-present in LASSO results are kept in the DEA results table.
+present in LASSO results are kept in the DEA results table and are sorted
+based on DEA results.
 Additionally, a Venn diagram visualizing overlaps is generated.
 }
 \examples{

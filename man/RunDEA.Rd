@@ -2,50 +2,70 @@
 % Please edit documentation in R/Run_DEA.R
 \name{RunDEA}
 \alias{RunDEA}
-\title{Run differential expression/abundance analysis}
+\title{A wrapper for differential expression/abundance analysis}
 \usage{
 RunDEA(
   data,
-  metadata,
-  technology,
-  batch,
-  covarDEA,
+  metadata = NULL,
   group,
-  logFC,
-  FDR,
+  batch = NULL,
+  covarDEA = NULL,
+  cutoff.logFC = 1,
+  cutoff.FDR = 0.01,
   prefix,
-  block
+  block = NULL
 )
 }
 \arguments{
-\item{data}{A raw gene count matrix from seq, array, ms or other technology (with gene IDs as row names and sample IDs as columns). It's recommended to import gene counts using function "import_counts".}
+\item{data}{a matrix of (transformed and normalized) feature counts from
+"seq", "array", "ms" or "other" technology (with feature IDs as row names
+and sample IDs as columns).}
 
-\item{metadata}{Samples' metadata table is recommended to be imported using function "import_metadata". Metadata must include exactly the same samples sorted in the same order as in a gene counts matrix (data).}
+\item{metadata}{a samples' metadata table should be imported using function
+"import_metadata". Metadata must include exactly the same samples as gene
+counts (data) and samples must be sorted similarly. In this function,
+metadata are optional and are used to extract covariates for each sample.
+Default = NULL.}
 
-\item{technology}{a string vector of length 1 defining technology used for generating the data. Allowed types are: 'array', 'seq', 'ms' or 'other'.}
+\item{group}{a factor specifying group for each sample (e.g. could be
+represented by a column from a metadata file)}
 
-\item{batch}{The batch covariate for each data sample, derived from metadata column.}
+\item{batch}{a factor specifying batch for each sample (e.g. could be
+represented by a column from a metadata file). Default = NULL.}
 
-\item{covarDEA}{Covariates to include in the analysis If multiple of these, they should be specified as a character vector.}
+\item{covarDEA}{a character vector of covariate(s) to include in the analysis.
+covarDEA can be defined only together with a batch parameter (which
+represents one of the covariates). Default = NULL.}
 
-\item{group}{An array of specific sample groups derived from metadata column (e.g. diagnosis)}
+\item{cutoff.logFC}{A cutoff value for the logarithmic fold change applied
+to each feature. Default = 1.}
 
-\item{logFC}{The logarithmic Fold Change for each data sample (ratio of changes in expression data)}
+\item{cutoff.FDR}{a cutoff value for the false discovery rate (corrected
+p-value) applied to each feature. Default = 0.01.}
 
-\item{FDR}{The false discovery rate for each data sample (the corrected p-value)}
+\item{prefix}{a character vector defining prefix of output file name.}
 
-\item{prefix}{a character defining the result folder name and prefix of output file names.}
-
-\item{block}{A vector or factor specifying a blocking variable. The block must be of same length as data and contain 2 or more options. For 2 datasets, the block can be defined as a vector of the two seperate blocks.}
+\item{block}{a factor specifying blocking variable. The block must be of
+the same length as data and contain 2 or more options (e.g. could be
+represented by a column from a metadata file). Default = NULL.}
 }
 \value{
-a matrix of differential expression/abundance results (containing information on gene regulation and significance of comparison)
+a list of:
+1) re-formatted matrix of differential expression/abundance results from
+limma.
+2) original results (a list) from limma
+3) a character vector with unique feature names
+4) a design matrix
+5) a contrast matrix
 }
 \description{
-Run differential expression/abundance analysis
-}
-\examples{
-\dontrun{
-...
-}
+A function for running differential expression/abundance
+analysis using a matrix of features (e.g., genes) counts as a mandatory
+input. In the function, user is allowed to take advantage of defining multiple
+covariates, thresholds for a log fold change (logFC), a false discovery
+rate (FDR) and a blocking variable.
+The differential expression/abundance analysis is based on voom
+transformation and limma.
+Results are provided in the form of tables with differentially expressed/
+abundant features. Design a contrast matrices are also provided.
 }

@@ -1,29 +1,49 @@
-#' @title Heatmaps
-#' @description Function for making heatmaps
-#' @param my.DE a dataframe with counts for differential expressed/abundant features
-#' @param my.gradient a color gradient to use for heatmap
-#' @param my.colorshm a color pallet for groups full length
-#' @param my.colors a color pallet for groups at levels
-#' @param my.group a vector of groups to color by
-#' @param my.filename a name of output plot
-#' @param my.range ??
+#' @title Make Heatmap
+#' @description A function for making heatmaps to showcase the difference in
+#' expression/abundance of features across samples and sample groups and to
+#' visualise relations between them.
+#' @param data a feature count matrix (ideally normalized and batch corrected)
+#' from "seq", "array", "ms" or "other" technology (with feature IDs as row
+#' names and sample IDs as columns). It's recommended to import feature counts
+#' using function "import_counts".
+#' @param group a factor specifying group for each sample (e.g. could be
+#' represented by a column from a metadata file). Group's information
+#' will be used in clustering the samples.
+#' @param prefix a character vector defining prefix of output file name.
+#' @param viridis.palette a character vector specifying color gradient to use for
+#' the heatmap. Default option for viridis color palettes is 'turbo'. For more
+#' options, see viridis vignette.
+#' @param data.type a character vector (used in the heatmap legend) describing
+#' type of the data being visualized. Default = "Feature counts".
 #' @export
+#' @import ComplexHeatmap
 #' @import squash
-#' @import viridis
-#' @import ggplot2
+#' @import viridisLite
+#' @import grid
 #' @seealso
-#' @return heatmaps
+#' @return
 #' @examples \dontrun{
-#' ...
+#' MakeHeatmap(data=campp2_brca_1_batchCorrected,
+#' group=campp2_brca_1_meta$subtype, prefix="test", viridis.palette = "turbo",
+#' data.type = "Feature counts")
 #' }
 
+MakeHeatmap <- function(data, groups, prefix, viridis.palette = "turbo", data.type = "Feature counts"){
 
-MakeHeatmap <-  function(my.DE, my.gradient, my.colorshm, my.colors, my.group, my.filename, my.range) {
-    pdf(paste0(my.filename,"_heatmap.pdf"), height = 13, width=11)
-    heatmap.plus(as.matrix(scale(my.DE, scale = FALSE)), col=my.gradient, Rowv=NULL, hclustfun=function(d) hclust(d, method="ward.D2"), trace="none", labRow=rownames(my.DE), labCol='', ColSideColors=cbind(my.colorshm, rep("white", length(my.group))), margins = c(14,8), cexCol=1, cexRow = 0.8)
-    map <- makecmap(my.range[1]:my.range[2])
-    map$colors <- viridis((length(map$breaks)-1), option="cividis")
-    hkey(map, x = 0, y = 0, title = "LogFC", stretch = 2)
-    legend("topleft", legend = as.character(levels(as.factor(my.group))), fill=my.colors, cex = 0.7)
+    col_ha = HeatmapAnnotation(Groups = groups,
+                               simple_anno_size = unit(0.3,'cm'), annotation_name_align = TRUE)
+
+    png(paste0(prefix,"_heatmap.png"), width = 30, height = 20, units = "cm", res=1200)
+
+    map <- makecmap(round(min(data)):round(max(data)))
+    map$colors <- viridis((length(map$breaks)-1), option=viridis.palette)  ##change colors according to viris pallete
+    legend <- list(title=data.type, at=1:length(map$breaks), labels=map$breaks, col_fun=map$colors)
+
+    htmap <- Heatmap(scale(data,scale=TRUE), col = viridis(300, option=viridis.palette), heatmap_legend_param = legend,
+                  row_names_side = "left", row_names_gp=gpar(cex=0.6), column_names_gp = gpar(cex=0),
+                  clustering_method_rows = "ward.D", column_title="Samples", row_title="Features",
+                  top_annotation=col_ha, column_km=length(unique(groups)))
+
+    draw(htmap)
     dev.off()
 }

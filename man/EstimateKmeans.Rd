@@ -2,27 +2,28 @@
 % Please edit documentation in R/Estimate_K_means.R
 \name{EstimateKmeans}
 \alias{EstimateKmeans}
-\title{Estimate Kmeans}
+\title{Estimate K-means clusters}
 \usage{
-EstimateKmeans(df, n)
+EstimateKmeans(data)
 }
 \arguments{
-\item{n}{= number of sample subsets to generate (The number of clusters tested will be based on number of samples, fewer samples will result in fewer kmeans tested.)}
-
-\item{my.data}{a dataframe of expression/abundance counts}
+\item{data}{a data frame of feature (e.g. gene) counts}
 }
 \value{
-clustering results and plots
+a list including:
+1) a data frame with a number of clusters corresponding to G from BIC object.
+G represents a number of mixture components in the model corresponding to
+the optimal BIC
+2) an 'mclustBIC' object, which is the result of applying mclustBIC to data
 }
 \description{
-Function for Estimating Kmeans; Number of kmeans will be based on the bayesian information criterion(BIC); RNAseq with
-many genes, multiple samples of 3000 variables will be generated
-and tested to overcome issues with computational time and the
-consensus of best n kmeans will be returned.
-Clustering may only be performed one dataset at a time!
+A function to estimate the number of K-means.
+Number of K-means is based on the Bayesian information criterion (BIC)
+provided by mclust package. A summary describing the best model is printed on
+the screen during the calculation.
 }
 \examples{
 \dontrun{
-...
+EstimateKmeans(t(campp2_brca_1_batchCorrected[1:2000,]))
 }
 }
