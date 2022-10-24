@@ -76,7 +76,7 @@ runCampp2(
 
 \item{plot.DEA}{This argument specifies ("TRUE" or "FALSE") whether visualizations should be made for the differential expression analysis. Visualizations include a Volcano plot for the groups of samples and an Upset plot and Venn diagram for sample subtypes in the input data if subtypes are present.}
 
-\item{heatmap.size}{Argument specifying how many genes will be selected to be plotted on the heatmap if plot.heatmap is TRUE. The input must be specified as an even number.}
+\item{heatmap.size}{Argument specifying how many genes will be selected to be plotted on the heatmap if plot.heatmap is TRUE. The input must be specified as an even number. Default is 30.}
 
 \item{viridis.palette}{Argument specifying viridis color palette used for heatmaps. Default is "turbo".}
 
@@ -88,7 +88,7 @@ runCampp2(
 
 \item{colors}{Custom color palette for PCA and heatmaps. Must be the same length as number of groups used for comparison (e.g. two groups = two colors) and must be defined as character vector. See R site for avalibe colors http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf. Default is NULL.}
 
-\item{prefix}{Prefix for the results' files and results folder. Defalt is "Results".}
+\item{prefix}{Prefix for the results' files and results folder. Default is "Results".}
 
 \item{correlation}{Argument for correlation analysis. String specify which features should be correlated, options are: "ALL", "DE", "DA", "LASSO", "EN" or "Consensus". For this type of analysis, 2 datasets must include the same samples, e.g. tumor1-normal vs tumor2-normal (3 samples from 1 patient needed). Default is FALSE (do not run).}
 
@@ -121,9 +121,4 @@ CAMPP2 results
 }
 \description{
 CAMPP2 pipeline
-}
-\examples{
-\dontrun{
-runCampp2(batches=c("tumor_stage","tumor_stage"),prefix="test_CAMPP2", data1=campp2_brca_1, data2=campp2_brca_2, metadata1=campp2_brca_1_meta,metadata2=campp2_brca_2_meta, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"), plot.PCA=TRUE, plot.DEA=TRUE, control.group = c("healthy","healthy"), plot.heatmap="DEA", alpha.lasso=0.5)}
-
 }

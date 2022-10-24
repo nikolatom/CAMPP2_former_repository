@@ -14,7 +14,7 @@
 #' the heatmap. Default option for viridis color palettes is 'turbo'. For more
 #' options, see viridis vignette.
 #' @param data.type a character vector (used in the heatmap legend) describing
-#' type of the data being visualized. Default = "Feature counts".
+#' type of the data being visualized. Default is "expression/abundance".
 #' @export
 #' @import ComplexHeatmap
 #' @import squash
@@ -28,7 +28,7 @@
 #' data.type = "Feature counts")
 #' }
 
-MakeHeatmap <- function(data, groups, prefix, viridis.palette = "turbo", data.type = "Feature counts"){
+MakeHeatmap <- function(data, groups, prefix, viridis.palette = "turbo", data.type = "expression/abundance"){
 
     col_ha = HeatmapAnnotation(Groups = groups,
                                simple_anno_size = unit(0.3,'cm'), annotation_name_align = TRUE)

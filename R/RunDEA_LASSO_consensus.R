@@ -19,9 +19,19 @@
 #' @return
 #' 1) a data frame of features common for both DEA and LASSO which are extracted
 #' from DEAout table
-#' 2) a .png with a venn diagram of features' intersections between DEA and LASSO
+#' 2) a .png with a Venn diagram of features' intersections between DEA and LASSO
 #' @examples \dontrun{
-#' ...
+#' ##here we prepare DEA results compatible (group="diagnosis) with
+#' EN/LASS/Ridge regression results:
+#' campp2_brca_1_DEA_diagnosis<-RunDEA(data=campp2_brca_1_normalized,
+#' metadata=campp2_brca_1_meta,
+#' group=campp2_brca_1_meta$diagnosis, prefix="test", batch=campp2_brca_1_meta$age,
+#' covarDEA = c("tumor_stage"), cutoff.logFC=1, cutoff.FDR=0.01)
+#' ##here we run RunDEA_LASSO_consensus function:
+#' campp2_brca_1_DEA_LASSO_consensus <- RunDEA_LASSO_consensus(
+#' campp2_brca_1_DEA_diagnosis$DEA.out,
+#' campp2_brca_1_LASSO, group=campp2_brca_1_meta$diagnosis,
+#' viridis.palette="turbo", "test")
 #' }
 
 
@@ -33,7 +43,7 @@ RunDEA_LASSO_consensus<-function(DEA.out, LASSO.results, group, viridis.palette=
         if (length(levels(group)) == 2) {
             venn <- venn.diagram(list(A=unique(as.character(DEA.out[DEA.out$dir =="up.reg",]$name)), B=unique(as.character(DEA.out[DEA.out$dir =="down.reg",]$name)), C=as.character(LASSO.results$VarsSelect[,1])), category.names = c("DEA Analysis Up", "DEA Analysis Down", "LASSO/EN/Ridge Regression"), filename=NULL, lwd = 0.7, cat.pos=0, sub.cex = 2, cat.cex= 1.5, cex=1.5, fill=viridis(3, begin = 0.2, end = 0.8, option=viridis.palette))
         } else {
-            venn <- venn.diagram(list(A=unique(as.character(DEA.out$name)), B=as.character(VarsSelect$LASSO.Var.Select)), category.names = c("DEA Analysis All", "LASSO/EN/Ridge regression"), filename=NULL, lwd = 0.7, cat.pos=0, sub.cex = 2, cat.cex= 1.5, cex=1.5, fill=viridis(2, begin = 0.2, end = 0.8, option=viridis.palette))  ##double check this
+            venn <- venn.diagram(list(A=unique(as.character(DEA.out$name)), B=as.character(LASSO.results$VarsSelect[,1])), category.names = c("DEA output", "LASSO/EN/Ridge regression output"), filename=NULL, lwd = 0.7, cat.pos=0, sub.cex = 2, cat.cex= 1.5, cex=1.5, fill=viridis(2, begin = 0.2, end = 0.8, option=viridis.palette))
         }
         grid.draw(venn)
         dev.off()

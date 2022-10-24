@@ -11,7 +11,7 @@
 #' @param num.km.clusters either a vector of manually defined number(s) of clusters, or NULL. Each number in this vector represent a plausible number of clusters that the user would expected to be present in the data. If multiple values provided, the function will automatically perform K-means clustering using each of them as k (expected number of clusters) separately. If this argument is NULL (default), optimal numbers of clusters are calculated automatically based on the bayesian information criterion (mclust package), applied to sub sampled data (see documentation for the whole procedure).
 #' @param batches Specifies which metadata should be used for a batch correction (sequencing run/tissue/interstitial fluid/etc.). Argument takes a character vector of length 1 (one data set) or 2 (two data sets), where the string(s) match a column name(s) in the metadata file(s). In case batch correction should be performed only in 1 out of 2 data sets, a data set without the batch correction (1st one in the example) should be define as "", e.g. batches(c("","column_name")). Default is NULL.
 #' @param plot.heatmap Argument defining which data will be used for the selection of the top x features to be plotted on the heatmap. Options are:"DEA", "LASSO", "EN", "Ridge" or "Consensus".
-#' @param heatmap.size Argument specifying how many genes will be selected to be plotted on the heatmap if plot.heatmap is TRUE. The input must be specified as an even number.
+#' @param heatmap.size Argument specifying how many genes will be selected to be plotted on the heatmap if plot.heatmap is TRUE. The input must be specified as an even number. Default is 30.
 #' @param show.PCA.labels a boolean value (TRUE or FALSE) specifying if elements (e.g. samples) should be labelled (for PCAPlot and runKmeans functions). Labeling is based on column names of the input data. Default value is FALSE.
 #' @param viridis.palette Argument specifying viridis color palette used for heatmaps. Default is "turbo".
 #' @param show.PCA.labels a boolean value (TRUE or FALSE) specifying if elements (e.g. samples) should be labelled (for PCAPlot and runKmeans functions). Labeling is based on column names of the input data. Default value is FALSE.
@@ -21,7 +21,7 @@
 #' @param surv.plot Argument which specifies number of features to include per survival plot. Default is 50.
 #' @param standardize (double check for sequencing) Data centering. This option may be set to "mean" or "median." If two datasets are provided, the standardize option should be specified for each dataset, provided as a character vector. If the argument standardize is not specified and "technology" = "array", then quantile normalization will be performed. Defaults is FALSE (do not run).
 #' @param transform Data transformation type. Current options are "log2", "log10", "logit" and "voom". If two datasets are provided the parameter should be specified for each dataset, provided as a character vector. Defaults is FALSE (do not run).
-#' @param prefix Prefix for the results' files and results folder. Defalt is "Results".
+#' @param prefix Prefix for the results' files and results folder. Default is "Results".
 #' @param signif Cut-offs for log fold change (logFC) and corrected p-value (fdr), defining significant hits (proteins, genes, miRNAs or N-features). If argument is set, it must be a numeric vector, where the first element specifies the cut-off for logFC and the second element specifies the cut-off for corrected p-value (fdr).  In case of 2 datasets, vector must be of length 4. By default, cutoffs will be set to -1 > logFC > 1 and corrected p-values < 0.05.
 #' @param plot.DEA This argument specifies ("TRUE" or "FALSE") whether visualizations should be made for the differential expression analysis. Visualizations include a Volcano plot for the groups of samples and an Upset plot and Venn diagram for sample subtypes in the input data if subtypes are present.
 #' @param ensembl.version This argument specifies which ENSEMBL database to use when transforming ensemble IDs into HUGO IDs using biomaRt. The argument should be specified as a number.
@@ -41,7 +41,8 @@
 #' @seealso
 #' @return CAMPP2 results
 #' @examples \dontrun{
-#' runCampp2(batches=c("tumor_stage","tumor_stage"),prefix="test_CAMPP2", data1=campp2_brca_1, data2=campp2_brca_2, metadata1=campp2_brca_1_meta,metadata2=campp2_brca_2_meta, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"), plot.PCA=TRUE, plot.DEA=TRUE, control.group = c("healthy","healthy"), plot.heatmap="DEA", alpha.lasso=0.5)}
+#' runCampp2(batches=c("tumor_stage","tumor_stage"),prefix="test_CAMPP2", data1=campp2_brca_1, data2=campp2_brca_2, metadata1=campp2_brca_1_meta,metadata2=campp2_brca_2_meta, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"), plot.PCA=TRUE, plot.DEA=TRUE, control.group = c("healthy","healthy"), plot.heatmap="DEA", alpha.lasso=0.5)
+#' runCampp2(batches=c("tumor_stage"),prefix="test_CAMPP2", data1=campp2_brca_1, metadata1=campp2_brca_1_meta,groups=c("IDs", "diagnosis"), technology=c("seq"), plot.PCA=FALSE, plot.DEA=FALSE, control.group = c("healthy"), plot.heatmap="DEA", alpha.lasso=0.5)
 #'
 
 runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology, groups, control.group=NULL, batches=NULL, data.check=TRUE, standardize=FALSE, transform=FALSE, plot.PCA=FALSE, plot.heatmap=FALSE, kmeans=FALSE, ensembl.version=104, plot.DEA=FALSE, heatmap.size=40, viridis.palette="turbo", num.km.clusters=NULL, signif=NULL, block=NULL, colors=NULL, prefix="Results", correlation=FALSE, WGCNA=FALSE, cutoff.WGCNA=NULL, survival=FALSE, covariates=NULL, stratify=NULL, surv.plot=50, PPint=FALSE, gene.miR.int=FALSE, show.PCA.labels=FALSE, alpha.lasso=FALSE, min.coef.lasso=NULL, nfolds.lasso=NULL){
@@ -471,7 +472,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
         print("Analysing DEA vs LASSO consensus1")
 
-        consensus1<-RunDEA_LASSO_consensus(DEA1.out, LASSO1.results, group1, viridis.palette="turbo", paste0(prefix,"_1"))  ##features are sorted based on DEA.out
+        consensus1<-RunDEA_LASSO_consensus(DEA1.out, LASSO1.results, group1, viridis.palette="turbo", paste0(prefix,"_1"))  ##features are sorted based on DEA.out (sorted based on logFC)
         write.table(consensus1, paste0(prefix,"_DEA_LASSO_consensus1.txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
         write.table(LASSO1.results$VarsSelect, paste0(prefix,"_LASSO1.txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
 
@@ -556,76 +557,58 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
         setwd("data1")
         if (databatch1 == TRUE){
             heatmap.input1 <- data1.batch
-            name <- "_batchcorr"
         } else {
             if (technology[1] == "seq"){
                 heatmap.input1 <- as.data.frame(data1$E)
-                name <- ""
             }else{
                 heatmap.input1 <- as.data.frame(data1)
-                name <- ""
             }
         }
 
         if(plot.heatmap == "DEA"){
-            DEA1.out.heatmap <- rbind(head(DEA1.out[order(DEA1.out$logFC),],heatmap.size/2),tail(DEA1.out[order(DEA1.out$logFC),],heatmap.size/2))  ##Select top x DEA features from the top/bottom for the sorted DEA output
-            DEA1.out.heatmap.name <- DEA1.out.heatmap$name
-            DEA1.out.heatmap <- unique(DEA1.out.heatmap.name)
-            if(length(DEA1.out.heatmap) < heatmap.size){
-                heatmap.size <- length(DEA1.out.heatmap)
-                print(paste0("heatmap.size is reduced to ", heatmap.size))
-            }
-            RunHeatmap(heatmap.input1, DEA1.out.heatmap, group1, viridis.palette, plot.heatmap, prefix)
-            print(paste0("Top ", heatmap.size, " DEA features will be selected for heatplot based on their logFC values. Please, consider that some of the TOP DEA features might be present multiple times DEA output due to the multiple groups comparisons - on the heatmap, gene will be projected only once. "))
-            print(paste0("Number of duplicates in the top ", heatmap.size, " DEA features is: ", (length(DEA1.out.heatmap)-length(unique((DEA1.out.heatmap))))))
+            RunHeatmap(heatmap.input1, DEA1.out, heatmap.size, group1, viridis.palette, plot.heatmap, prefix,data.type=paste0("expression/abundance")) ##DEA.out is sorted based on logFC
         } else if (plot.heatmap =="Consensus"){
-            DEA1.out.heatmap <- rbind(head(as.character(consensus1$name),heatmap.size/2),tail(as.character(consensus1$name),heatmap.size/2))  ##Select top x DEA features from the top/bottom for the sorted DEA output
-            DEA1.out.heatmap <- unique(DEA1.out.heatmap)
-            if(length(DEA1.out.heatmap) < heatmap.size){
-                heatmap.size <- length(DEA1.out.heatmap)
-                print(paste0("heatmap.size is reduced to ", heatmap.size))
-            }
-            RunHeatmap(heatmap.input1, DEA1.out.heatmap, group1, viridis.palette, plot.heatmap, prefix)
-            print(paste0("Top ", heatmap.size, " consensual (DEA vs LASSO/EN/Ridge) features will be considered in the heatplot. DEA features are selected based on their logFC values from the DEA output including all the comparisons."))
-
+            RunHeatmap(heatmap.input1, consensus1, heatmap.size, group1, viridis.palette, plot.heatmap, prefix,data.type=paste0("expression/abundance"))  ##Consensus is sorted based on DEA.out
         } else if (plot.heatmap %in% c("EN", "LASSO", "Ridge")){  ##Here it's difficult to sort the features based on their significance as they are generated based on an intersection of several LASSO runs
-            DEA1.out.heatmap <- rbind(head(LASSO1.results$VarsSelect[,1],heatmap.size/2),tail(LASSO1.results$VarsSelect[,1],heatmap.size/2))  ##Select top x DEA features from the top/bottom for the sorted DEA output
-            DEA1.out.heatmap <- unique(DEA1.out.heatmap)
-            if(length(DEA1.out.heatmap) < heatmap.size){
-                heatmap.size <- length(DEA1.out.heatmap)
-                print(paste0("heatmap.size is reduced to ", heatmap.size))
-            }
-            RunHeatmap(heatmap.input1, DEA1.out.heatmap, group1, viridis.palette, plot.heatmap, prefix)
-            print("Currently, EN/LASSO/Ridge regression coefficients are not sorted. This should be considered while setting heatmap.size parameter which should ideally cover all the features.")
+            RunHeatmap(heatmap.input1, LASSO1.results, heatmap.size, group1, viridis.palette, plot.heatmap, prefix,data.type=paste0("expression/abundance"))
         } else {
             stop(paste0("plot.heatmap value ", plot.heatmap, " is not supported. Supported values are: DEA, Consensus, EN, LASSO and Ridge."))
         }
         setwd("../../")
 
 
-        # if (!is.null(data2)){
-        #     print("Processing 2nd dataset")
-        #     setwd("Heatmaps")
-        #     dir.create("data2")
-        #     setwd("data2")
-        #     if (databatch2 == TRUE){
-        #         heatmap.input2 <- data2.batch
-        #         name <- "_batchcorr"
-        #     } else {
-        #         if (technology[2] == "seq"){
-        #             heatmap.input2 <- as.data.frame(data2$E)
-        #             name <- ""
-        #         }else{
-        #             heatmap.input2 <- as.data.frame(data2)
-        #             name <- ""
-        #         }
-        #     }
-        #
-        #     RunHeatmap(heatmap.input2, DEA2.out, group2, heatmap.size, viridis.palette, plot.heatmap, prefix)
-        #
-        #     setwd("../../")
-        #
-        # }
+        if (!is.null(data2)){
+        print("Processing 2nd dataset")
+        dir.create("Heatmaps")
+        setwd("Heatmaps")
+        dir.create("data2")
+        setwd("data2")
+        if (databatch2 == TRUE){
+            heatmap.input2 <- data2.batch
+        } else {
+            if (technology[2] == "seq"){
+                heatmap.input2 <- as.data.frame(data2$E)
+            }else{
+                heatmap.input2 <- as.data.frame(data2)
+            }
+        }
+
+        if(plot.heatmap == "DEA"){
+            RunHeatmap(heatmap.input2, DEA2.out, heatmap.size, group2, viridis.palette, plot.heatmap, prefix,data.type=paste0("counts")) ##DEA.out is sorted based on logFC
+        } else if (plot.heatmap =="Consensus"){
+            RunHeatmap(heatmap.input2, consensus2, heatmap.size, group2, viridis.palette, plot.heatmap, prefix,data.type=paste0("counts"))  ##Consensus is sorted based on DEA.out
+        } else if (plot.heatmap %in% c("EN", "LASSO", "Ridge")){  ##Here it's difficult to sort the features based on their significance as they are generated based on an intersection of several LASSO runs
+            RunHeatmap(heatmap.input2, LASSO2.results, heatmap.size, group2, viridis.palette, plot.heatmap, prefix,data.type=paste0("counts"))
+        } else {
+            stop(paste0("plot.heatmap value ", plot.heatmap, " is not supported. Supported values are: DEA, Consensus, EN, LASSO and Ridge."))
+        }
+        setwd("../../")
+
+        }
+
+
+
+
     print("CREATING HEATMAPS FINISHED")
     } else {
             cat("\n- No heatmap requested.\n")

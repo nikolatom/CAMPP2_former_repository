@@ -58,7 +58,7 @@ coefficient values
 \examples{
 \dontrun{
 ##run regression using small batch corrected dataset - no double cross validation
-runLASSO(data=campp2_brca_1_batchCorrected, group=campp2_brca_1_meta$diagnosis, alpha=0.5, min.coef=0, nfolds=10, prefix="test")
+campp2_brca_1_LASSO<-runLASSO(data=campp2_brca_1_batchCorrected, group=campp2_brca_1_meta$diagnosis, alpha=0.5, min.coef=0, nfolds=10, prefix="test")
 ##run regression using large batch corrected dataset suitable for double cross validation
 ###create a large dataset
 campp2_test_data_LASSO<-cbind(campp2_brca_1,campp2_brca_2)

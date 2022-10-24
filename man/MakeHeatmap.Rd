@@ -9,7 +9,7 @@ MakeHeatmap(
   groups,
   prefix,
   viridis.palette = "turbo",
-  data.type = "Feature counts"
+  data.type = "expression/abundance"
 )
 }
 \arguments{
@@ -25,7 +25,7 @@ the heatmap. Default option for viridis color palettes is 'turbo'. For more
 options, see viridis vignette.}
 
 \item{data.type}{a character vector (used in the heatmap legend) describing
-type of the data being visualized. Default = "Feature counts".}
+type of the data being visualized. Default is "expression/abundance".}
 
 \item{group}{a factor specifying group for each sample (e.g. could be
 represented by a column from a metadata file). Group's information
