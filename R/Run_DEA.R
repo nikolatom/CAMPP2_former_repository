@@ -107,6 +107,7 @@ RunDEA <- function(data, metadata=NULL, group, batch=NULL, covarDEA=NULL, cutoff
         cat("No signficant DEA hits found. Check your cut-off for differential expression analysis, it may be that these are too stringent.")
     }
 
+
     return(list("DEA.out"=DEA.out,"res.DEA"=res.DEA,"res.DEA.names"=res.DEA.names, "DEA.design.matrix"=design.matrix, "DEA.contrast.matrix"=contrast.matrix)) ##the main output is DEA.out and res.DEA.names; keeping res.DEA this for possible troubleshooting in LASSO, WGCNA
 
 }

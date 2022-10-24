@@ -10,8 +10,8 @@
 #' @param kmeans Argument specifies ("TRUE" or "FALSE") if a k-means clustering should be performed. Default is FALSE (do not run).
 #' @param num.km.clusters either a vector of manually defined number(s) of clusters, or NULL. Each number in this vector represent a plausible number of clusters that the user would expected to be present in the data. If multiple values provided, the function will automatically perform K-means clustering using each of them as k (expected number of clusters) separately. If this argument is NULL (default), optimal numbers of clusters are calculated automatically based on the bayesian information criterion (mclust package), applied to sub sampled data (see documentation for the whole procedure).
 #' @param batches Specifies which metadata should be used for a batch correction (sequencing run/tissue/interstitial fluid/etc.). Argument takes a character vector of length 1 (one data set) or 2 (two data sets), where the string(s) match a column name(s) in the metadata file(s). In case batch correction should be performed only in 1 out of 2 data sets, a data set without the batch correction (1st one in the example) should be define as "", e.g. batches(c("","column_name")). Default is NULL.
-#' @param plot.heatmap Argument defining which data will be used for the selection of the top x features to be plotted on the heatmap. Options are:"DEA", "LASSO", "EN" or "Consensus".
-#' @param heatmap.size Argument specifying how many genes will be selected to be plotted on the heatmap if plot.heatmap is TRUE. The input must be specified as an even number.
+#' @param plot.heatmap Argument defining which data will be used for the selection of the top x features to be plotted on the heatmap. Options are:"DEA", "LASSO", "EN", "Ridge" or "Consensus".
+#' @param heatmap.size Argument specifying how many genes will be selected to be plotted on the heatmap if plot.heatmap is TRUE. The input must be specified as an even number. Default is 30.
 #' @param show.PCA.labels a boolean value (TRUE or FALSE) specifying if elements (e.g. samples) should be labelled (for PCAPlot and runKmeans functions). Labeling is based on column names of the input data. Default value is FALSE.
 #' @param viridis.palette Argument specifying viridis color palette used for heatmaps. Default is "turbo".
 #' @param show.PCA.labels a boolean value (TRUE or FALSE) specifying if elements (e.g. samples) should be labelled (for PCAPlot and runKmeans functions). Labeling is based on column names of the input data. Default value is FALSE.
@@ -21,7 +21,7 @@
 #' @param surv.plot Argument which specifies number of features to include per survival plot. Default is 50.
 #' @param standardize (double check for sequencing) Data centering. This option may be set to "mean" or "median." If two datasets are provided, the standardize option should be specified for each dataset, provided as a character vector. If the argument standardize is not specified and "technology" = "array", then quantile normalization will be performed. Defaults is FALSE (do not run).
 #' @param transform Data transformation type. Current options are "log2", "log10", "logit" and "voom". If two datasets are provided the parameter should be specified for each dataset, provided as a character vector. Defaults is FALSE (do not run).
-#' @param prefix Prefix for the results' files and results folder. Defalt is "Results".
+#' @param prefix Prefix for the results' files and results folder. Default is "Results".
 #' @param signif Cut-offs for log fold change (logFC) and corrected p-value (fdr), defining significant hits (proteins, genes, miRNAs or N-features). If argument is set, it must be a numeric vector, where the first element specifies the cut-off for logFC and the second element specifies the cut-off for corrected p-value (fdr).  In case of 2 datasets, vector must be of length 4. By default, cutoffs will be set to -1 > logFC > 1 and corrected p-values < 0.05.
 #' @param plot.DEA This argument specifies ("TRUE" or "FALSE") whether visualizations should be made for the differential expression analysis. Visualizations include a Volcano plot for the groups of samples and an Upset plot and Venn diagram for sample subtypes in the input data if subtypes are present.
 #' @param ensembl.version This argument specifies which ENSEMBL database to use when transforming ensemble IDs into HUGO IDs using biomaRt. The argument should be specified as a number.
@@ -29,22 +29,23 @@
 #' @param stratify This argument may be used if some of the categorical (NOT continous) covariates violate the cox proportional assumption. The workflow checks for proportional hazard and will retun the covariates that fail the PH test. You may then rerun the workflow with this argument followed by the names of the categorical covariates which failed and these will be stratified. Default is NULL.
 #' @param colors Custom color palette for PCA and heatmaps. Must be the same length as number of groups used for comparison (e.g. two groups = two colors) and must be defined as character vector. See R site for avalibe colors http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf. Default is NULL.
 #' @param block A vector or factor specifying a blocking variable for differential expression analysis. The block must be of same length as the belonging dataset and contain 2 or more options. For 2 datasets the block can be defined as a list of factors or vectors.
-#' @param lasso Argument specifying parameters for LASSO or Elastic net regression. This argument may be set to 1 for LASSO or >0 & <1 for Elastic Net, but NOT to 0 exactly (Ridge Regression). Defaults is FALSE (do not run).
-#' @param WGCNA Argument specifying parameter for Weighed Gene Co-expression Network Analysis. It takes a string, either "DEA" or "ALL" specifying if all variables should be included in WGCNA or only differentially expressed / abundant variables. Defaults is FALSE (do not run).
+#' @param WGCNA Argument specifying parameter for Weighed Gene Co-expression Network Analysis. It takes a string, either "DA", "DE" or "ALL" specifying if all variables should be included in WGCNA or only differentially expressed / abundant variables. Defaults is FALSE (do not run).
 #' @param cutoff.WGCNA Argument specifying the cutoff values for WGCNA. The argument takes a numuric vector of three values: (I) minimum modules size, (II) maximum percentage of dissimilarity for merging of modules, and (III) percentage of top most interconnected genes (or other features) to return, from each modules identified in the Weighed Gene Co-expression Network Analysis. Default values are 10,25,25.
 #' @param PPint Argument specifying that protein-protein interaction networks should be generated using the results of the differential expression analysis. This argument must be a character vector of length two. The first element in this list must be a string specifying the type of gene identifier in the gene counts file provided. Allowed identifiers are: "ensembl_peptide_id", "hgnc_symbol", "ensembl_gene_id", "ensembl_transcript_id", "uniprotswissprot". The second element is a string specifying version of the stringDB to use. Currently only version supported is: 11.0. Default is FALSE (do not run).
 #' @param gene.miR.int Argument specifying that gene-miRNA interaction networks should be generated using the results of the differential expression analysis. This argument must be a character vector of length two. The first element in this list must be a string specifying the type of miRNA identifier in the gene counts data file. Allowed identifiers are: "mature_mirna_ids", "mature_mirna_accession". The second element must be a string specifying the miRNA-gene database to use, currently options are: "targetscan" (validated miRNAs), "mirtarbase" (predicted miRNAs), "tarscanbase" (validated + predicted miRNAs)". Default is FALSE (do not run).
+#' @param alpha.lasso a numeric vector specifying hyperparameter alpha for LASSO/Elastic network/Ridge regression. This value must be set to 0.0 < x < 1.0 for Elastic Net or to 1.0 for LASSO regression or to 0.0 for Ridge regression. Defaults is FALSE (do not run).
+#' @param min.coef.lasso a numeric vector specifying a threshold for features' filtering (e.g. genes) based on the coefficients which are calculated during model fitting. Default value is > 0.
+#' @param nfolds.lasso a numeric vector describing number of folds during Lambda estimation which is based on a cross-validation. Although nfolds can be as large as the sample size (leave-one-out CV), it is not recommended for large datasets. Smallest value allowable is nfolds=3. Default is 10.
 #' @import zeallot
 #' @export
 #' @seealso
 #' @return CAMPP2 results
 #' @examples \dontrun{
-#' runCampp2(batches=c("tumor_stage","tumor_stage"),prefix="test_CAMPP2", data1=campp2_brca_1, data2=campp2_brca_2, metadata1=campp2_brca_1_meta,metadata2=campp2_brca_2_meta, groups=c("IDs", "subtype","IDs", "subtype"), technology=c("seq","seq"), plot.PCA=TRUE, plot.DEA=TRUE, control.group = c("healthy","healthy"),plot.heatmap="DEA")
-#' }
+#' runCampp2(batches=c("tumor_stage","tumor_stage"),prefix="test_CAMPP2", data1=campp2_brca_1, data2=campp2_brca_2, metadata1=campp2_brca_1_meta,metadata2=campp2_brca_2_meta, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"), plot.PCA=TRUE, plot.DEA=TRUE, control.group = c("healthy","healthy"), plot.heatmap="DEA", alpha.lasso=0.5)
+#' runCampp2(batches=c("tumor_stage"),prefix="test_CAMPP2", data1=campp2_brca_1, metadata1=campp2_brca_1_meta,groups=c("IDs", "diagnosis"), technology=c("seq"), plot.PCA=FALSE, plot.DEA=FALSE, control.group = c("healthy"), plot.heatmap="DEA", alpha.lasso=0.5)
 #'
 
-runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology, groups, control.group=NULL, batches=NULL, data.check=TRUE, standardize=FALSE, transform=FALSE, plot.PCA=FALSE, plot.heatmap=FALSE, kmeans=FALSE, ensembl.version=104, plot.DEA=FALSE, heatmap.size=40, viridis.palette="turbo", num.km.clusters=NULL, signif=NULL, block=NULL, colors=NULL, prefix="Results", correlation=FALSE, lasso=FALSE, WGCNA=FALSE, cutoff.WGCNA=NULL, survival=FALSE, covariates=NULL, stratify=NULL, surv.plot=50, PPint=FALSE, gene.miR.int=FALSE, show.PCA.labels=FALSE){
-
+runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology, groups, control.group=NULL, batches=NULL, data.check=TRUE, standardize=FALSE, transform=FALSE, plot.PCA=FALSE, plot.heatmap=FALSE, kmeans=FALSE, ensembl.version=104, plot.DEA=FALSE, heatmap.size=40, viridis.palette="turbo", num.km.clusters=NULL, signif=NULL, block=NULL, colors=NULL, prefix="Results", correlation=FALSE, WGCNA=FALSE, cutoff.WGCNA=NULL, survival=FALSE, covariates=NULL, stratify=NULL, surv.plot=50, PPint=FALSE, gene.miR.int=FALSE, show.PCA.labels=FALSE, alpha.lasso=FALSE, min.coef.lasso=NULL, nfolds.lasso=NULL){
 
     ###parse input arguments and assign updated values
     c(data1,data2,metadata1,metadata2,technology,groups,
@@ -52,24 +53,24 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
       batch1,batch2,standardize,transform,data.check,
       plot.PCA,kmeans,num.km.clusters,signif,cutoff.logFC1,cutoff.FDR1,
       cutoff.logFC2,cutoff.FDR2,block,block1,block2,colors,prefix,plot.heatmap,corrby,
-      lasso,WGCNA,cutoff.WGCNA,survival,covarDEA1,covarDEA2,
+      WGCNA,cutoff.WGCNA,survival,covarDEA1,covarDEA2,
       stratify,surv.plot,PPI,GmiRI,DEA.allowed.type,
       survival.metadata,approved.gene.IDs,approved.miR.IDs,gene.query,miR.query,
-      show.PCA.labels,heatmap.size,viridis.palette,ensembl.version,plot.DEA) %<-% parseArguments(data1=data1, metadata1=metadata1, data2=data2, metadata2=metadata2,
+      show.PCA.labels,heatmap.size,viridis.palette,ensembl.version,plot.DEA,
+      alpha.lasso, min.coef.lasso, nfolds.lasso) %<-% parseArguments(data1=data1, metadata1=metadata1, data2=data2, metadata2=metadata2,
                                                 technology=technology, groups=groups, control.group, batches=batches,
                                                 data.check=data.check, standardize=standardize, transform=transform,
                                                 plot.PCA=plot.PCA, plot.heatmap=plot.heatmap, kmeans=kmeans,
-                                                signif=signif, block=block, colors=colors, prefix=prefix, correlation=correlation, lasso=lasso,
+                                                signif=signif, block=block, colors=colors, prefix=prefix, correlation=correlation,
                                                 WGCNA=WGCNA, cutoff.WGCNA=cutoff.WGCNA, survival=survival,
                                                 covariates=covariates, stratify=stratify,surv.plot=surv.plot,
                                                 PPint=PPint, gene.miR.int=gene.miR.int, show.PCA.labels=show.PCA.labels,
-                                                num.km.clusters=num.km.clusters, plot.DEA=plot.DEA, heatmap.size=heatmap.size,viridis.palette=viridis.palette,ensembl.version=ensembl.version)
+                                                num.km.clusters=num.km.clusters, plot.DEA=plot.DEA, heatmap.size=heatmap.size,viridis.palette=viridis.palette,ensembl.version=ensembl.version,
+                                                alpha.lasso=alpha.lasso, min.coef.lasso=min.coef.lasso,
+                                                nfolds.lasso=nfolds.lasso)
 
 
 
-
-    print("prefix")
-    print(prefix)
     dir.create(prefix)
     setwd(paste0(prefix, "/"))
 
@@ -376,12 +377,12 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
     setwd("data1/")
 
     #First dataset
-
     DEARes1 <- RunDEA(data1, metadata1, group1, batch1, covarDEA1, cutoff.logFC1, cutoff.FDR1, paste0(prefix,"1"), block1)
 
     setwd("../")
 
     DEA1.out<-DEARes1$DEA.out  ##This is the main output from DEA; used in many other steps (heatmaps, DEA vs LASSO comparison, WGCNA, PPI, GmiRIs)
+    DEA1.out<-(DEA1.out[order(DEA1.out$logFC, decreasing = TRUE), ])
 
     if (length(unique(DEA1.out$comparison)) > 1){
         DEA1.out<-subset(DEA1.out, grepl(control.group, comparison, fixed = TRUE))  ##keep only comparisons of a specific group, usually a control group
@@ -389,8 +390,8 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
     res.DEA1.names<-DEARes1$res.DEA.names  ##feature names
 
-    #Second dataset
 
+    #Second dataset
     if(!is.null(data2) & !is.null(metadata2)) {
 
         dir.create("data2")
@@ -401,6 +402,8 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
         setwd("../")
 
         DEA2.out<-DEARes2$DEA.out  ##This is the main output from DEA; used in many other steps (heatmaps, DEA vs LASSO comparison, WGCNA, PPI, GmiRIs)
+        DEA2.out<-(DEA2.out[order(DEA2.out$logFC, decreasing = TRUE), ])
+
 
         if (length(unique(DEA2.out$comparison)) > 1){
             DEA2.out<-subset(DEA2.out, grepl(control.group, comparison, fixed = TRUE))
@@ -418,11 +421,15 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
     #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     #                                                                                       ## Add gene names ###
     # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    print("ADD GENE NAME")
 
     DEA1.out.HUGO <- AddGeneName(DEA1.out,ensembl.version)
-    if(!is.null(DEA2.out)){
+
+    if(!is.null(data2)){
         DEA2.out.HUGO <- AddGeneName(DEA2.out,ensembl.version)
     }
+
+    print("ADD GENE NAME FINISHED")
 
 
     # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -451,184 +458,85 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
     #                                                                                       ## LASSO Regression ###
     # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+
     print("PROCESSING LASSO")
 
-    #Lasso
-
-    if (!isFALSE(lasso)) {
-        if(lasso <= 0.0 || lasso > 1.0 ) {
-            stop("\n- The input for argument lasso denotes hyperparameter alpha. This value must be set to 0.0 < x < 1.0 for Elastic Net (0.5 is default) or to 1.0 for LASSO regression. Re-run the pipeline again with correct lasso input or remove lasso all together.\n")
-        }
-
-
-        # Length of each group
-        len <- as.numeric(table(group1))
-        test.train <- unique(len >= 19)
-        too.few <- unique(len < 9)
-
-
-        # Stop Lasso if too few samples
-        if (TRUE %in% too.few) {
-            stop("\n- LASSO cannot be performed, too few samples per group, minimum is 10!\n")
-        }
-
-
-        dir.create("LASSOResults")
-        setwd("LASSOResults/")
-
-        group1.LASSO <- group1
-        seeds <- sample(1:1000, 10)
-        LASSO.res <- list()
-
-        cat("Cross-validation for grouped multinomial LASSO is running with 10 random seeds, this will take some minutes...")
-
-        if(FALSE %in% test.train) {
-            if (databatch1 == TRUE) {
-                if (length(levels(as.factor(group1.LASSO))) > 2) {
-                    for (idx in 1:length(seeds)) {
-                        LR <- LASSOFeature(seeds[[idx]], data1.batch, group1.LASSO, lasso, FALSE ,TRUE)
-                        LASSO.res[[idx]] <-  LR
-                    }
-                } else {
-                    for (idx in 1:length(seeds)) {
-                        LR <- LASSOFeature(seeds[[idx]], data1.batch, group1.LASSO, lasso, FALSE, FALSE)
-                        LASSO.res[[idx]] <-  LR
-                    }
-                }
-            } else {
-                if (length(levels(as.factor(group1.LASSO))) > 2) {
-                    for (idx in 1:length(seeds)) {
-                        LR <- LASSOFeature(seeds[[idx]], data1, group1.LASSO, lasso, FALSE ,TRUE)
-                        LASSO.res[[idx]] <-  LR
-                    }
-                } else {
-                    for (idx in 1:length(seeds)) {
-                        LR <- LASSOFeature(seeds[[idx]], data1, group1.LASSO, lasso, FALSE ,FALSE)
-                        LASSO.res[[idx]] <-  LR
-                    }
-                }
-            }
+    if (!isFALSE(alpha.lasso)){
+        dir.create("LASSO_EN_Ridge")
+        setwd("LASSO_EN_Ridge/")
+        if (databatch1 == TRUE){
+            LASSO1.results <- runLASSO(data1.batch, group1, alpha.lasso, min.coef.lasso, nfolds.lasso, prefix)
         } else {
-            if (databatch1 == TRUE) {
-                if (length(levels(as.factor(group1.LASSO))) > 2) {
-                    for (idx in 1:length(seeds)) {
-                        LR <- LASSOFeature(seeds[[idx]], data1.batch, group1.LASSO, lasso, TRUE ,TRUE)
-                        LASSO.res[[idx]] <-  LR
-                    }
-                } else {
-                    for (idx in 1:length(seeds)) {
-                        LR <- LASSOFeature(seeds[[idx]], data1.batch, group1.LASSO, lasso, TRUE, FALSE)
-                        LASSO.res[[idx]] <-  LR
-                    }
-                }
+            LASSO1.results <- runLASSO(data1$E, group1, alpha.lasso, min.coef.lasso, nfolds.lasso, prefix)
+        }
+
+        print("Analysing DEA vs LASSO consensus1")
+
+        consensus1<-RunDEA_LASSO_consensus(DEA1.out, LASSO1.results, group1, viridis.palette="turbo", paste0(prefix,"_1"))  ##features are sorted based on DEA.out (sorted based on logFC)
+        write.table(consensus1, paste0(prefix,"_DEA_LASSO_consensus1.txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+        write.table(LASSO1.results$VarsSelect, paste0(prefix,"_LASSO1.txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+
+
+        #processing second dataset
+        if (!is.null(data2)){
+            if (databatch2 == TRUE){
+                LASSO2.results <- runLASSO(data2.batch, group2, alpha.lasso, min.coef.lasso, nfolds.lasso, prefix)
             } else {
-                if (length(levels(as.factor(group1.LASSO))) > 2) {
-                    for (idx in 1:length(seeds)) {
-                        LR <- LASSOFeature(seeds[[idx]], data1, group1.LASSO, lasso, TRUE ,TRUE)
-                        LASSO.res[[idx]] <-  LR
-                    }
-                } else {
-                    for (idx in 1:length(seeds)) {
-                        LR <- LASSOFeature(seeds[[idx]], data1, group1.LASSO, lasso, TRUE ,FALSE)
-                        LASSO.res[[idx]] <-  LR
-                    }
-                }
+                LASSO2.results <- runLASSO(data2, group2, alpha.lasso, min.coef.lasso, nfolds.lasso, prefix)
             }
+            print("Analysing DEA vs LASSO consensus2")
+            consensus2<-RunDEA_LASSO_consensus(DEA2.out, LASSO2.results, group2, viridis.palette="turbo", paste0(prefix,"_2"))
+            write.table(consensus2, paste0(prefix,"_DEA_LASSO_consensus2.txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+            write.table(LASSO2.results$VarsSelect, paste0(prefix,"_LASSO2.txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+
+        }else{
+            LASSO2.results<-NA
         }
 
 
-        # Extract results of 10 runs - Write out and plot results
-        VarsSelect <- Reduce(intersect, lapply(LASSO.res, '[[', 1))
+        ##Saving AUC/ROC - only if all the sample groups are large enough
+        print("saving roc")
 
-        if (length(VarsSelect) < 2) {
-            stop("\n- There is no overlap in 10 elastic net runs. If you ran LASSO (lasso was et to 1.0) you can try and relax alpha and perform elastic net instead (0.0 < lasso < 1.0). Otherwise you data may have to high of a noise ratio to sample size, LASSO should not be performed.\n")
+        ###save AUC results
+        if(!is.na(LASSO1.results$roc.res)){
+            write.table(LASSO1.results$roc.res, paste0(prefix,"_AUC1.txt"), row.names=FALSE, col.names = TRUE, quote = FALSE)
+        }else{
+            print("ROC for dataset1 are not available")
+
+        }
+        if(!is.na(LASSO2.results)){
+            if(!is.na(LASSO2.results$roc.res)){
+                write.table(LASSO2.results$roc.res, paste0(prefix,"_AUC2.txt"), row.names=FALSE, col.names = TRUE, quote = FALSE)
+            }else{
+                print("ROC for dataset2 are not available")
+            }
         }
 
+        print("saving cv.error")
 
-        VarsSelect <- data.frame(VarsSelect[-1])
-        colnames(VarsSelect) <- c("LASSO.Var.Select")
-
-
-        # Write out LASSO/EN results
-        write.table(VarsSelect, paste0(prefix,"_LASSO.txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
-
-
-        # Consensus DEA and LASSO
-        consensus <- DEA1.out[DEA1.out$name %in% VarsSelect$LASSO.Var.Select,]
-
-        if (nrow(consensus) > 0) {
-            write.table(consensus, paste0(prefix,"_DEA_LASSO_Consensus.txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
-            pdf(paste0(prefix, "_overlap_DEAA_LASSO_EN.pdf"), height=8, width=12)
-            if (length(levels(group1)) == 2) {
-                venn <- venn.diagram(list(A=unique(as.character(DEA1.out[DEA1.out$dir =="up",]$name)), B=unique(as.character(DEA1.out[DEA1.out$dir =="down",]$name)), C=as.character(VarsSelect$LASSO.Var.Select)), category.names = c("D(EA) Analysis Up", "D(EA) Analysis Down", "LASSO/EN Regression"), filename=NULL, lwd = 0.7, cat.pos=0, sub.cex = 2, cat.cex= 1.5, cex=1.5, fill=viridis(3, begin = 0.2, end = 0.8, option="cividis"))
-
-            } else {
-                venn <- venn.diagram(list(A=unique(as.character(DEA1.out$name)), B=as.character(VarsSelect$LASSO.Var.Select)), category.names = c("D(EA) Analysis All", "LASSO/EN Regression"), filename=NULL, lwd = 0.7, cat.pos=0, sub.cex = 2, cat.cex= 1.5, cex=1.5, fill=viridis(2, begin = 0.2, end = 0.8, option="cividis"))
-
-            }
-            grid.draw(venn)
-            dev.off()
-        } else {
-            cat("There is no consensus between LASSO regression and DEA/DAA.")
+        ###save cross validation error rate results - only if all the sample groups are large enough
+        if(!is.na(LASSO1.results$cv.error)){
+            write.table(LASSO1.results$cv.error, paste0(prefix,"_crossVal_error_1.txt"), row.names=FALSE, col.names = TRUE, quote = FALSE)
+        }else{
+            print("Cross validation error rate for dataset1 are not available")
         }
 
-
-
-        # Cross Validation errors
-        LassoRun <- paste0(rep("Run", 10), 1:10)
-        CrossValErrormean <- round(unlist(lapply(LASSO.res, '[[', 2)), digits = 4)
-        cat(paste0("\nThe average leave-one-out cross validation error for LASSO/elastic-net was: ", mean(CrossValErrormean), "% and the higest error returned from any of the 10 runs was: ", max(CrossValErrormean),"%. Generally the cross validation error should be low ~ 5.0 %, as large errors may indicate a poor model and/or very heterogeneous data. On the other hand, an error of 0 might indicate over-fitting. See CAMPP manual for specifics.\n\n"))
-        pCVEM <- data.frame(cbind(CrossValErrormean, LassoRun))
-        pCVEM <- ggplot(data=pCVEM, aes(x=LassoRun, y=CrossValErrormean)) + geom_bar(aes(fill = as.factor(LassoRun)), stat="identity") + theme_minimal() + scale_x_discrete(limits=c(LassoRun)) + scale_fill_viridis(begin = 0.0, end = 0.0, discrete=TRUE, option="cividis" ) + theme(legend.position="none") + ylab("CrossValErrormean in %") + theme(axis.text = element_text(size=14), axis.title = element_text(size=16))
-        ggsave(paste0(prefix, "_CrossValidationPlot.pdf"), plot = pCVEM)
-
-
-
-
-        # Area under the curve AUC
-        if(TRUE %in% test.train) {
-
-            ll <- list()
-            llev <- levels(as.factor(group1.LASSO))
-
-            for (idx in 1:length(llev)) {
-                pos <- which(group1.LASSO == as.character(llev[idx]))
-                ll[[idx]] <- pos
+        if(!is.na(LASSO2.results)){
+            if(!is.na(LASSO2.results$cv.error)){
+                write.table(LASSO2.results$cv.error, paste0(prefix,"_crossVal_error_2.txt"), row.names=FALSE, col.names = TRUE, quote = FALSE)
+            }else{
+                print("Cross validation error rate for dataset2 is not available")
             }
-
-            my.samp <- unlist(lapply(ll, function(x) sample(x, ceiling((length(x)/4)))))
-
-
-            if (databatch1 == TRUE) {
-                LASSO.data1 <- data1.batch
-            } else {
-                LASSO.data1 <- data1
-            }
-
-
-            testD <- data.frame(t(LASSO.data1[rownames(LASSO.data1) %in% as.character(VarsSelect$LASSO.Var.Select), my.samp]))
-            testG <- as.integer(group1.LASSO[my.samp])
-
-            trainD <- data.frame(t(LASSO.data1[rownames(LASSO.data1) %in% as.character(VarsSelect$LASSO.Var.Select), -my.samp]))
-            trainG <- as.integer(group1.LASSO[-my.samp])
-
-            mn.net <- nnet::multinom(trainG ~ ., data=trainD)
-            mn.pred <- predict(mn.net, newdata=testD, type="prob")
-            roc.res <- multiclass.roc(testG, mn.pred)
-            roc.res <- data.frame(round(as.numeric(sub(".*: ", "", roc.res$auc)), digits = 2))
-            colnames(roc.res) <- "AUC"
-            cat(paste0("Are under the curve (AUC) for variables selected from 10 LASSO/EN runs was: ", roc.res$AUC))
-            write.table(roc.res, paste0(prefix,"_AUC.txt"), row.names=FALSE, col.names = TRUE, quote = FALSE)
         }
-
 
         setwd("..")
-        try(rm(VarsSelect, LR, venn, CrossValErrormean, mn.net, mn.pred, roc.res), silent=T)
 
+
+    } else {
+        cat("\n- LASSO/EN/Ridge regression not requested.\n")
     }
 
-    print("LASSO PART FINISHED")
-
+    print("LASSO/ELASTIC NETWORK/RIDGE REGRESSION ANALYSIS FINISHED.")
 
 
 
@@ -649,33 +557,58 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
         setwd("data1")
         if (databatch1 == TRUE){
             heatmap.input1 <- data1.batch
-            name <- "_batchcorr"
         } else {
-            heatmap.input1 <- as.data.frame(data1$E)
-            name <- ""
+            if (technology[1] == "seq"){
+                heatmap.input1 <- as.data.frame(data1$E)
+            }else{
+                heatmap.input1 <- as.data.frame(data1)
+            }
         }
 
-        RunHeatmap(heatmap.input1, DEA1.out, group1, heatmap.size, viridis.palette, plot.heatmap, prefix)
+        if(plot.heatmap == "DEA"){
+            RunHeatmap(heatmap.input1, DEA1.out, heatmap.size, group1, viridis.palette, plot.heatmap, prefix,data.type=paste0("expression/abundance")) ##DEA.out is sorted based on logFC
+        } else if (plot.heatmap =="Consensus"){
+            RunHeatmap(heatmap.input1, consensus1, heatmap.size, group1, viridis.palette, plot.heatmap, prefix,data.type=paste0("expression/abundance"))  ##Consensus is sorted based on DEA.out
+        } else if (plot.heatmap %in% c("EN", "LASSO", "Ridge")){  ##Here it's difficult to sort the features based on their significance as they are generated based on an intersection of several LASSO runs
+            RunHeatmap(heatmap.input1, LASSO1.results, heatmap.size, group1, viridis.palette, plot.heatmap, prefix,data.type=paste0("expression/abundance"))
+        } else {
+            stop(paste0("plot.heatmap value ", plot.heatmap, " is not supported. Supported values are: DEA, Consensus, EN, LASSO and Ridge."))
+        }
         setwd("../../")
 
+
         if (!is.null(data2)){
-            print("Processing 2nd dataset")
-            setwd("Heatmaps")
-            dir.create("data2")
-            setwd("data2")
-            if (databatch2 == TRUE){
-                heatmap.input2 <- data2.batch
-                name <- "_batchcorr"
-            } else {
+        print("Processing 2nd dataset")
+        dir.create("Heatmaps")
+        setwd("Heatmaps")
+        dir.create("data2")
+        setwd("data2")
+        if (databatch2 == TRUE){
+            heatmap.input2 <- data2.batch
+        } else {
+            if (technology[2] == "seq"){
                 heatmap.input2 <- as.data.frame(data2$E)
-                name <- ""
+            }else{
+                heatmap.input2 <- as.data.frame(data2)
             }
+        }
 
-            RunHeatmap(heatmap.input2, DEA2.out, group2, heatmap.size, viridis.palette, plot.heatmap, prefix)
-
-            setwd("../../")
+        if(plot.heatmap == "DEA"){
+            RunHeatmap(heatmap.input2, DEA2.out, heatmap.size, group2, viridis.palette, plot.heatmap, prefix,data.type=paste0("counts")) ##DEA.out is sorted based on logFC
+        } else if (plot.heatmap =="Consensus"){
+            RunHeatmap(heatmap.input2, consensus2, heatmap.size, group2, viridis.palette, plot.heatmap, prefix,data.type=paste0("counts"))  ##Consensus is sorted based on DEA.out
+        } else if (plot.heatmap %in% c("EN", "LASSO", "Ridge")){  ##Here it's difficult to sort the features based on their significance as they are generated based on an intersection of several LASSO runs
+            RunHeatmap(heatmap.input2, LASSO2.results, heatmap.size, group2, viridis.palette, plot.heatmap, prefix,data.type=paste0("counts"))
+        } else {
+            stop(paste0("plot.heatmap value ", plot.heatmap, " is not supported. Supported values are: DEA, Consensus, EN, LASSO and Ridge."))
+        }
+        setwd("../../")
 
         }
+
+
+
+
     print("CREATING HEATMAPS FINISHED")
     } else {
             cat("\n- No heatmap requested.\n")
@@ -701,7 +634,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
         } else if (corrby == "DEA") {
             retainedvar <- intersect(res.DE.names, rownames(data2))
         } else {
-            if(!is.null(lasso)) {
+            if(!is.null(alpha.lasso)) {
                 if (survival == "Consensus" ) {
                     retainedvar <- intersect(as.character(consensus$name), rownames(data2))
                 } else {
@@ -788,7 +721,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
         } else if (survival == "DEA") {
             data1.surv <- data1.surv[rownames(data1.surv) %in% res.DE.names,]
         } else {
-            if(!is.null(lasso)) {
+            if(!is.null(alpha.lasso)) {
                 if (survival == "Consensus" ) {
                     data1.surv <- data1.surv[rownames(data1.surv) %in% as.character(consensus$name),]
                 } else {

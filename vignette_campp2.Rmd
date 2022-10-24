@@ -345,30 +345,30 @@ PCAPlot(campp2_brca_1_batchCorrected, as.factor(campp2_brca_1_meta$subtype), sho
 
 ### runKmeans
 **Description:** \
-#' A wrapper function for K-means clustering.
-#' In a first step, a number of clusters is estimated.
-#' By default, for data sets with >1000 features, multiple
-#' subsets (number of sets = number of features/1000; rounded up to the higher
-#' integer) will be generated, maximum is 10 sub-sets.
-#' A number of randomly selected features (e.g. genes) in 1 subset is limited
-#' to 2000. The values for number of subsets and size of the sub-sets might by
-#' defined manually. The option of using the whole dataset for the estimation
-#' of the number of the clusters is also available. By default, a number of
-#' clusters for each sub-set is automatically estimated (using
-#' mclustBIC function from mclust package) and a consensus (based on all the
-#' subsets) of best n k-means is returned and used for K-means clustering.
-#' If K-means estimation using BIC fails, a number of clusters will be based on
-#' the number of samples (2-6 clusters for data set with less than 100 samples;
-#' 2-11 for data sets with 101-500 samples, and 2-16 clusters for data sets with
-#' more than 500 samples). The number of clusters can also be supplied manually.
-#' In the next step, K-means clustering using the information about the number
-#' of clusters is done.
-#' As results, an information about the clusters assigned to each sample and
-#' results from PCA (FactoMineR) function are provided.
-#' The clusters are visualized on PCA plot and saved into .png file.
-#' Plot of BIC values for each of the sample sub-set is saved into .png file.
-#' A summary describing the best model is printed on the screen during
-#' calculation.
+A wrapper function for K-means clustering.
+In a first step, a number of clusters is estimated.
+By default, for data sets with >1000 features, multiple
+subsets (number of sets = number of features/1000; rounded up to the higher
+integer) will be generated, maximum is 10 sub-sets.
+A number of randomly selected features (e.g. genes) in 1 subset is limited
+to 2000. The values for number of subsets and size of the sub-sets might by
+defined manually. The option of using the whole dataset for the estimation
+of the number of the clusters is also available. By default, a number of
+clusters for each sub-set is automatically estimated (using
+mclustBIC function from mclust package) and a consensus (based on all the
+subsets) of best n k-means is returned and used for K-means clustering.
+If K-means estimation using BIC fails, a number of clusters will be based on
+the number of samples (2-6 clusters for data set with less than 100 samples;
+2-11 for data sets with 101-500 samples, and 2-16 clusters for data sets with
+more than 500 samples). The number of clusters can also be supplied manually.
+In the next step, K-means clustering using the information about the number
+of clusters is done.
+As results, an information about the clusters assigned to each sample and
+results from PCA (FactoMineR) function are provided.
+The clusters are visualized on PCA plot and saved into .png file.
+Plot of BIC values for each of the sample sub-set is saved into .png file.
+A summary describing the best model is printed on the screen during
+calculation.
 \
 **Parameters:** \
 *data* a data.frame of feature (e.g. gene) counts \
@@ -753,13 +753,21 @@ represented by a column from a metadata file). Group's information
 will be used in clustering the samples. \
 *heatmap.size* an argument specifying how many genes will be selected
 to be plotted on the heatmap if plot.heatmap is TRUE. The input must be
-specified as an even number. \
+specified as an even number.
+
+Please, consider that some of the TOP DEA features might be present multiple 
+times in the DEA output due to the multiple groups comparisons. 
+On the heatmap, each feature will be projected only once so the final number 
+of the projected features migh by lower then heatmap.size.\
 *viridis.palette* a character vector specifying color gradient to use for
 the heatmap. Default option for viridis color palettes is 'turbo'. For more
 options, see viridis vignette. \
 *plot.heatmap* an argument defining which data will be used for
 the selection of the top x features to be plotted on the heatmap.
-Options are:"DEA", "LASSO", "EN" or "Consensus". \
+Options are:"DEA", "LASSO", "EN", "Ridge" or "Consensus". \
+*prefix* a character vector defining prefix of output file name.
+*data.type* a character vector for labeling units in the legend.
+Default is "expression/abundance".
 **Output from the function:** \
 a .png file with a heatmap \
 \
@@ -791,7 +799,7 @@ will be used in clustering the samples. \
 the heatmap. Default option for viridis color palettes is 'turbo'. For more
 options, see viridis vignette. \
 *data.type* a character vector (used in the heatmap legend) describing
-type of the data being visualized. Default = "Feature counts". \
+type of the data being visualized. Default is "expression/abundance". \
 **Output from the function:** \
 a .png file with a heatmap \
 \
@@ -799,12 +807,169 @@ a .png file with a heatmap \
 ##Create and print heatmap based on the raw gene counts 
 ```
 MakeHeatmap(data=campp2_brca_1_batchCorrected, group=campp2_brca_1_meta$subtype, 
-prefix="test_heatmap", viridis.opt = "turbo", data.type = "Feature counts")
+prefix="test_heatmap", viridis.opt = "turbo", data.type = "expression/abundance")
 
 ```
 \
 
 
+### runLASSO
+**Description:** \
+The function runs LASSO/Elastic net/Ridge regression (depending
+on a hyperparameter alpha value. For Ridge regression, alpha = 0;
+for Elastic net, alpha >0 & <1; for LASSO, alpha = 1).
+The regression is calculated 10 times for 10 random seeds and the intersect
+of the significant features (e.g., genes) is obtained.
+Parameter Lambda is automatically
+estimated using k-fold cross-validation (cv.glmnet) by default.
+The function optionally (>20 samples) calculates a double
+cross-validation using a validation set which represents 1/4 of the samples
+from each group. \
+Results are provided in the form of: \
+1) the names of the significant features passing filters based on their
+coefficient values \
+2) classification error rate (datasets of >20 samples) \
+3) roc.res - AUC value (datasets of >20 samples) \
+4) cross validation error plot \
+ \
+**Parameters:** \
+*data* a data frame of expression/abundance counts. It's recommended
+to use normalized and batch corrected data. \
+*group* a factor specifying group for each sample (e.g. could be
+represented by a column from a metadata file) \
+*alpha* a numeric vector specifying hyperparameter alpha. This value
+must be set to 0.0 < x < 1.0 for Elastic Net (0.5 is default) or to 1.0
+for LASSO regression or to 0.0 for Ridge regression. \
+*min.coef* a numeric vector specifying a threshold for features'
+filtering (e.g. genes) based on the coefficients which are calculated during
+model fitting. Default value is > 0. \
+*nfolds* a numeric vector describing number of folds during Lambda
+estimation which is based on a cross-validation. Although nfolds can be
+as large as the sample size (leave-one-out CV), it is not recommended for
+large datasets. Smallest value allowable is nfolds=3. Default is 10.
+*prefix* a character string defining a prefix of output file. \
+**Output from the function:** \
+1) VarSelect - a matrix of feature names having coefficients of best model
+passing the filters (threshold defined by min.coef) \
+2) cv.error - logical/numeric value describing miss classification error
+rate (datasets of >20 samples) \
+3) roc.res - AUC value (datasets of >20 samples) \
+4) cross validation error plot \
+**An example run:** \
+
+##Run a wrapper of Ridge/elastic net/LASSO regression
+```
+###Normalized and batch corrected data are used as an input for regression.
+##run regression using small batch corrected dataset - no double cross validation
+runLASSO(data=campp2_brca_1_batchCorrected, group=campp2_brca_1_meta$diagnosis, alpha=0.5, min.coef=0, nfolds=10, prefix="test")
+##run regression using large batch corrected dataset suitable for double cross validation
+###create a large dataset
+campp2_test_data_LASSO<-cbind(campp2_brca_1,campp2_brca_2)
+campp2_test_metadata_LASSO<-rbind(campp2_brca_1_meta, campp2_brca_2_meta)
+campp2_test_data_LASSO_replaceNAs<-ReplaceNAs(data=campp2_test_data_LASSO)
+campp2_test_data_LASSO_zeroFix<-FixZeros(data=campp2_test_data_LASSO_replaceNAs,group=campp2_test_metadata_LASSO$diagnosis, remove.sparse.features=TRUE)
+campp2_test_data_LASSO_normalized<-NormalizeData(data=campp2_test_data_LASSO_zeroFix,group=campp2_test_metadata_LASSO$diagnosis,standardize="TMM",transform="voom",technology="seq")
+campp2_test_data_LASSO_batchCorrected<-BatchCorrect(data=campp2_test_data_LASSO_normalized,batch=campp2_test_metadata_LASSO$tumor_stage,group=campp2_test_metadata_LASSO$diagnosis,technology="seq")
+###run lasso on a large dataset
+runLASSO(data=campp2_test_data_LASSO_batchCorrected, group=campp2_test_metadata_LASSO$diagnosis, alpha=0.5, min.coef=0, nfolds=10, prefix="test")
+}
+```
+\
+
+
+### LASSOFeature
+**Description:** \
+The function runs LASSO/Elastic net/Ridge regression
+(depending on a hyperparameter alpha value). Parameter Lambda is
+automatically estimated using k-fold cross-validation (cv.glmnet) by default.
+The function optionally calculates also double cross-validation using
+a test set. aValidation (test) set represents 1/4 of the samples from each
+group. \
+Results are provided in the form of:
+1) the ames of the signifficant features passing filters based on their
+coefficient values \
+2) classification error rate (calculated if "validation=TRUE") \
+3) cv.glmnet object. \
+ \
+**Parameters:** \
+*seed* an integer vector containing the random number generator (RNG)
+state. Default is 123. \
+*data* a data frame of expression/abundance counts.
+It's recommended to use normalized and batch corrected data. \
+*group* a factor specifying group for each sample (e.g. could be
+represented by a column from a metadata file) \
+*alpha* a numeric vector specifying hyperparameter alpha. This value
+must be set to 0.0 < x < 1.0 for Elastic Net (0.5 is default) or to 1.0 for
+LASSO regression or to 0.0 for Ridge regression. \
+*validation* a boolean value for performing double cross-validation.
+Validation (test) set represents 1/4 of the samples in each group.
+As a result, cross validation error rate is provided. Default value is FALSE. \
+*min.coef* a numeric vector specifying a threshold for features'
+filtering (e.g. genes) based on the coefficients which are calculated during
+model fitting. Default value is > 0. \
+*nfolds* a numeric vector describing number of folds during Lambda
+estimation which is based on a cross-validation. Although nfolds can be
+as large as the sample size (leave-one-out CV), it is not recommended for
+large datasets. Smallest value allowable is nfolds=3. Default is 10. \
+**Output from the function:** \
+a list of:
+1) coef.ma.names - a matrix of feature names having coefficients of best model
+passing the filters (threshold defined by min.coef)
+2) class.error - logical/numeric value describing miss classification error
+rate
+3) fit - cv.glmnet object \
+4) coef.ma - a matrix of the features' coefficients (best model)
+passing the filters (threshold defined by min.coef) \
+**An example run:** \
+
+##Run Ridge/elastic net/LASSO regression
+```
+###Normalized and batch corrected data are used as an input for regression.
+LASSOFeature(seed=123, data=campp2_brca_1_batchCorrected,
+group=campp2_brca_1_meta$diagnosis, alpha=0.5, validation=TRUE,
+min.coef = 0, nfolds=10)
+```
+\
+
+
+### RunDEA_LASSO_consensus
+**Description:** \
+This function creates a consensus between the results from
+DEA and LASSO/Elastic net/Ridge regression. Specifically, only the features
+present in LASSO results are kept in the DEA results table.
+Additionally, a Venn diagram visualizing overlaps is generated.
+\
+**Parameters:** \
+*DEA.out* a data frame from RunDEA containing features and their
+corresponding AveExpr, logFC, p.value, adj.p.value ect. Mandatory column
+is "name" \
+*LASSO.results* an object generated by runLASSO function \
+*group* a factor specifying group for each sample (e.g. could be represented by a column from a metadata file) \
+*viridis.palette* a character vector specifying color gradient to use for
+the heatmap. Default option for viridis color palettes is 'turbo'. For more
+options, see viridis vignette. \
+*prefix* a character string defining a prefix of output file. \
+**Output from the function:** \
+a list of:
+1) a data frame of features common for both DEA and LASSO which are extracted
+from DEAout table \
+2) a .png with a Venn diagram of features' intersections between DEA and LASSO \
+**An example run:** \
+
+```
+##here we prepare DEA results compatible (group="diagnosis) with
+EN/LASS/Ridge regression results:
+campp2_brca_1_DEA_diagnosis<-RunDEA(data=campp2_brca_1_normalized,
+metadata=campp2_brca_1_meta,
+group=campp2_brca_1_meta$diagnosis, prefix="test", batch=campp2_brca_1_meta$age,
+covarDEA = c("tumor_stage"), cutoff.logFC=1, cutoff.FDR=0.01)
+##here we run RunDEA_LASSO_consensus function:
+campp2_brca_1_DEA_LASSO_consensus <- RunDEA_LASSO_consensus(
+campp2_brca_1_DEA_diagnosis$DEA.out,
+campp2_brca_1_LASSO, group=campp2_brca_1_meta$diagnosis,
+viridis.palette="turbo", "test")
+```
+\
 
 
 
@@ -1150,7 +1315,6 @@ of the normalized data. CAMPP automatically generates distributional
 plots for n (default is 10) randomly selecting input variables for
 the user to evaluate - to skip this step the argument check_distr may be set to
 FALSE).
-
 
 
 
