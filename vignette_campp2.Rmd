@@ -972,8 +972,87 @@ viridis.palette="turbo", "test")
 \
 
 
+### RF_Apply
+**Description:** \
+This function applies the Forest_Features function across 10 random
+seeds. The Forest_Features function performs random forest on feature counts
+(e.g. genes) and allows for feature selection using the random forest
+algorithm.
+\
+**Parameters:** \
+*data* a matrix of (transformed and normalized) feature counts from
+"seq", "array", "ms" or "other" technology (with feature IDs as row names
+and sample IDs as columns). \
+*group* a vector of type factor containing the group ID for each sample. \
+*validation* a boolean indicating if validation will be performed
+on test data. If TRUE validation will be performed on test data. If FALSE
+validation will not be performed on test data. Defaults to FALSE. \
+*num_trees* an integer specifying number of trees to use for the first
+forest in the feature selection process. \
+*num_trees_iterat* an integer specifying number of trees to use for
+all additional forests in the feature selection process. \
+**Output from the function:** \
+a list of: \
+1) selected variables from random forest feature selection process. \
+2) out-of-bag errors from random forest feature selection process. \
+3) OOB error from first random forest model fitted during feature selection process. \
+4) confusion matrix of predictions made based on OOB data and first random forest model \
+fitted during feature selection process. \
+5) importance of features from first random forest model fitted during feature
+selection process. \
+6) OOB error from fitted random forest model. \
+7) accuracy and 95% confidence interval for predictions of test data using
+fitted random forest model. \
+8) seeds used in the procedure. \
+**An example run:** \
+
+```
+campp2_brca_1_rf_apply <- RF_Apply(data = campp2_brca_1,
+group = campp2_brca_1_meta$diagnosis,
+validation = TRUE,
+num_trees = 30,
+num_trees_iterat = 15)
+```
+\
 
 
+### Forest_Features
+**Description:** \
+This function implements random forest on feature counts
+(e.g. genes) and allows for feature selection using the random forest
+algorithm.
+\
+**Parameters:** \
+*seed* an integer containing a random seed number. \
+*data* a matrix of (transformed and normalized) feature counts from
+"seq", "array", "ms" or "other" technology (with feature IDs as row names
+and sample IDs as columns). \
+*group* a vector of type factor containing the group ID for each sample. \
+*validation* a boolean indicating if validation will be performed
+on test data. If TRUE validation will be performed on test data. If FALSE
+validation will not be performed on test data. Defaults to FALSE. \
+*num_trees* an integer specifying number of trees to use for the first
+forest in the feature selection process. \
+*num_trees_iterat* an integer specifying number of trees to use for
+all additional forests in the feature selection process. \
+**Output from the function:** \
+a list of: \
+1) results of variable selection using random forest. \
+2) random forest model fitted to data. \
+3) predictions of test data using fitted random forest model. \
+4) confusion matrix of test data using fitted random forest model. \
+If validation = FALSE, the last three elements in output will be NA. \
+**An example run:** \
+
+```
+campp2_brca_1_forest_features <- Forest_Features(seed = 173,
+data = campp2_brca_1,
+group = campp2_brca_1_meta$diagnosis,
+validation = TRUE,
+num_trees = 30,
+num_trees_iterat = 15)
+```
+\
 
 
 

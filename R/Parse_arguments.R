@@ -35,13 +35,15 @@
 #' @param alpha.lasso a numeric vector specifying hyperparameter alpha for LASSO/Elastic network/Ridge regression. This value must be set to 0.0 < x < 1.0 for Elastic Net or to 1.0 for LASSO regression or to 0.0 for Ridge regression. Defaults is FALSE (do not run).
 #' @param min.coef.lasso a numeric vector specifying a threshold for features' filtering (e.g. genes) based on the coefficients which are calculated during model fitting. Default value is > 0.
 #' @param nfolds.lasso a numeric vector describing number of folds during Lambda estimation which is based on a cross-validation. Although nfolds can be as large as the sample size (leave-one-out CV), it is not recommended for large datasets. Smallest value allowable is nfolds=3. Default is 10.
+#' @param num_trees an integer specifying number of trees to use for the first random forest in the random forest feature selection process. Defaults to NULL.
+#' @param num_trees_iterat an integer specifying number of trees to use for all additional random forests in the random forest feature selection process. Defaults to NULL.
 #' @export
 #' @return parsed arguments
 #' @examples \dontrun{
 #' ...
 #' }
 
-parseArguments <- function(data1, data2, metadata1, metadata2, control.group, groups, technology, batches, data.check, standardize, transform, plot.PCA, plot.heatmap, plot.DEA, ensembl.version, heatmap.size, viridis.palette, kmeans, num.km.clusters, signif, colors, block, prefix, correlation, WGCNA, cutoff.WGCNA, survival, covariates, stratify, surv.plot, PPint, gene.miR.int, show.PCA.labels, alpha.lasso, min.coef.lasso, nfolds.lasso){
+parseArguments <- function(data1, data2, metadata1, metadata2, control.group, groups, technology, batches, data.check, standardize, transform, plot.PCA, plot.heatmap, plot.DEA, ensembl.version, heatmap.size, viridis.palette, kmeans, num.km.clusters, signif, colors, block, prefix, correlation, WGCNA, cutoff.WGCNA, survival, covariates, stratify, surv.plot, PPint, gene.miR.int, show.PCA.labels, alpha.lasso, min.coef.lasso, nfolds.lasso, num_trees, num_trees_iterat){
 
 
     # For DEA analysis, survival analysis and correlation analysis
@@ -371,7 +373,9 @@ parseArguments <- function(data1, data2, metadata1, metadata2, control.group, gr
           paste0("surv.plot: ",surv.plot),"\n",
           paste0("PPI: ",PPI),"\n",
           paste0("GmiRI: ",GmiRI),"\n",
-          paste0("show.PCA.labels: ",show.PCA.labels),"\n"
+          paste0("show.PCA.labels: ",show.PCA.labels),"\n",
+          paste0("num_trees: ",num_trees),"\n",
+          paste0("num_trees_iterat: ",num_trees_iterat),"\n"
     ))
 
     return(list("data1"=data1,"data2"=data2,"metadata1"=metadata1,"metadata2"=metadata2, "technology"=technology, "groups"=groups,
@@ -383,6 +387,6 @@ parseArguments <- function(data1, data2, metadata1, metadata2, control.group, gr
                 "stratify"=stratify,"surv.plot"=surv.plot,"PPI"=PPI,"GmiRI"=GmiRI,"DEA.allowed.type"=DEA.allowed.type,
                 "survival.metadata"=survival.metadata,"approved.gene.IDs"=approved.gene.IDs,"approved.miR.IDs"=approved.miR.IDs,"gene.query"=gene.query,"miR.query"=miR.query,
                 "show.PCA.labels"=show.PCA.labels,"heatmap.size"=heatmap.size,"viridis.palette"=viridis.palette,"ensembl.version"=ensembl.version, "plot.DEA"=plot.DEA,
-                "alpha.lasso"=alpha.lasso,"min.coef.lasso"= min.coef.lasso,"nfolds.lasso"= nfolds.lasso))
+                "alpha.lasso"=alpha.lasso,"min.coef.lasso"= min.coef.lasso,"nfolds.lasso"= nfolds.lasso, "num_trees"=num_trees, "num_trees_iterat"=num_trees_iterat))
 }
 

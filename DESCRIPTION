@@ -55,7 +55,10 @@ Imports:
  doMC,  
  nnet,
  zeallot,
- igraph
+ igraph,
+ varSelRF,
+ randomForest,
+ caret	
 exports:
 VignetteBuilder: knitr
 Suggests: BiocStyle, knitr, rmarkdown
