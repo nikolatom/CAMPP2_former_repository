@@ -5,98 +5,120 @@
 \title{CAMPP2 pipeline}
 \usage{
 runCampp2(
-  data,
-  sdata = NULL,
-  metadata,
-  smetadata = NULL,
+  data1,
+  metadata1,
+  data2 = NULL,
+  metadata2 = NULL,
   technology,
   groups,
+  control.group = NULL,
   batches = NULL,
-  datacheck = TRUE,
-  standardize = NULL,
-  transform = NULL,
-  plotmds = NULL,
-  plotheatmap = NULL,
-  kmeans = NULL,
+  data.check = TRUE,
+  standardize = FALSE,
+  transform = FALSE,
+  plot.PCA = FALSE,
+  plot.heatmap = FALSE,
+  kmeans = FALSE,
+  ensembl.version = 104,
+  plot.DEA = FALSE,
+  heatmap.size = 40,
+  viridis.palette = "turbo",
+  num.km.clusters = NULL,
   signif = NULL,
+  block = NULL,
   colors = NULL,
-  prefix = NULL,
-  corr = NULL,
-  lasso = NULL,
-  WGCNA = NULL,
-  cutoffWGCNA = NULL,
-  survival = NULL,
-  covar = NULL,
+  prefix = "Results",
+  correlation = FALSE,
+  WGCNA = FALSE,
+  cutoff.WGCNA = NULL,
+  survival = FALSE,
+  covariates = NULL,
   stratify = NULL,
-  survplot = NULL,
-  PPint = NULL,
-  GenemiRint = NULL
+  surv.plot = 50,
+  PPint = FALSE,
+  gene.miR.int = FALSE,
+  show.PCA.labels = FALSE,
+  alpha.lasso = FALSE,
+  min.coef.lasso = NULL,
+  nfolds.lasso = NULL
 )
 }
 \arguments{
-\item{data}{Gene count matrix (genes as rows; samples as columns) should be imported using function "import_counts"; user can choose own way but has to keep gene IDs as row names and sample IDs as column names.}
+\item{data1}{Gene count matrix (gene IDs as row names and sample IDs as columns). It's recommended to import gene counts using function "import_counts".}
 
-\item{sdata}{Gene count matrix for a second dataset. Gene count matrix (genes as rows; samples as columns) should be imported using function "import_counts".}
+\item{metadata1}{Samples' metadata table should be imported using function "import_metadata". Metadata must include exactly the same samples as gene counts (data1) and samples must be sorted similarly.}
 
-\item{metadata}{Samples' metadata table, should be imported using function "import_metadata". Metadata must include exactly the same samples as gene counts (data) and samples must be sorted similarly.}
+\item{data2}{Gene count matrix for a second dataset.}
 
-\item{smetadata}{Metadata for a second dataset, should be imported using function "import_metadata". Metadata to the secend dataset must include exactly the same samples as sdata and samples must be sorted similarly.}
+\item{metadata2}{Metadata for a second dataset.}
 
 \item{technology}{Technology used for the analysis of biological input. Current options are 'array', 'seq', 'ms' or 'other'. This argument is mandatory and depending on which option is chosen, data is transformed differently. If a second dataset is provided, the option should be specified for each dataset, provided as a character vector.}
 
-\item{groups}{Argument defining groups of samples should be specified as a character vector. The first element specifying the name of the column in the metadata file containing sample IDs and the second element specifying the name of the column which contains the groups for the DE/DA analysis.}
+\item{groups}{Argument defining groups of samples should be specified as a character vector. The first element specifying the name of the column in the metadata file containing sample IDs and the second element specifying the name of the column which contains the groups for the DEA analysis.}
 
-\item{batches}{Specifies which metadata should be used for a batch correction (sequencing run/tissue/interstitial fluid/etc.). Argument takes a character vector of length 1 (one dataset) or 2 (two datasets), where the string(s) match a column name(s) in the metadata file(s).}
+\item{control.group}{A string vector defining control group name (e.g., "healthy" or "normal"). In case of subtype analysis (>2 groups), the output of the main wrapper will include comparisons between control group and each subtype.}
 
-\item{datacheck}{Distributional checks is defined using logical argument (TRUE/FALSE) which specifies whether Cullen-Frey graphs should be made for 10 randomly selected variables to check data distributions. This argument is per default set to TRUE.}
+\item{batches}{Specifies which metadata should be used for a batch correction (sequencing run/tissue/interstitial fluid/etc.). Argument takes a character vector of length 1 (one data set) or 2 (two data sets), where the string(s) match a column name(s) in the metadata file(s). In case batch correction should be performed only in 1 out of 2 data sets, a data set without the batch correction (1st one in the example) should be define as "", e.g. batches(c("","column_name")). Default is NULL.}
 
-\item{standardize}{Data centering. This option may be set to "mean" or "median." If two datasets are provided, the standardize option should be specified for each dataset, provided as a character vector. If the argument standardize is not specified and "technology" = "array", then quantile normalization will be performed.}
+\item{data.check}{Distributional checks of the input data is activated using logical argument (TRUE/FALSE). If activated, Cullen-Frey graphs will be made for 10 randomly selected variables to check data distributions. This argument is per default set to TRUE.}
 
-\item{transform}{Data transformation type. Current options are "log2", "log10", "logit" and "voom". If two datasets are provided the parameter should be specified for each dataset, provided as a character vector. If argument is left out, no transformation of data will be performed.}
+\item{standardize}{(double check for sequencing) Data centering. This option may be set to "mean" or "median." If two datasets are provided, the standardize option should be specified for each dataset, provided as a character vector. If the argument standardize is not specified and "technology" = "array", then quantile normalization will be performed. Defaults is FALSE (do not run).}
 
-\item{plotmds}{This argument specifies ("TRUE" or "FALSE") if a preliminary MDSplot should be made for data overview. Works only for the first dataset.}
+\item{transform}{Data transformation type. Current options are "log2", "log10", "logit" and "voom". If two datasets are provided the parameter should be specified for each dataset, provided as a character vector. Defaults is FALSE (do not run).}
 
-\item{plotheatmap}{Argument for heatmap specified as either: "DE", "DA", "LASSO", "EN" or "Consensus".}
+\item{plot.PCA}{Argument specifies ("TRUE" or "FALSE") if a PCA plot (describing relationships between the samples based on feature counts and sample groups; generated by PCAPlot function) should be created for data overview. Default is FALSE (do not run).}
 
-\item{kmeans}{Argument for kmeans clustering. The parameter must be specified as a character vector matching the name of a column in the metadata file, denoting the labeling of points on the MDS plot(s). If a parameter is set to "TRUE" (no column name specified) no labels will be added to the plot. Works only for the first dataset (data).}
+\item{plot.heatmap}{Argument defining which data will be used for the selection of the top x features to be plotted on the heatmap. Options are:"DEA", "LASSO", "EN", "Ridge" or "Consensus".}
 
-\item{signif}{Cut-offs for log fold change (logFC) and corrected p-value (fdr), defining significant hits (proteins, genes, miRNAs or N-features). If argument a signif is set, it must be a numeric vector, where the first element specifies the cut-off for logFC and the second element specifies the cut-off for corrected p-value (fdr).  In case of 2 datasets, vector must be of length 4. If omitted, cutoffs will be set to -1 > logFC > 1 and corrected p-values < 0.05.}
+\item{kmeans}{Argument specifies ("TRUE" or "FALSE") if a k-means clustering should be performed. Default is FALSE (do not run).}
 
-\item{colors}{Custom color pallet for MDS and heatmaps. Must be the same length as number of groups used for comparison (e.g. two groups = two colors) must be defined as character vector. See R site for avalibe colors http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf.}
+\item{ensembl.version}{This argument specifies which ENSEMBL database to use when transforming ensemble IDs into HUGO IDs using biomaRt. The argument should be specified as a number.}
 
-\item{prefix}{Prefix for the results' files and results folder.}
+\item{plot.DEA}{This argument specifies ("TRUE" or "FALSE") whether visualizations should be made for the differential expression analysis. Visualizations include a Volcano plot for the groups of samples and an Upset plot and Venn diagram for sample subtypes in the input data if subtypes are present.}
 
-\item{corr}{Argument for correlation analysis. String specify which features should be correlated, options are: "ALL", "DE", "DA", "LASSO", "EN" or "Consensus". For this type of analysis, 2 datasets must include the same samples, e.g. tumor1-normal vs tumor2-normal (3 samples from 1 patient needed).}
+\item{heatmap.size}{Argument specifying how many genes will be selected to be plotted on the heatmap if plot.heatmap is TRUE. The input must be specified as an even number. Default is 30.}
 
-\item{lasso}{Argument specifying parameters for LASSO or Elastic net regression. This argument may be set to 1 for LASSO or >0 & <1 for Elastic Net, but NOT to 0 exactly (Ridge Regression).}
+\item{viridis.palette}{Argument specifying viridis color palette used for heatmaps. Default is "turbo".}
 
-\item{WGCNA}{Argument specifying parameter for Weighed Gene Co-expression Network Analysis. It takes a string, either "DA", "DE" or "ALL" specifying if all variables should be included in WGCNA or only differentially expressed / abundant variables.}
+\item{num.km.clusters}{either a vector of manually defined number(s) of clusters, or NULL. Each number in this vector represent a plausible number of clusters that the user would expected to be present in the data. If multiple values provided, the function will automatically perform K-means clustering using each of them as k (expected number of clusters) separately. If this argument is NULL (default), optimal numbers of clusters are calculated automatically based on the bayesian information criterion (mclust package), applied to sub sampled data (see documentation for the whole procedure).}
 
-\item{cutoffWGCNA}{Argument specifying the cutoff values for WGCNA. The argument takes a numuric vector of three values: (I) minimum modules size, (II) maximum % dissimilarity for merging of modules, and (III) % of top most interconnected genes (or other features) to return, from each modules identified in the Weighed Gene Co-expression Network Analysis. Default values are 10,25,25.}
+\item{signif}{Cut-offs for log fold change (logFC) and corrected p-value (fdr), defining significant hits (proteins, genes, miRNAs or N-features). If argument is set, it must be a numeric vector, where the first element specifies the cut-off for logFC and the second element specifies the cut-off for corrected p-value (fdr).  In case of 2 datasets, vector must be of length 4. By default, cutoffs will be set to -1 > logFC > 1 and corrected p-values < 0.05.}
 
-\item{survival}{Survival analysis may be performed on differentially expressed/abundant variables, variables from LASSO/EN regression or the consensus of these. Argument "survival" must be specified as either; "DE", "DA", "LASSO", "EN" or "Consensus". The full dataframe of variables may be used (if argument is set to ALL), HOWEVER this is not advisable unless the dataset is small with very few variables. Survival info must be included in the metadata file. The metadata file must contain at least four columns named; "ids" (sample identifiers), "age" (age in years at diagnosis, surgery or entry into trail), "outcome.time" (time until end of follow-up in weeks, months or years, censuring, death) and "outcome" (numeric 0 = censuring, 1=death). N.B. in case of (paired) normal samples the columns with survival information for these samples should contain "NA" values.}
+\item{block}{A vector or factor specifying a blocking variable for differential expression analysis. The block must be of same length as the belonging dataset and contain 2 or more options. For 2 datasets the block can be defined as a list of factors or vectors.}
 
-\item{covar}{Covariates to include in the analysis. If multiple of these, they should be specified as a character vector. The first element in this list must be either TRUE or FALSE. If TRUE is specified then covariates will be included in both DE/DA analysis and Survival Analsysis. If FALSE is specified covariates will ONLY be used for Survival Analsysis. Names of covariates should match the desired columns in the metadata file.}
+\item{colors}{Custom color palette for PCA and heatmaps. Must be the same length as number of groups used for comparison (e.g. two groups = two colors) and must be defined as character vector. See R site for avalibe colors http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf. Default is NULL.}
 
-\item{stratify}{This argument may be used if some of the categorical (NOT continous) covariates violate the cox proportional assumption. The pipline checks for proportional hazard and will retun the covariates that fail the PH test. You may then rerun the pipeline with this argument followed by the names of the categorical covariates which failed and these will be stratified.}
+\item{prefix}{Prefix for the results' files and results folder. Default is "Results".}
 
-\item{survplot}{Argument which specifies number of features to include per survival plot, e.g. many features requires splitting of the plot, default features per plot is 50.}
+\item{correlation}{Argument for correlation analysis. String specify which features should be correlated, options are: "ALL", "DE", "DA", "LASSO", "EN" or "Consensus". For this type of analysis, 2 datasets must include the same samples, e.g. tumor1-normal vs tumor2-normal (3 samples from 1 patient needed). Default is FALSE (do not run).}
 
-\item{PPint}{Argument specifying that protein-protein interaction networks should be generated using the results of the differential expression analysis. This argument must be a character vector of length two. The first element in this list must be a string specifying the type of gene identifier in the gene counts file provided. Allowed identifiers are: "ensembl_peptide_id", "hgnc_symbol", "ensembl_gene_id", "ensembl_transcript_id", "uniprotswissprot". The second element is a string specifying version of the stringDB to use. Currently only version supported is: 11.0.}
+\item{WGCNA}{Argument specifying parameter for Weighed Gene Co-expression Network Analysis. It takes a string, either "DA", "DE" or "ALL" specifying if all variables should be included in WGCNA or only differentially expressed / abundant variables. Defaults is FALSE (do not run).}
 
-\item{GenemiRint}{Argument specifying that gene-miRNA interaction networks should be generated using the results of the differential expression analysis. This argument must be a character vector of length two. The first element in this list must be a string specifying the type of miRNA identifier in the gene counts data file. Allowed identifiers are: "mature_mirna_ids", "mature_mirna_accession". The second element must be a string specifying the miRNA-gene database to use, currently options are: "targetscan" (validated miRNAs), "mirtarbase" (predicted miRNAs), "tarscanbase" (validated + predicted miRNAs)".}
+\item{cutoff.WGCNA}{Argument specifying the cutoff values for WGCNA. The argument takes a numuric vector of three values: (I) minimum modules size, (II) maximum percentage of dissimilarity for merging of modules, and (III) percentage of top most interconnected genes (or other features) to return, from each modules identified in the Weighed Gene Co-expression Network Analysis. Default values are 10,25,25.}
+
+\item{survival}{(double check this when parsin survival function) Survival analysis may be performed on differentially expressed/abundant variables, variables from LASSO/EN regression or the consensus of these. Argument "survival" must be specified as either; "DE", "DA", "LASSO", "EN" or "Consensus". The full dataframe of variables may be used (if argument is set to ALL), HOWEVER this is not advisable unless the dataset is small with very few variables. At least, "survival", "outcome", "outcome.time" info must be included in the metadata file. The metadata file must contain at least four columns named; "ids" (sample identifiers), "age" (age in years at diagnosis, surgery or entry into trail), "outcome.time" (time until end of follow-up in weeks, months or years, censuring, death) and "outcome" (numeric 0 = censuring, 1=death). N.B. in case of (paired) normal samples the columns with survival information for these samples should contain "NA" values.}
+
+\item{covariates}{Covariates are specified as a character vector. The first element must be either TRUE or FALSE. If TRUE is specified then covariates will be included in both DEA analysis and survival analsysis. If FALSE is specified covariates will ONLY be used for survival analysis. Names of covariates should match the desired columns in the metadata file. Only one covariate for each dataset is allowed (multiple covariates are allowed when using RunDEA function out of this wrapper). Default is NULL.}
+
+\item{stratify}{This argument may be used if some of the categorical (NOT continous) covariates violate the cox proportional assumption. The workflow checks for proportional hazard and will retun the covariates that fail the PH test. You may then rerun the workflow with this argument followed by the names of the categorical covariates which failed and these will be stratified. Default is NULL.}
+
+\item{surv.plot}{Argument which specifies number of features to include per survival plot. Default is 50.}
+
+\item{PPint}{Argument specifying that protein-protein interaction networks should be generated using the results of the differential expression analysis. This argument must be a character vector of length two. The first element in this list must be a string specifying the type of gene identifier in the gene counts file provided. Allowed identifiers are: "ensembl_peptide_id", "hgnc_symbol", "ensembl_gene_id", "ensembl_transcript_id", "uniprotswissprot". The second element is a string specifying version of the stringDB to use. Currently only version supported is: 11.0. Default is FALSE (do not run).}
+
+\item{gene.miR.int}{Argument specifying that gene-miRNA interaction networks should be generated using the results of the differential expression analysis. This argument must be a character vector of length two. The first element in this list must be a string specifying the type of miRNA identifier in the gene counts data file. Allowed identifiers are: "mature_mirna_ids", "mature_mirna_accession". The second element must be a string specifying the miRNA-gene database to use, currently options are: "targetscan" (validated miRNAs), "mirtarbase" (predicted miRNAs), "tarscanbase" (validated + predicted miRNAs)". Default is FALSE (do not run).}
+
+\item{show.PCA.labels}{a boolean value (TRUE or FALSE) specifying if elements (e.g. samples) should be labelled (for PCAPlot and runKmeans functions). Labeling is based on column names of the input data. Default value is FALSE.}
+
+\item{alpha.lasso}{a numeric vector specifying hyperparameter alpha for LASSO/Elastic network/Ridge regression. This value must be set to 0.0 < x < 1.0 for Elastic Net or to 1.0 for LASSO regression or to 0.0 for Ridge regression. Defaults is FALSE (do not run).}
+
+\item{min.coef.lasso}{a numeric vector specifying a threshold for features' filtering (e.g. genes) based on the coefficients which are calculated during model fitting. Default value is > 0.}
+
+\item{nfolds.lasso}{a numeric vector describing number of folds during Lambda estimation which is based on a cross-validation. Although nfolds can be as large as the sample size (leave-one-out CV), it is not recommended for large datasets. Smallest value allowable is nfolds=3. Default is 10.}
 }
 \value{
 CAMPP2 results
 }
 \description{
-CAMPP2 is a tool for quantitative data analysis
-}
-\examples{
-\dontrun{
-...
-}
-}
-\seealso{
-
+CAMPP2 pipeline
 }

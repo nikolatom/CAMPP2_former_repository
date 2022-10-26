@@ -1,37 +1,30 @@
 ---
 title: "CAncer bioMarker Prediction Pipeline 2 (CAMPP2)"
-author:
-- name: Thilde Bagger Terkelsen
-  affiliation: Danish Cancer Society Research Center
-- name: Nikola Tom
-  affiliation: Technical University of Denmark
-  email: 1nikola.tom@gmail.com
-package: campp2
+authors:
+  names: Nikola Tom, Matteo Tiberti, Elena Papaleo
+  affiliations: Technical University of Denmark, Danish Cancer Society Research Center
+  email: nikto@dtu.dk, tiberti@cancer.dk, elpap@dtu.dk, elenap@cancer.dk
+package: CAMPP2
 output:
   BiocStyle::html_document
-abstract:
-  The CAncer bioMarker Prediction Pipeline (CAMPP) is a simple
-  bioinformatics tool intended to automatize identification of potential
-  diagnostic and prognostic cancer biomarkers. The pipeline is versatile
-  and may be used for analysis of a variety of quantitative biological
-  data from high throughput platforms, including genes, proteins, small
-  RNAs, lipids and glycans. CAMPP currently supports; differential expression/
-  abundance analysis, LASSO/Elastic Net regression,Weighed
-  Gene Co-expression Network Analysis, Correlation analysis and Survival
-  analysis (Cox proportional hazard regression).
+abstract: 
+  The CAncer bioMarker Prediction Pipeline 2 (CAMPP2) is a R package designed to be
+  submitted to Bioconductor. It is a tool for downstream analyses which is agnostic
+  with respect to the source of -omics  biological data. It requires that data
+  quantification has been carried out before using the data as inputs in the pipeline. 
+  The pipeline is versatile and the functions or part of them can be used for analysis 
+  of a variety of quantitative biological data from high throughput platforms, 
+  including genes, proteins, small RNAs, lipids and glycans. 
+  CAMPP2 currently supports; differential expression/abundance analysis, 
+  LASSO/Elastic Net regression,Weighed Gene Co-expression Network Analysis, 
+  Correlation analysis and Survival analysis (Cox proportional hazard regression).
 vignette: |
   %\VignetteIndexEntry{Vignette Title}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-# About CAMPP
-The CAncer bioMarker Prediction Pipeline was developed for internal
-use at the Danish Cancer Society Research Center (DCRC) providing
-researchers with an easy way to identify biomarkers for cancer diagnostics
-and prognostics. In its original form the pipeline was implemented
-using interstitial fluid samples and tissue samples from patients with
-breast cancer but it may be applied to any type of data with comparable
-properties.
+
+# About CAMPP (TO BE EDITED)
 The pipeline can perform the following types of analysis (|) Differential
 expression/abundance analysis (limma [26]), (II) LASSO/Elastic-Net
 regression (glmnet [12]), (III) Weighed Gene Co-expression Network
@@ -83,22 +76,18 @@ should be OK before interpreting any results!
 
 # Requirements
 
-To run CAMPP, a working R version 4.0.0 (or newer) is required [1].
-In addition, macbook users must have Xcode installed, as well as the
-Xcode command-line tools. Install Xcode as shown below.
+To run CAMPP2, a working R version 4.0.0 (or newer) is required.
 
-Open a terminal on your computer and type:
-xcode-select -install
-
-The Pipeline relies on a variety of R-packages, see list below.
-To obtain information on R-packages above, e.g. developers and release information
-(articles) go to R and type citation("package_name").
+The Pipeline relies on a variety of R-packages which are installed
+during CAMPP2 installation.
 
 
-List of dependencies:
+List of dependencies: (KEEP THIS? if yes, needs to be updated)
 
 &nbsp;
 
+
+<!-- THIS SHOULD BE UPDATED -->
 | Analysis Packages         |   
 |---------------------------|---------------------------------------------------------------------------------------------------|
 | Missing value imputation  | impute (v 1.56.0) [17]                                                                            |
@@ -114,88 +103,884 @@ List of dependencies:
 | Survival analysis         | survminer (v 0.4.3), survcomp (v 1.32.0), [22, 29]                                                |
 
 
-NOT SURE HOW THE INSTALL OF THE DEPENDENCIES WORKS, SO I AM KEEPING THIS FOR NOW:
-Installation of R-packages:
-Download and installation of R-package dependencies is automatically
-performed the first time the pipeline is run. However, there are two
-ways of using packages:
-
-1. Newest R-packages.
-If the flag -e is omitted, CAMPP will check for the required Rpackages,
-and will download and install these if needed. The CRAN
-mirror default is Germany: https://ftp.fau.de/cran/, which may
-work in many cases, however, the user should preferably use the
-CRAN mirror closest to their geographical location. See mirrors at:
-https://cran.r-project.org/mirrors.html .The user may then specify
-the mirror by setting the option -e to the desired url.
-
-2. Renv Library.
-Although we aim at keeping the code updated and compatible
-with new R-releases and package updates, we also provide the user
-with a renv [33] "freeze" of the R-packages, if "classic" R-package
-management fails (see option 1. above). We hope that this will
-stabilize the pipeline, so that if it breaks due to package updates, the
-user will still be able to run it while potential discrepancies in the
-code are being resolved.
-When CAMPP is run, the option -e should be set to stable (not
-case sensitive). This tells CAMPP.R to use the renv library instead
-of checking for the newest versions of packages.
-
-Warning message:
-In install.packages("name_of_package") : package ‘name_of_package’
-is not available...
-In this case the package may need to be installed directly from the
-github repository. In order to do this open R. Check that the Rpackage
-devtools is installed and loaded. Next, use install.github()
-to install.
-
-# Install missing packages {.unnumbered}
-
-```
-install.packages("devtools")
-library(devtools)
-install_github(Bioconductor/name_of_package)
-install_github(Bioconductor-mirror/name_of_package)
-```
-
-
 # Running CAMPP2
-The user may find the example files used for running the example below at
-https://github.com/ELELAB/N-glycan-TIF along with the original publication.
-Files are located in the Data/DataExamples folder.
+
+## Example data
+The test data include 2 BRCA datasets (campp2_brca_1, campp2_brca_2) and associated metadata (campp2_brca_1_meta, campp2_brca_2_meta). Each dataset is represented by raw read counts (10000 genes) for 30 samples: 20 tumours which are divided into 4 subtypes (each subtype has 5 samples), and 10 normals. Metadata includes information about diagnosis, age, vital status, days to death, outcome time, tumor stage, subtyte, outcome and survival.
+
+Both, raw read counts and metadata were extracted from TCGA-BRCA Level 3. 
+
+Test data are integrated into CAMPP2 package and accessible as campp2_brca_1, campp2_brca_2, campp2_brca_1_meta, campp2_brca_2_meta variables once the package is installed. R data object files (.rda) are also available on https://github.com/ELELAB/CAMPP2/tree/main/data. 
+
+## Running example script
+
+##Load CAMPP2 package:
+```
+library(CAMPP2)
+```
+##Test data are already part of the CAMPP2 package so user doesn't need to download them. In case you want to load .rda objects manually from the cloned repository, you can use this code:
+```
+load("./data/campp2_brca_1.rda")
+load("./data/campp2_brca_1_meta.rda")
+load("./data/campp2_brca_2.rda")
+load("./data/campp2_brca_2_meta.rda")
+```
+
+##Run CAMPP2 on example data with default settings:
+```
+runCampp2(batches=c("tumor_stage","tumor_stage"), prefix="test_CAMPP2", 
+data1=campp2_brca_1, data2=campp2_brca_2, metadata1=campp2_brca_1_meta, 
+metadata2=campp2_brca_2_meta, groups=c("IDs", "diagnosis","IDs", "diagnosis"), 
+technology=c("seq","seq")) 
+```
+
+## Mandatory Input and Parameters
+
+**data1**: Gene count matrix (gene IDs as row names and sample IDs as columns). It is recommended to import gene counts using function "import_counts". \
+
+**metadata1**: Samples' metadata table should be imported using function "import_metadata". Metadata must include exactly the same samples as gene counts (data1) and samples must be sorted similarly. \
+
+**technology**: Technology used for the analysis of biological input. Current options are 'array', 'seq', 'ms' or 'other'. This argument is mandatory and depending on which option is chosen, data is transformed differently. If a second dataset is provided, the option should be specified for each dataset, provided as a character vector.\ 
+
+**groups**: Argument defining groups of samples should be specified as a character vector. The first element specifying the name of the column in the metadata file containing sample IDs and the second element specifying the name of the column which contains the groups for the DE/DA analysis.
 
 
-## Mandatory Data Input
+## Optional arguments
+**data2**: Gene count matrix for a second dataset.
 
-Operators used in CAMPP.R wrapper \
--d: Quantitative data (counts) \
--m: Metadata (metadata) \
--v: Data type (data_type) \
--g: Ids and Groups (IDs, groups) \
+**metadata2**: Metadata for a second dataset.
 
-#==================\
--z: Standardize (needs to be replaced) - Data are log transformed
-and either quantile normalized (normalizeBetweenArrays) or
-standardized using mean or median (specify option -z).\
--n: Name of the results (results_name)\
-#==================\
-**Optional arguments** (should be rewritten into argument names):\
--s: Multidimensional Scaling Plot (MDS) \
--t: Data Transformation (transform) \
--b: Batch Correction (batch) \
--j: Distibutional Checks (check_distr) \
--c: Color Scheme (colors) \
--r: Covariates (covars) \
--f: Cut-offs for logFC and corrected p-value (logFC_FDR) \
--k: Kmeans Clustering (KMeansClust) \
--l: LASSO/Elastic-Net Regression (LA_EN) \
--w: Weighed Gene Co-expression Analysis (WGCNA) \
--o: Correlation Analysis (correlation) \
--u: Survival Analysis (survival) \
--p: Protein-Protein Interaction Networks (PPI) \
--i: miRNA-Gene Interaction Networks (miR_G_I) \
+**data.check**: Distributional checks of the input data is activated using logical argument (TRUE/FALSE). If activated, Cullen-Frey graphs will be made for 10 randomly selected variables to check data distributions. This argument is per default set to TRUE.
+
+**batches**: Specifies which metadata should be used for a batch correction (sequencing run/tissue/interstitial fluid/etc.). Argument takes a character vector of length 1 (one dataset) or 2 (two datasets), where the string(s) match a column name(s) in the metadata file(s). Default is NULL.
+
+**kmeans**: Argument for kmeans clustering. The parameter must be specified as a character vector matching the name of a column in the metadata file, denoting the labeling of points on the MDS plot(s). If a parameter is set to "TRUE" (no column name specified) no labels will be added to the plot. Works only for the first dataset (data1). Default is FALSE (do not run).
+
+**plot.heatmap**: Argument for heatmap specified as either: "DE", "DA", "LASSO", "EN" or "Consensus". Defaults is FALSE (do not run).
+
+**correlation**: Argument for correlation analysis. String specify which features should be correlated, options are: "ALL", "DE", "DA", "LASSO", "EN" or "Consensus". For this type of analysis, 2 datasets must include the same samples, e.g. tumor1-normal vs tumor2-normal (3 samples from 1 patient needed). Default is FALSE (do not run).
+
+**survival**: (double check this when parsin survival function) Survival analysis may be performed on differentially expressed/abundant variables, variables from LASSO/EN regression or the consensus of these. Argument "survival" must be specified as either; "DE", "DA", "LASSO", "EN" or "Consensus". The full dataframe of variables may be used (if argument is set to ALL), HOWEVER this is not advisable unless the dataset is small with very few variables. At least, "survival", "outcome", "outcome.time" info must be included in the metadata file. The metadata file must contain at least four columns named; "ids" (sample identifiers), "age" (age in years at diagnosis, surgery or entry into trail), "outcome.time" (time until end of follow-up in weeks, months or years, censuring, death) and "outcome" (numeric 0 = censuring, 1=death). N.B. in case of (paired) normal samples the columns with survival information for these samples should contain "NA" values.
+
+**surv.plot**: Argument which specifies number of features to include per survival plot. Default is 50.
+
+**standardize**: (double check for sequencing) Data centering. This option may be set to "mean" or "median." If two datasets are provided, the standardize option should be specified for each dataset, provided as a character vector. If the argument standardize is not specified and "technology" = "array", then quantile normalization will be performed. Defaults is FALSE (do not run).
+
+**transform**: Data transformation type. Current options are "log2", "log10", "logit" and "voom". If two datasets are provided the parameter should be specified for each dataset, provided as a character vector. Defaults is FALSE (do not run).
+
+**prefix**: Prefix for the results' files and results folder. Defalt is "Results".
+
+**signif**: Cut-offs for log fold change (logFC) and corrected p-value (fdr), defining significant hits (proteins, genes, miRNAs or N-features). If argument is set, it must be a numeric vector, where the first element specifies the cut-off for logFC and the second element specifies the cut-off for corrected p-value (fdr).  In case of 2 datasets, vector must be of length 4. By default, cutoffs will be set to -1 > logFC > 1 and corrected p-values < 0.05.
+
+**plot.PCA**:  Argument specifies ("TRUE" or "FALSE") if a preliminary plot should be made for data overview. Default is FALSE (do not run).
+
+**show.PCA.labels** a boolean value (TRUE or FALSE) specifying if elements (e.g. samples) should be labelled (for PCAPlot and runKmeans functions). Labeling is based on column names of the input data. Default value is FALSE.
+
+**covariates**: Covariates to include in the analysis. If multiple of these, they should be specified as a character vector. The first element in this list must be either TRUE or FALSE. If TRUE is specified then covariates will be included in both DE/DA analysis and Survival Analsysis. If FALSE is specified covariates will ONLY be used for Survival Analsysis. Names of covariates should match the desired columns in the metadata file. Default is NULL.
+
+**stratify**: This argument may be used if some of the categorical (NOT continous) covariates violate the cox proportional assumption. The workflow checks for proportional hazard and will retun the covariates that fail the PH test. You may then rerun the workflow with this argument followed by the names of the categorical covariates which failed and these will be stratified. Default is NULL.
+
+**colors**: Custom color pallet for PCA and heatmaps. Must be the same length as number of groups used for comparison (e.g. two groups = two colors) and must be defined as character vector. See R site for avalibe colors http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf. Default is NULL.
+
+**block**: A vector or factor specifying a blocking variable for differential expression analysis. The block must be of same length as the belonging dataset and contain 2 or more options. For 2 datasets the block can be defined as a list of factors or vectors.
+
+**lasso**: Argument specifying parameters for LASSO or Elastic net regression. This argument may be set to 1 for LASSO or >0 & <1 for Elastic Net, but NOT to 0 exactly (Ridge Regression). Defaults is FALSE (do not run).
+
+**WGCNA**: Argument specifying parameter for Weighed Gene Co-expression Network Analysis. It takes a string, either "DA", "DE" or "ALL" specifying if all variables should be included in WGCNA or only differentially expressed / abundant variables. Defaults is FALSE (do not run).
+
+**cutoff.WGCNA**: Argument specifying the cutoff values for WGCNA. The argument takes a numuric vector of three values: (I) minimum modules size, (II) maximum percentage of dissimilarity for merging of modules, and (III) percentage of top most interconnected genes (or other features) to return, from each modules identified in the Weighed Gene Co-expression Network Analysis. Default values are 10,25,25.
+
+**PPint**: Argument specifying that protein-protein interaction networks should be generated using the results of the differential expression analysis. This argument must be a character vector of length two. The first element in this list must be a string specifying the type of gene identifier in the gene counts file provided. Allowed identifiers are: "ensembl_peptide_id", "hgnc_symbol", "ensembl_gene_id", "ensembl_transcript_id", "uniprotswissprot". The second element is a string specifying version of the stringDB to use. Currently only version supported is: 11.0. Default is FALSE (do not run).
+
+**gene.miR.int**: Argument specifying that gene-miRNA interaction networks should be generated using the results of the differential expression analysis. This argument must be a character vector of length two. The first element in this list must be a string specifying the type of miRNA identifier in the gene counts data file. Allowed identifiers are: "mature_mirna_ids", "mature_mirna_accession". The second element must be a string specifying the miRNA-gene database to use, currently options are: "targetscan" (validated miRNAs), "mirtarbase" (predicted miRNAs), "tarscanbase" (validated + predicted miRNAs)". Default is FALSE (do not run).
 
 
+
+
+
+
+## FUNCTIONS IN CAMPP2
+
+### ReplaceNAs \
+**Description:** \
+In summary, this function removes samples and features with a high percentage of NA values. The rest of NA values is replaced by imputed values. \
+In the first step of this function, percentages of NAs in rows (features) and columns (samples) are calculated. The features and samples with a high percentage of NAs are removed (by default, features having >70% and samples having >80% of NAs are removed). Remaining NA values are replaced by imputed values generated by “local least squares (llsImpute)“. If the first round of missing values imputation failed or resulted in negative values, an additional missing value imputation using impute.knn will be performed (rows with more than 50% missing values will be imputed using the overall mean per sample). \
+**Parameters:** \
+*data*: a dataframe of gene/abundance counts. \
+*pct.NA.row*: a number defining maximal percentage of NA values present in a feature (e.g. a percentage of samples having NA in a given gene). Features (rows) with a higher percentage of NA values will be removed (70 by default). \
+*pct.NA.column*: a number defining maximal percentage of NA values present in a sample (e.g. a percentage of genes having NA in one sample). Samples (columns) with a higher percentage of NA values will be removed (80 by default). \
+**Output from the function:**  \
+A data frame without NA values \
+**An example run:** \
+##Each of the CAMPP2 example datasets (2) has 10000 genes and all of them have assigned read counts. In our example, we will randomly introduce 1000 NA values into each sample's genes (taking dataset campp2_brca_1) in the first step in order to prepare test data for NA values replacement. In the next step, NA values will be replaced by calling ReplaceNAs function. 
+
+```
+library(CAMPP2)
+``` 
+
+##Test data are already part of the CAMPP2 package so user doesn't need to download them. In case you want to load .rda objects manually from the cloned repository, you can use this code:
+
+```
+load("./data/campp2_brca_1.rda")
+load("./data/campp2_brca_1_meta.rda")
+load("./data/campp2_brca_2.rda")
+load("./data/campp2_brca_2_meta.rda")
+
+``` 
+
+##get a number of genes in the dataset.
+```
+n<-nrow(campp2_brca_1)
+``` 
+
+##For testing of this function, 1000 genes is assegned with NA value. NA values are introduced randomly into each sample and all the 10000 genes (n=10000) are considered for the introduction of NA values.
+```
+campp2_brca_1_NAs<-apply (campp2_brca_1, 2, function(x) {x[sample( c(1:n), floor(n/10))] <- NA; x} )
+``` 
+
+##create an object with replaced NAs; features having "NA" in more than 70% of the samples will be removed; samples having "NA" in more than 80% of the genes will be removed
+```
+campp2_brca_1_replacedNAs<-ReplaceNAs(data=campp2_brca_1_NAs, pct.NA.row=70, pct.NA.column=80) 
+```
+\
+
+### FixZeros 
+**Description:** \
+This function detects zero/negative values and replaces zero values in the data.
+In the first step, the function checks for the presence of zero and negative values in the data.
+In the second step, (activated by default), features having sum of zero counts higher than the size of the smallest sample group will be
+removed (e.g. genes represented by zero counts/transcripts in more than n samples will be removed; n = size of the smallest group). 
+Next, remaining zeros are substituted with minimal values (>0) observed in each feature across all samples in the dataset. \
+**Parameters:** \
+*data* a dataframe of gene/abundance counts. \
+*group* group a factor specifying group for each sample (e.g. could be represented by a column from a metadata file).\
+*remove.sparse.features* a logical argument (TRUE/FALSE) for removal of features with sum of zero counts larger than the size of the smallest sample group, and for replacing the remaining zeros. Default is TRUE. \
+**Output from the function:**  \
+a data frame with fixed zeros. Features having sum of zero counts higher than the size of the smallest sample group are removed and remaining zeros are replaced by default. \
+\
+**An example run:** \
+##Create an object with fixed zeros:
+```
+###Dataset without NA values ("campp2_brca_1_replacedNAs" generated in a previous step) is used as an input.
+campp2_brca_1_zeroFix<-FixZeros(data=campp2_brca_1_replacedNAs,group=campp2_brca_1_meta$diagnosis, remove.sparse.features=TRUE)
+```
+\
+
+### NormalizeData 
+**Description:** \
+This function normalizes and transforms feature counts depending on data types ("seq", "array", "ms", "other") and selected normalization/standardization methods. 
+Transformation methods include options for "log2", "logit" and "log10." If technology is "seq", a Voom transform is applied automatically.
+Standardization methods options include "mean" or "median". If technology is "seq" or "array", this option is ignored, instead, sequencing data are normalized by "TMM"; micro-arrays data are normalized by "quantile" standardization. \
+**Parameters:** \
+*data* a dataframe of expression/abundance counts \
+*group* a factor specifying group for each sample (e.g. could be represented by a column from a metadata file) \
+*transform* a string vector of length 1 defining transformation type ("log2", "logit", "log10"). If technology is "seq", this option is ignored a Voom transform is applied. \
+*standardize* a string vector of length 1 defining standardization method ("mean" or "median"). If technology is "seq" or "array", this option is ignored, instead, seq data are normalized by "TMM"; array data are normalized by "quantile" standardization. \
+*technology* a string vector of length 1 defining technology used for generating the data. Allowed types are: "array", "seq", "ms" or "other". \
+**Output from the function:**  \
+an Elist ("seq" technology) or array ("array", "ms", "other" technologies) of normalized and transformed feature counts data \
+\
+**An example run:** \
+##Create an object with normalized gene counts
+```
+###Dataset without zero values ("campp2_brca_1_zeroFix" generated in the previous step) is used as an input.
+campp2_brca_1_normalized<-NormalizeData(data=campp2_brca_1_zeroFix,group=campp2_brca_1_meta$diagnosis,standardize="TMM",transform="voom",technology="seq")
+```
+\
+
+### BatchCorrect 
+**Description:** \
+This function removes batch effects (using ComBat function) which could be causing a significant heterogeneity across batches of data.
+Batch corrected data are intended for explanatory purposes, NOT for a DEA analysis.
+ \
+**Parameters:** \
+*data* an Elist ("seq" technology) or a matrix ("array", "ms", "other" technologies) of normalized and transformed feature (e.g. gene) counts data \
+*batch* a factor specifying batch for each sample (e.g. could be represented by a column from a metadata file) \
+*group* a factor specifying group for each sample (e.g. could be represented by a column from a metadata file) \
+*technology* a string vector of length 1 defining technology used for generating the data. Allowed types are: "array", "seq", "ms" or "other" \
+**Output from the function:** \
+a list including matrix (array) of batch corrected feature counts \
+\
+**An example run:** \
+##Create an object with batch corrected feature (gene) counts
+```
+###Normalized data ("campp2_brca_1_normalized" generated in a previous step) are used as an input.
+campp2_brca_1_batchCorrected<-BatchCorrect(data=campp2_brca_1_normalized,batch=campp2_brca_1_meta$tumor_stage,group=campp2_brca_1_meta$diagnosis,technology="seq") 
+```
+\
+
+### PCAPlot 
+**Description:** \
+A function calculating Principal component analysis (PCA). 
+PCA is a method for dimensionality reduction.
+PCA plot shows the relationships
+between samples (based on squared euclidean distances) in the data set.
+Each dot represents one sample. This function provides also a scree plot
+describing percentages of explained variances by each principal component and
+plots with contributions of variables (e.g. genes) to PC1 and PC2. 
+Top 3 PC components are visualized in 3D plot.
+\
+**Parameters:** \
+*data* a dataframe of expression/abundance counts \
+*group* a factor specifying group for each sample (e.g. could be represented by a column from a metadata file) \
+*cols* a vector of colors (one color for each group) \
+*show.PCA.labels* a boolean value (TRUE or FALSE) specifying if elements
+(e.g. samples) should be labelled. Labeling is based on column names of
+the input data. Default value is FALSE. \
+**Output from the function:** \
+1) scree plot \
+2) contributions of variables to PC1 \
+3) contributions of variables to PC2 \
+4) 2D PCA plot (projections of the samples on the first 2 principal components) \
+5) 3D PCA plot (projections of the samples on the first 3 principal components) \
+\
+**An example run:** \
+##Run PCA on object with batch corrected feature (gene) counts
+```
+###Normalized and batch corrected data ("campp2_brca_1_batchCorrected" generated in a previous step) are used as an input.
+PCAPlot(campp2_brca_1_batchCorrected, as.factor(campp2_brca_1_meta$subtype), show.PCA.labels=FALSE, cols=NULL, prefix="test_PCA_plot")
+```
+\
+
+
+### runKmeans
+**Description:** \
+A wrapper function for K-means clustering.
+In a first step, a number of clusters is estimated.
+By default, for data sets with >1000 features, multiple
+subsets (number of sets = number of features/1000; rounded up to the higher
+integer) will be generated, maximum is 10 sub-sets.
+A number of randomly selected features (e.g. genes) in 1 subset is limited
+to 2000. The values for number of subsets and size of the sub-sets might by
+defined manually. The option of using the whole dataset for the estimation
+of the number of the clusters is also available. By default, a number of
+clusters for each sub-set is automatically estimated (using
+mclustBIC function from mclust package) and a consensus (based on all the
+subsets) of best n k-means is returned and used for K-means clustering.
+If K-means estimation using BIC fails, a number of clusters will be based on
+the number of samples (2-6 clusters for data set with less than 100 samples;
+2-11 for data sets with 101-500 samples, and 2-16 clusters for data sets with
+more than 500 samples). The number of clusters can also be supplied manually.
+In the next step, K-means clustering using the information about the number
+of clusters is done.
+As results, an information about the clusters assigned to each sample and
+results from PCA (FactoMineR) function are provided.
+The clusters are visualized on PCA plot and saved into .png file.
+Plot of BIC values for each of the sample sub-set is saved into .png file.
+A summary describing the best model is printed on the screen during
+calculation.
+\
+**Parameters:** \
+*data* a data.frame of feature (e.g. gene) counts \
+*num.subsets* a number of sub-sets to be generated for the estimation of
+the number of clusters. This parameter has several options:
+1) a numeric (integer) value estimated by the user.
+2) a string "automatic" will let CAMPP2 estimate the number of the sub-sets.
+3) NULL option will use the whole set for the estimation
+of the number of clusters. If using this option, subset.size must be also NULL.
+Defaults is NULL. \
+*subset.size* a number of features included in each sub-set. This
+parameter has several options:
+1) a numeric (integer) value estimated by the user.
+2) a string "automatic" will let CAMPP2 estimate the size of the sub-sets.
+3) NULL option will use all the features (no sub-sampling) for the estimation
+of the number of clusters. If using this option, num.subsets must be also NULL.
+Defaults is "automatic" \
+*show.PCA.labels* s a boolean value (TRUE or FALSE) specifying if elements
+(e.g. samples) should be labelled in the PCA plot including information about
+the clusters. Labeling is based on column names of the input data.
+Default value is FALSE. \
+*colors* a vector of colors (one color for each cluster) \
+*prefix* a character string defining a prefix of output file. \
+*num.km.clusters* a vector of numbers of clusters expected in the data.
+Clusters can be represented e.g., by sample groups, sub-types, etc.
+If multiple values provided, the function will automatically
+perform K-means clustering based on each (expected number of clusters) of
+them separately. By default, expected numbers of clusters are calculated
+automatically based on BIC (mclust package) applied to sub-sampled data sets.
+A default value for this parameter is NULL. \
+*seed* a number for setting a random seed. If the argument is NULL,
+the seed won't be set. Default is NULL. \
+*pca.scale* a boolean, if TRUE then data are scaled to unit variance
+during PCA. Default is FALSE \
+\
+**Output from the function:** \
+1) a list including: \
+   a) a data.frame with cluster information assigned to each sample; \
+   b) a PCA object including data for generating PCA plots with cluster \
+   information (generated by PCA function from FactoMineR package); \
+2) 2D PCA plot(s) projecting samples (labeled with cluster number) over first 2 
+   principal components saved into .png.
+3) plots of BIC values for each sample sub-set saved into .png file\
+\
+
+**An example run:** \
+
+##Estimate number of K-means and assign a specific cluster to each sample
+```
+###Normalized and batch corrected data ("campp2_brca_1_batchCorrected" generated in a previous step) are used as an input.
+Kmeans.output<-runKmeans(campp2_brca_1_batchCorrected[1:2000,], num.subsets= NULL, subset.size=NULL, show.PCA.labels = FALSE, colors=NULL, prefix="test", num.km.clusters=NULL, seed=123, pca.scale=FALSE)
+```
+\
+
+
+### EstimateKmeans
+**Description:** \
+A function to estimate the number of K-means. A Number of K-means is based 
+on the Bayesian information criterion (BIC) provided by mclust package. 
+A summary describing the best model is printed on the screen during the 
+calculation.
+\
+**Parameters:** \
+*data* a data.frame of feature (e.g. gene) counts \
+**Output from the function:** \
+a data frame with the number of clusters \
+\
+**An example run:** \
+##Estimate number of K-means 
+```
+###Sub-sampled (the first 2000 genes) normalized and batch corrected data ("campp2_brca_1_batchCorrected" generated before) are used as an input.
+EstimateKmeans(t(campp2_brca_1_batchCorrected[1:2000,]))
+```
+\
+
+
+### RunDEA
+**Description:** \
+A function for running differential expression/abundance
+analysis using a matrix of features (e.g., genes) counts as a mandatory
+input. In the function, user is allowed to take advantage of defining multiple
+covariates, thresholds for a log fold change (logFC), a false discovery
+rate (FDR) and a blocking variable.
+The differential expression/abundance analysis is based on voom
+transformation and limma.
+Results are provided in the form of tables with differentially expressed/
+abundant features. Design a contrast matrices are also provided.
+\
+**Parameters:** \
+*data* a matrix of (transformed and normalized) feature counts from "seq", "array", "ms" or 
+"other" technology (with feature IDs as row names and sample IDs as columns). 
+\
+*metadata* a samples' metadata table should be imported using function
+"import_metadata". Metadata must include exactly the same samples as gene
+counts (data) and samples must be sorted similarly. In this function,
+metadata are optional and are used to extract covariates for each sample.
+Default = NULL. \
+*batch* a factor specifying batch for each sample (e.g. could be
+represented by a column from a metadata file). Default = NULL. \
+*covarDEA* a character vector of covariate(s) to include in the analysis.
+covarDEA can be defined only together with a batch parameter (which
+represents one of the covariates). Default = NULL. \
+*group* a factor specifying group for each sample (e.g. could be
+represented by a column from a metadata file) \
+*cutoff.logFC* A cutoff value for the logarithmic fold change applied
+to each feature. Default = 1. \
+*cutoff.FDR* a cutoff value for the false discovery rate (corrected
+p-value) applied to each feature. Default = 0.01. \
+*prefix* a character vector defining prefix of output file name. \
+*block* a factor specifying blocking variable. The block must be of
+the same length as data and contain 2 or more options (e.g. could be
+represented by a column from a metadata file). Default = NULL. \
+**Output from the function:** \
+a list of:
+1) re-formatted matrix of differential expression/abundance results from
+limma.
+2) original results (a list) from limma
+3) a character vector with unique feature names
+4) a design matrix
+5) a contrast matrix
+\
+**An example run:** \
+##Run a wrapper for differential gene expression analysis on a raw gene counts
+```
+campp2_brca_1_DEA<-RunDEA(data=campp2_brca_1_normalized, 
+metadata=campp2_brca_1_meta,
+group=campp2_brca_1_meta$subtype, prefix="test",
+block=campp2_brca_1_meta$subtype, batch=campp2_brca_1_meta$age,
+covarDEA = c("tumor_stage"), cutoff.logFC=1, cutoff.FDR=0.01)
+```
+\
+
+ 
+### DEAFeatureApply
+**Description:** \
+A function for applying differential expression/abundance
+analysis to all group comparisons at once. The analysis is based on feature
+counts (e.g., genes), design matrix and contrast matrix. Cutoffs for logFC
+and FDR; and blocking variable are optional. Using parameter vector=TRUE, only
+features' IDs are output.
+\
+**Parameters:** \
+*data* a matrix of (transformed and normalized) feature counts from "seq", "array", "ms" or 
+"other" technology (with feature IDs as row names and sample IDs as columns). 
+\
+*design.matrix* a design matrix based on samples metadata (groups, covariates,
+etc.). \
+*contrast.matrix* an array containing contrast.matrix between groups of
+interest. \
+*cutoff.logFC* A cutoff value for the logarithmic fold change applied
+to each feature. Default = 1. \
+*cutoff.FDR* a cutoff value for the false discovery rate (corrected
+p-value) applied to each feature. Default = 0.01. \
+*block* a factor specifying blocking variable. The block must be of
+the same length as data and contain 2 or more options (e.g. could be
+represented by a column from a metadata file). Default = NULL. \
+*vector* a boolean value. If TRUE, only a vector of unique features IDs
+will be output. Default = FALSE. \
+**Output from the function:** \
+a list (a vector in case vector=TRUE) of DEA features for all
+comparisons\
+\
+**An example run:** \
+## Run differential gene expression on all groups comparasons
+```
+DEA_all_comparisons <- DEAFeatureApply(data = campp2_brca_1_normalized, 
+design.matrix = campp2_brca_1_DEA$DEA.design.matrix, contrast.matrix =
+campp2_brca_1_DEA$DEA.contrast.matrix, cutoff.logFC =1, cutoff.FDR =0.01,
+block = campp2_brca_1_meta$subtype, vector = FALSE)
+```
+\
+ 
+ 
+### DEA_feature
+ **Description:** \
+A function for applying differential expression/abundance
+analysis using limma. The analysis is usually based on normalized feature
+counts (e.g., genes), design matrix and contrast matrix (using only 1
+contrast). Cutoffs for logFC and FDR; and blocking variable are optional. \
+\
+**Parameters:** \
+*contrast.matrix* an array containing contrast.matrix between groups of
+interest. \
+*data* a matrix of (transformed and normalized) feature counts from "seq", "array", "ms" or 
+"other" technology (with feature IDs as row names and sample IDs as columns). 
+\
+*design.matrix* a design matrix based on samples metadata (groups, covariates,
+etc.). \
+*cutoff.logFC* A cutoff value for the logarithmic fold change applied
+to each feature. Default = 1. \
+*cutoff.FDR* a cutoff value for the false discovery rate (corrected
+p-value) applied to each feature. Default = 0.01. \
+*block* a factor specifying blocking variable. The block must be of
+the same length as data and contain 2 or more options (e.g. could be
+represented by a column from a metadata file). Default = NULL. \
+**Output from the function:** \
+a list of up and down-regulated features in limma format
+\
+**An example run:** \
+##Run differential gene expression on the first group comparison (using 1st 
+column from provided contrast matrix).
+```
+DEA_one_comparison <- 
+DEAFeature(contrast.matrix = campp2_brca_1_DEA$DEA.contrast.matrix[,1],
+data = campp2_brca_1_normalized, 
+design.matrix = campp2_brca_1_DEA$DEA.design.matrix,
+cutoff.logFC =1, cutoff.FDR =0.01, block = campp2_brca_1_meta$subtype)
+```
+\
+
+
+### ExportDEA
+ **Description:** \
+A function for re-formatting the output from DEA generated based
+on the workflow: (runDEA - DEAFeatureApply - DEAFeature - limma); and 
+exporting the results into a .txt file. \
+**Parameters:** \
+*res.DEA* a list of data frames containing results from different group
+comparisons in limma format.
+*prefix* a character vector defining prefix of output file name. \
+**Output from the function:** \
+1) a data frame of DEA results \
+2) a .txt table of exported DEA results \
+\
+**An example run:** \
+##Reformat and export results from DEA generated by limma in DEA_feature 
+function
+```
+campp2_brca_1_DEA_out<-ExportDEA(res.DEA = campp2_brca_1_DEA$res.DEA,
+prefix="test")
+```
+\
+
+
+### RunDEAVisuals
+**Description:** \
+This function wraps several functions for the visualisation
+of DEA results:
+1) A function for making volcano plots from DEA results.
+The input is typically an output from RunDEA (re-formatted matrix of
+differential expression/abundance results from limma, please, check RunDEA
+for more details). By default, top 15 up- and down-regulated features
+will be labeled on the Volcano plot. Important: Features are selected from
+the table with all the groups' comparisons.
+2) A function for making Venn diagrams to visualize the size of
+intersections of the features between the groups
+(e.g., differentially expressed genes for each subtype)
+3) A function for making Upset plots to visualize the size of
+intersections of the features present each group
+(e.g., differentially expressed genes for each subtype) \
+**Parameters:** \
+*data* A data frame from RunDEA containing genes and their
+corresponding AveExpr, logFC, p.value, adj.p.value ect. Mandatory columns
+are "logFC", "adj.P.Val" and "HUGO_ID." HUGO_ID could be obtained using
+AddGeneName function. \
+*prefix* a prefix for the output filename. \
+*cutoff.FDR* a numeric value for adj.P.Val cutoff. Default = 0.01 \
+*cutoff.logFC* a numeric value for logFC cutoff. Default = 1 \
+*n.labeled.features* a number of the most up-/down- regulated features
+labeled in the volcano plot. Default = 15 \
+*control.group* A string vector defining control group name for each
+dataset (e.g., "healthy" or "normal"). \
+**Output from the function:** 
+several .png files with: \
+1) Volcano plot of differentially expressed features saved into .png \
+2) Venn Diagram showcasing the size of intersections of the features
+between the sample groups \
+3) Upset plot showcasing the size of intersections of the features
+between the sample groups \
+**An example run:** \
+##Create a volcano plot, venn diagram, upset plots based on results from RunDEA 
+and AddGeneName functions.
+```
+RunDEAVisuals(campp2_brca_1_DEA_HUGO, cutoff.FDR = 0.01, cutoff.logFC = 1,
+n.labeled.features = 15, control.group= "healthy", prefix="test_DEA_visuals")
+```
+\
+
+
+### MakeVolcano
+**Description:** \
+A function for making volcano plots from DEA results.
+The input is typically an output from RunDEA (re-formatted matrix of
+differential expression/abundance results from limma, please, check RunDEA
+for more details). By default, top 15 up- and down-regulated features
+will be labeled on the Volcano plot. Important: Features are selected from
+the table with all the groups' comparisons. \
+**Parameters:** \
+*data* A data frame from RunDEA containing genes and their
+corresponding AveExpr, logFC, p.value, adj.p.value ect. Mandatory columns
+are "logFC", "adj.P.Val" and "HUGO_ID." HUGO_ID could be obtained using
+AddGeneName function. \
+*prefix* a prefix for the output filename \
+*cutoff.FDR* a numeric value for adj.P.Val cutoff. Default = 0.01 \
+*cutoff.logFC* a numeric value for logFC cutoff. Default = 1 \
+*n.labeled.features* a number of the most up-/down- regulated features
+labeled in the volcano plot. Default = 15 \
+**Output from the function:** \
+Volcano plot of differentially expressed features saved into .png \
+\
+**An example run:** \
+##Create a volcano plot based on results from RunDEA and 
+AddGeneName functions.
+```
+MakeVolcano(campp2_brca_1_DEA_HUGO, prefix = "test_volcano",
+cutoff.logFC = 1, cutoff.FDR = 0.01, n.labeled.features = 15)
+
+```
+\
+
+
+### MakeUpset
+**Description:** \
+A function for making Upset plots to visualize the size of
+intersections of the features present each group
+(e.g., differentially expressed genes for each subtype) \
+**Parameters:** \
+*prefix* A prefix for the output filename. \
+*groups.feature.list* A list of character vectors (each character
+vector named by its group name, e.g., "LumA") including feature names
+characteristic for each group of interest (e.g., for subtype). \
+*label* a character vector used as a label for the upset plot. Default
+is "". \
+*label.vertical.position* a numeric value describing vertical position of
+the label. Default is 15.0 (cm). \
+*y.axis.by* an integer describing interval used for labeling Y-axis.
+Defaults is 100. \
+*set.size.by* an integer describing interval used for labeling the
+set size axis. Defaults is 200. \
+**Output from the function:** \
+An Upset plot showcasing the size of intersections of the features between the 
+sample groups \
+\
+**An example run:** \
+##Create an Upset plot based on a list of the features characteristic for each group
+```
+MakeUpset("testUpSet",campp2_brca_1_DEA_HUGO_features_per_group,
+label="test_UpSet",label.vertical.position=16.5,
+y.axis.by=300,set.size.by=250)
+```
+\
+
+
+### MakeVennDiagram
+**Description:** \
+A function for making Venn diagrams to visualize the size of
+intersections of the features between the groups
+(e.g., differentially expressed genes for each subtype) \
+**Parameters:** \
+*prefix* A prefix for the output filename. \
+*groups.feature.list* A list of character vectors (each character
+vector named by its group name, e.g., "LumA") including feature names
+characteristic for each group of interest (e.g., for subtype). \
+**Output from the function:** \
+An Upset plot showcasing the size of intersections of the features between the 
+sample groups \
+\
+**An example run:** \
+##Create an Venn diagram based on a list of the features characteristic for each 
+group
+```
+MakeVennDiagram("test_Venn", campp2_brca_1_DEA_HUGO_features_per_group)
+```
+\
+
+
+### RunHeatmap
+ **Description:** \
+ A function for making heatmaps to showcase the difference in
+expression/abundance of features across samples and sample groups and to
+visualise relations between them. \
+**Parameters:** \
+*feature.counts* a feature count matrix (ideally normalized and batch corrected)
+from "seq", "array", "ms" or "other" technology (with feature IDs as row
+names and sample IDs as columns). It's recommended to import feature counts
+using function "import_counts". \
+*DEA.out* a data frame from RunDEA containing genes and their
+corresponding AveExpr, logFC, p.value, adj.p.value ect. Mandatory columns
+are "logFC". \
+*group* a factor specifying group for each sample (e.g. could be
+represented by a column from a metadata file). Group's information
+will be used in clustering the samples. \
+*heatmap.size* an argument specifying how many genes will be selected
+to be plotted on the heatmap if plot.heatmap is TRUE. The input must be
+specified as an even number.
+
+Please, consider that some of the TOP DEA features might be present multiple 
+times in the DEA output due to the multiple groups comparisons. 
+On the heatmap, each feature will be projected only once so the final number 
+of the projected features migh by lower then heatmap.size.\
+*viridis.palette* a character vector specifying color gradient to use for
+the heatmap. Default option for viridis color palettes is 'turbo'. For more
+options, see viridis vignette. \
+*plot.heatmap* an argument defining which data will be used for
+the selection of the top x features to be plotted on the heatmap.
+Options are:"DEA", "LASSO", "EN", "Ridge" or "Consensus". \
+*prefix* a character vector defining prefix of output file name.
+*data.type* a character vector for labeling units in the legend.
+Default is "expression/abundance".
+**Output from the function:** \
+a .png file with a heatmap \
+\
+**An example run:** \
+##Create and print heatmap based on the raw gene counts 
+```
+RunHeatmap(campp2_brca_1_batchCorrected, campp2_brca_1_DEA_HUGO,
+campp2_brca_1_meta$subtype, heatmap.size=30, viridis.palette="turbo",
+plot.heatmap="DEA", "test_heatmap")
+```
+\
+
+
+### MakeHeatmap
+ **Description:** \
+A function for making heatmaps to showcase the difference in
+expression/abundance of features across samples and sample groups and to
+visualise relations between them. \
+**Parameters:** \
+*data* a feature count matrix (ideally normalized and batch corrected)
+from "seq", "array", "ms" or "other" technology (with feature IDs as row
+names and sample IDs as columns). It's recommended to import feature counts
+using function "import_counts". \
+*group* a factor specifying group for each sample (e.g. could be
+represented by a column from a metadata file). Group's information
+will be used in clustering the samples. \
+*prefix* a character vector defining prefix of output file name. \
+*viridis.palette* a character vector specifying color gradient to use for
+the heatmap. Default option for viridis color palettes is 'turbo'. For more
+options, see viridis vignette. \
+*data.type* a character vector (used in the heatmap legend) describing
+type of the data being visualized. Default is "expression/abundance". \
+**Output from the function:** \
+a .png file with a heatmap \
+\
+**An example run:** \
+##Create and print heatmap based on the raw gene counts 
+```
+MakeHeatmap(data=campp2_brca_1_batchCorrected, group=campp2_brca_1_meta$subtype, 
+prefix="test_heatmap", viridis.opt = "turbo", data.type = "expression/abundance")
+
+```
+\
+
+
+### runLASSO
+**Description:** \
+The function runs LASSO/Elastic net/Ridge regression (depending
+on a hyperparameter alpha value. For Ridge regression, alpha = 0;
+for Elastic net, alpha >0 & <1; for LASSO, alpha = 1).
+The regression is calculated 10 times for 10 random seeds and the intersect
+of the significant features (e.g., genes) is obtained.
+Parameter Lambda is automatically
+estimated using k-fold cross-validation (cv.glmnet) by default.
+The function optionally (>20 samples) calculates a double
+cross-validation using a validation set which represents 1/4 of the samples
+from each group. \
+Results are provided in the form of: \
+1) the names of the significant features passing filters based on their
+coefficient values \
+2) classification error rate (datasets of >20 samples) \
+3) roc.res - AUC value (datasets of >20 samples) \
+4) cross validation error plot \
+ \
+**Parameters:** \
+*data* a data frame of expression/abundance counts. It's recommended
+to use normalized and batch corrected data. \
+*group* a factor specifying group for each sample (e.g. could be
+represented by a column from a metadata file) \
+*alpha* a numeric vector specifying hyperparameter alpha. This value
+must be set to 0.0 < x < 1.0 for Elastic Net (0.5 is default) or to 1.0
+for LASSO regression or to 0.0 for Ridge regression. \
+*min.coef* a numeric vector specifying a threshold for features'
+filtering (e.g. genes) based on the coefficients which are calculated during
+model fitting. Default value is > 0. \
+*nfolds* a numeric vector describing number of folds during Lambda
+estimation which is based on a cross-validation. Although nfolds can be
+as large as the sample size (leave-one-out CV), it is not recommended for
+large datasets. Smallest value allowable is nfolds=3. Default is 10.
+*prefix* a character string defining a prefix of output file. \
+**Output from the function:** \
+1) VarSelect - a matrix of feature names having coefficients of best model
+passing the filters (threshold defined by min.coef) \
+2) cv.error - logical/numeric value describing miss classification error
+rate (datasets of >20 samples) \
+3) roc.res - AUC value (datasets of >20 samples) \
+4) cross validation error plot \
+**An example run:** \
+
+##Run a wrapper of Ridge/elastic net/LASSO regression
+```
+###Normalized and batch corrected data are used as an input for regression.
+##run regression using small batch corrected dataset - no double cross validation
+runLASSO(data=campp2_brca_1_batchCorrected, group=campp2_brca_1_meta$diagnosis, alpha=0.5, min.coef=0, nfolds=10, prefix="test")
+##run regression using large batch corrected dataset suitable for double cross validation
+###create a large dataset
+campp2_test_data_LASSO<-cbind(campp2_brca_1,campp2_brca_2)
+campp2_test_metadata_LASSO<-rbind(campp2_brca_1_meta, campp2_brca_2_meta)
+campp2_test_data_LASSO_replaceNAs<-ReplaceNAs(data=campp2_test_data_LASSO)
+campp2_test_data_LASSO_zeroFix<-FixZeros(data=campp2_test_data_LASSO_replaceNAs,group=campp2_test_metadata_LASSO$diagnosis, remove.sparse.features=TRUE)
+campp2_test_data_LASSO_normalized<-NormalizeData(data=campp2_test_data_LASSO_zeroFix,group=campp2_test_metadata_LASSO$diagnosis,standardize="TMM",transform="voom",technology="seq")
+campp2_test_data_LASSO_batchCorrected<-BatchCorrect(data=campp2_test_data_LASSO_normalized,batch=campp2_test_metadata_LASSO$tumor_stage,group=campp2_test_metadata_LASSO$diagnosis,technology="seq")
+###run lasso on a large dataset
+runLASSO(data=campp2_test_data_LASSO_batchCorrected, group=campp2_test_metadata_LASSO$diagnosis, alpha=0.5, min.coef=0, nfolds=10, prefix="test")
+}
+```
+\
+
+
+### LASSOFeature
+**Description:** \
+The function runs LASSO/Elastic net/Ridge regression
+(depending on a hyperparameter alpha value). Parameter Lambda is
+automatically estimated using k-fold cross-validation (cv.glmnet) by default.
+The function optionally calculates also double cross-validation using
+a test set. aValidation (test) set represents 1/4 of the samples from each
+group. \
+Results are provided in the form of:
+1) the ames of the signifficant features passing filters based on their
+coefficient values \
+2) classification error rate (calculated if "validation=TRUE") \
+3) cv.glmnet object. \
+ \
+**Parameters:** \
+*seed* an integer vector containing the random number generator (RNG)
+state. Default is 123. \
+*data* a data frame of expression/abundance counts.
+It's recommended to use normalized and batch corrected data. \
+*group* a factor specifying group for each sample (e.g. could be
+represented by a column from a metadata file) \
+*alpha* a numeric vector specifying hyperparameter alpha. This value
+must be set to 0.0 < x < 1.0 for Elastic Net (0.5 is default) or to 1.0 for
+LASSO regression or to 0.0 for Ridge regression. \
+*validation* a boolean value for performing double cross-validation.
+Validation (test) set represents 1/4 of the samples in each group.
+As a result, cross validation error rate is provided. Default value is FALSE. \
+*min.coef* a numeric vector specifying a threshold for features'
+filtering (e.g. genes) based on the coefficients which are calculated during
+model fitting. Default value is > 0. \
+*nfolds* a numeric vector describing number of folds during Lambda
+estimation which is based on a cross-validation. Although nfolds can be
+as large as the sample size (leave-one-out CV), it is not recommended for
+large datasets. Smallest value allowable is nfolds=3. Default is 10. \
+**Output from the function:** \
+a list of:
+1) coef.ma.names - a matrix of feature names having coefficients of best model
+passing the filters (threshold defined by min.coef)
+2) class.error - logical/numeric value describing miss classification error
+rate
+3) fit - cv.glmnet object \
+4) coef.ma - a matrix of the features' coefficients (best model)
+passing the filters (threshold defined by min.coef) \
+**An example run:** \
+
+##Run Ridge/elastic net/LASSO regression
+```
+###Normalized and batch corrected data are used as an input for regression.
+LASSOFeature(seed=123, data=campp2_brca_1_batchCorrected,
+group=campp2_brca_1_meta$diagnosis, alpha=0.5, validation=TRUE,
+min.coef = 0, nfolds=10)
+```
+\
+
+
+### RunDEA_LASSO_consensus
+**Description:** \
+This function creates a consensus between the results from
+DEA and LASSO/Elastic net/Ridge regression. Specifically, only the features
+present in LASSO results are kept in the DEA results table.
+Additionally, a Venn diagram visualizing overlaps is generated.
+\
+**Parameters:** \
+*DEA.out* a data frame from RunDEA containing features and their
+corresponding AveExpr, logFC, p.value, adj.p.value ect. Mandatory column
+is "name" \
+*LASSO.results* an object generated by runLASSO function \
+*group* a factor specifying group for each sample (e.g. could be represented by a column from a metadata file) \
+*viridis.palette* a character vector specifying color gradient to use for
+the heatmap. Default option for viridis color palettes is 'turbo'. For more
+options, see viridis vignette. \
+*prefix* a character string defining a prefix of output file. \
+**Output from the function:** \
+a list of:
+1) a data frame of features common for both DEA and LASSO which are extracted
+from DEAout table \
+2) a .png with a Venn diagram of features' intersections between DEA and LASSO \
+**An example run:** \
+
+```
+##here we prepare DEA results compatible (group="diagnosis) with
+EN/LASS/Ridge regression results:
+campp2_brca_1_DEA_diagnosis<-RunDEA(data=campp2_brca_1_normalized,
+metadata=campp2_brca_1_meta,
+group=campp2_brca_1_meta$diagnosis, prefix="test", batch=campp2_brca_1_meta$age,
+covarDEA = c("tumor_stage"), cutoff.logFC=1, cutoff.FDR=0.01)
+##here we run RunDEA_LASSO_consensus function:
+campp2_brca_1_DEA_LASSO_consensus <- RunDEA_LASSO_consensus(
+campp2_brca_1_DEA_diagnosis$DEA.out,
+campp2_brca_1_LASSO, group=campp2_brca_1_meta$diagnosis,
+viridis.palette="turbo", "test")
+```
+\
+
+
+
+
+
+
+
+
+
+================================================================================================
+(THE REST WILL BE CONSIDERED - WE CAN USE SOME INFO TO BETTER DESCRIBE THE ARGUMENTS ABOVE)
 **1. Quantitative data (counts) **: An .xlsx (or .txt) file containing feature expression/abundance.
 With rows as variables, and columns as samples, e.g. columns
 are gene, N-glycan, protein, (mi)RNA identifiers and rows are sample
@@ -258,19 +1043,8 @@ metadataset 2.
 
 ## Other Arguments
 \
-**Multidimensional* Scaling plot** (MDS): The MDS may be set
-to generate a preliminary multidimensional scaling (MDS) plot.
-Multidimensional scaling (MDS) reduces high-dimensional data
-to two (or more) "observable" dimensions (M1 and M2) in such
-a way that the inter-sample distance relationship in the simplified
-dimensions mimic the distance relationship between the original
-values of samples in n-dimensional space (n = number of variables).
-MDS was performed with the euclidean distances as the distance
-metric. A MDS plot may help to determine whether there appears
-to be any "grouping" of data in a desired way (tumor samples
-together and normal samples together) or in an undesired way
-(experimental batches) before performing the DE/DA analysis.
-\
+
+<!-- MDS removed -->
 
 **Data Transformation** (transform): The flag -t may be set if the user
 desires the expression/abundance data to be transformed before
@@ -541,7 +1315,6 @@ of the normalized data. CAMPP automatically generates distributional
 plots for n (default is 10) randomly selecting input variables for
 the user to evaluate - to skip this step the argument check_distr may be set to
 FALSE).
-
 
 
 

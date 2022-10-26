@@ -2,44 +2,44 @@
 % Please edit documentation in R/Heatmap.R
 \name{MakeHeatmap}
 \alias{MakeHeatmap}
-\title{Heatmaps}
+\title{Make Heatmap}
 \usage{
 MakeHeatmap(
-  my.DE,
-  my.gradient,
-  my.colorshm,
-  my.colors,
-  my.group,
-  my.filename,
-  my.range
+  data,
+  groups,
+  prefix,
+  viridis.palette = "turbo",
+  data.type = "expression/abundance"
 )
 }
 \arguments{
-\item{my.DE}{a dataframe with counts for differential expressed/abundant features}
+\item{data}{a feature count matrix (ideally normalized and batch corrected)
+from "seq", "array", "ms" or "other" technology (with feature IDs as row
+names and sample IDs as columns). It's recommended to import feature counts
+using function "import_counts".}
 
-\item{my.gradient}{a color gradient to use for heatmap}
+\item{prefix}{a character vector defining prefix of output file name.}
 
-\item{my.colorshm}{a color pallet for groups full length}
+\item{viridis.palette}{a character vector specifying color gradient to use for
+the heatmap. Default option for viridis color palettes is 'turbo'. For more
+options, see viridis vignette.}
 
-\item{my.colors}{a color pallet for groups at levels}
+\item{data.type}{a character vector (used in the heatmap legend) describing
+type of the data being visualized. Default is "expression/abundance".}
 
-\item{my.group}{a vector of groups to color by}
-
-\item{my.filename}{a name of output plot}
-
-\item{my.range}{??}
-}
-\value{
-heatmaps
+\item{group}{a factor specifying group for each sample (e.g. could be
+represented by a column from a metadata file). Group's information
+will be used in clustering the samples.}
 }
 \description{
-Function for making heatmaps
+A function for making heatmaps to showcase the difference in
+expression/abundance of features across samples and sample groups and to
+visualise relations between them.
 }
 \examples{
 \dontrun{
-...
+MakeHeatmap(data=campp2_brca_1_batchCorrected,
+group=campp2_brca_1_meta$subtype, prefix="test", viridis.palette = "turbo",
+data.type = "Feature counts")
 }
-}
-\seealso{
-
 }

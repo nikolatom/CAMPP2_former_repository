@@ -25,10 +25,9 @@ ModuleIC(
 
 \item{my.n}{A Number indicating top n% most interconnected features in dataset}
 
-\item{my.name}{A name of output plot(s)}
-}
-\value{
+\item{my.softPower}{..to describe..}
 
+\item{my.name}{A name of output plot(s)}
 }
 \description{
 Weighted gene co-expression network analysis for describing the correlation patterns among genes
@@ -37,7 +36,4 @@ Weighted gene co-expression network analysis for describing the correlation patt
 \dontrun{
 ...
 }
-}
-\seealso{
-
 }
