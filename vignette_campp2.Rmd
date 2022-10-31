@@ -328,7 +328,8 @@ distributions are tested. In case of presence of float values in the dataset,
 Weibull, gamma, log normal and normal distributions are tested. In case of
 negative float values, only normal distribution is calculated.
 **Output from the function:** \
-a list of the results from fitdist function \
+a list of the results from fitdist function describing distribution
+of the data \
 \
 **An example run:** \
 ##Create an object with information about the data distribution

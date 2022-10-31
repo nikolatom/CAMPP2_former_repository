@@ -10,7 +10,8 @@
 #' @export
 #' @import fitdistrplus
 #' @seealso
-#' @return a list of the results from fitdist function
+#' @return a list of the results from fitdist function describing distribution
+#' of the data
 #' @examples \dontrun{
 #' campp2_brca_1_distributionsFit <- FitDistributions(campp2_brca_1[1:10,])
 #' }

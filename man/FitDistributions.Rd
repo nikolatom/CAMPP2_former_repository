@@ -11,7 +11,8 @@ FitDistributions(data)
 features should be input, not intended for the full feature count matrix!}
 }
 \value{
-a list of the results from fitdist function
+a list of the results from fitdist function describing distribution
+of the data
 }
 \description{
 A function for fitting data distribution.
