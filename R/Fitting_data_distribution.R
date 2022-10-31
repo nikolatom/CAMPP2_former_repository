@@ -1,25 +1,25 @@
 #' @title Fitting Data Distributions
-#' @description A function for fitting data distribution
-#' @param data a data frame of expression/abundance counts, N.B only a subset of
-#' variables should be input, not intended for the full expression matrix!
-#' Depending on the character of the data, various distributions are checked.
+#' @description A function for fitting data distribution.
+#' Depending on character of the data, various distributions are calculated.
 #' In case of only integer numbers present in the dataset, poison and normal
 #' distributions are tested. In case of presence of float values in the dataset,
-#' weibull, gamma, log normal and normal distributions are tested. In case of
+#' Weibull, gamma, log normal and normal distributions are tested. In case of
 #' negative float values, only normal distribution is calculated.
+#' @param data a data frame of feature counts. Only a subset of
+#' features should be input, not intended for the full feature count matrix!
 #' @export
 #' @import fitdistrplus
 #' @seealso
 #' @return a list of the results from fitdist function
 #' @examples \dontrun{
-#' campp2_brca_1_distributions <- FitDistributions(campp2_brca_1[1:10,])
+#' campp2_brca_1_distributionsFit <- FitDistributions(campp2_brca_1[1:10,])
 #' }
 
 
 FitDistributions <- function(data) {
     discretetype <- unique(as.numeric(apply(data, 1, function(x) x%%1==0)))  ## check for integers
     hasNeg <- unique(as.numeric(data < 0))  ##check for negative values
-    list.of.lists <- list()
+    list.of.distributions <- list()
     for(idx in 1:nrow(data)) {
         if (FALSE %in% discretetype) {
             if (TRUE %in% hasNeg) {
@@ -28,7 +28,7 @@ FitDistributions <- function(data) {
                 if(exists("fit_n")) {
                     l[[length(l)+1]] <- fit_n
                 }
-                list.of.lists[[idx]] <-  l
+                list.of.distributions[[idx]] <-  l
             } else {
                 try(fit_w  <- fitdist(as.numeric(data[idx,]), "weibull"), silent = TRUE)
                 try(fit_g  <- fitdist(as.numeric(data[idx,]), "gamma"), silent = TRUE)
@@ -47,7 +47,7 @@ FitDistributions <- function(data) {
                 if(exists("fit_n")) {
                     l[[length(l)+1]] <- fit_n
                 }
-                list.of.lists[[idx]] <-  l
+                list.of.distributions[[idx]] <-  l
             }
         }
         if (discretetype == TRUE) {
@@ -60,9 +60,9 @@ FitDistributions <- function(data) {
             if(exists("fit_n")) {
                 l[[length(l)+1]] <- fit_n
             }
-            list.of.lists[[idx]] <-  l
+            list.of.distributions[[idx]] <-  l
         }
     }
-    names(list.of.lists) <- rownames(data)
-    return(list.of.lists)
+    names(list.of.distributions) <- rownames(data)
+    return(list.of.distributions)
 }

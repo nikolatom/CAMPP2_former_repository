@@ -109,8 +109,19 @@
 #' }
 #'
 "campp2_brca_1_batchCorrected"
-
-
+#'
+#'
+#' campp2_brca_1_distributionsFit - example data
+#'
+#' A results from FitDistributions function providing a list of distribution
+#' descriptions for first 10 features.
+#' @format A list of 10 lists describing fitting the normal distribution.
+#' \describe{
+#' }
+#'
+"campp2_brca_1_distributionsFit"
+#'
+#'
 #' campp2_brca_1_DEA - example data
 #'
 #' A results from differential gene expression analysis provided by

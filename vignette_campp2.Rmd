@@ -309,6 +309,77 @@ campp2_brca_1_batchCorrected<-BatchCorrect(data=campp2_brca_1_normalized,batch=c
 ```
 \
 
+
+### FitDistributions
+**Description:** \
+A function for fitting data distribution.
+Depending on character of the data, various distributions are calculated.
+In case of only integer numbers present in the dataset, poison and normal
+distributions are tested. In case of presence of float values in the dataset,
+Weibull, gamma, log normal and normal distributions are tested. In case of
+negative float values, only normal distribution is calculated.
+ \
+**Parameters:** \
+*data* a data frame of feature counts. Only a subset of
+features should be input, not intended for the full feature count matrix!
+Depending on the character of the data, various distributions are calculated.
+In case of only integer numbers present in the dataset, poison and normal
+distributions are tested. In case of presence of float values in the dataset,
+Weibull, gamma, log normal and normal distributions are tested. In case of
+negative float values, only normal distribution is calculated.
+**Output from the function:** \
+a list of the results from fitdist function \
+\
+**An example run:** \
+##Create an object with information about the data distribution
+```
+###First 10 features from normalized and batch corrected data "campp2_brca_1_batchCorrected" are used as an input.
+campp2_brca_1_distributionsFit <- FitDistributions(campp2_brca_1[1:10,])
+```
+\
+
+
+### PlotDistributions
+**Description:** \
+Plotting the feature counts' Distributions.
+As results, multiple plots are obtained for each feature:
+1) Cullen and Frey graph
+2) Histogram and theoretical densities
+3) Empirical and theoretical CDFs
+4) Q−Q plot
+5) P−P plot
+
+For some of the figures, plotted distributions depends on the characteristics
+of the input data:
+In case of only integer numbers are present in the dataset, poison and normal
+distributions are tested. In case of presence of float values,
+Weibull, gamma, log normal and normal distributions are tested. In case of
+negative float values, only normal distribution is calculated.
+Resulting figures are saved into the .pdf file. \
+
+**Parameters:** \
+*data* a data.frame of feature counts, the same which was
+used as an input for "FitDistributions" function. \
+*fitted.data* a list of distribution descriptions obtained as an output
+from the function "FitDistributions" where the same feature counts are used
+as an input. \
+**Output from the function:** \
+a .pdf file including multiple plots:
+1) Cullen and Frey graph
+2) Histogram and theoretical densities
+3) Empirical and theoretical CDFs
+4) Q−Q plot
+5) P−P plot
+\
+**An example run:** \
+##Plot distributions of the first 10 features from example batch corrected data.
+```
+###List of fitted distributions "campp2_brca_1_distributionsFit" and the first
+10 feature counts from example batch corrected data are used as an input. PlotDistributions(campp2_brca_1_batchCorrected[1:10,], campp2_brca_1_distributionsFit)
+```
+\
+
+
 ### PCAPlot 
 **Description:** \
 A function calculating Principal component analysis (PCA). 
