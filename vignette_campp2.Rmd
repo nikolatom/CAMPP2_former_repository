@@ -322,11 +322,6 @@ negative float values, only normal distribution is calculated.
 **Parameters:** \
 *data* a data frame of feature counts. Only a subset of
 features should be input, not intended for the full feature count matrix!
-Depending on the character of the data, various distributions are calculated.
-In case of only integer numbers present in the dataset, poison and normal
-distributions are tested. In case of presence of float values in the dataset,
-Weibull, gamma, log normal and normal distributions are tested. In case of
-negative float values, only normal distribution is calculated.
 **Output from the function:** \
 a list of the results from fitdist function describing distribution
 of the data \
@@ -377,6 +372,30 @@ a .pdf file including multiple plots:
 ```
 ###List of fitted distributions "campp2_brca_1_distributionsFit" and the first
 10 feature counts from example batch corrected data are used as an input. PlotDistributions(campp2_brca_1_batchCorrected[1:10,], campp2_brca_1_distributionsFit)
+```
+\
+
+
+### MeanCounts
+**Description:** \
+A function for obtaining an average feature counts and SD for
+each gene across all the samples and for each sample group. Results are
+provided in a form of a list of data frames and figures which are exported
+into .pdf.
+\
+**Parameters:** \
+*data* a data frame of feature counts. \
+*group* a factor specifying group for each sample (e.g. could be represented by a column from a metadata file) \
+**Output from the function:** \
+a list of data frames (for each sample group) describing mean and SD
+for all sample groups and also for each group of samples. \
+Results are visualized via graphs saved into current directory as pdf files. \
+\
+**An example run:** \
+##Run MeanCounts on object with batch corrected feature (gene) counts
+```
+###Normalized and batch corrected data ("campp2_brca_1_batchCorrected" generated in a previous step) are used as an input.
+meanCounts(campp2_brca_1_batchCorrected, campp2_brca_1_meta$diagnosis)
 ```
 \
 
