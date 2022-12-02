@@ -245,7 +245,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
         list.of.dists <- FitDistributions(subset.data1)
         PlotDistributions(subset.data1, list.of.dists)
 
-        write.table(data.frame(mean.counts.data1), paste0(prefix,"_meanCounts_dataset1.txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+        export_list(mean.counts.data1, file = "%s.csv")
 
         setwd("../")
 
@@ -274,6 +274,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
         PlotDistributions(subset.data2, list.of.dists)
 
         write.table(data.frame(mean.counts.data2), paste0(prefix,"_meanCounts_dataset2.txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+        export_list(mean.counts.data2, file = "%s.csv")
 
         setwd("../")
 
