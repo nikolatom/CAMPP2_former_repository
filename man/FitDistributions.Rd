@@ -4,19 +4,26 @@
 \alias{FitDistributions}
 \title{Fitting Data Distributions}
 \usage{
-FitDistributions(my.data)
+FitDistributions(data)
 }
 \arguments{
-\item{my.data}{a dataframe of expression/abundance counts, N.B only a subset of variables should be input, not intended for the full expression matrix!}
+\item{data}{a data frame of feature counts. Only a subset of
+features should be input, not intended for the full feature count matrix!}
 }
 \value{
-data for distribution plots
+a list of the results from fitdist function describing distribution
+of the data
 }
 \description{
-A function for fitting data distribution
+A function for fitting data distribution.
+Depending on character of the data, various distributions are calculated.
+In case of only integer numbers present in the dataset, poison and normal
+distributions are tested. In case of presence of float values in the dataset,
+Weibull, gamma, log normal and normal distributions are tested. In case of
+negative float values, only normal distribution is calculated.
 }
 \examples{
 \dontrun{
-...
+campp2_brca_1_distributionsFit <- FitDistributions(campp2_brca_1[1:10,])
 }
 }

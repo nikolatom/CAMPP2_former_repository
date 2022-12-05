@@ -41,8 +41,8 @@
 #' @seealso
 #' @return CAMPP2 results
 #' @examples \dontrun{
-#' runCampp2(batches=c("tumor_stage","tumor_stage"),prefix="test_CAMPP2", data1=campp2_brca_1, data2=campp2_brca_2, metadata1=campp2_brca_1_meta,metadata2=campp2_brca_2_meta, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"), plot.PCA=TRUE, plot.DEA=TRUE, control.group = c("healthy","healthy"), plot.heatmap="DEA", alpha.lasso=0.5)
-#' runCampp2(batches=c("tumor_stage"),prefix="test_CAMPP2", data1=campp2_brca_1, metadata1=campp2_brca_1_meta,groups=c("IDs", "diagnosis"), technology=c("seq"), plot.PCA=FALSE, plot.DEA=FALSE, control.group = c("healthy"), plot.heatmap="DEA", alpha.lasso=0.5)
+#' runCampp2(batches=c("tumor_stage","tumor_stage"),prefix="test_CAMPP2_distr", data1=campp2_brca_1, data2=campp2_brca_2, metadata1=campp2_brca_1_meta,metadata2=campp2_brca_2_meta, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"), plot.PCA=TRUE, plot.DEA=TRUE, control.group = c("healthy","healthy"), plot.heatmap="DEA", alpha.lasso=0.5, data.check=TRUE)
+#' runCampp2(batches=c("tumor_stage"),prefix="test_CAMPP2_distr", data1=campp2_brca_1, metadata1=campp2_brca_1_meta,groups=c("IDs", "diagnosis"), technology=c("seq"), data.check=TRUE)
 #'
 
 runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology, groups, control.group=NULL, batches=NULL, data.check=TRUE, standardize=FALSE, transform=FALSE, plot.PCA=FALSE, plot.heatmap=FALSE, kmeans=FALSE, ensembl.version=104, plot.DEA=FALSE, heatmap.size=40, viridis.palette="turbo", num.km.clusters=NULL, signif=NULL, block=NULL, colors=NULL, prefix="Results", correlation=FALSE, WGCNA=FALSE, cutoff.WGCNA=NULL, survival=FALSE, covariates=NULL, stratify=NULL, surv.plot=50, PPint=FALSE, gene.miR.int=FALSE, show.PCA.labels=FALSE, alpha.lasso=FALSE, min.coef.lasso=NULL, nfolds.lasso=NULL){
@@ -223,53 +223,67 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
     print("PROCESSING DISTRIBUTIONAL CHECK")
 
     if (data.check == TRUE) {
-        if (databatch1 == TRUE) {
-            subset.data1 <- data1.batch[sample(nrow(data1.batch), 10),]
-        } else {
-            if (technology[1] == "seq") {
-                subset.data1 <- data1$E[sample(nrow(data1$E), 10),]
-            } else {
-                subset.data1 <- data1[sample(nrow(data1), 10),]
-            }
-        }
-
-        list.of.dists <- FitDistributions(subset.data1)
 
         dir.create("DataChecks")
         setwd("DataChecks/")
         dir.create("data1/")
         setwd("data1/")
-        PlotDistributions(subset.data1, list.of.dists)
-        setwd("../")
 
-        rm(subset.data1, list.of.dists)
-    }
-
-    if (data.check == TRUE & !is.null(data2)) {
-        if (databatch2 == TRUE) {
-            subset.data1 <- data2.batch[sample(nrow(data2.batch), 10),]
+        if (databatch1 == TRUE) {
+            mean.counts.data1<-meanCounts(data1.batch, group1)
+            subset.data1 <- data1.batch[sample(nrow(data1.batch), 10),]
         } else {
-
-            if (technology[2] == "seq") {
-                subset.data1 <- data2$E[sample(nrow(data2$E), 10),]
+            if (technology[1] == "seq") {
+                mean.counts.data1<-meanCounts(data1$E, group1)
+                subset.data1 <- data1$E[sample(nrow(data1$E), 10),]
             } else {
-                subset.data1 <- data2[sample(nrow(data2), 10),]
+                mean.counts.data1<-meanCounts(data1, group1)
+                subset.data1 <- data1[sample(nrow(data1), 10),]
             }
         }
 
         list.of.dists <- FitDistributions(subset.data1)
+        PlotDistributions(subset.data1, list.of.dists)
+
+        export_list(mean.counts.data1, file = "%s.csv")
+
+        setwd("../")
+
+    }
+
+    if (data.check == TRUE & !is.null(data2)) {
 
         dir.create("data2/")
         setwd("data2/")
-        PlotDistributions(subset.data1, list.of.dists)
+
+        if (databatch2 == TRUE) {
+            mean.counts.data2<-meanCounts(data2.batch, group2)
+            subset.data2 <- data2.batch[sample(nrow(data2.batch), 10),]
+        } else {
+
+            if (technology[2] == "seq") {
+                mean.counts.data2<-meanCounts(data2$E, group2)
+                subset.data2 <- data2$E[sample(nrow(data2$E), 10),]
+            } else {
+                mean.counts.data2<-meanCounts(data2, group2)
+                subset.data2 <- data2[sample(nrow(data2), 10),]
+            }
+        }
+
+        list.of.dists <- FitDistributions(subset.data2)
+        PlotDistributions(subset.data2, list.of.dists)
+
+        write.table(data.frame(mean.counts.data2), paste0(prefix,"_meanCounts_dataset2.txt"), sep = "\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+        export_list(mean.counts.data2, file = "%s.csv")
+
         setwd("../")
 
-        rm(subset.data1, list.of.dists)
     }
 
     setwd("../")
 
     print("DISTRIBUTIONAL CHECK PART FINISHED")
+
 
     # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     ### PRELIMINARY PCA PLOT ###
@@ -385,7 +399,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
     DEA1.out<-(DEA1.out[order(DEA1.out$logFC, decreasing = TRUE), ])
 
     if (length(unique(DEA1.out$comparison)) > 1){
-        DEA1.out<-subset(DEA1.out, grepl(control.group, comparison, fixed = TRUE))  ##keep only comparisons of a specific group, usually a control group
+        DEA1.out<-subset(DEA1.out, grepl(control.group1, comparison, fixed = TRUE))  ##keep only comparisons of a specific group, usually a control group
     }
 
     res.DEA1.names<-DEARes1$res.DEA.names  ##feature names
@@ -406,7 +420,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
 
 
         if (length(unique(DEA2.out$comparison)) > 1){
-            DEA2.out<-subset(DEA2.out, grepl(control.group, comparison, fixed = TRUE))
+            DEA2.out<-subset(DEA2.out, grepl(control.group2, comparison, fixed = TRUE))
         }
 
         res.DEA2.names<-DEARes2$res.DEA.names  ##feature names
@@ -713,7 +727,6 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
         } else {
             data1.surv <- data1[,colnames(data1) %in% samples]
         }
-
 
 
         if (survival == "ALL") {

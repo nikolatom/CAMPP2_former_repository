@@ -127,6 +127,7 @@ parseArguments <- function(data1, data2, metadata1, metadata2, control.group, gr
         }
     } else {
         control.group1<-NULL
+        control.group2<-NULL
     }
 
 
