@@ -41,8 +41,9 @@ runCampp2(
   alpha.lasso = FALSE,
   min.coef.lasso = NULL,
   nfolds.lasso = NULL,
-  num_trees = NULL,
-  num_trees_iterat = NULL
+  num.trees.init = NULL,
+  num.trees.iterat = NULL,
+  split.size = NULL
 )
 }
 \arguments{
@@ -118,9 +119,11 @@ runCampp2(
 
 \item{nfolds.lasso}{a numeric vector describing number of folds during Lambda estimation which is based on a cross-validation. Although nfolds can be as large as the sample size (leave-one-out CV), it is not recommended for large datasets. Smallest value allowable is nfolds=3. Default is 10.}
 
-\item{num_trees}{an integer specifying number of trees to use for the first random forest in the random forest feature selection process. Defaults to NULL.}
+\item{num.trees.init}{an integer specifying number of trees to use for the first random forest in the random forest feature selection process. Default is NULL (not activated). Both num.trees.init and num.trees.iterat need to be > 0 to activate random forest.}
 
-\item{num_trees_iterat}{an integer specifying number of trees to use for all additional random forests in the random forest feature selection process. Defaults to NULL.}
+\item{num.trees.iterat}{an integer specifying number of trees to use for all additional random forests in the random forest feature selection process. Default is NULL (not activated). Both num.trees.init and num.trees.iterat need to be > 0 to activate random forest.}
+
+\item{split.size}{an integer specifying the minimum number of samples that the groups must contain in order to carry out random forest classification and subsequent validation}
 }
 \value{
 CAMPP2 results
