@@ -9,7 +9,7 @@ Cancer Structural Biology Group, Danish Cancer Society Research Center, Strandbo
 
 #### Create and activate conda environment with R and devtools in your project directory
 
-If you don't have access to conda please see the Miniconda installer page on instructions on how to install Miniconda.
+If you don't have access to conda please see the Miniconda installer page (https://docs.conda.io/en/latest/miniconda.html) on instructions on how to install Miniconda.
 Once you have installed it:
 
 `conda create --prefix env -c conda-forge r-base=4.1.3 r-devtools` <br/>
