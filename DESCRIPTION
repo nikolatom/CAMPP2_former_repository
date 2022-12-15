@@ -2,8 +2,8 @@ Package: CAMPP2
 Type: Package
 Title: CAncer bioMarker Prediction Pipeline 2 (CAMPP2)
 Version: 0.1.0
-Author: Nikola Tom
-Maintainer: Nikola Tom <1nikola.tom@gmail.com>
+Authors: Nikola Tom, Mona Nourbakhsh, Mathilde Wismann Bechgaard, Matteo Tiberti, Elena Papaleo
+Maintainers: Nikola Tom <nikto-at-dtu.dk> <ntom-at-cancer.dk>; Matteo Tiberti  <tiberti-at-cancer.dk>
 Description: The CAncer bioMarker Prediction Pipeline2 (CAMPP2) is a simple
   bioinformatics tool intended to automatize identification of potential
   diagnostic and prognostic cancer biomarkers. The pipeline is versatile
