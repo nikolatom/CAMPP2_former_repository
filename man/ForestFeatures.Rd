@@ -5,20 +5,21 @@
 \title{Random forest fitting and variable selection}
 \usage{
 ForestFeatures(
-  seed,
+  seed = 123,
   data,
   group,
   validation = FALSE,
-  num.trees.init,
-  num.trees.iterat
+  test.train.ratio,
+  num.trees.init = 5000,
+  num.trees.iterat = 2000
 )
 }
 \arguments{
-\item{seed}{an integer containing a random seed number.}
+\item{seed}{an integer containing a random seed number. Default is 123.}
 
 \item{data}{a matrix of (transformed and normalized) feature counts from
 "seq", "array", "ms" or "other" technology (with feature IDs as row names
-and sample IDs as columns)}
+and sample IDs as columns). If available, batch corrected data should be used.}
 
 \item{group}{a factor specifying group for each sample (e.g. could be
 represented by a column from a metadata file)}
@@ -27,11 +28,16 @@ represented by a column from a metadata file)}
 on test data. If TRUE validation will be performed on test data. If FALSE
 validation will not be performed on test data. Default is FALSE.}
 
+\item{test.train.ratio}{a floating point number between 0 and 1 representing
+the ratio of samples to keep as validation dataset. For example, a
+test.train.ratio = 0.25 splits 25 percent of the data into a validation dataset,
+meaning 75 percent of the data will be kept as the training dataset.}
+
 \item{num.trees.init}{an integer specifying number of trees to use for the first
-forest in the feature selection process}
+forest in the feature selection process. Default is 5000.}
 
 \item{num.trees.iterat}{an integer specifying number of trees to use for
-all additional forests in the feature selection process}
+all additional forests in the feature selection process. Default is 2000.}
 }
 \value{
 a list of four elements: 1) a varSelRF object containing results of variable
@@ -46,9 +52,9 @@ This function implements random forest on feature counts
 (e.g. genes) and allows for feature selection using the random forest
 algorithm. For the feature selection process, the recommended value for
 number of trees is 5000 for the first forest and 2000 for all additional
-forests.
+forests which are used as default values in this function.
 In the variable selection process, variables are eliminated iteratively
-by excluding the least important variables from each random forest. 20% of
+by excluding the least important variables from each random forest. 20 percent of
 the variables are excluded following each iteration. The out-of-bag (OOB)
 error is used as criterion for determining the final selected variables.
 Besides variable selection, a random forest model is also fitted which
@@ -56,15 +62,19 @@ is used for classification of the samples.
 The input data is split into training and validation datasets where the
 training data is used for variable selection and classification and the
 random forest classifier is validated on the validation dataset.
+Splitting of the data is determined by the test.train.ratio. For example,
+a test.train.ratio = 0.25 splits 25 percent of the data into a validation dataset,
+meaning 75 percent of the data will be kept as the training dataset.
 }
 \examples{
 \dontrun{
 campp2_brca_1_forest_features <-
-ForestFeatures(seed = 173,
+ForestFeatures(seed = 123,
 data = campp2_brca_1_batchCorrected,
 group = campp2_brca_1_meta$diagnosis,
 validation = TRUE,
-num.trees.init = 30,
-num.trees.iterat = 15)
+test.train.ratio = 0.25,
+num.trees.init = 5000,
+num.trees.iterat = 2000)
 }
 }

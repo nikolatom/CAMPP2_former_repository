@@ -21,7 +21,8 @@ campp2_brca_1_rf_apply <-
 RFApply(data = campp2_brca_1_batchCorrected,
 group = campp2_brca_1_meta$diagnosis,
 validation = TRUE,
-num.trees.init = 30,
-num.trees.iterat = 15)
+test.train.ratio = 0.25,
+num.trees.init = 5000,
+num.trees.iterat = 2000)
 }
 \keyword{datasets}

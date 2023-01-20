@@ -43,7 +43,8 @@ parseArguments(
   nfolds.lasso,
   num.trees.init,
   num.trees.iterat,
-  split.size
+  split.size,
+  test.train.ratio
 )
 }
 \arguments{
@@ -122,6 +123,8 @@ parseArguments(
 \item{num.trees.iterat}{an integer specifying number of trees to use for all additional random forests in the random forest feature selection process. Default is NULL (not activated). Both num.trees.init and num.trees.iterat need to be > 0 to activate random forest.}
 
 \item{split.size}{an integer specifying the minimum number of samples that the groups must contain in order to carry out random forest classification and subsequent validation}
+
+\item{test.train.ratio}{a floating point number between 0 and 1 representing the ratio of samples to keep as validation dataset. For example, a test.train.ratio = 0.25 splits 25 percent of the data into a validation dataset, meaning 75 percent of the data will be kept as the training dataset.}
 }
 \value{
 parsed arguments
