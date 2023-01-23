@@ -2,23 +2,46 @@
 % Please edit documentation in R/Plot_distributions.R
 \name{PlotDistributions}
 \alias{PlotDistributions}
-\title{Plotting Distributions}
+\title{Plot Distributions}
 \usage{
 PlotDistributions(data, fitted.data)
 }
 \arguments{
-\item{data}{a data.frame of expression/abundance counts. N.B only a subset of variables should be input, not intended for the full expression matrix!(See function "FitDistributions")}
+\item{data}{a data.frame of feature counts, the same which was
+used as an input for "FitDistributions" function.}
 
-\item{fitted.data}{a list of lists obtained as output from the function "FitDistributions". The data and fitted.data must have the same dimensions, e.g. length(fitted.data) == nrows(data).}
+\item{fitted.data}{a list of distribution descriptions obtained as an output
+from the function "FitDistributions" where the same feature counts are used
+as an input.}
 }
 \value{
-distribution plots
+a .pdf file including multiple plots:
+1) Cullen and Frey graph
+2) Histogram and theoretical densities
+3) Empirical and theoretical CDFs
+4) Q−Q plot
+5) P−P plot
 }
 \description{
-Plotting the counts' Distributions
+Plotting the feature counts' Distributions.
+As results, multiple plots are obtained for each feature:
+1) Cullen and Frey graph
+2) Histogram and theoretical densities
+3) Empirical and theoretical CDFs
+4) Q−Q plot
+5) P−P plot
+
+For some of the figures, plotted distributions depends on the characteristics
+of the input data:
+In case of only integer numbers are present in the dataset, poison and normal
+distributions are tested. In case of presence of float values,
+Weibull, gamma, log normal and normal distributions are tested. In case of
+negative float values, only normal distribution is calculated.
+
+Resulting figures are saved into the .pdf file.
 }
 \examples{
 \dontrun{
-...
+PlotDistributions(campp2_brca_1_batchCorrected[1:10,], campp2_brca_1_distributionsFit)
 }
 }

@@ -134,3 +134,9 @@ CAMPP2 results
 \description{
 CAMPP2 pipeline
 }
+\examples{
+\dontrun{
+runCampp2(batches=c("tumor_stage","tumor_stage"),prefix="test_CAMPP2_distr", data1=campp2_brca_1, data2=campp2_brca_2, metadata1=campp2_brca_1_meta,metadata2=campp2_brca_2_meta, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"), plot.PCA=TRUE, plot.DEA=TRUE, control.group = c("healthy","healthy"), plot.heatmap="DEA", alpha.lasso=0.5, data.check=TRUE, num.trees.init=5000, num.trees.iterat=2000, split.size=5, test.train.ratio=0.25)
+runCampp2(batches=c("tumor_stage"),prefix="test_CAMPP2_distr", data1=campp2_brca_1, metadata1=campp2_brca_1_meta,groups=c("IDs", "diagnosis"), technology=c("seq"), data.check=TRUE, num.trees.init=5000, num.trees.iterat=2000, split.size=5, test.train.ratio=0.25)
+}
+}

@@ -28,7 +28,7 @@ runCampp2(prefix="Testing_DEA", data1=campp2_brca_1, metadata1=campp2_brca_1_met
 
 ###An example code for running differential expression analysis with visualizations
 runCampp2(prefix="Testing_DEA_visuals", data1=campp2_brca_1, metadata1=campp2_brca_1_meta, groups=c("IDs", "diagnosis"), technology=c("seq"), block=campp2_brca_1_meta$tumor_stage,
-plot.DEA=TRUE, plot.heatmap="DEA")
+          plot.DEA=TRUE, plot.heatmap="DEA")
 
 ##An example code for running differential gene expression analysis with subtype analysis of two datasets
 runCampp2(prefix="Testing_DEA_subtype", data1=campp2_brca_1, metadata1=campp2_brca_1_meta, data2=campp2_brca_2, metadata2=campp2_brca_2_meta, groups=c("IDs", "subtype","IDs","subtype"), technology=c("seq","seq"), block=c(campp2_brca_1_meta$subtype,campp2_brca_2_meta$subtype), plot.DEA=TRUE, plot.heatmap="DEA")
