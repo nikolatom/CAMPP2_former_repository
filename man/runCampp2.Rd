@@ -40,7 +40,11 @@ runCampp2(
   show.PCA.labels = FALSE,
   alpha.lasso = FALSE,
   min.coef.lasso = NULL,
-  nfolds.lasso = NULL
+  nfolds.lasso = NULL,
+  num.trees.init = NULL,
+  num.trees.iterat = NULL,
+  split.size = NULL,
+  test.train.ratio = NULL
 )
 }
 \arguments{
@@ -115,10 +119,24 @@ runCampp2(
 \item{min.coef.lasso}{a numeric vector specifying a threshold for features' filtering (e.g. genes) based on the coefficients which are calculated during model fitting. Default value is > 0.}
 
 \item{nfolds.lasso}{a numeric vector describing number of folds during Lambda estimation which is based on a cross-validation. Although nfolds can be as large as the sample size (leave-one-out CV), it is not recommended for large datasets. Smallest value allowable is nfolds=3. Default is 10.}
+
+\item{num.trees.init}{an integer specifying number of trees to use for the first random forest in the random forest feature selection process. Default is NULL (not activated). Both num.trees.init and num.trees.iterat need to be > 0 to activate random forest.}
+
+\item{num.trees.iterat}{an integer specifying number of trees to use for all additional random forests in the random forest feature selection process. Default is NULL (not activated). Both num.trees.init and num.trees.iterat need to be > 0 to activate random forest.}
+
+\item{split.size}{an integer specifying the minimum number of samples that the groups must contain in order to carry out random forest classification and subsequent validation}
+
+\item{test.train.ratio}{a floating point number between 0 and 1 representing the ratio of samples to keep as validation dataset. For example, a test.train.ratio = 0.25 splits 25 percent of the data into a validation dataset, meaning 75 percent of the data will be kept as the training dataset.}
 }
 \value{
 CAMPP2 results
 }
 \description{
 CAMPP2 pipeline
+}
+\examples{
+\dontrun{
+runCampp2(batches=c("tumor_stage","tumor_stage"),prefix="test_CAMPP2_distr", data1=campp2_brca_1, data2=campp2_brca_2, metadata1=campp2_brca_1_meta,metadata2=campp2_brca_2_meta, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"), plot.PCA=TRUE, plot.DEA=TRUE, control.group = c("healthy","healthy"), plot.heatmap="DEA", alpha.lasso=0.5, data.check=TRUE, num.trees.init=5000, num.trees.iterat=2000, split.size=5, test.train.ratio=0.25)
+runCampp2(batches=c("tumor_stage"),prefix="test_CAMPP2_distr", data1=campp2_brca_1, metadata1=campp2_brca_1_meta,groups=c("IDs", "diagnosis"), technology=c("seq"), data.check=TRUE, num.trees.init=5000, num.trees.iterat=2000, split.size=5, test.train.ratio=0.25)
+}
 }

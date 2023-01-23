@@ -35,13 +35,17 @@
 #' @param alpha.lasso a numeric vector specifying hyperparameter alpha for LASSO/Elastic network/Ridge regression. This value must be set to 0.0 < x < 1.0 for Elastic Net or to 1.0 for LASSO regression or to 0.0 for Ridge regression. Defaults is FALSE (do not run).
 #' @param min.coef.lasso a numeric vector specifying a threshold for features' filtering (e.g. genes) based on the coefficients which are calculated during model fitting. Default value is > 0.
 #' @param nfolds.lasso a numeric vector describing number of folds during Lambda estimation which is based on a cross-validation. Although nfolds can be as large as the sample size (leave-one-out CV), it is not recommended for large datasets. Smallest value allowable is nfolds=3. Default is 10.
+#' @param num.trees.init an integer specifying number of trees to use for the first random forest in the random forest feature selection process. Default is NULL (not activated). Both num.trees.init and num.trees.iterat need to be > 0 to activate random forest.
+#' @param num.trees.iterat an integer specifying number of trees to use for all additional random forests in the random forest feature selection process. Default is NULL (not activated). Both num.trees.init and num.trees.iterat need to be > 0 to activate random forest.
+#' @param split.size an integer specifying the minimum number of samples that the groups must contain in order to carry out random forest classification and subsequent validation
+#' @param test.train.ratio a floating point number between 0 and 1 representing the ratio of samples to keep as validation dataset. For example, a test.train.ratio = 0.25 splits 25 percent of the data into a validation dataset, meaning 75 percent of the data will be kept as the training dataset.
 #' @export
 #' @return parsed arguments
 #' @examples \dontrun{
 #' ...
 #' }
 
-parseArguments <- function(data1, data2, metadata1, metadata2, control.group, groups, technology, batches, data.check, standardize, transform, plot.PCA, plot.heatmap, plot.DEA, ensembl.version, heatmap.size, viridis.palette, kmeans, num.km.clusters, signif, colors, block, prefix, correlation, WGCNA, cutoff.WGCNA, survival, covariates, stratify, surv.plot, PPint, gene.miR.int, show.PCA.labels, alpha.lasso, min.coef.lasso, nfolds.lasso){
+parseArguments <- function(data1, data2, metadata1, metadata2, control.group, groups, technology, batches, data.check, standardize, transform, plot.PCA, plot.heatmap, plot.DEA, ensembl.version, heatmap.size, viridis.palette, kmeans, num.km.clusters, signif, colors, block, prefix, correlation, WGCNA, cutoff.WGCNA, survival, covariates, stratify, surv.plot, PPint, gene.miR.int, show.PCA.labels, alpha.lasso, min.coef.lasso, nfolds.lasso, num.trees.init, num.trees.iterat, split.size, test.train.ratio){
 
 
     # For DEA analysis, survival analysis and correlation analysis
@@ -372,7 +376,11 @@ parseArguments <- function(data1, data2, metadata1, metadata2, control.group, gr
           paste0("surv.plot: ",surv.plot),"\n",
           paste0("PPI: ",PPI),"\n",
           paste0("GmiRI: ",GmiRI),"\n",
-          paste0("show.PCA.labels: ",show.PCA.labels),"\n"
+          paste0("show.PCA.labels: ",show.PCA.labels),"\n",
+          paste0("num.trees.init: ",num.trees.init),"\n",
+          paste0("num.trees.iterat: ",num.trees.iterat),"\n",
+          paste0("split.size: ",split.size),"\n",
+          paste0("test.train.ratio: ",test.train.ratio),"\n"
     ))
 
     return(list("data1"=data1,"data2"=data2,"metadata1"=metadata1,"metadata2"=metadata2, "technology"=technology, "groups"=groups,
@@ -384,6 +392,6 @@ parseArguments <- function(data1, data2, metadata1, metadata2, control.group, gr
                 "stratify"=stratify,"surv.plot"=surv.plot,"PPI"=PPI,"GmiRI"=GmiRI,"DEA.allowed.type"=DEA.allowed.type,
                 "survival.metadata"=survival.metadata,"approved.gene.IDs"=approved.gene.IDs,"approved.miR.IDs"=approved.miR.IDs,"gene.query"=gene.query,"miR.query"=miR.query,
                 "show.PCA.labels"=show.PCA.labels,"heatmap.size"=heatmap.size,"viridis.palette"=viridis.palette,"ensembl.version"=ensembl.version, "plot.DEA"=plot.DEA,
-                "alpha.lasso"=alpha.lasso,"min.coef.lasso"= min.coef.lasso,"nfolds.lasso"= nfolds.lasso))
+                "alpha.lasso"=alpha.lasso,"min.coef.lasso"= min.coef.lasso,"nfolds.lasso"= nfolds.lasso, "num.trees.init"=num.trees.init, "num.trees.iterat"=num.trees.iterat, "split.size"=split.size, "test.train.ratio"=test.train.ratio))
 }
 

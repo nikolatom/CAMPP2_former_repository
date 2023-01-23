@@ -36,17 +36,21 @@
 #' @param alpha.lasso a numeric vector specifying hyperparameter alpha for LASSO/Elastic network/Ridge regression. This value must be set to 0.0 < x < 1.0 for Elastic Net or to 1.0 for LASSO regression or to 0.0 for Ridge regression. Defaults is FALSE (do not run).
 #' @param min.coef.lasso a numeric vector specifying a threshold for features' filtering (e.g. genes) based on the coefficients which are calculated during model fitting. Default value is > 0.
 #' @param nfolds.lasso a numeric vector describing number of folds during Lambda estimation which is based on a cross-validation. Although nfolds can be as large as the sample size (leave-one-out CV), it is not recommended for large datasets. Smallest value allowable is nfolds=3. Default is 10.
+#' @param num.trees.init an integer specifying number of trees to use for the first random forest in the random forest feature selection process. Default is NULL (not activated). Both num.trees.init and num.trees.iterat need to be > 0 to activate random forest.
+#' @param num.trees.iterat an integer specifying number of trees to use for all additional random forests in the random forest feature selection process. Default is NULL (not activated). Both num.trees.init and num.trees.iterat need to be > 0 to activate random forest.
+#' @param split.size an integer specifying the minimum number of samples that the groups must contain in order to carry out random forest classification and subsequent validation
+#' @param test.train.ratio a floating point number between 0 and 1 representing the ratio of samples to keep as validation dataset. For example, a test.train.ratio = 0.25 splits 25 percent of the data into a validation dataset, meaning 75 percent of the data will be kept as the training dataset.
 #' @import zeallot
 #' @import rio
 #' @export
 #' @seealso
 #' @return CAMPP2 results
 #' @examples \dontrun{
-#' runCampp2(batches=c("tumor_stage","tumor_stage"),prefix="test_CAMPP2_distr", data1=campp2_brca_1, data2=campp2_brca_2, metadata1=campp2_brca_1_meta,metadata2=campp2_brca_2_meta, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"), plot.PCA=TRUE, plot.DEA=TRUE, control.group = c("healthy","healthy"), plot.heatmap="DEA", alpha.lasso=0.5, data.check=TRUE)
-#' runCampp2(batches=c("tumor_stage"),prefix="test_CAMPP2_distr", data1=campp2_brca_1, metadata1=campp2_brca_1_meta,groups=c("IDs", "diagnosis"), technology=c("seq"), data.check=TRUE)
-#'
+#' runCampp2(batches=c("tumor_stage","tumor_stage"),prefix="test_CAMPP2_distr", data1=campp2_brca_1, data2=campp2_brca_2, metadata1=campp2_brca_1_meta,metadata2=campp2_brca_2_meta, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"), plot.PCA=TRUE, plot.DEA=TRUE, control.group = c("healthy","healthy"), plot.heatmap="DEA", alpha.lasso=0.5, data.check=TRUE, num.trees.init=5000, num.trees.iterat=2000, split.size=5, test.train.ratio=0.25)
+#' runCampp2(batches=c("tumor_stage"),prefix="test_CAMPP2_distr", data1=campp2_brca_1, metadata1=campp2_brca_1_meta,groups=c("IDs", "diagnosis"), technology=c("seq"), data.check=TRUE, num.trees.init=5000, num.trees.iterat=2000, split.size=5, test.train.ratio=0.25)
+#' }
 
-runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology, groups, control.group=NULL, batches=NULL, data.check=TRUE, standardize=FALSE, transform=FALSE, plot.PCA=FALSE, plot.heatmap=FALSE, kmeans=FALSE, ensembl.version=104, plot.DEA=FALSE, heatmap.size=40, viridis.palette="turbo", num.km.clusters=NULL, signif=NULL, block=NULL, colors=NULL, prefix="Results", correlation=FALSE, WGCNA=FALSE, cutoff.WGCNA=NULL, survival=FALSE, covariates=NULL, stratify=NULL, surv.plot=50, PPint=FALSE, gene.miR.int=FALSE, show.PCA.labels=FALSE, alpha.lasso=FALSE, min.coef.lasso=NULL, nfolds.lasso=NULL){
+runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology, groups, control.group=NULL, batches=NULL, data.check=TRUE, standardize=FALSE, transform=FALSE, plot.PCA=FALSE, plot.heatmap=FALSE, kmeans=FALSE, ensembl.version=104, plot.DEA=FALSE, heatmap.size=40, viridis.palette="turbo", num.km.clusters=NULL, signif=NULL, block=NULL, colors=NULL, prefix="Results", correlation=FALSE, WGCNA=FALSE, cutoff.WGCNA=NULL, survival=FALSE, covariates=NULL, stratify=NULL, surv.plot=50, PPint=FALSE, gene.miR.int=FALSE, show.PCA.labels=FALSE, alpha.lasso=FALSE, min.coef.lasso=NULL, nfolds.lasso=NULL, num.trees.init=NULL, num.trees.iterat=NULL, split.size=NULL, test.train.ratio=NULL){
 
     ###parse input arguments and assign updated values
     c(data1,data2,metadata1,metadata2,technology,groups,
@@ -58,7 +62,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
       stratify,surv.plot,PPI,GmiRI,DEA.allowed.type,
       survival.metadata,approved.gene.IDs,approved.miR.IDs,gene.query,miR.query,
       show.PCA.labels,heatmap.size,viridis.palette,ensembl.version,plot.DEA,
-      alpha.lasso, min.coef.lasso, nfolds.lasso) %<-% parseArguments(data1=data1, metadata1=metadata1, data2=data2, metadata2=metadata2,
+      alpha.lasso, min.coef.lasso, nfolds.lasso, num.trees.init, num.trees.iterat, split.size, test.train.ratio) %<-% parseArguments(data1=data1, metadata1=metadata1, data2=data2, metadata2=metadata2,
                                                 technology=technology, groups=groups, control.group, batches=batches,
                                                 data.check=data.check, standardize=standardize, transform=transform,
                                                 plot.PCA=plot.PCA, plot.heatmap=plot.heatmap, kmeans=kmeans,
@@ -68,7 +72,8 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
                                                 PPint=PPint, gene.miR.int=gene.miR.int, show.PCA.labels=show.PCA.labels,
                                                 num.km.clusters=num.km.clusters, plot.DEA=plot.DEA, heatmap.size=heatmap.size,viridis.palette=viridis.palette,ensembl.version=ensembl.version,
                                                 alpha.lasso=alpha.lasso, min.coef.lasso=min.coef.lasso,
-                                                nfolds.lasso=nfolds.lasso)
+                                                nfolds.lasso=nfolds.lasso, num.trees.init=num.trees.init, num.trees.iterat=num.trees.iterat,
+                                                split.size=split.size, test.train.ratio=test.train.ratio)
 
 
 
@@ -628,6 +633,233 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
     } else {
             cat("\n- No heatmap requested.\n")
     }
+
+
+
+    #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    #                                                                            ### RANDOM FOREST ###
+    # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+    print("PROCESSING RANDOM FOREST")
+
+    if (!is.null(num.trees.init) & !is.null(num.trees.iterat)) {
+
+      dir.create("random_forest")
+      setwd("random_forest/")
+
+      ## Run random forest
+
+      ## Processing first dataset
+
+      if (databatch1 == TRUE) {
+
+         # Run random forest of data1.batch
+         RF1.results <- RunRF(data = data1.batch, group = group1, split.size = split.size, test.train.ratio = test.train.ratio, num.trees.init = num.trees.init, num.trees.iterat = num.trees.iterat)
+
+      } else {
+
+         # Run random forest of data1$E
+         RF1.results <- RunRF(data = data1$E, group = group1, split.size = split.size, test.train.ratio = test.train.ratio, num.trees.init = num.trees.init, num.trees.iterat = num.trees.iterat)
+
+      }
+
+      # Processing second dataset
+      if (!is.null(data2)) {
+        if (databatch2 == TRUE){
+
+          # Run random forest on data2.batch
+          RF2.results <- RunRF(data = data2.batch, group = group2, split.size = split.size, test.train.ratio = test.train.ratio, num.trees.init = num.trees.init, num.trees.iterat = num.trees.iterat)
+
+        } else {
+
+          # Run random forest on data2
+          RF2.results <- RunRF(data = data2, group = group2, split.size = split.size, test.train.ratio = test.train.ratio, num.trees.init = num.trees.init, num.trees.iterat = num.trees.iterat)
+
+        }
+
+      } else {
+
+        RF2.results <- NA
+
+      }
+
+
+      ## Save results for data1
+
+      # Save intersected selected features
+      if (!any(is.na(RF1.results$VarsSelect))) {
+
+        # Save intersected selected features
+        write.table(RF1.results$VarsSelect, paste0(prefix,"_intersected_selected_features_data1_rf.txt"), row.names=FALSE, col.names = TRUE, quote = FALSE)
+
+      }
+
+      # Save selected features from feature selection process from each seed run
+      if (!any(is.na(RF1.results$RFResults$Sel.vars))) {
+
+          # Bind selected features from each seed run into table
+          sel.vars <- t(sapply(RF1.results$RFResults$Sel.vars, "length<-", max(lengths(RF1.results$RFResults$Sel.vars))))
+
+          # Save selected features
+          write.table(sel.vars, paste0(prefix,"_selected_features_data1_rf.txt"), row.names=FALSE, col.names = TRUE, quote = FALSE)
+
+      }
+
+      # Save OOB errors for all random forests from feature selection procedure for each seed run
+      if (!any(is.na(RF1.results$RFResults$Var.sel.oob))) {
+
+        # Bind OOB errors into table
+        oob.table <- do.call(rbind, RF1.results$RFResults$Var.sel.oob)
+
+        # Save table of OOB errors
+        write.table(oob.table, paste0(prefix,"_oob_feature_selection_data1_rf.txt"), row.names=FALSE, col.names = TRUE, quote = FALSE)
+
+      }
+
+      # Save OOB error from the best random forest model (i.e. the final selected model)
+      if (!any(is.na(RF1.results$RFResults$Sel.rf.oob))) {
+
+          # Bind OOB errors into table
+          sel.vars.oob <- do.call(rbind, RF1.results$RFResults$Sel.rf.oob)
+
+          # Save OOB error from best random forest model (i.e. the final selected model)
+          write.table(sel.vars.oob,
+                      paste0(prefix,"_oob_final_selected_model_data1_rf.txt"), row.names=TRUE, col.names = TRUE, quote = FALSE)
+
+      }
+
+      # Save average feature initial importance during feature selection process (average across seed runs)
+      if (!any(is.na(RF1.results$RFResults$Mean.importance.features))) {
+
+        # Save average feature importance
+        write.table(RF1.results$RFResults$Mean.importance.features,
+                    paste0(prefix,"_mean_importance_feature_selection_data1_rf.txt"), row.names=TRUE, col.names = TRUE, quote = FALSE)
+
+      }
+
+      # Save OOB errors from fitted random forest model for each seed run
+      if (!any(is.na(RF1.results$RFResults$oob.rf.model))) {
+
+        # Bind OOB errors into table
+        oob.table <- do.call(rbind, RF1.results$RFResults$oob.rf.model)
+
+        # Save table of OOB errors
+        write.table(oob.table, paste0(prefix,"_oob_model_data1_rf.txt"), row.names=FALSE, col.names = TRUE, quote = FALSE)
+
+      }
+
+      # Save accuracy and 95% CI for predictions of test data using fitted random forest model for each seed run
+      if (!any(is.na(RF1.results$RFResults$accuracy.rf.model))) {
+
+        # Save table of accuracies and 95% CI
+        write.table(RF1.results$RFResults$accuracy.rf.model, paste0(prefix,"_accuracy_model_data1_rf.txt"), row.names=FALSE, col.names = TRUE, quote = FALSE)
+
+      }
+
+      # Save seeds
+      if (!any(is.na(RF1.results$RFResults$seeds))) {
+
+        # Save seeds
+        write.table(RF1.results$RFResults$seeds, paste0(prefix,"_seeds_data1_rf.txt"), row.names=FALSE, col.names = TRUE, quote = FALSE)
+
+      }
+
+
+      ## Save results for data2
+
+      if (!any(is.na(RF2.results))) {
+
+        # Save intersected selected features
+        if (!any(is.na(RF2.results$VarsSelect))) {
+
+          # Save intersected selected features
+          write.table(RF2.results$VarsSelect, paste0(prefix,"_intersected_selected_features_data2_rf.txt"), row.names=FALSE, col.names = TRUE, quote = FALSE)
+
+        }
+
+        # Save selected features from feature selection process from each seed run
+        if (!any(is.na(RF2.results$RFResults$Sel.vars))) {
+
+            # Bind selected features from each seed run into table
+            sel.vars <- t(sapply(RF2.results$RFResults$Sel.vars, "length<-", max(lengths(RF2.results$RFResults$Sel.vars))))
+
+            # Save selected features
+            write.table(sel.vars, paste0(prefix,"_selected_features_data2_rf.txt"), row.names=FALSE, col.names = TRUE, quote = FALSE)
+
+        }
+
+        # Save OOB errors for all random forests from feature selection procedure for each seed run
+        if (!any(is.na(RF2.results$RFResults$Var.sel.oob))) {
+
+          # Bind OOB errors into table
+          oob.table <- do.call(rbind, RF2.results$RFResults$Var.sel.oob)
+
+          # Save table of OOB errors
+          write.table(oob.table, paste0(prefix,"_oob_feature_selection_data2_rf.txt"), row.names=FALSE, col.names = TRUE, quote = FALSE)
+
+        }
+
+        # Save OOB error from the best random forest model (i.e. the final selected model)
+        if (!any(is.na(RF2.results$RFResults$Sel.rf.oob))) {
+
+            # Bind OOB errors into table
+            sel.vars.oob <- do.call(rbind, RF2.results$RFResults$Sel.rf.oob)
+
+            # Save OOB error from best random forest model (i.e. the final selected model)
+            write.table(sel.vars.oob,
+                          paste0(prefix,"_oob_final_selected_model_data2_rf.txt"), row.names=TRUE, col.names = TRUE, quote = FALSE)
+
+        }
+
+        # Save average feature initial importance during feature selection process (average across seed runs)
+        if (!any(is.na(RF2.results$RFResults$Mean.importance.features))) {
+
+          # Save average feature importance
+          write.table(RF2.results$RFResults$Mean.importance.features,
+                      paste0(prefix,"_mean_importance_feature_selection_data2_rf.txt"), row.names=TRUE, col.names = TRUE, quote = FALSE)
+
+        }
+
+        # Save OOB errors from fitted random forest model for each seed run
+        if (!any(is.na(RF2.results$RFResults$oob.rf.model))) {
+
+          # Bind OOB errors into table
+          oob.table <- do.call(rbind, RF2.results$RFResults$oob.rf.model)
+
+          # Save table of OOB errors
+          write.table(oob.table, paste0(prefix,"_oob_model_data2_rf.txt"), row.names=FALSE, col.names = TRUE, quote = FALSE)
+
+        }
+
+        # Save accuracy and 95% CI for predictions of test data using fitted random forest model for each seed run
+        if (!any(is.na(RF2.results$RFResults$accuracy.rf.model))) {
+
+          # Save table of accuracies and 95% CI
+          write.table(RF2.results$RFResults$accuracy.rf.model, paste0(prefix,"_accuracy_model_data2_rf.txt"), row.names=FALSE, col.names = TRUE, quote = FALSE)
+
+        }
+
+        # Save seeds
+        if (!any(is.na(RF2.results$RFResults$seeds))) {
+
+          # Save seeds
+          write.table(RF2.results$RFResults$seeds, paste0(prefix,"_seeds_data2_rf.txt"), row.names=FALSE, col.names = TRUE, quote = FALSE)
+
+        }
+
+      }
+
+      setwd("..")
+
+    } else {
+
+      cat("\n- Random forest not requested.\n")
+
+    }
+
+    print("RANDOM FOREST DONE")
 
 
     # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

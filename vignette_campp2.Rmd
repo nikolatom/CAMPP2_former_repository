@@ -1,7 +1,7 @@
 ---
 title: "CAncer bioMarker Prediction Pipeline 2 (CAMPP2)"
 authors:
-  names: Nikola Tom, Matteo Tiberti, Elena Papaleo
+  names: Nikola Tom, Mona Nourbakhsh, Matteo Tiberti, Elena Papaleo
   affiliations: Technical University of Denmark, Danish Cancer Society Research Center
   email: nikto@dtu.dk, tiberti@cancer.dk, elpap@dtu.dk, elenap@cancer.dk
 package: CAMPP2
@@ -1062,9 +1062,175 @@ viridis.palette="turbo", "test")
 ```
 \
 
+### RunRF
+**Description:** \
+The function runs random forest classification and variable
+selection by running the RFApply function. The classification and variable
+selection are calculated 10 times for 10 random seeds and the intersection of
+the selected variables (e.g., genes) is obtained.
+The function optionally performs validation using a validation
+dataset of the random forest classification if there is enough samples in the
+dataset. This is determined by the split.size argument. If validation is not 
+performed, only variable selection using random forest is carried out.
+The function also intersects the selected features across all 10 seed runs
+as found during the feature selection process.
+\
+**Parameters:** \
+*data* a matrix of (transformed and normalized) feature counts from
+"seq", "array", "ms" or "other" technology (with feature IDs as row names
+and sample IDs as columns). If available, batch corrected data should be used. \
+*group* a factor specifying group for each sample (e.g. could be
+represented by a column from a metadata file). \
+*split.size* an integer specifying the minimum number of samples that
+the groups must contain in order to carry out random forest classification
+and validation. \
+*test.train.ratio* a floating point number between 0 and 1 representing
+the ratio of samples to keep as validation dataset. For example, a
+test.train.ratio = 0.25 splits 25 percent of the data into a validation dataset,
+meaning 75 percent of the data will be kept as the training dataset. \
+*num.trees.init* an integer specifying number of trees to use for the first
+forest in the feature selection process. Default is 5000. \
+*num.trees.iterat* an integer specifying number of trees to use for
+all additional forests in the feature selection process. Default is 2000. \
+**Output from the function:** \
+a list of: \
+1) a list containing the output from the RFApply function. \
+2) a character vector containing the intersection of
+selected variables (e.g., genes) from the feature selection process. \
+**An example run:** \
+
+```
+campp2_brca_1_run_rf <-
+RunRF(data = campp2_brca_1_batchCorrected,
+group = campp2_brca_1_meta$diagnosis,
+split.size = 5,
+test.train.ratio = 0.25,
+num.trees.init = 5000,
+num.trees.iterat = 2000)
+```
+\
 
 
 
+### RFApply
+**Description:** \
+This function applies the ForestFeatures function using 10 random
+seeds. The ForestFeatures function performs random forest on feature counts
+(e.g. genes) and allows for feature selection using the random forest
+algorithm. This function extracts various results from the feature selection
+process such as the selected variables and the OOB errors. Moreover, the OOB
+error which resulted in the final selected model and the final selected
+variables is extracted. The final selected model is the one with the smallest
+number of genes whose error rate is within 1 standard error of the minimum
+error rate of all forests. The function also extracts results from the process
+of random forest fitting to the input data such as OOB error, predictions on
+test data and corresponding accuracies. Finally, the function calculates the
+average initial importance of each variable across the seed runs.
+\
+**Parameters:** \
+*data* a matrix of (transformed and normalized) feature counts from
+"seq", "array", "ms" or "other" technology (with feature IDs as row names
+and sample IDs as columns). If available, batch corrected data should be used. \
+*group* a factor specifying group for each sample (e.g. could be
+represented by a column from a metadata file). \
+*validation* a boolean indicating if validation will be performed
+on test data. If TRUE validation will be performed on test data. If FALSE
+validation will not be performed on test data. Default is FALSE. \
+*test.train.ratio* a floating point number between 0 and 1 representing
+the ratio of samples to keep as validation dataset. For example, a
+test.train.ratio = 0.25 splits 25 percent of the data into a validation dataset,
+meaning 75 percent of the data will be kept as the training dataset. \
+*num.trees.init* an integer specifying number of trees to use for the first
+forest in the feature selection process. Default is 5000. \
+*num.trees.iterat* an integer specifying number of trees to use for
+all additional forests in the feature selection process. Default is 2000. \
+**Output from the function:** \
+a list of: \
+1) a list where each element is a character string containing selected 
+variables from the random forest feature selection process from each seed run. \
+2) a list where each element is out-of-bag errors (of type numeric) from all 
+random forest models used in the feature selection process for each seed run. \
+3) a list where each element is the OOB error (of type numeric) from the best random
+forest model (i.e. the final selected model) of the feature selection process 
+for each seed run. \
+4) a matrix containing average initial importance (before any variable deletion)
+for each feature across seed runs. \
+5) a list where each element is the OOB error (of type numeric) from fitted random 
+forest model for each seed run (if a random forest was not fitted then this will be NA). \
+6) a matrix ccontaining accuracy and 95 percent confidence interval for predictions 
+of test data using fitted random forest model where each row in the matrix is a 
+seed run. \
+7) a vector of integers containing seeds used in the procedure. \
+**An example run:** \
+
+```
+campp2_brca_1_rf_apply <- RFApply(data = campp2_brca_1_batchCorrected,
+group = campp2_brca_1_meta$diagnosis,
+validation = TRUE,
+test.train.ratio = 0.25,
+num.trees.init = 5000,
+num.trees.iterat = 2000)
+```
+\
+
+
+### ForestFeatures
+**Description:** \
+This function implements random forest on feature counts
+(e.g. genes) and allows for feature selection using the random forest
+algorithm. For the feature selection process, the recommended value for
+number of trees is 5000 for the first forest and 2000 for all additional
+forests which are used as default values in this function. 
+In the variable selection process, variables are eliminated iteratively
+by excluding the least important variables from each random forest. 20 percent of
+the variables are excluded following each iteration. The out-of-bag (OOB)
+error is used as criterion for determining the final selected variables.
+Besides variable selection, a random forest model is also fitted which
+is used for classification of the samples.
+The input data is split into training and validation datasets where the
+training data is used for variable selection and classification and the
+random forest classifier is validated on the validation dataset.
+Splitting of the data is determined by the test.train.ratio. For example,
+a test.train.ratio = 0.25 splits 25 percent of the data into a validation dataset,
+meaning 75 percent of the data will be kept as the training dataset.
+\
+**Parameters:** \
+*seed* an integer containing a random seed number. Default is 123. \
+*data* a matrix of (transformed and normalized) feature counts from
+"seq", "array", "ms" or "other" technology (with feature IDs as row names
+and sample IDs as columns). If available, batch corrected data should be used. \
+*group* a factor specifying group for each sample (e.g. could be
+represented by a column from a metadata file). \
+*validation* a boolean indicating if validation will be performed
+on test data. If TRUE validation will be performed on test data. If FALSE
+validation will not be performed on test data. Default is FALSE. \
+*test.train.ratio* a floating point number between 0 and 1 representing
+the ratio of samples to keep as validation dataset. For example, a
+test.train.ratio = 0.25 splits 25 percent of the data into a validation dataset,
+meaning 75 percent of the data will be kept as the training dataset. \
+*num.trees.init* an integer specifying number of trees to use for the first
+forest in the feature selection process. Default is 5000. \
+*num.trees.iterat* an integer specifying number of trees to use for
+all additional forests in the feature selection process. Default is 2000. \
+**Output from the function:** \
+a list of: \
+1) a varSelRF object containing results of variable selection using random forest. \
+2) a randomForest object random forest model fitted to data. \
+3) a factor containing predictions of test data using fitted random forest model. \
+4) a confusionMatrix object confusion matrix of test data using fitted random forest model. \
+If validation = FALSE, the last three elements in output will be NA. \
+**An example run:** \
+
+```
+campp2_brca_1_forest_features <- ForestFeatures(seed = 123,
+data = campp2_brca_1_batchCorrected,
+group = campp2_brca_1_meta$diagnosis,
+validation = TRUE,
+test.train.ratio = 0.25,
+num.trees.init = 5000,
+num.trees.iterat = 2000)
+```
+\
 
 
 
