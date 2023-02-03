@@ -17,7 +17,6 @@
 #' @export
 #' @import factoextra
 #' @import FactoMineR
-#' @import pca3d
 #' @seealso
 #' @return 1) scree plot; 2) plot of contributions of variables to PC1; 3) plot
 #' of contributions of variables to PC2; 4) 2D PCA plot projecting samples over
@@ -61,7 +60,4 @@ PCAPlot <- function(data, group, show.PCA.labels =FALSE, cols=NULL, prefix="", s
         )
         ggsave(paste0(prefix,"_PCA.png"))
 
-        # PCA 3D
-        pca3d(res.pca$ind$coord[,1:3], group=as.factor(group), fancy=FALSE,legend="topleft",show.ellipses=TRUE, ellipse.ci=0.75, show.plane=FALSE)
-        snapshotPCA3d(file=paste0(prefix,"_3D_PCA.png"))
 }
