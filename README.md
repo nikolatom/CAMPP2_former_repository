@@ -11,7 +11,7 @@ Cancer Structural Biology Group, Danish Cancer Society Research Center, Strandbo
 
 If you don't have access to conda please see the Miniconda installer page (https://docs.conda.io/en/latest/miniconda.html) on instructions on how to install Miniconda.
 
-Remember to have installed BiocManager upfront before proceeding with the installation of CAMPP2.   
+Remember to have installed BiocManager upfront before proceeding with the installation of CAMPP2.
 install.packages("BiocManager")
 
 
@@ -36,9 +36,9 @@ install CAMPP2 from private Github repository (using your personal token and com
 
 The CAMPP2 development environment is made available as Docker image, defined
 in a Dockerfile in this repository. It uses the Bioconductor devel Docker image
-as a base, and further downloads and install the requirements for CAMPP2.
+as a base, and further downloads and installs the requirements for CAMPP2.
 In order to use it, please install [Docker](https://www.docker.com) if you
-don't have it already, and follow the following instructions:
+don't have it already, and follow these instructions:
 
 1. Clone the CAMPP2 GitHub repository in a local folder:
 
@@ -50,12 +50,16 @@ cd CAMPP2
 2. Build the container image:
 
 ```
-docker build -t cammp2:devel-20230206 docker
+docker build --pull -t cammp2:devel-20230206 ./docker
 ```
 
 We recommend tagging the container with a date consistent with the day it's been
 created, since it might contain different package versions depending
-on the date.
+on the date, as done in this example.
+
+Notice that this needs to be done only once, as well as every time you intend
+to upgrade your image to account for the latest Bioconductor devel docker
+image (see below)
 
 3. Run a container from the image you just created:
 
@@ -69,11 +73,6 @@ docker run \
     -e PASSWORD=campp2\
     campp2:devel-20230206
 ```
-
-Notice that you will need to customize:
-  - the `/path/to/CAMPP2` should be replaced by the actual absolute path to the
-  CAMPP2 development folder, depending on where it is located in your computer
-  - the date in the container name
 
 Open your web browser and head to https://localhost:8787. Username will be `rstudio`
 password `campp2`. You should be able to access the CAMPP2 development folder
@@ -103,17 +102,21 @@ docker run \
     bash
 ```
 
-Notice that in these command lines you will need to customize:
+Notice that in these commands:
   - the `/path/to/CAMPP2` should be replaced by the actual absolute path to the
   CAMPP2 development folder, depending on where it is located in your computer
-  - the container name, similar th
+  - the container name, similarly as before
+
+We recommend to rebuild your image every few weeks to account for changes in
+the original BioConductor development image and in the repositories. If you
+wish to do so, just repeat step
 
 ### Example data
 The data for testing the functions and workflow includes 2 BRCA datasets (campp2_brca_1, campp2_brca_2) and the associated metadata (campp2_brca_1_meta, campp2_brca_2_meta). Each dataset is represented by raw read counts (10000 genes) for 30 samples: 20 tumours which are divided into 4 subtypes (each subtype has 5 samples), and 10 normals. Metadata includes information about diagnosis, age, vital status, days to death, outcome time, tumor stage, subtype, outcome and survival.
 
-Both, raw read counts and metadata were extracted from TCGA BReast CAncer dataset (TCGA-BRCA) Level 3 data. 
+Both, raw read counts and metadata were extracted from TCGA BReast CAncer dataset (TCGA-BRCA) Level 3 data.
 
-Test data (gene counts and metadata for 2 data sets) are integrated into CAMPP2 package and accessible as campp2_brca_1, campp2_brca_2, campp2_brca_1_meta, campp2_brca_2_meta variables once the package is installed. Results from intermediate steps (not described here) are also integrated and used as an input for running the examples of the functions. R data object files (.rda) are available on https://github.com/ELELAB/CAMPP2/tree/main/data. 
+Test data (gene counts and metadata for 2 data sets) are integrated into CAMPP2 package and accessible as campp2_brca_1, campp2_brca_2, campp2_brca_1_meta, campp2_brca_2_meta variables once the package is installed. Results from intermediate steps (not described here) are also integrated and used as an input for running the examples of the functions. R data object files (.rda) are available on https://github.com/ELELAB/CAMPP2/tree/main/data.
 
 
 ### Example run
@@ -123,16 +126,16 @@ Default settings can be executed in R using:
 
 Test data are already part of the CAMPP2 package so user doesn't need to download them. In case you want to load .rda objects manually from the cloned repository, you can use this code:
 
-`load("./data/campp2_brca_1.rda")` 
+`load("./data/campp2_brca_1.rda")`
 <br/>
-`load("./data/campp2_brca_1_meta.rda")` 
+`load("./data/campp2_brca_1_meta.rda")`
 <br/>
-`load("./data/campp2_brca_2.rda")` 
+`load("./data/campp2_brca_2.rda")`
 <br/>
-`load("./data/campp2_brca_2_meta.rda")` 
+`load("./data/campp2_brca_2_meta.rda")`
 <br/>
 <br/>
-Default workflow could be run using this command: 
+Default workflow could be run using this command:
 <br/>
 `runCampp2(batches=c("tumor_stage","tumor_stage"),prefix="test_CAMPP2", data1=campp2_brca_1, data2=campp2_brca_2, metadata1=campp2_brca_1_meta,metadata2=campp2_brca_2_meta, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"))`
 <br/>
