@@ -74,9 +74,9 @@ docker run \
     campp2:devel-20230206
 ```
 
-Open your web browser and head to https://localhost:8787. Username will be `rstudio`
-password `campp2`. You should be able to access the CAMPP2 development folder
-from the `Rstudio` interface.
+Open your web browser and head to https://localhost:8787. Log in using `rstudio`
+as username and `campp2` as password. You should be able to access the CAMPP2
+development folder from the `Rstudio` interface.
 
 If you prefer running the R command line prompt (e.g. using `R`, it works in
 the same exacy way with `Rscript`):
@@ -105,11 +105,15 @@ docker run \
 Notice that in these commands:
   - the `/path/to/CAMPP2` should be replaced by the actual absolute path to the
   CAMPP2 development folder, depending on where it is located in your computer
-  - the container name, similarly as before
+  - the container name should be changed to the actual name of the container
+  that you built in step 2. If you're unsure what the container name or tag is, run
+  `docker image list`, you should be able to find both (a container is specified as
+  `NAME:TAG`)
 
 We recommend to rebuild your image every few weeks to account for changes in
-the original BioConductor development image and in the repositories. If you
-wish to do so, just repeat step
+the original BioConductor development image and in the CRAN/Bioconductor
+repositories. To do so, just repeat step 2 and adjust step 3 according to
+your new tag.
 
 ### Example data
 The data for testing the functions and workflow includes 2 BRCA datasets (campp2_brca_1, campp2_brca_2) and the associated metadata (campp2_brca_1_meta, campp2_brca_2_meta). Each dataset is represented by raw read counts (10000 genes) for 30 samples: 20 tumours which are divided into 4 subtypes (each subtype has 5 samples), and 10 normals. Metadata includes information about diagnosis, age, vital status, days to death, outcome time, tumor stage, subtype, outcome and survival.
