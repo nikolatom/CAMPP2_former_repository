@@ -32,6 +32,82 @@ load devtools library <br/>
 install CAMPP2 from private Github repository (using your personal token and commit ID)
 `devtools::install_github(repo = "ELELAB/CAMPP2",auth_token="<your personal token to github>")`
 
+### CAMPP2 development environment
+
+The CAMPP2 development environment is made available as Docker image, defined
+in a Dockerfile in this repository. It uses the Bioconductor devel Docker image
+as a base, and further downloads and install the requirements for CAMPP2.
+In order to use it, please install [Docker](https://www.docker.com) if you
+don't have it already, and follow the following instructions:
+
+1. Clone the CAMPP2 GitHub repository in a local folder:
+
+```
+git clone https://www.github.com/ELELAB/CAMPP2.git
+cd CAMPP2
+```
+
+2. Build the container image:
+
+```
+docker build -t cammp2:devel-20230206 docker
+```
+
+We recommend tagging the container with a date consistent with the day it's been
+created, since it might contain different package versions depending
+on the date.
+
+3. Run a container from the image you just created:
+
+In order to access the development environment via RStudio on browser, run:
+
+```
+docker run \
+    --rm\
+    -v /path/to/my/CAMPP2:/home/rstudio/CAMPP2\
+    -p 8787:8787\
+    -e PASSWORD=campp2\
+    campp2:devel-20230206
+```
+
+Notice that you will need to customize:
+  - the `/path/to/CAMPP2` should be replaced by the actual absolute path to the
+  CAMPP2 development folder, depending on where it is located in your computer
+  - the date in the container name
+
+Open your web browser and head to https://localhost:8787. Username will be `rstudio`
+password `campp2`. You should be able to access the CAMPP2 development folder
+from the `Rstudio` interface.
+
+If you prefer running the R command line prompt (e.g. using `R`, it works in
+the same exacy way with `Rscript`):
+
+```
+docker run \
+    --rm\
+    -it\
+    -v /path/to/my/CAMPP2:/home/rstudio/CAMPP2\
+    campp2:devel-20230206\
+    R
+```
+
+if you want to access the `bash` command line prompt of the container you
+can instead run:
+
+```
+docker run \
+    --rm\
+    -it\
+    -v /path/to/my/CAMPP2:/home/rstudio/CAMPP2\
+    campp2:devel-20230206\
+    bash
+```
+
+Notice that in these command lines you will need to customize:
+  - the `/path/to/CAMPP2` should be replaced by the actual absolute path to the
+  CAMPP2 development folder, depending on where it is located in your computer
+  - the container name, similar th
+
 ### Example data
 The data for testing the functions and workflow includes 2 BRCA datasets (campp2_brca_1, campp2_brca_2) and the associated metadata (campp2_brca_1_meta, campp2_brca_2_meta). Each dataset is represented by raw read counts (10000 genes) for 30 samples: 20 tumours which are divided into 4 subtypes (each subtype has 5 samples), and 10 normals. Metadata includes information about diagnosis, age, vital status, days to death, outcome time, tumor stage, subtype, outcome and survival.
 
