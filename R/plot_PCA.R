@@ -3,8 +3,7 @@
 #' between samples (based on squared euclidean distances) in the data set.
 #' Each dot represents one sample. This function provides also a scree plot
 #' describing percentages of explained variances by each PCA component and
-#' plots with contributions of variables to PCA1 and PCA2. Top 3 PCA components
-#' are visualized in 3D plot.
+#' plots with contributions of variables to PCA1 and PCA2.
 #' @param data a dataframe of expression/abundance counts
 #' @param group a factor specifying group for each sample (e.g. could be
 #' represented by a column from a metadata file)
@@ -20,8 +19,7 @@
 #' @seealso
 #' @return 1) scree plot; 2) plot of contributions of variables to PC1; 3) plot
 #' of contributions of variables to PC2; 4) 2D PCA plot projecting samples over
-#' first 2 principal components; 5) 3D PCA plot projecting samples over
-#' first 3 principal components
+#' first 2 principal components
 #' @examples \dontrun{
 #' PCAPlot(campp2_brca_1_batchCorrected, as.factor(campp2_brca_1_meta$subtype), show.PCA.labels =FALSE, cols=NULL, prefix="test_PCA")
 #' }
