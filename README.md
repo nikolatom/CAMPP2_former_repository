@@ -50,7 +50,7 @@ cd CAMPP2
 2. Build the container image:
 
 ```
-docker build --pull -t cammp2:devel-20230206 ./docker
+docker build --pull -t campp2:devel-20230206 ./docker
 ```
 
 We recommend tagging the container with a date consistent with the day it's been
