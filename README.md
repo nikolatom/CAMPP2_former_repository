@@ -74,7 +74,7 @@ docker run \
     campp2:devel-20230206
 ```
 
-Open your web browser and head to https://localhost:8787. Log in using `rstudio`
+Open your web browser and head to http://localhost:8787. Log in using `rstudio`
 as username and `campp2` as password. You should be able to access the CAMPP2
 development folder from the `Rstudio` interface.
 
