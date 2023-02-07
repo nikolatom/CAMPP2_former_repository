@@ -103,12 +103,26 @@ docker run \
 ```
 
 Notice that in these commands:
-  - the `/path/to/CAMPP2` should be replaced by the actual absolute path to the
+  - the `/path/to/my/CAMPP2` should be replaced by the actual absolute path to the
   CAMPP2 development folder, depending on where it is located in your computer
   - the container name should be changed to the actual name of the container
   that you built in step 2. If you're unsure what the container name or tag is, run
   `docker image list`, you should be able to find both (a container is specified as
   `NAME:TAG`)
+
+**If you are running the container on Apple Silicon** (i.e. M1 and M2 at the time
+of writing) we recommend adding the `--platform linux/amd64` option to the
+`docker run` command lines above, for example:
+
+```
+docker run \
+    --rm\
+    -it\
+    -v /path/to/my/CAMPP2:/home/rstudio/CAMPP2\
+    --platform linux/amd64\
+    campp2:devel-20230206\
+    bash
+```
 
 We recommend to rebuild your image every few weeks to account for changes in
 the original BioConductor development image and in the CRAN/Bioconductor
