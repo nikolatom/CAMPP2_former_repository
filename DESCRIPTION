@@ -21,7 +21,6 @@ biocViews:
 Depends: R (>= 4.0.0)
 Imports:
  rio,
- pca3d,
  factoextra,
  WGCNA,
  M3C,
