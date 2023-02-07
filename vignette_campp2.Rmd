@@ -409,7 +409,6 @@ between samples (based on squared euclidean distances) in the data set.
 Each dot represents one sample. This function provides also a scree plot
 describing percentages of explained variances by each principal component and
 plots with contributions of variables (e.g. genes) to PC1 and PC2. 
-Top 3 PC components are visualized in 3D plot.
 \
 **Parameters:** \
 *data* a dataframe of expression/abundance counts \
@@ -423,7 +422,6 @@ the input data. Default value is FALSE. \
 2) contributions of variables to PC1 \
 3) contributions of variables to PC2 \
 4) 2D PCA plot (projections of the samples on the first 2 principal components) \
-5) 3D PCA plot (projections of the samples on the first 3 principal components) \
 \
 **An example run:** \
 ##Run PCA on object with batch corrected feature (gene) counts
