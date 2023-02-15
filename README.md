@@ -67,10 +67,10 @@ In order to access the development environment via RStudio on browser, run:
 
 ```
 docker run \
-    --rm\
-    -v /path/to/my/CAMPP2:/home/rstudio/CAMPP2\
-    -p 8787:8787\
-    -e PASSWORD=campp2\
+    --rm \
+    -v /path/to/my/CAMPP2:/home/rstudio/CAMPP2 \
+    -p 8787:8787 \
+    -e PASSWORD=campp2 \
     campp2:devel-20230206
 ```
 
@@ -83,10 +83,10 @@ the same exacy way with `Rscript`):
 
 ```
 docker run \
-    --rm\
-    -it\
-    -v /path/to/my/CAMPP2:/home/rstudio/CAMPP2\
-    campp2:devel-20230206\
+    --rm \
+    -it \
+    -v /path/to/my/CAMPP2:/home/rstudio/CAMPP2 \
+    campp2:devel-20230206 \
     R
 ```
 
@@ -95,10 +95,10 @@ can instead run:
 
 ```
 docker run \
-    --rm\
-    -it\
-    -v /path/to/my/CAMPP2:/home/rstudio/CAMPP2\
-    campp2:devel-20230206\
+    --rm \
+    -it \
+    -v /path/to/my/CAMPP2:/home/rstudio/CAMPP2 \
+    campp2:devel-20230206 \
     bash
 ```
 
@@ -116,11 +116,11 @@ of writing) we recommend adding the `--platform linux/amd64` option to the
 
 ```
 docker run \
-    --rm\
-    -it\
-    -v /path/to/my/CAMPP2:/home/rstudio/CAMPP2\
-    --platform linux/amd64\
-    campp2:devel-20230206\
+    --rm \
+    -it \
+    -v /path/to/my/CAMPP2:/home/rstudio/CAMPP2 \
+    --platform linux/amd64 \
+    campp2:devel-20230206 \
     bash
 ```
 
