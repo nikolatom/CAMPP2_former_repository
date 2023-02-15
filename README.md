@@ -110,8 +110,27 @@ Notice that in these commands:
   `docker image list`, you should be able to find both (a container is specified as
   `NAME:TAG`)
 
-**If you are running the container on Apple Silicon** (i.e. M1 and M2 at the time
-of writing) we recommend adding the `--platform linux/amd64` option to the
+We recommend to rebuild your image every few weeks to account for changes in
+the original BioConductor development image and in the CRAN/Bioconductor
+repositories. To do so, just repeat step 2 and adjust step 3 according to
+your new tag.
+
+#### Running on an Apple Silicon Macs
+
+If you are running the container on Apple Silicon (i.e. M1 and M2 at the time
+of writing) we currently recommend running the container under x86 emulation
+using Rosetta2. In order to do so,
+
+  1. Install Rosetta2 by running on your terminal:
+
+```
+/usr/sbin/softwareupdate --install-rosetta
+```
+
+  2. Turn on the "Use Rosetta for x86/amd64 emulation on Apple Silicon" option
+in Docker, currently located in Settings, Features under development
+
+Further, we recommend adding the `--platform linux/amd64` option to the
 `docker run` command lines above, for example:
 
 ```
@@ -123,11 +142,6 @@ docker run \
     campp2:devel-20230206 \
     bash
 ```
-
-We recommend to rebuild your image every few weeks to account for changes in
-the original BioConductor development image and in the CRAN/Bioconductor
-repositories. To do so, just repeat step 2 and adjust step 3 according to
-your new tag.
 
 ### Example data
 The data for testing the functions and workflow includes 2 BRCA datasets (campp2_brca_1, campp2_brca_2) and the associated metadata (campp2_brca_1_meta, campp2_brca_2_meta). Each dataset is represented by raw read counts (10000 genes) for 30 samples: 20 tumours which are divided into 4 subtypes (each subtype has 5 samples), and 10 normals. Metadata includes information about diagnosis, age, vital status, days to death, outcome time, tumor stage, subtype, outcome and survival.
