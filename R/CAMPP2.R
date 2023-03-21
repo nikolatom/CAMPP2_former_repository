@@ -38,7 +38,7 @@
 #' @seealso
 #' @return CAMPP2 results
 #' @examples \dontrun{
-#' runCampp2(batches=c("tumor_stage","tumor_stage"),prefix="test_CAMPP2_distr", data1=campp2_brca_1, data2=campp2_brca_2, metadata1=campp2_brca_1_meta,metadata2=campp2_brca_2_meta, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"), plot.PCA=TRUE, plot.DEA=TRUE, control.group = c("healthy","healthy"), plot.heatmap="DEA", alpha.lasso=0.5, data.check=TRUE, num.trees.init=5000, num.trees.iterat=2000, split.size=5, test.train.ratio=0.25)
+#' runCampp2(batches=c("tumor_stage","tumor_stage"),prefix="test_CAMPP2_distr", data1=campp2_brca_1, data2=campp2_brca_2, metadata1=campp2_brca_1_meta,metadata2=campp2_brca_2_meta, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"), plot.PCA=TRUE, plot.DEA=TRUE, control.group = c("healthy","healthy"), plot.heatmap="DEA", alpha.lasso=0.5, data.check=TRUE, num.trees.init=5000, num.trees.iterat=2000, split.size=5, test.train.ratio=0.25, covariates = c("tumor_stage", "tumor_stage"))
 #' runCampp2(batches=c("tumor_stage"),prefix="test_CAMPP2_distr", data1=campp2_brca_1, metadata1=campp2_brca_1_meta,groups=c("IDs", "diagnosis"), technology=c("seq"), data.check=TRUE, num.trees.init=5000, num.trees.iterat=2000, split.size=5, test.train.ratio=0.25)
 #' }
 
@@ -48,7 +48,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
     c(data1,data2,metadata1,metadata2,technology,groups,
       group1,group2,control.group1,control.group2,ids,batches,databatch1,databatch2,
       batch1,batch2,standardize,transform,data.check,
-      plot.PCA,kmeans,num.km.clusters,signif,cutoff.logFC1,cutoff.FDR1,
+      plot.PCA,kmeans,num.km.clusters,cutoff.logFC1,cutoff.FDR1,
       cutoff.logFC2,cutoff.FDR2,block,block1,block2,colors,prefix,plot.heatmap,
       covarDEA1,covarDEA2,
       DEA.allowed.type,
