@@ -23,7 +23,7 @@ provided in a form of a list of data frames and figures which are exported
 into .pdf.
 }
 \examples{
-\dontrun{
+{
 meanCounts(campp2_brca_1_batchCorrected, campp2_brca_1_meta$diagnosis)
 }
 }

@@ -45,7 +45,7 @@ counts (e.g., genes), design matrix and contrast matrix (using only 1
 contrast). Cutoffs for logFC and FDR; and blocking variable are optional.
 }
 \examples{
-\dontrun{
+{
 DEA_one_comparison <-
 DEAFeature(contrast.matrix = campp2_brca_1_DEA$DEA.contrast.matrix[,1],
 data = campp2_brca_1_normalized,

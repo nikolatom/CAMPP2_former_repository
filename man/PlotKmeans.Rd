@@ -24,7 +24,7 @@ clustering results and plots
 Function for Plotting Kmeans clustering; A folder with MDS plots will be returned for the best n cluster, based on BIC
 }
 \examples{
-\dontrun{
+{
 ...
 }
 }

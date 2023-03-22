@@ -38,7 +38,7 @@ option is ignored, instead, sequencing data are normalized by "TMM";
 micro-arrays data are normalized by "quantile" standardization.
 }
 \examples{
-\dontrun{
+{
 ###In this example, data with fixed zeros are used as an input.
 NormalizeData(data=campp2_brca_1_zeroFix,
 group=campp2_brca_1_meta$diagnosis, standardize="TMM", transform="voom",

@@ -8,7 +8,7 @@
 #' characteristic for each group of interest (e.g., subtype)
 #' @param label a character vector used as a label for the upset plot. Default
 #' is "".
-#' @label.vertical.position a numeric value describing vertical position of
+#' @param label.vertical.position a numeric value describing vertical position of
 #' the label. Default is 15.0 (cm)
 #' @param y.axis.by an integer describing interval used for labeling Y-axis.
 #' Defaults is 100.
@@ -17,10 +17,9 @@
 #' @export
 #' @import ComplexHeatmap
 #' @import viridis
-#' @seealso
 #' @return an Upset plot showcasing the size of intersections of the features
 #' between the sample groups
-#' @examples \dontrun{
+#' @examples {
 #' MakeUpset("testUpSet",campp2_brca_1_DEA_HUGO_features_per_group,
 #' label="test_UpSet",label.vertical.position=16.5,
 #' y.axis.by=300,set.size.by=250)

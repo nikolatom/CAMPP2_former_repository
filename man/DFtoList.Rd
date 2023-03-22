@@ -16,7 +16,7 @@ a list of dataframes by comparison
 Function which subsets a dataframe of differential expression analysis into a list of dataframes by comparison.
 }
 \examples{
-\dontrun{
+{
 ...
 }
 }

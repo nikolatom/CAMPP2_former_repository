@@ -24,14 +24,13 @@
 #' @import ggplot2
 #' @import squash
 #' @import viridis
-#' @seealso
 #' @return a .pdf file including multiple plots:
 #' 1) Cullen and Frey graph
 #' 2) Histogram and theoretical densities
 #' 3) Empirical and theoretical CDFs
 #' 4) Q−Q plot
 #' 5) P−P plot
-#' @examples \dontrun{
+#' @examples {
 #' PlotDistributions(campp2_brca_1_batchCorrected[1:10,], campp2_brca_1_distributionsFit)
 #' }
 

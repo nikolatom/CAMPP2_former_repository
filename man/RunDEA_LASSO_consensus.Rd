@@ -40,9 +40,9 @@ based on DEA results.
 Additionally, a Venn diagram visualizing overlaps is generated.
 }
 \examples{
-\dontrun{
+{
 ##here we prepare DEA results compatible (group="diagnosis) with
-EN/LASS/Ridge regression results:
+##EN/LASS/Ridge regression results:
 campp2_brca_1_DEA_diagnosis<-RunDEA(data=campp2_brca_1_normalized,
 metadata=campp2_brca_1_meta,
 group=campp2_brca_1_meta$diagnosis, prefix="test", batch=campp2_brca_1_meta$age,

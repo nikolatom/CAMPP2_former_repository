@@ -31,7 +31,6 @@
 #' @import varSelRF
 #' @import randomForest
 #' @import caret
-#' @seealso
 #' @return a list of seven elements: 1) a list where each element is a character string
 #' containing selected variables from the random forest feature selection process from
 #' each seed run, 2) a list where each element is out-of-bag errors (of type numeric)
@@ -45,7 +44,7 @@
 #' interval for predictions of test data using fitted random forest model where each row
 #' in the matrix is a seed run, and 7) a vector of integers containing seeds used in the
 #' procedure.
-#' @examples \dontrun{
+#' @examples {
 #' campp2_brca_1_rf_apply <-
 #' RFApply(data = campp2_brca_1_batchCorrected,
 #' group = campp2_brca_1_meta$diagnosis,
@@ -105,8 +104,7 @@ RFApply <- function(data,
         ## Extract results from the process of fitting a random forest model to the data
 
         # If a random forest model was fitted
-        if (class(RF[[2]]) == "randomForest") {
-
+        if (is(class(RF[[2]]), "randomForest")){
             # Obtain OOB error from fitted random forest model
             RFoob.fit[[idx]] <- tail(RF[[2]]$err.rate, n = 1)[,1]
 
@@ -117,8 +115,7 @@ RFApply <- function(data,
         }
 
         # If predictions were performed on test data
-        if (class(RF[[4]]) == "confusionMatrix") {
-
+        if (is(class(RF[[4]]), "confusionMatrix")){
             # Obtain accuracy and 95% confidence interval for predictions of test data using fitted random forest model
             RFacc[[idx]] <- RF[[4]]$overall[c(1, 3, 4)]
 

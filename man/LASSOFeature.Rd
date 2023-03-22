@@ -65,7 +65,7 @@ coefficient values
 3) cv.glmnet object.
 }
 \examples{
-\dontrun{
+{
 LASSOFeature(seed=123, data=campp2_brca_1,
 group=campp2_brca_1_meta$diagnosis, alpha=0.5, validation=TRUE,
 min.coef = 0, nfolds=10)

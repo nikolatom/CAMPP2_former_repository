@@ -15,11 +15,10 @@
 #' sample group, and for replacing the remaining zeros.  Default is TRUE.
 #' @export
 #' @import impute
-#' @seealso
 #' @return a data frame with fixed zeros. Features having sum of zero counts
 #' higher than the size of the smallest sample group are removed and
 #' remaining zeros will be replaced by default.
-#' @examples \dontrun{
+#' @examples {
 #' ###In this example, data with fixed NA values are used as an input.
 #' FixZeros(data=campp2_brca_1_replacedNAs,group=campp2_brca_1_meta$diagnosis, remove.sparse.features=TRUE)
 #' }

@@ -39,7 +39,7 @@ will be labeled on the Volcano plot. Important: Features are selected from
 the table with all the groups' comparisons.
 }
 \examples{
-\dontrun{
+{
 ##The input is made by example script from AddGeneName function
 MakeVolcano(campp2_brca_1_DEA_HUGO, prefix = "test_volcano",
 cutoff.logFC = 1, cutoff.FDR = 0.01, n.labeled.features = 15)

@@ -24,10 +24,11 @@ as a character vector. covarDEA can be defined only with a batch parameter}
 a model matrix used e.g. for limma
 }
 \description{
-Create model matrix
+A function for creating a model matrix based on gene counts
+metadata table and selected column names (covariates) from the metadata.
 }
 \examples{
-\dontrun{
+{
 design.matrix<-Design.Matrix(campp2_brca_1_meta, campp2_brca_1_meta$diagnosis,
 batch=campp2_brca_1_meta$tumor_stage, covariates="vital_status")
 }

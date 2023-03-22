@@ -38,7 +38,6 @@
 #' @import pROC
 #' @import ggplot2
 #' @import grid
-#' @seealso
 #' @return a list of:
 #' 1) VarSelect - a matrix of feature names having coefficients of best model
 #' passing the filters (threshold defined by min.coef)
@@ -46,7 +45,7 @@
 #' rate (datasets of >20 samples)
 #' 3) roc.res - AUC value (datasets of >20 samples)
 #' 4) cross validation error plot
-#' @examples \dontrun{
+#' @examples {
 #' ##run regression using small batch corrected dataset - no double cross validation
 #' campp2_brca_1_LASSO<-runLASSO(data=campp2_brca_1_batchCorrected, group=campp2_brca_1_meta$diagnosis, alpha=0.5, min.coef=0, nfolds=10, prefix="test")
 #' ##run regression using large batch corrected dataset suitable for double cross validation

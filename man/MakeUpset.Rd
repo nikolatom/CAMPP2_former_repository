@@ -23,6 +23,9 @@ characteristic for each group of interest (e.g., subtype)}
 \item{label}{a character vector used as a label for the upset plot. Default
 is "".}
 
+\item{label.vertical.position}{a numeric value describing vertical position of
+the label. Default is 15.0 (cm)}
+
 \item{y.axis.by}{an integer describing interval used for labeling Y-axis.
 Defaults is 100.}
 
@@ -39,7 +42,7 @@ intersections of the features present each group
 (e.g., differentially expressed genes for each subtype).
 }
 \examples{
-\dontrun{
+{
 MakeUpset("testUpSet",campp2_brca_1_DEA_HUGO_features_per_group,
 label="test_UpSet",label.vertical.position=16.5,
 y.axis.by=300,set.size.by=250)

@@ -62,7 +62,7 @@
 #' @export
 #' @import factoextra
 #' @import FactoMineR
-#' @seealso
+#' @import rngtools
 #' @return
 #' 1) a list including:
 #'    a) a data.frame with cluster information assigned to each sample;
@@ -71,7 +71,7 @@
 #' 2) 2D PCA plot(s) projecting samples (labeled with cluster number) over first 2
 #'    principal components saved into .png.
 #' 3) plots of BIC values for each sample sub-set saved into .png file
-#' @examples \dontrun{
+#' @examples {
 #' runKmeans(campp2_brca_1_batchCorrected[1:2000,], num.subsets= NULL, subset.size=NULL, show.PCA.labels = FALSE, colors=NULL,
 #' prefix="test", num.km.clusters=NULL, seed=123, pca.scale=FALSE)
 #'
@@ -193,7 +193,7 @@ runKmeans <- function(data, num.subsets= "automatic", subset.size="automatic", s
 
     for (idx in 1:length(nclus)) {
         if(!is.null(seed)){
-            set.seed(seed)
+            RNGseed(seed)
         }
         print("seed")
         print(seed)

@@ -34,7 +34,7 @@
 #' @param test.train.ratio a floating point number between 0 and 1 representing the ratio of samples to keep as validation dataset. For example, a test.train.ratio = 0.25 splits 25 percent of the data into a validation dataset, meaning 75 percent of the data will be kept as the training dataset.
 #' @export
 #' @return parsed arguments
-#' @examples \dontrun{
+#' @examples {
 #' ...
 #' }
 
@@ -196,7 +196,7 @@ parseArguments <- function(data1, data2, metadata1, metadata2, control.group, gr
     block1=NULL
     block2=NULL
     if(!is.null(block)){
-        if (class(block)=='list'){
+        if(is(class(block), "list")){
             block1 <- block[[1]]
             block2 <- block[[2]]
 

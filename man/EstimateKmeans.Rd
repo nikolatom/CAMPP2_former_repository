@@ -23,7 +23,7 @@ provided by mclust package. A summary describing the best model is printed on
 the screen during the calculation.
 }
 \examples{
-\dontrun{
+{
 EstimateKmeans(t(campp2_brca_1_batchCorrected[1:2000,]))
 }
 }

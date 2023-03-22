@@ -22,7 +22,7 @@ on the workflow: (runDEA - DEAFeatureApply - DEAFeature - limma); and
 exporting the results into a .txt file.
 }
 \examples{
-\dontrun{
+{
 campp2_brca_1_DEA_out<-ExportDEA(res.DEA = campp2_brca_1_DEA$res.DEA,
 prefix="test")
 }

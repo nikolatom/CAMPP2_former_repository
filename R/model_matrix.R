@@ -1,5 +1,5 @@
 #' @title Create model matrix
-#' @descriptionA A function for creating a model matrix based on gene counts
+#' @description A function for creating a model matrix based on gene counts
 #' metadata table and selected column names (covariates) from the metadata.
 #' @param metadata Samples' metadata table should be imported using function
 #' "import_metadata". Metadata must include exactly the same samples as gene
@@ -13,9 +13,8 @@
 #' @export
 #' @import limma
 #' @import sva
-#' @seealso
 #' @return a model matrix used e.g. for limma
-#' @examples \dontrun{
+#' @examples {
 #' design.matrix<-Design.Matrix(campp2_brca_1_meta, campp2_brca_1_meta$diagnosis,
 #' batch=campp2_brca_1_meta$tumor_stage, covariates="vital_status")
 #' }

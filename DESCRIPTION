@@ -1,9 +1,13 @@
 Package: CAMPP2
 Type: Package
 Title: CAncer bioMarker Prediction Pipeline 2 (CAMPP2)
-Version: 0.1.0
-Authors: Nikola Tom, Mona Nourbakhsh, Mathilde Wismann Bechgaard, Matteo Tiberti, Elena Papaleo
-Maintainers: Nikola Tom <nikto-at-dtu.dk> <ntom-at-cancer.dk>; Matteo Tiberti  <tiberti-at-cancer.dk>
+Version: 0.99.0
+Authors@R: c(
+    person("Tom, Nikola", email = "ntom@cancer.dk", role = c("cre", "aut")),
+    person("Nourbakhsh, Mona", email = "mon@cancer.dk", role = c("aut")),
+    person("Bechgaard, Mathilde Wismann", email = "mathilde@bechgaard.dk", role = c("aut")),
+    person("Tiberti, Matteo", email = "tiberti@cancer.dk", role = c("aut")),
+    person("Papaleo, Elena", email = "elenap@cancer.dk", role = c("aut")))
 Description: The CAncer bioMarker Prediction Pipeline2 (CAMPP2) is a simple
   bioinformatics tool intended to automatize identification of potential
   diagnostic and prognostic cancer biomarkers. The pipeline is versatile
@@ -17,8 +21,8 @@ License: GPL
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.3
-biocViews:
-Depends: R (>= 4.0.0)
+biocViews: GeneExpression, DifferentialExpression, Annotation, Clustering, QualityControl, RNASeq, Metabolomics, SystemsBiology, Software, Transcription, Normalization, PrincipalComponent, Lipidomics, Visualization, Regression, DimensionReduction
+Depends: R (>= 4.1.0)
 Imports:
   ComplexHeatmap,
   FactoMineR,
@@ -41,6 +45,7 @@ Imports:
   pcaMethods,
   randomForest,
   rio,
+  rngtools,
   squash,
   statmod,
   sva,

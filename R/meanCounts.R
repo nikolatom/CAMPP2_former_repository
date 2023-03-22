@@ -7,11 +7,10 @@
 #' @param group a factor specifying group for each sample (e.g. could be represented by a column from a metadata file)
 #' @export
 #' @import ggplot2
-#' @seealso
 #' @return a list of data frames (for each sample group) describing mean and SD
 #' for all sample groups and also for each group of samples. Results are
 #' visualized via graphs saved into current directory as pdf files.
-#' @examples \dontrun{
+#' @examples {
 #' meanCounts(campp2_brca_1_batchCorrected, campp2_brca_1_meta$diagnosis)
 #' }
 

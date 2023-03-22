@@ -67,7 +67,7 @@ a test.train.ratio = 0.25 splits 25 percent of the data into a validation datase
 meaning 75 percent of the data will be kept as the training dataset.
 }
 \examples{
-\dontrun{
+{
 campp2_brca_1_forest_features <-
 ForestFeatures(seed = 123,
 data = campp2_brca_1_batchCorrected,

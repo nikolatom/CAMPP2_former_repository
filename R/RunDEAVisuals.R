@@ -31,14 +31,13 @@
 #' @import VennDiagram
 #' @import viridis
 #' @import ComplexHeatmap
-#' @seealso
 #' @return several .png files with:
 #' 1) Volcano plot of differentially expressed features saved into .png
 #' 2) Venn Diagram showcasing the size of intersections of the features
 #' between the sample groups
 #' 3) Upset plot showcasing the size of intersections of the features
 #' between the sample groups
-#' @examples \dontrun{
+#' @examples {
 #' RunDEAVisuals(campp2_brca_1_DEA_HUGO, cutoff.FDR = 0.01, cutoff.logFC = 1,
 #' n.labeled.features = 15, control.group= "healthy", prefix="test_DEA_visuals")
 #' }

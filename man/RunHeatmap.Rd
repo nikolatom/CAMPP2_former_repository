@@ -55,13 +55,16 @@ Options are:"DEA", "LASSO", "EN", "Ridge" or "Consensus".}
 \item{data.type}{a character vector for labeling units in the legend.
 Default is "expression/abundance".}
 }
+\value{
+heatmap
+}
 \description{
 A function for making heatmaps to showcase the difference in
 expression/abundance of features across samples and sample groups and to
 visualise relations between them.
 }
 \examples{
-\dontrun{
+{
 RunHeatmap(campp2_brca_1_batchCorrected, campp2_brca_1_DEA_HUGO, 40,
 campp2_brca_1_meta$subtype, viridis.palette="turbo",
 plot.heatmap="DEA", "test_heatmap")

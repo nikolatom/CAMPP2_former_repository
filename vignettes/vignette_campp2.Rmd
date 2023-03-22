@@ -1,9 +1,9 @@
 ---
 title: "CAncer bioMarker Prediction Pipeline 2 (CAMPP2)"
 authors:
-  names: Nikola Tom, Mona Nourbakhsh, Matteo Tiberti, Elena Papaleo
+  names: Nikola Tom, Mona Nourbakhsh, Mathilde Wismann Bechgaard, Matteo Tiberti, Elena Papaleo
   affiliations: Technical University of Denmark, Danish Cancer Society Research Center
-  email: nikto@dtu.dk, tiberti@cancer.dk, elpap@dtu.dk, elenap@cancer.dk
+  email: nikto@cancer.dk, tiberti@cancer.dk, elpap@dtu.dk, elenap@cancer.dk
 package: CAMPP2
 output:
   BiocStyle::html_document
@@ -18,8 +18,8 @@ abstract:
   CAMPP2 currently supports; differential expression/abundance analysis, 
   LASSO/Elastic Net regression,Weighed Gene Co-expression Network Analysis, 
   Correlation analysis and Survival analysis (Cox proportional hazard regression).
-vignette: |
-  %\VignetteIndexEntry{Vignette Title}
+vignette: >
+  %\VignetteIndexEntry{CAncer bioMarker Prediction Pipeline 2 (CAMPP2)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -214,32 +214,31 @@ A data frame without NA values \
 **An example run:** \
 ##Each of the CAMPP2 example datasets (2) has 10000 genes and all of them have assigned read counts. In our example, we will randomly introduce 1000 NA values into each sample's genes (taking dataset campp2_brca_1) in the first step in order to prepare test data for NA values replacement. In the next step, NA values will be replaced by calling ReplaceNAs function. 
 
-```
+```{r, eval = TRUE}
 library(CAMPP2)
 ``` 
 
 ##Test data are already part of the CAMPP2 package so user doesn't need to download them. In case you want to load .rda objects manually from the cloned repository, you can use this code:
 
-```
+```{r, eval = FALSE, echo = TRUE, results='hide'}
 load("./data/campp2_brca_1.rda")
 load("./data/campp2_brca_1_meta.rda")
 load("./data/campp2_brca_2.rda")
 load("./data/campp2_brca_2_meta.rda")
-
 ``` 
 
 ##get a number of genes in the dataset.
-```
+```{r, eval = TRUE, echo = TRUE, results='hide'}
 n<-nrow(campp2_brca_1)
 ``` 
 
 ##For testing of this function, 1000 genes is assegned with NA value. NA values are introduced randomly into each sample and all the 10000 genes (n=10000) are considered for the introduction of NA values.
-```
+```{r, eval = TRUE, echo = TRUE, results='hide'}
 campp2_brca_1_NAs<-apply (campp2_brca_1, 2, function(x) {x[sample( c(1:n), floor(n/10))] <- NA; x} )
 ``` 
 
 ##create an object with replaced NAs; features having "NA" in more than 70% of the samples will be removed; samples having "NA" in more than 80% of the genes will be removed
-```
+```{r, eval = TRUE, echo = TRUE, results='hide'}
 campp2_brca_1_replacedNAs<-ReplaceNAs(data=campp2_brca_1_NAs, pct.NA.row=70, pct.NA.column=80) 
 ```
 \
@@ -260,7 +259,7 @@ a data frame with fixed zeros. Features having sum of zero counts higher than th
 \
 **An example run:** \
 ##Create an object with fixed zeros:
-```
+```{r, eval = TRUE, echo = TRUE, results='hide'}
 ###Dataset without NA values ("campp2_brca_1_replacedNAs" generated in a previous step) is used as an input.
 campp2_brca_1_zeroFix<-FixZeros(data=campp2_brca_1_replacedNAs,group=campp2_brca_1_meta$diagnosis, remove.sparse.features=TRUE)
 ```
@@ -282,7 +281,7 @@ an Elist ("seq" technology) or array ("array", "ms", "other" technologies) of no
 \
 **An example run:** \
 ##Create an object with normalized gene counts
-```
+```{r, eval = TRUE, echo = TRUE, results='hide'}
 ###Dataset without zero values ("campp2_brca_1_zeroFix" generated in the previous step) is used as an input.
 campp2_brca_1_normalized<-NormalizeData(data=campp2_brca_1_zeroFix,group=campp2_brca_1_meta$diagnosis,standardize="TMM",transform="voom",technology="seq")
 ```
@@ -303,7 +302,7 @@ a list including matrix (array) of batch corrected feature counts \
 \
 **An example run:** \
 ##Create an object with batch corrected feature (gene) counts
-```
+```{r, eval = TRUE, echo = TRUE, results='hide'}
 ###Normalized data ("campp2_brca_1_normalized" generated in a previous step) are used as an input.
 campp2_brca_1_batchCorrected<-BatchCorrect(data=campp2_brca_1_normalized,batch=campp2_brca_1_meta$tumor_stage,group=campp2_brca_1_meta$diagnosis,technology="seq") 
 ```
@@ -328,7 +327,7 @@ of the data \
 \
 **An example run:** \
 ##Create an object with information about the data distribution
-```
+```{r, eval = TRUE, echo = TRUE, results='hide'}
 ###First 10 features from normalized and batch corrected data "campp2_brca_1_batchCorrected" are used as an input.
 campp2_brca_1_distributionsFit <- FitDistributions(campp2_brca_1[1:10,])
 ```
@@ -369,9 +368,9 @@ a .pdf file including multiple plots:
 \
 **An example run:** \
 ##Plot distributions of the first 10 features from example batch corrected data.
-```
+```{r, eval = TRUE, echo = TRUE, results='hide'}
 ###List of fitted distributions "campp2_brca_1_distributionsFit" and the first
-10 feature counts from example batch corrected data are used as an input. PlotDistributions(campp2_brca_1_batchCorrected[1:10,], campp2_brca_1_distributionsFit)
+###10 feature counts from example batch corrected data are used as an input. PlotDistributions(campp2_brca_1_batchCorrected[1:10,], campp2_brca_1_distributionsFit)
 ```
 \
 
@@ -393,7 +392,7 @@ Results are visualized via graphs saved into current directory as pdf files. \
 \
 **An example run:** \
 ##Run MeanCounts on object with batch corrected feature (gene) counts
-```
+```{r, eval = TRUE, echo = TRUE, results='hide'}
 ###Normalized and batch corrected data ("campp2_brca_1_batchCorrected" generated in a previous step) are used as an input.
 meanCounts(campp2_brca_1_batchCorrected, campp2_brca_1_meta$diagnosis)
 ```
@@ -425,7 +424,7 @@ the input data. Default value is FALSE. \
 \
 **An example run:** \
 ##Run PCA on object with batch corrected feature (gene) counts
-```
+```{r, eval = TRUE, echo = TRUE, results='hide'}
 ###Normalized and batch corrected data ("campp2_brca_1_batchCorrected" generated in a previous step) are used as an input.
 PCAPlot(campp2_brca_1_batchCorrected, as.factor(campp2_brca_1_meta$subtype), show.PCA.labels=FALSE, cols=NULL, prefix="test_PCA_plot")
 ```
@@ -506,7 +505,7 @@ during PCA. Default is FALSE \
 **An example run:** \
 
 ##Estimate number of K-means and assign a specific cluster to each sample
-```
+```{r, eval = TRUE, echo = TRUE, results='hide'}
 ###Normalized and batch corrected data ("campp2_brca_1_batchCorrected" generated in a previous step) are used as an input.
 Kmeans.output<-runKmeans(campp2_brca_1_batchCorrected[1:2000,], num.subsets= NULL, subset.size=NULL, show.PCA.labels = FALSE, colors=NULL, prefix="test", num.km.clusters=NULL, seed=123, pca.scale=FALSE)
 ```
@@ -527,7 +526,7 @@ a data frame with the number of clusters \
 \
 **An example run:** \
 ##Estimate number of K-means 
-```
+```{r, eval = TRUE, echo = TRUE, results='hide'}
 ###Sub-sampled (the first 2000 genes) normalized and batch corrected data ("campp2_brca_1_batchCorrected" generated before) are used as an input.
 EstimateKmeans(t(campp2_brca_1_batchCorrected[1:2000,]))
 ```
@@ -581,7 +580,7 @@ limma.
 \
 **An example run:** \
 ##Run a wrapper for differential gene expression analysis on a raw gene counts
-```
+```{r, eval = TRUE, echo = TRUE, results='hide'}
 campp2_brca_1_DEA<-RunDEA(data=campp2_brca_1_normalized, 
 metadata=campp2_brca_1_meta,
 group=campp2_brca_1_meta$subtype, prefix="test",
@@ -622,7 +621,7 @@ comparisons\
 \
 **An example run:** \
 ## Run differential gene expression on all groups comparasons
-```
+```{r, eval = TRUE, echo = TRUE, results='hide'}
 DEA_all_comparisons <- DEAFeatureApply(data = campp2_brca_1_normalized, 
 design.matrix = campp2_brca_1_DEA$DEA.design.matrix, contrast.matrix =
 campp2_brca_1_DEA$DEA.contrast.matrix, cutoff.logFC =1, cutoff.FDR =0.01,
@@ -659,7 +658,7 @@ a list of up and down-regulated features in limma format
 **An example run:** \
 ##Run differential gene expression on the first group comparison (using 1st 
 column from provided contrast matrix).
-```
+```{r, eval = TRUE, echo = TRUE, results='hide'}
 DEA_one_comparison <- 
 DEAFeature(contrast.matrix = campp2_brca_1_DEA$DEA.contrast.matrix[,1],
 data = campp2_brca_1_normalized, 
@@ -685,7 +684,7 @@ comparisons in limma format.
 **An example run:** \
 ##Reformat and export results from DEA generated by limma in DEA_feature 
 function
-```
+```{r, eval = TRUE, echo = TRUE, results='hide'}
 campp2_brca_1_DEA_out<-ExportDEA(res.DEA = campp2_brca_1_DEA$res.DEA,
 prefix="test")
 ```
@@ -730,7 +729,7 @@ between the sample groups \
 **An example run:** \
 ##Create a volcano plot, venn diagram, upset plots based on results from RunDEA 
 and AddGeneName functions.
-```
+```{r, eval = TRUE, echo = TRUE, results='hide'}
 RunDEAVisuals(campp2_brca_1_DEA_HUGO, cutoff.FDR = 0.01, cutoff.logFC = 1,
 n.labeled.features = 15, control.group= "healthy", prefix="test_DEA_visuals")
 ```
@@ -761,7 +760,7 @@ Volcano plot of differentially expressed features saved into .png \
 **An example run:** \
 ##Create a volcano plot based on results from RunDEA and 
 AddGeneName functions.
-```
+```{r, eval = TRUE, echo = TRUE, results='hide'}
 MakeVolcano(campp2_brca_1_DEA_HUGO, prefix = "test_volcano",
 cutoff.logFC = 1, cutoff.FDR = 0.01, n.labeled.features = 15)
 
@@ -793,7 +792,7 @@ sample groups \
 \
 **An example run:** \
 ##Create an Upset plot based on a list of the features characteristic for each group
-```
+```{r, eval = TRUE, echo = TRUE, results='hide'}
 MakeUpset("testUpSet",campp2_brca_1_DEA_HUGO_features_per_group,
 label="test_UpSet",label.vertical.position=16.5,
 y.axis.by=300,set.size.by=250)
@@ -862,7 +861,7 @@ a .png file with a heatmap \
 \
 **An example run:** \
 ##Create and print heatmap based on the raw gene counts 
-```
+```{r, eval = TRUE, echo = TRUE, results='hide'}
 RunHeatmap(campp2_brca_1_batchCorrected, campp2_brca_1_DEA_HUGO,
 campp2_brca_1_meta$subtype, heatmap.size=30, viridis.palette="turbo",
 plot.heatmap="DEA", "test_heatmap")
@@ -894,7 +893,7 @@ a .png file with a heatmap \
 \
 **An example run:** \
 ##Create and print heatmap based on the raw gene counts 
-```
+```{r, eval = TRUE, echo = TRUE, results='hide'}
 MakeHeatmap(data=campp2_brca_1_batchCorrected, group=campp2_brca_1_meta$subtype, 
 prefix="test_heatmap", viridis.opt = "turbo", data.type = "expression/abundance")
 
@@ -947,7 +946,7 @@ rate (datasets of >20 samples) \
 **An example run:** \
 
 ##Run a wrapper of Ridge/elastic net/LASSO regression
-```
+```{r, eval = FALSE, echo = TRUE, results='hide'}
 ###Normalized and batch corrected data are used as an input for regression.
 ##run regression using small batch corrected dataset - no double cross validation
 runLASSO(data=campp2_brca_1_batchCorrected, group=campp2_brca_1_meta$diagnosis, alpha=0.5, min.coef=0, nfolds=10, prefix="test")
@@ -1012,7 +1011,7 @@ passing the filters (threshold defined by min.coef) \
 **An example run:** \
 
 ##Run Ridge/elastic net/LASSO regression
-```
+```{r, eval = TRUE, echo = TRUE, results='hide'}
 ###Normalized and batch corrected data are used as an input for regression.
 LASSOFeature(seed=123, data=campp2_brca_1_batchCorrected,
 group=campp2_brca_1_meta$diagnosis, alpha=0.5, validation=TRUE,
@@ -1045,7 +1044,7 @@ from DEAout table \
 2) a .png with a Venn diagram of features' intersections between DEA and LASSO \
 **An example run:** \
 
-```
+```{r, eval = FALSE, echo = TRUE, results='hide'}
 ##here we prepare DEA results compatible (group="diagnosis) with
 EN/LASS/Ridge regression results:
 campp2_brca_1_DEA_diagnosis<-RunDEA(data=campp2_brca_1_normalized,
@@ -1097,7 +1096,7 @@ a list of: \
 selected variables (e.g., genes) from the feature selection process. \
 **An example run:** \
 
-```
+```{r, eval = TRUE, echo = TRUE, results='hide'}
 campp2_brca_1_run_rf <-
 RunRF(data = campp2_brca_1_batchCorrected,
 group = campp2_brca_1_meta$diagnosis,
@@ -1161,7 +1160,7 @@ seed run. \
 7) a vector of integers containing seeds used in the procedure. \
 **An example run:** \
 
-```
+```{r, eval = TRUE, echo = TRUE, results='hide'}
 campp2_brca_1_rf_apply <- RFApply(data = campp2_brca_1_batchCorrected,
 group = campp2_brca_1_meta$diagnosis,
 validation = TRUE,
@@ -1219,7 +1218,7 @@ a list of: \
 If validation = FALSE, the last three elements in output will be NA. \
 **An example run:** \
 
-```
+```{r, eval = TRUE, echo = TRUE, results='hide'}
 campp2_brca_1_forest_features <- ForestFeatures(seed = 123,
 data = campp2_brca_1_batchCorrected,
 group = campp2_brca_1_meta$diagnosis,
