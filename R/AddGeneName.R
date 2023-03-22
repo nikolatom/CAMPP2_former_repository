@@ -28,7 +28,7 @@ AddGeneName <- function(data, ensembl.version = 104, ensembl.id.column.name="nam
                         values = ensembl_id,
                         filters = 'ensembl_gene_id',
                         uniqueRows = TRUE,
-                        bmHeader = T)
+                        bmHeader = TRUE)
 
     names(gene_names)[1]<-ensembl.id.column.name
     names(gene_names)[2]<-"HUGO_ID"
