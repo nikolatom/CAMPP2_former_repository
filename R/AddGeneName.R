@@ -13,7 +13,7 @@
 #' @import biomaRt
 #' @seealso
 #' @return a data frame with a column of HUGO IDs.
-#' @examples \dontrun{
+#' @examples {
 #' campp2_brca_1_DEA_HUGO <- AddGeneName(campp2_brca_1_DEA$DEA.out, 104)
 #' }
 

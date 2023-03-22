@@ -8,7 +8,7 @@
 #' @export
 #' @seealso
 #' @return a list including matrix (array) of batch corrected feature counts
-#' @examples \dontrun{
+#' @examples {
 #' ###In this example, normalized data are corrected for a batch effect, in our case "tumor stage".
 #' BatchCorrect(data=campp2_brca_1_normalized,batch=campp2_brca_1_meta$tumor_stage,group=campp2_brca_1_meta$diagnosis,technology="seq")
 #' }

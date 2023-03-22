@@ -4,7 +4,7 @@
 #' @export
 #' @seealso
 #' @return a list of dataframes by comparison
-#' @examples \dontrun{
+#' @examples {
 #' ...
 #' }
 

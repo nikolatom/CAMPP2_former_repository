@@ -42,7 +42,7 @@
 #' 3) a character vector with unique feature names
 #' 4) a design matrix
 #' 5) a contrast matrix
-#' @examples \dontrun{
+#' @examples {
 #' campp2_brca_1_DEA<-RunDEA(data=campp2_brca_1_normalized,
 #' metadata=campp2_brca_1_meta,
 #' group=campp2_brca_1_meta$subtype, prefix="test",

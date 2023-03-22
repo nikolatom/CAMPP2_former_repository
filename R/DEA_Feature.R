@@ -25,7 +25,7 @@
 #' @import limma
 #' @seealso
 #' @return a list of up and donw-regulated features in limma format
-#' @examples \dontrun{
+#' @examples {
 #' DEA_one_comparison <-
 #' DEAFeature(contrast.matrix = campp2_brca_1_DEA$DEA.contrast.matrix[,1],
 #' data = campp2_brca_1_normalized,

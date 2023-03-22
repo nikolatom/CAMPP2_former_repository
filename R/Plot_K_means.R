@@ -10,7 +10,7 @@
 #' @import rngtools
 #' @seealso
 #' @return clustering results and plots
-#' @examples \dontrun{
+#' @examples {
 #' ...
 #' }
 

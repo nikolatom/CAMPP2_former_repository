@@ -45,7 +45,7 @@
 #' forest model and 4) a confusionMatrix object containing confusion matrix of test data
 #' using fitted random forest model.
 #' If validation = FALSE, the last three elements in output will be NA.
-#' @examples \dontrun{
+#' @examples {
 #' campp2_brca_1_forest_features <-
 #' ForestFeatures(seed = 123,
 #' data = campp2_brca_1_batchCorrected,

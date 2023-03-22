@@ -12,7 +12,7 @@
 #' G represents a number of mixture components in the model corresponding to
 #' the optimal BIC
 #' 2) an 'mclustBIC' object, which is the result of applying mclustBIC to data
-#' @examples \dontrun{
+#' @examples {
 #' EstimateKmeans(t(campp2_brca_1_batchCorrected[1:2000,]))
 #' }
 

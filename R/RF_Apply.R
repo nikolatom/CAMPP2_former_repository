@@ -45,7 +45,7 @@
 #' interval for predictions of test data using fitted random forest model where each row
 #' in the matrix is a seed run, and 7) a vector of integers containing seeds used in the
 #' procedure.
-#' @examples \dontrun{
+#' @examples {
 #' campp2_brca_1_rf_apply <-
 #' RFApply(data = campp2_brca_1_batchCorrected,
 #' group = campp2_brca_1_meta$diagnosis,

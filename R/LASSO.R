@@ -43,7 +43,7 @@
 #' 3) fit - cv.glmnet object
 #' 4) coef.ma - a matrix of the features' coefficients (best model)
 #' passing the filters (threshold defined by min.coef)
-#' @examples \dontrun{
+#' @examples {
 #' LASSOFeature(seed=123, data=campp2_brca_1,
 #' group=campp2_brca_1_meta$diagnosis, alpha=0.5, validation=TRUE,
 #' min.coef = 0, nfolds=10)

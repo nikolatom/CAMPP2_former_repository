@@ -26,7 +26,7 @@
 #' @seealso
 #' @return a list (a vector in case vector=TRUE) of DEA features for all
 #' comparisons
-#' @examples \dontrun{
+#' @examples {
 #' DEA_all_comparisons <- DEAFeatureApply(data = campp2_brca_1_normalized,
 #' design.matrix = campp2_brca_1_DEA$DEA.design.matrix, contrast.matrix =
 #' campp2_brca_1_DEA$DEA.contrast.matrix, cutoff.logFC =1, cutoff.FDR =0.01,

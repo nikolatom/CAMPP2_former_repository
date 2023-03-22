@@ -23,7 +23,7 @@
 #' @seealso
 #' @return Elist (seq technology) or array (array, ms, other technologies) of
 #' normalized and transformed feature counts data
-#' @examples \dontrun{
+#' @examples {
 #' ###In this example, data with fixed zeros are used as an input.
 #' NormalizeData(data=campp2_brca_1_zeroFix,
 #' group=campp2_brca_1_meta$diagnosis, standardize="TMM", transform="voom",

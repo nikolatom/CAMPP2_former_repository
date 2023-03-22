@@ -10,7 +10,7 @@
 #' @return
 #' 1) a data frame of DEA results
 #' 2) a .txt table of exported DEA results
-#' @examples \dontrun{
+#' @examples {
 #' campp2_brca_1_DEA_out<-ExportDEA(res.DEA = campp2_brca_1_DEA$res.DEA,
 #' prefix="test")
 #' }
