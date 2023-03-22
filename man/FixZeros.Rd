@@ -32,7 +32,7 @@ smallest group). Next, remaining zeros are substituted with minimal values
 (>0) observed in each feature across all samples.
 }
 \examples{
-\dontrun{
+{
 ###In this example, data with fixed NA values are used as an input.
 FixZeros(data=campp2_brca_1_replacedNAs,group=campp2_brca_1_meta$diagnosis, remove.sparse.features=TRUE)
 }

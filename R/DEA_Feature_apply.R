@@ -23,7 +23,6 @@
 #' @export
 #' @import sva
 #' @import limma
-#' @seealso
 #' @return a list (a vector in case vector=TRUE) of DEA features for all
 #' comparisons
 #' @examples {

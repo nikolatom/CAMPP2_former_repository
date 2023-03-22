@@ -55,7 +55,7 @@ The function also intersects the selected features across all 10 seed runs
 as found during the feature selection process.
 }
 \examples{
-\dontrun{
+{
 campp2_brca_1_run_rf <-
 RunRF(data = campp2_brca_1_batchCorrected,
 group = campp2_brca_1_meta$diagnosis,

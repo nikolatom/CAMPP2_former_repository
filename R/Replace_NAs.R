@@ -20,7 +20,6 @@
 #' @export
 #' @import impute
 #' @import pcaMethods
-#' @seealso
 #' @return Data frame with replaced "NA" values
 #' @examples {
 #' ReplaceNAs(data=campp2_brca_1_NAs, pct.NA.row=70, pct.NA.column=80)

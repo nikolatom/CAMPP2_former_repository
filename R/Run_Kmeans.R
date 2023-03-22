@@ -63,7 +63,6 @@
 #' @import factoextra
 #' @import FactoMineR
 #' @import rngtools
-#' @seealso
 #' @return
 #' 1) a list including:
 #'    a) a data.frame with cluster information assigned to each sample;

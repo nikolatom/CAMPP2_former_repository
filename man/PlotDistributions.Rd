@@ -41,7 +41,7 @@ negative float values, only normal distribution is calculated.
 Resulting figures are saved into the .pdf file.
 }
 \examples{
-\dontrun{
+{
 PlotDistributions(campp2_brca_1_batchCorrected[1:10,], campp2_brca_1_distributionsFit)
 }
 }

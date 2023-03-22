@@ -6,7 +6,6 @@
 #' @param data a data frame of feature (e.g. gene) counts
 #' @export
 #' @import mclust
-#' @seealso
 #' @return a list including:
 #' 1) a data frame with a number of clusters corresponding to G from BIC object.
 #' G represents a number of mixture components in the model corresponding to

@@ -38,7 +38,6 @@
 #' @import randomForest
 #' @import caret
 #' @import rngtools
-#' @seealso
 #' @return a list of four elements: 1) a varSelRF object containing results of variable
 #' selection using random forest, 2) a randomForest object containing random forest model
 #' fitted to data, 3) a factor containing predictions of test data using fitted random

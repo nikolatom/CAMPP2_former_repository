@@ -37,7 +37,7 @@ expression/abundance of features across samples and sample groups and to
 visualise relations between them.
 }
 \examples{
-\dontrun{
+{
 MakeHeatmap(data=campp2_brca_1_batchCorrected,
 group=campp2_brca_1_meta$subtype, prefix="test", viridis.palette = "turbo",
 data.type = "Feature counts")

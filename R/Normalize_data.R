@@ -20,7 +20,6 @@
 #' generating the data. Allowed types are: 'array', 'seq', 'ms' or 'other'.
 #' @export
 #' @import fitdistrplus
-#' @seealso
 #' @return Elist (seq technology) or array (array, ms, other technologies) of
 #' normalized and transformed feature counts data
 #' @examples {

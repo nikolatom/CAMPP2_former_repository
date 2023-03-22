@@ -31,7 +31,6 @@
 #' @import varSelRF
 #' @import randomForest
 #' @import caret
-#' @seealso
 #' @return a list of seven elements: 1) a list where each element is a character string
 #' containing selected variables from the random forest feature selection process from
 #' each seed run, 2) a list where each element is out-of-bag errors (of type numeric)

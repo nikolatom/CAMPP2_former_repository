@@ -6,7 +6,6 @@
 #' @param technology a string vector of length 1 defining technology used for generating the data. Allowed types are: "array", "seq", "ms" or "other"
 #' @import sva
 #' @export
-#' @seealso
 #' @return a list including matrix (array) of batch corrected feature counts
 #' @examples {
 #' ###In this example, normalized data are corrected for a batch effect, in our case "tumor stage".

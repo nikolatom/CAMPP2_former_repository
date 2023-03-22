@@ -15,7 +15,6 @@
 #' sample group, and for replacing the remaining zeros.  Default is TRUE.
 #' @export
 #' @import impute
-#' @seealso
 #' @return a data frame with fixed zeros. Features having sum of zero counts
 #' higher than the size of the smallest sample group are removed and
 #' remaining zeros will be replaced by default.

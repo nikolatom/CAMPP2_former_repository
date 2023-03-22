@@ -66,7 +66,7 @@ test data and corresponding accuracies. Finally, the function calculates the
 average initial importance of each variable across the seed runs.
 }
 \examples{
-\dontrun{
+{
 campp2_brca_1_rf_apply <-
 RFApply(data = campp2_brca_1_batchCorrected,
 group = campp2_brca_1_meta$diagnosis,

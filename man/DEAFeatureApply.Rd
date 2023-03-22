@@ -50,7 +50,7 @@ Cutoffs for logFC and FDR; and blocking variable are optional. Using
 parameter vector=TRUE, only features' IDs are output.
 }
 \examples{
-\dontrun{
+{
 DEA_all_comparisons <- DEAFeatureApply(data = campp2_brca_1_normalized,
 design.matrix = campp2_brca_1_DEA$DEA.design.matrix, contrast.matrix =
 campp2_brca_1_DEA$DEA.contrast.matrix, cutoff.logFC =1, cutoff.FDR =0.01,

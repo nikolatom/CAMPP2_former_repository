@@ -17,7 +17,6 @@
 #' @export
 #' @import ggplot2
 #' @import ggrepel
-#' @seealso
 #' @return Volcano plot of differentially expressed features saved into .png
 #' @examples {
 #' ##The input is made by example script from AddGeneName function

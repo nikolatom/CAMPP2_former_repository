@@ -20,7 +20,6 @@
 #' @import squash
 #' @import viridisLite
 #' @import grid
-#' @seealso
 #' @return
 #' @examples {
 #' MakeHeatmap(data=campp2_brca_1_batchCorrected,

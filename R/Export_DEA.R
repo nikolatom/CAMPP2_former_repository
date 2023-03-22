@@ -6,7 +6,6 @@
 #' comparisons in limma format.
 #' @param prefix a character vector defining prefix of output file name.
 #' @export
-#' @seealso
 #' @return
 #' 1) a data frame of DEA results
 #' 2) a .txt table of exported DEA results

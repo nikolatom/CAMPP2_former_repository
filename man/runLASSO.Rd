@@ -56,7 +56,7 @@ coefficient values
 4) cross validation error plot
 }
 \examples{
-\dontrun{
+{
 ##run regression using small batch corrected dataset - no double cross validation
 campp2_brca_1_LASSO<-runLASSO(data=campp2_brca_1_batchCorrected, group=campp2_brca_1_meta$diagnosis, alpha=0.5, min.coef=0, nfolds=10, prefix="test")
 ##run regression using large batch corrected dataset suitable for double cross validation

@@ -2,7 +2,6 @@
 #' @description Function which subsets a dataframe of differential expression analysis into a list of dataframes by comparison.
 #' @param my.data a dataframe with results of differential expression analysis.
 #' @export
-#' @seealso
 #' @return a list of dataframes by comparison
 #' @examples {
 #' ...

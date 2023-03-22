@@ -22,7 +22,7 @@ intersections of the features between the groups
 (e.g., differentially expressed genes for each subtype)
 }
 \examples{
-\dontrun{
+{
 MakeVennDiagram("test_Venn", campp2_brca_1_DEA_HUGO_features_per_group)
 }
 }

@@ -61,7 +61,7 @@ expression/abundance of features across samples and sample groups and to
 visualise relations between them.
 }
 \examples{
-\dontrun{
+{
 RunHeatmap(campp2_brca_1_batchCorrected, campp2_brca_1_DEA_HUGO, 40,
 campp2_brca_1_meta$subtype, viridis.palette="turbo",
 plot.heatmap="DEA", "test_heatmap")

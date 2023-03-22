@@ -34,7 +34,7 @@ impute.knn will be performed (rows with more than 50 percent of missing
 values will be imputed using the overall mean per sample).
 }
 \examples{
-\dontrun{
+{
 ReplaceNAs(data=campp2_brca_1_NAs, pct.NA.row=70, pct.NA.column=80)
 }
 }

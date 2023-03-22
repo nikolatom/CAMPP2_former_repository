@@ -13,7 +13,6 @@
 #' @export
 #' @import limma
 #' @import sva
-#' @seealso
 #' @return a model matrix used e.g. for limma
 #' @examples {
 #' design.matrix<-Design.Matrix(campp2_brca_1_meta, campp2_brca_1_meta$diagnosis,

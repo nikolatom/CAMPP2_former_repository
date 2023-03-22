@@ -17,7 +17,6 @@
 #' @export
 #' @import ComplexHeatmap
 #' @import viridis
-#' @seealso
 #' @return an Upset plot showcasing the size of intersections of the features
 #' between the sample groups
 #' @examples {

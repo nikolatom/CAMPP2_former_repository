@@ -9,7 +9,6 @@
 #' features should be input, not intended for the full feature count matrix!
 #' @export
 #' @import fitdistrplus
-#' @seealso
 #' @return a list of the results from fitdist function describing distribution
 #' of the data
 #' @examples {

@@ -34,7 +34,6 @@
 #' @import parallel
 #' @import doMC
 #' @import rngtools
-#' @seealso
 #' @return a list of:
 #' 1) coef.ma.names - a matrix of feature names having coefficients of best model
 #' passing the filters (threshold defined by min.coef)

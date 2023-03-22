@@ -27,7 +27,7 @@ a model matrix used e.g. for limma
 Create model matrix
 }
 \examples{
-\dontrun{
+{
 design.matrix<-Design.Matrix(campp2_brca_1_meta, campp2_brca_1_meta$diagnosis,
 batch=campp2_brca_1_meta$tumor_stage, covariates="vital_status")
 }

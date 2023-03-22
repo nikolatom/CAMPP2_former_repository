@@ -9,7 +9,6 @@
 #' @export
 #' @import VennDiagram
 #' @import viridis
-#' @seealso
 #' @return Venn Diagram
 #' @examples {
 #' MakeVennDiagram("test_Venn", campp2_brca_1_DEA_HUGO_features_per_group)

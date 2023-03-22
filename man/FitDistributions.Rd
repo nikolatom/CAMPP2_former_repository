@@ -23,7 +23,7 @@ Weibull, gamma, log normal and normal distributions are tested. In case of
 negative float values, only normal distribution is calculated.
 }
 \examples{
-\dontrun{
+{
 campp2_brca_1_distributionsFit <- FitDistributions(campp2_brca_1[1:10,])
 }
 }

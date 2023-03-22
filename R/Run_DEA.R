@@ -34,7 +34,6 @@
 #' @export
 #' @import limma
 #' @import sva
-#' @seealso
 #' @return a list of:
 #' 1) re-formatted matrix of differential expression/abundance results from
 #' limma.

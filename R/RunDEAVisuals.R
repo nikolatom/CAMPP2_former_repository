@@ -31,7 +31,6 @@
 #' @import VennDiagram
 #' @import viridis
 #' @import ComplexHeatmap
-#' @seealso
 #' @return several .png files with:
 #' 1) Volcano plot of differentially expressed features saved into .png
 #' 2) Venn Diagram showcasing the size of intersections of the features

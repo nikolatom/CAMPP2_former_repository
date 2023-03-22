@@ -26,7 +26,7 @@ differential expression/abundance results from limma, please, check RunDEA
 for more details). The output is a data frame with a column containing HUGO IDs
 }
 \examples{
-\dontrun{
+{
 campp2_brca_1_DEA_HUGO <- AddGeneName(campp2_brca_1_DEA$DEA.out, 104)
 }
 }

@@ -29,7 +29,6 @@
 #' @import varSelRF
 #' @import randomForest
 #' @import caret
-#' @seealso
 #' @return a list containing two elements:
 #' 1) The first element is a list containing the output from the RFApply function
 #' 2) The second element is a character vector containing the intersection of

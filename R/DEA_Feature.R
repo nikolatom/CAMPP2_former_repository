@@ -23,7 +23,6 @@
 #' @import edgeR
 #' @import statmod
 #' @import limma
-#' @seealso
 #' @return a list of up and donw-regulated features in limma format
 #' @examples {
 #' DEA_one_comparison <-

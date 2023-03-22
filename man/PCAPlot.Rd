@@ -42,7 +42,7 @@ describing percentages of explained variances by each PCA component and
 plots with contributions of variables to PCA1 and PCA2.
 }
 \examples{
-\dontrun{
+{
 PCAPlot(campp2_brca_1_batchCorrected, as.factor(campp2_brca_1_meta$subtype), show.PCA.labels =FALSE, cols=NULL, prefix="test_PCA")
 }
 }

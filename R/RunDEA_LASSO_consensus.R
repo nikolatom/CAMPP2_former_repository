@@ -15,7 +15,6 @@
 #' @param prefix a character string defining a prefix of output file.
 #' @export
 #' @import VennDiagram
-#' @seealso
 #' @return
 #' 1) a data frame of features common for both DEA and LASSO which are extracted
 #' from DEAout table

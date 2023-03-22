@@ -16,7 +16,6 @@
 #' @export
 #' @import factoextra
 #' @import FactoMineR
-#' @seealso
 #' @return 1) scree plot; 2) plot of contributions of variables to PC1; 3) plot
 #' of contributions of variables to PC2; 4) 2D PCA plot projecting samples over
 #' first 2 principal components

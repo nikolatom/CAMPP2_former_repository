@@ -39,7 +39,7 @@ intersections of the features present each group
 (e.g., differentially expressed genes for each subtype).
 }
 \examples{
-\dontrun{
+{
 MakeUpset("testUpSet",campp2_brca_1_DEA_HUGO_features_per_group,
 label="test_UpSet",label.vertical.position=16.5,
 y.axis.by=300,set.size.by=250)

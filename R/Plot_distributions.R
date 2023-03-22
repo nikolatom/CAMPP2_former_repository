@@ -24,7 +24,6 @@
 #' @import ggplot2
 #' @import squash
 #' @import viridis
-#' @seealso
 #' @return a .pdf file including multiple plots:
 #' 1) Cullen and Frey graph
 #' 2) Histogram and theoretical densities

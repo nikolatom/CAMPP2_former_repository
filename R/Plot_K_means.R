@@ -8,7 +8,6 @@
 #' @export
 #' @import mclust
 #' @import rngtools
-#' @seealso
 #' @return clustering results and plots
 #' @examples {
 #' ...
