@@ -32,16 +32,14 @@ column names of the input data. Default value is FALSE.}
 \value{
 1) scree plot; 2) plot of contributions of variables to PC1; 3) plot
 of contributions of variables to PC2; 4) 2D PCA plot projecting samples over
-first 2 principal components; 5) 3D PCA plot projecting samples over
-first 3 principal components
+first 2 principal components
 }
 \description{
 A function calculating PCA. PCA plot shows the relationships
 between samples (based on squared euclidean distances) in the data set.
 Each dot represents one sample. This function provides also a scree plot
 describing percentages of explained variances by each PCA component and
-plots with contributions of variables to PCA1 and PCA2. Top 3 PCA components
-are visualized in 3D plot.
+plots with contributions of variables to PCA1 and PCA2.
 }
 \examples{
 \dontrun{
