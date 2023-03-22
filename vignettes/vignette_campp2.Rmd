@@ -1,9 +1,9 @@
 ---
 title: "CAncer bioMarker Prediction Pipeline 2 (CAMPP2)"
 authors:
-  names: Nikola Tom, Mona Nourbakhsh, Matteo Tiberti, Elena Papaleo
+  names: Nikola Tom, Mona Nourbakhsh, Mathilde Wismann Bechgaard, Matteo Tiberti, Elena Papaleo
   affiliations: Technical University of Denmark, Danish Cancer Society Research Center
-  email: nikto@dtu.dk, tiberti@cancer.dk, elpap@dtu.dk, elenap@cancer.dk
+  email: nikto@cancer.dk, tiberti@cancer.dk, elpap@dtu.dk, elenap@cancer.dk
 package: CAMPP2
 output:
   BiocStyle::html_document
