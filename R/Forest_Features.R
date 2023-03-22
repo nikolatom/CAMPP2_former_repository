@@ -37,6 +37,7 @@
 #' @import varSelRF
 #' @import randomForest
 #' @import caret
+#' @import rngtools
 #' @seealso
 #' @return a list of four elements: 1) a varSelRF object containing results of variable
 #' selection using random forest, 2) a randomForest object containing random forest model
@@ -85,7 +86,7 @@ ForestFeatures <- function(seed = 123,
         # A ratio of test.train.ratio is used for the splitting
         # These samples will be used as validation data set
         # It will contain samples from both groups
-        set.seed(seed)
+        RNGseed(seed)
         samp <- unlist(lapply(ll,
                               function(x) sample(x,
                                                  ceiling((length(x) * test.train.ratio)))))
@@ -98,7 +99,7 @@ ForestFeatures <- function(seed = 123,
         group.train <- group[-samp]
 
         # Carry out variable selection using random forest on training data and out-of-bag errors
-        set.seed(seed)
+        RNGseed(seed)
         RFvars <- varSelRF(data.train,
                            group.train,
                            ntree = num.trees.init,
@@ -106,7 +107,7 @@ ForestFeatures <- function(seed = 123,
                            vars.drop.frac = 0.2)
 
         # Fit random forest algorithm on training data
-        set.seed(seed)
+        RNGseed(seed)
         RFforest <- randomForest(data.train,
                                  group.train,
                                  ntree = num.trees.init,
@@ -134,7 +135,7 @@ ForestFeatures <- function(seed = 123,
         data <- t(data)
 
         # Carry out variable selection using random forest and out-of-bag errors
-        set.seed(seed)
+        RNGseed(seed)
         RFvars <- varSelRF(data,
                            group,
                            ntree = num.trees.init,

@@ -7,6 +7,7 @@
 #' @param my.name ?dataset name?
 #' @export
 #' @import mclust
+#' @import rngtools
 #' @seealso
 #' @return clustering results and plots
 #' @examples \dontrun{
@@ -24,7 +25,7 @@ PlotKmeans <- function(my.data, clus.list, k, my.labels, my.name) {
     }
     nclus <- sort(nclus)
     for (idx in 1:length(nclus)) {
-        set.seed(10)
+        RNGseed(10)
 #        nth <- detectCores(logical = TRUE)
         Kclus <- kmeans(t(my.data), nclus[[idx]])
         Clusters <- as.factor(paste0("C",data.frame(Kclus$cluster)$Kclus.cluster))

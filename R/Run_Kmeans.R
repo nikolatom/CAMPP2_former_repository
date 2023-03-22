@@ -62,6 +62,7 @@
 #' @export
 #' @import factoextra
 #' @import FactoMineR
+#' @import rngtools
 #' @seealso
 #' @return
 #' 1) a list including:
@@ -193,7 +194,7 @@ runKmeans <- function(data, num.subsets= "automatic", subset.size="automatic", s
 
     for (idx in 1:length(nclus)) {
         if(!is.null(seed)){
-            set.seed(seed)
+            RNGseed(seed)
         }
         print("seed")
         print(seed)

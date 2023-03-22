@@ -33,6 +33,7 @@
 #' @import glmnet
 #' @import parallel
 #' @import doMC
+#' @import rngtools
 #' @seealso
 #' @return a list of:
 #' 1) coef.ma.names - a matrix of feature names having coefficients of best model
@@ -82,7 +83,7 @@
         }
 
         if(family == "multinomial") {
-            set.seed(seed)
+            RNGseed(seed)
             nth <- detectCores(logical = TRUE)
             registerDoMC(cores=nth)
             fit <- cv.glmnet(x = t(data), y = group, family="multinomial", type.multinomial = "grouped", nfolds = nfolds, alpha = alpha, parallel=TRUE) # An alternative described here: https://glmnet.stanford.edu/articles/glmnet.html
@@ -92,7 +93,7 @@
             coef.ma <- as(coef[[1]], "matrix")
 
         } else if (family == "binomial") {
-            set.seed(seed)
+            RNGseed(seed)
             fit <- cv.glmnet(x = t(data), y = group, family = "binomial", type.measure = "class", nfolds = nfolds, alpha = alpha)
             # fit <- glmnet(x = t(data), y = group, alpha = alpha, lambda = fit.cv$lambda.min, family = "binomial", type.measure = "class")
 
