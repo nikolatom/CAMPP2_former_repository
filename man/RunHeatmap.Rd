@@ -55,6 +55,9 @@ Options are:"DEA", "LASSO", "EN", "Ridge" or "Consensus".}
 \item{data.type}{a character vector for labeling units in the legend.
 Default is "expression/abundance".}
 }
+\value{
+heatmap
+}
 \description{
 A function for making heatmaps to showcase the difference in
 expression/abundance of features across samples and sample groups and to

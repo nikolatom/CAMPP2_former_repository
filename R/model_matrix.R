@@ -1,5 +1,5 @@
 #' @title Create model matrix
-#' @descriptionA A function for creating a model matrix based on gene counts
+#' @description A function for creating a model matrix based on gene counts
 #' metadata table and selected column names (covariates) from the metadata.
 #' @param metadata Samples' metadata table should be imported using function
 #' "import_metadata". Metadata must include exactly the same samples as gene

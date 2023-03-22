@@ -38,7 +38,7 @@
 #' @import squash
 #' @import viridisLite
 #' @import grid
-#' @return
+#' @return heatmap
 #' @examples {
 #' RunHeatmap(campp2_brca_1_batchCorrected, campp2_brca_1_DEA_HUGO, 40,
 #' campp2_brca_1_meta$subtype, viridis.palette="turbo",

@@ -46,7 +46,7 @@
 #' metadata=campp2_brca_1_meta,
 #' group=campp2_brca_1_meta$subtype, prefix="test",
 #' block=campp2_brca_1_meta$subtype, batch=campp2_brca_1_meta$age,
-#' covarDEA = c("tumor_stage"), cutoff.logFC=1, cutoff.FDR=0.01)
+#' covarDEA = c("tumor_stage"), cutoff.logFC=1, cutoff.FDR=0.01)}
 
 
 RunDEA <- function(data, metadata=NULL, group, batch=NULL, covarDEA=NULL, cutoff.logFC=1, cutoff.FDR=0.01, prefix, block=NULL) {

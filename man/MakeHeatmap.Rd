@@ -31,6 +31,9 @@ type of the data being visualized. Default is "expression/abundance".}
 represented by a column from a metadata file). Group's information
 will be used in clustering the samples.}
 }
+\value{
+heatmap
+}
 \description{
 A function for making heatmaps to showcase the difference in
 expression/abundance of features across samples and sample groups and to

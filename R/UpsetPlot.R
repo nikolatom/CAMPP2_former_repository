@@ -8,7 +8,7 @@
 #' characteristic for each group of interest (e.g., subtype)
 #' @param label a character vector used as a label for the upset plot. Default
 #' is "".
-#' @label.vertical.position a numeric value describing vertical position of
+#' @param label.vertical.position a numeric value describing vertical position of
 #' the label. Default is 15.0 (cm)
 #' @param y.axis.by an integer describing interval used for labeling Y-axis.
 #' Defaults is 100.
