@@ -65,7 +65,7 @@ ReplaceNAs <- function(data,pct.NA.row=70,pct.NA.column=80) {
 
         file <- try(data.lls <- data.frame(completeObs(llsImpute(as.matrix(data), k = 10, correlation="spearman", allVariables=TRUE))), silent =TRUE)
 
-        if (class(file) != "try-error") {
+        if (!is(class(file), "try-error")){
             hasNegB <- unique(as.vector(data < 0))
             hasNegA <- unique(as.vector(data.lls < 0))
             do_knn <- TRUE %in% hasNegA & FALSE %in% hasNegB

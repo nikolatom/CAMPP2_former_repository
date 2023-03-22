@@ -196,7 +196,7 @@ parseArguments <- function(data1, data2, metadata1, metadata2, control.group, gr
     block1=NULL
     block2=NULL
     if(!is.null(block)){
-        if (class(block)=='list'){
+        if(is(class(block), "list")){
             block1 <- block[[1]]
             block2 <- block[[2]]
 

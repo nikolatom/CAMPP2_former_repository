@@ -105,8 +105,7 @@ RFApply <- function(data,
         ## Extract results from the process of fitting a random forest model to the data
 
         # If a random forest model was fitted
-        if (class(RF[[2]]) == "randomForest") {
-
+        if (is(class(RF[[2]]), "randomForest")){
             # Obtain OOB error from fitted random forest model
             RFoob.fit[[idx]] <- tail(RF[[2]]$err.rate, n = 1)[,1]
 
@@ -117,8 +116,7 @@ RFApply <- function(data,
         }
 
         # If predictions were performed on test data
-        if (class(RF[[4]]) == "confusionMatrix") {
-
+        if (is(class(RF[[4]]), "confusionMatrix")){
             # Obtain accuracy and 95% confidence interval for predictions of test data using fitted random forest model
             RFacc[[idx]] <- RF[[4]]$overall[c(1, 3, 4)]
 
