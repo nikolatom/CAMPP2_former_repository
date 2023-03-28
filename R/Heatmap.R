@@ -22,6 +22,10 @@
 #' @import grid
 #' @return heatmap
 #' @examples {
+#' campp2_brca_1_batchCorrected<-BatchCorrect(data=campp2_brca_1_normalized,
+#' batch=campp2_brca_1_meta$tumor_stage,group=campp2_brca_1_meta$diagnosis,
+#' technology="seq")
+#'
 #' MakeHeatmap(data=campp2_brca_1_batchCorrected,
 #' group=campp2_brca_1_meta$subtype, prefix="test", viridis.palette = "turbo",
 #' data.type = "Feature counts")

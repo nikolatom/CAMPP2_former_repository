@@ -45,6 +45,10 @@
 #' in the matrix is a seed run, and 7) a vector of integers containing seeds used in the
 #' procedure.
 #' @examples {
+#' campp2_brca_1_batchCorrected<-BatchCorrect(data=campp2_brca_1_normalized,
+#' batch=campp2_brca_1_meta$tumor_stage,group=campp2_brca_1_meta$diagnosis,
+#' technology="seq")
+#'
 #' campp2_brca_1_rf_apply <-
 #' RFApply(data = campp2_brca_1_batchCorrected,
 #' group = campp2_brca_1_meta$diagnosis,

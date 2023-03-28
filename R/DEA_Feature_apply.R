@@ -26,6 +26,13 @@
 #' @return a list (a vector in case vector=TRUE) of DEA features for all
 #' comparisons
 #' @examples {
+#' ###In this example, we create normalized data first, then, DEAFeatureApply
+#' is run.
+#'
+#' campp2_brca_1_normalized<-NormalizeData(data=campp2_brca_1_zeroFix,
+#' group=campp2_brca_1_meta$diagnosis, standardize="TMM", transform="voom",
+#' technology="seq")
+#'
 #' DEA_all_comparisons <- DEAFeatureApply(data = campp2_brca_1_normalized,
 #' design.matrix = campp2_brca_1_DEA$DEA.design.matrix, contrast.matrix =
 #' campp2_brca_1_DEA$DEA.contrast.matrix, cutoff.logFC =1, cutoff.FDR =0.01,

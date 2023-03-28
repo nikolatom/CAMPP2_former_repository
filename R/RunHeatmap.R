@@ -40,6 +40,10 @@
 #' @import grid
 #' @return heatmap
 #' @examples {
+#' campp2_brca_1_batchCorrected<-BatchCorrect(data=campp2_brca_1_normalized,
+#' batch=campp2_brca_1_meta$tumor_stage,group=campp2_brca_1_meta$diagnosis,
+#' technology="seq")
+#'
 #' RunHeatmap(campp2_brca_1_batchCorrected, campp2_brca_1_DEA_HUGO, 40,
 #' campp2_brca_1_meta$subtype, viridis.palette="turbo",
 #' plot.heatmap="DEA", "test_heatmap")

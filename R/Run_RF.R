@@ -34,6 +34,10 @@
 #' 2) The second element is a character vector containing the intersection of
 #' selected variables (e.g., genes) from the feature selection process
 #' @examples {
+#' campp2_brca_1_batchCorrected<-BatchCorrect(data=campp2_brca_1_normalized,
+#' batch=campp2_brca_1_meta$tumor_stage,group=campp2_brca_1_meta$diagnosis,
+#' technology="seq")
+#'
 #' campp2_brca_1_run_rf <-
 #' RunRF(data = campp2_brca_1_batchCorrected,
 #' group = campp2_brca_1_meta$diagnosis,

@@ -8,8 +8,15 @@
 #' @export
 #' @return a list including matrix (array) of batch corrected feature counts
 #' @examples {
-#' ###In this example, normalized data are corrected for a batch effect, in our case "tumor stage".
-#' BatchCorrect(data=campp2_brca_1_normalized,batch=campp2_brca_1_meta$tumor_stage,group=campp2_brca_1_meta$diagnosis,technology="seq")
+#' ###In this example, normalized data are created. Then, normalized data are corrected for a batch effect, in our case "tumor stage".
+#'
+#' campp2_brca_1_normalized<-NormalizeData(data=campp2_brca_1_zeroFix,
+#' group=campp2_brca_1_meta$diagnosis, standardize="TMM", transform="voom",
+#' technology="seq")
+#'
+#' campp2_brca_1_batchCorrected<-BatchCorrect(data=campp2_brca_1_normalized,
+#' batch=campp2_brca_1_meta$tumor_stage,group=campp2_brca_1_meta$diagnosis,
+#' technology="seq")
 #' }
 
 BatchCorrect<-function(data,batch,group,technology){

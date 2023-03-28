@@ -20,6 +20,11 @@
 #' from DEAout table
 #' 2) a .png with a Venn diagram of features' intersections between DEA and LASSO
 #' @examples {
+#' ###here we create normalized data
+#' campp2_brca_1_normalized<-NormalizeData(data=campp2_brca_1_zeroFix,
+#' group=campp2_brca_1_meta$diagnosis, standardize="TMM", transform="voom",
+#' technology="seq")
+#'
 #' ##here we prepare DEA results compatible (group="diagnosis) with
 #' ##EN/LASS/Ridge regression results:
 #' campp2_brca_1_DEA_diagnosis<-RunDEA(data=campp2_brca_1_normalized,

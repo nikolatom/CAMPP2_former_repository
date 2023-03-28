@@ -31,6 +31,10 @@
 #' 4) Q−Q plot
 #' 5) P−P plot
 #' @examples {
+#' campp2_brca_1_batchCorrected<-BatchCorrect(data=campp2_brca_1_normalized,
+#' batch=campp2_brca_1_meta$tumor_stage,group=campp2_brca_1_meta$diagnosis,
+#' technology="seq")
+#'
 #' PlotDistributions(campp2_brca_1_batchCorrected[1:10,], campp2_brca_1_distributionsFit)
 #' }
 

@@ -45,6 +45,10 @@
 #' using fitted random forest model.
 #' If validation = FALSE, the last three elements in output will be NA.
 #' @examples {
+#' campp2_brca_1_batchCorrected<-BatchCorrect(data=campp2_brca_1_normalized,
+#' batch=campp2_brca_1_meta$tumor_stage,group=campp2_brca_1_meta$diagnosis,
+#' technology="seq")
+#'
 #' campp2_brca_1_forest_features <-
 #' ForestFeatures(seed = 123,
 #' data = campp2_brca_1_batchCorrected,

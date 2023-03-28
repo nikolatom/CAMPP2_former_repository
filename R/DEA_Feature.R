@@ -25,6 +25,12 @@
 #' @import limma
 #' @return a list of up and donw-regulated features in limma format
 #' @examples {
+#' ###In this example, we create normalized data first, then, DEAFeature is run.
+#'
+#' campp2_brca_1_normalized<-NormalizeData(data=campp2_brca_1_zeroFix,
+#' group=campp2_brca_1_meta$diagnosis, standardize="TMM", transform="voom",
+#' technology="seq")
+#'
 #' DEA_one_comparison <-
 #' DEAFeature(contrast.matrix = campp2_brca_1_DEA$DEA.contrast.matrix[,1],
 #' data = campp2_brca_1_normalized,

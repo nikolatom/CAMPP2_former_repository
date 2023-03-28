@@ -11,6 +11,10 @@
 #' for all sample groups and also for each group of samples. Results are
 #' visualized via graphs saved into current directory as pdf files.
 #' @examples {
+#' campp2_brca_1_batchCorrected<-BatchCorrect(data=campp2_brca_1_normalized,
+#' batch=campp2_brca_1_meta$tumor_stage,group=campp2_brca_1_meta$diagnosis,
+#' technology="seq")
+#'
 #' meanCounts(campp2_brca_1_batchCorrected, campp2_brca_1_meta$diagnosis)
 #' }
 
