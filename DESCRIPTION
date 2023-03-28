@@ -3,10 +3,10 @@ Type: Package
 Title: CAncer bioMarker Prediction Pipeline 2 (CAMPP2)
 Version: 0.99.0
 Authors@R: c(
-    person("Tom, Nikola", email = "ntom@cancer.dk", role = c("cre", "aut")),
+    person("Tom, Nikola", email = "ntom@cancer.dk", role = c("aut")),
     person("Nourbakhsh, Mona", email = "mon@cancer.dk", role = c("aut")),
     person("Bechgaard, Mathilde Wismann", email = "mathilde@bechgaard.dk", role = c("aut")),
-    person("Tiberti, Matteo", email = "tiberti@cancer.dk", role = c("aut")),
+    person("Tiberti, Matteo", email = "tiberti@cancer.dk", role = c("cre", "aut")),
     person("Papaleo, Elena", email = "elenap@cancer.dk", role = c("aut")))
 Description: The CAncer bioMarker Prediction Pipeline2 (CAMPP2) is a simple
   bioinformatics tool intended to automatize identification of potential
