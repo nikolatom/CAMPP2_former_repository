@@ -188,6 +188,7 @@ Various output depending on workflow settings. \
 ##This is a basic worflow run using the mandatory parameters and default test data provided in the package. The results are saved into "test_CAMPP2" folder in the working directory.
 
 ```{r, eval = TRUE, echo = TRUE, results='hide'}
+library(CAMPP2)
 runCampp2(batches=c("tumor_stage","tumor_stage"), prefix="test_CAMPP2", 
 data1=campp2_brca_1, data2=campp2_brca_2, metadata1=campp2_brca_1_meta, 
 metadata2=campp2_brca_2_meta, groups=c("IDs", "diagnosis","IDs", "diagnosis"), 
@@ -970,7 +971,7 @@ batch=campp2_brca_1_meta$tumor_stage,group=campp2_brca_1_meta$diagnosis,
 technology="seq")
 
 MakeHeatmap(data=campp2_brca_1_batchCorrected, group=campp2_brca_1_meta$subtype, 
-prefix="test_heatmap", viridis.opt = "turbo", data.type = "expression/abundance")
+prefix="test_heatmap", data.type = "expression/abundance")
 
 ```
 \
@@ -1044,7 +1045,7 @@ campp2_test_data_LASSO_normalized<-NormalizeData(data=campp2_test_data_LASSO_zer
 campp2_test_data_LASSO_batchCorrected<-BatchCorrect(data=campp2_test_data_LASSO_normalized,batch=campp2_test_metadata_LASSO$tumor_stage,group=campp2_test_metadata_LASSO$diagnosis,technology="seq")
 ###run lasso on a large dataset
 runLASSO(data=campp2_test_data_LASSO_batchCorrected, group=campp2_test_metadata_LASSO$diagnosis, alpha=0.5, min.coef=0, nfolds=10, prefix="test")
-}
+
 ```
 \
 
@@ -1143,7 +1144,7 @@ campp2_brca_1_normalized<-NormalizeData(data=campp2_brca_1_zeroFix,
 group=campp2_brca_1_meta$diagnosis,standardize="TMM",transform="voom",
 technology="seq")
 ##here we prepare DEA results compatible (group="diagnosis) with
-EN/LASS/Ridge regression results:
+##EN/LASS/Ridge regression results:
 campp2_brca_1_DEA_diagnosis<-RunDEA(data=campp2_brca_1_normalized,
 metadata=campp2_brca_1_meta,
 group=campp2_brca_1_meta$diagnosis, prefix="test", batch=campp2_brca_1_meta$age,
@@ -1211,9 +1212,6 @@ test.train.ratio = 0.25,
 num.trees.init = 5000,
 num.trees.iterat = 2000)
 ```
-\
-
-
 
 ### RFApply
 **Description:** \
