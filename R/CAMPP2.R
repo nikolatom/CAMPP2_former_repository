@@ -512,7 +512,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
             print("ROC for dataset1 are not available")
 
         }
-        if(!is.na(LASSO2.results)){
+        if(!all(is.na(LASSO2.results))){
             if(!is.na(LASSO2.results$roc.res)){
                 write.table(LASSO2.results$roc.res, paste0(prefix,"_AUC2.txt"), row.names=FALSE, col.names = TRUE, quote = FALSE)
             }else{
@@ -529,7 +529,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
             print("Cross validation error rate for dataset1 are not available")
         }
 
-        if(!is.na(LASSO2.results)){
+        if(!all(is.na(LASSO2.results))){
             if(!is.na(LASSO2.results$cv.error)){
                 write.table(LASSO2.results$cv.error, paste0(prefix,"_crossVal_error_2.txt"), row.names=FALSE, col.names = TRUE, quote = FALSE)
             }else{

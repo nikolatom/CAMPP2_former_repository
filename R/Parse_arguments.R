@@ -34,7 +34,7 @@
 #' @param test.train.ratio a floating point number between 0 and 1 representing the ratio of samples to keep as validation dataset. For example, a test.train.ratio = 0.25 splits 25 percent of the data into a validation dataset, meaning 75 percent of the data will be kept as the training dataset.
 #' @export
 #' @return parsed arguments
-#' @examples {
+#' @examples \dontrun{
 #' ...
 #' }
 

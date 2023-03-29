@@ -66,7 +66,7 @@ NormalizeData <- function(data,group,transform,standardize,technology){
         keep <- filterByExpr(data, design)
         data <- data[keep,,keep.lib.sizes=FALSE]
         data <- calcNormFactors(data, method = "TMM")
-        data <- voom(data, design, plot=TRUE)
+        data <- voom(data, design, plot=FALSE)
 
 	return(data)
     # this else is not strictly necessary but good for clarity

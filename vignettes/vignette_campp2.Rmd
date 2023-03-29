@@ -335,8 +335,8 @@ As results, multiple plots are obtained for each feature:
 1) Cullen and Frey graph
 2) Histogram and theoretical densities
 3) Empirical and theoretical CDFs
-4) Q−Q plot
-5) P−P plot
+4) Q-Q plot
+5) P-P plot
 
 For some of the figures, plotted distributions depends on the characteristics
 of the input data:
@@ -357,14 +357,15 @@ a .pdf file including multiple plots:
 1) Cullen and Frey graph
 2) Histogram and theoretical densities
 3) Empirical and theoretical CDFs
-4) Q−Q plot
-5) P−P plot
+4) Q-Q plot
+5) P-P plot
 \
 **An example run:** \
 ##Plot distributions of the first 10 features from example batch corrected data.
 ```{r, eval = FALSE, echo = TRUE, results='hide'}
 ###List of fitted distributions "campp2_brca_1_distributionsFit" and the first
-###10 feature counts from example batch corrected data are used as an input. PlotDistributions(campp2_brca_1_batchCorrected[1:10,], campp2_brca_1_distributionsFit)
+###10 feature counts from example batch corrected data are used as an input. 
+PlotDistributions(campp2_brca_1_batchCorrected[1:10,], campp2_brca_1_distributionsFit)
 ```
 \
 
@@ -889,7 +890,7 @@ a .png file with a heatmap \
 ##Create and print heatmap based on the raw gene counts 
 ```{r, eval = FALSE, echo = TRUE, results='hide'}
 MakeHeatmap(data=campp2_brca_1_batchCorrected, group=campp2_brca_1_meta$subtype, 
-prefix="test_heatmap", viridis.opt = "turbo", data.type = "expression/abundance")
+prefix="test_heatmap", data.type = "expression/abundance")
 
 ```
 \
@@ -954,7 +955,6 @@ campp2_test_data_LASSO_normalized<-NormalizeData(data=campp2_test_data_LASSO_zer
 campp2_test_data_LASSO_batchCorrected<-BatchCorrect(data=campp2_test_data_LASSO_normalized,batch=campp2_test_metadata_LASSO$tumor_stage,group=campp2_test_metadata_LASSO$diagnosis,technology="seq")
 ###run lasso on a large dataset
 runLASSO(data=campp2_test_data_LASSO_batchCorrected, group=campp2_test_metadata_LASSO$diagnosis, alpha=0.5, min.coef=0, nfolds=10, prefix="test")
-}
 ```
 \
 

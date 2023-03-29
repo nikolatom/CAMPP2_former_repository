@@ -68,6 +68,8 @@ parseArguments(
 
 \item{plot.DEA}{This argument specifies ("TRUE" or "FALSE") whether visualizations should be made for the differential expression analysis.}
 
+\item{ensembl.version}{This argument specifies which ENSEMBL database to use when transforming ensemble IDs into HUGO IDs using biomaRt. The argument should be specified as a number.}
+
 \item{heatmap.size}{Argument specifying how many genes will be selected to be plotted on the heatmap if plot.heatmap is TRUE. The input must be specified as an even number.#' @param show.PCA.labels a boolean value (TRUE or FALSE) specifying if elements (e.g. samples) should be labelled (for PCAPlot and runKmeans functions). Labeling is based on column names of the input data. Default value is FALSE.}
 
 \item{viridis.palette}{Argument specifying viridis color palette used for heatmaps. Default is "turbo".}
@@ -101,8 +103,6 @@ parseArguments(
 \item{split.size}{an integer specifying the minimum number of samples that the groups must contain in order to carry out random forest classification and subsequent validation}
 
 \item{test.train.ratio}{a floating point number between 0 and 1 representing the ratio of samples to keep as validation dataset. For example, a test.train.ratio = 0.25 splits 25 percent of the data into a validation dataset, meaning 75 percent of the data will be kept as the training dataset.}
-
-\item{WGCNA}{Argument specifying parameter for Weighed Gene Co-expression Network Analysis. It takes a string, either "DA", "DE" or "ALL" specifying if all variables should be included in WGCNA or only differentially expressed / abundant variables. Defaults is FALSE (do not run).}
 }
 \value{
 parsed arguments
@@ -111,7 +111,7 @@ parsed arguments
 Parsing mandatory and optional arguments defined into the main function
 }
 \examples{
-{
+\dontrun{
 ...
 }
 }

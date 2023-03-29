@@ -40,6 +40,7 @@ Imports:
   impute,
   limma,
   mclust,
+  nnet,
   pROC,
   parallel,
   pcaMethods,
