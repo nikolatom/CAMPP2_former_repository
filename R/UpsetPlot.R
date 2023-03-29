@@ -20,6 +20,14 @@
 #' @return an Upset plot showcasing the size of intersections of the features
 #' between the sample groups
 #' @examples {
+#' control.group="healthy"
+#' groups.full.list <- split.data.frame(campp2_brca_1_DEA_HUGO, campp2_brca_1_DEA_HUGO$comparison)
+#' campp2_brca_1_DEA_HUGO_features_per_group=list()
+#' for (features in groups.full.list){
+#'     campp2_brca_1_DEA_HUGO_features_per_group <- append(campp2_brca_1_DEA_HUGO_features_per_group,list(features$name))
+#' }
+#' names(campp2_brca_1_DEA_HUGO_features_per_group) <- gsub("-","",gsub(control.group,"",names(groups.full.list)))
+
 #' MakeUpset("testUpSet",campp2_brca_1_DEA_HUGO_features_per_group,
 #' label="test_UpSet",label.vertical.position=16.5,
 #' y.axis.by=300,set.size.by=250)

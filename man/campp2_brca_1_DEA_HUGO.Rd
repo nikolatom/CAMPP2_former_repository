@@ -5,7 +5,7 @@
 \alias{campp2_brca_1_DEA_HUGO}
 \title{campp2_brca_1_DEA_HUGO - example data}
 \format{
-a data frame (2054 x 9)
+a data frame (43 x 9)
 \describe{
 }
 }
@@ -18,8 +18,8 @@ RunDEA, filtering on group comparisons and applying AddGeneName:
 step1:
 campp2_brca_1_DEA<-RunDEA(data=campp2_brca_1, metadata=campp2_brca_1_meta,
 group=campp2_brca_1_meta$subtype, prefix="test",
-block=campp2_brca_1_meta$subtype, batch=campp2_brca_1_meta$age,
-covarDEA = c("tumor_stage"), cutoff.logFC=1, cutoff.FDR=0.01)
+block=NULL, batch=campp2_brca_1_meta$age,
+covarDEA = c("tumor_stage"), cutoff.logFC=1, cutoff.FDR=0.05)
 step2:
 campp2_brca_1_DEA_HUGO<-subset(campp2_brca_1_DEA, grepl("healthy",
 comparison, fixed = TRUE))

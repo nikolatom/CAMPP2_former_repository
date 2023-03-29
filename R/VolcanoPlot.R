@@ -2,18 +2,18 @@
 #' @description A function for making volcano plots from DEA results.
 #' The input is typically an output from RunDEA (re-formatted matrix of
 #' differential expression/abundance results from limma, please, check RunDEA
-#' for more details). By default, top 15 up- and down-regulated features
+#' for more details). By default, top 10 up- and down-regulated features
 #' will be labeled on the Volcano plot. Important: Features are selected from
 #' the table with all the groups' comparisons.
 #' @param data A data frame from RunDEA containing genes and their
 #' corresponding AveExpr, logFC, p.value, adj.p.value ect. Mandatory columns
 #' are "logFC", "adj.P.Val" and "HUGO_ID." HUGO_ID could be obtained using
 #' AddGeneName function.
-#' @param prefix a prefix for the output filename.
+#' @param prefix a prefix for the output file name.
 #' @param cutoff.FDR a numeric value for adj.P.Val cutoff. Default = 0.01
 #' @param cutoff.logFC a numeric value for logFC cutoff. Default = 1
 #' @param n.labeled.features a number of the most up-/down- regulated features
-#' labeled in the volcano plot. Default = 15
+#' labeled in the volcano plot. Default = 10
 #' @export
 #' @import ggplot2
 #' @import ggrepel
@@ -21,10 +21,10 @@
 #' @examples {
 #' ##The input is made by example script from AddGeneName function
 #' MakeVolcano(campp2_brca_1_DEA_HUGO, prefix = "test_volcano",
-#' cutoff.logFC = 1, cutoff.FDR = 0.01, n.labeled.features = 15)
+#' cutoff.logFC = 1, cutoff.FDR = 0.05, n.labeled.features = 10)
 #' }
 
-MakeVolcano <- function(data, prefix, cutoff.logFC = 1, cutoff.FDR = 0.01, n.labeled.features = 15) {
+MakeVolcano <- function(data, prefix, cutoff.logFC = 1, cutoff.FDR = 0.01, n.labeled.features = 10) {
 
     data <- data[order(data$logFC),]  ##sort according to the logFC from the lowest value
 

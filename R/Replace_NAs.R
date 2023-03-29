@@ -62,7 +62,14 @@ ReplaceNAs <- function(data,pct.NA.row=70,pct.NA.column=80) {
 
         print("Running Missing value estimation using local least squares (llsImpute); k=10, correlation=spearman.")
 
-        file <- try(data.lls <- data.frame(completeObs(llsImpute(as.matrix(data), k = 10, correlation="spearman", allVariables=TRUE))), silent =TRUE)
+        k_value<-10
+
+        if (k_value >= ncol(data)) {
+            k_value <- ncol(data) - 1
+            cat("The specified k value is too large. Adjusting k to:", k_value, "\n")
+        }
+
+        file <- try(data.lls <- data.frame(completeObs(llsImpute(as.matrix(data), k = k_value, correlation="spearman", allVariables=TRUE))), silent =TRUE)
 
         if (!is(class(file), "try-error")){
             hasNegB <- unique(as.vector(data < 0))

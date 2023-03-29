@@ -44,7 +44,7 @@
 #' forest model and 4) a confusionMatrix object containing confusion matrix of test data
 #' using fitted random forest model.
 #' If validation = FALSE, the last three elements in output will be NA.
-#' @examples {
+#' @examples \dontrun{
 #' campp2_brca_1_batchCorrected<-BatchCorrect(data=campp2_brca_1_normalized,
 #' batch=campp2_brca_1_meta$tumor_stage,group=campp2_brca_1_meta$diagnosis,
 #' technology="seq")

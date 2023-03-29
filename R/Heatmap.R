@@ -22,10 +22,6 @@
 #' @import grid
 #' @return heatmap
 #' @examples {
-#' campp2_brca_1_batchCorrected<-BatchCorrect(data=campp2_brca_1_normalized,
-#' batch=campp2_brca_1_meta$tumor_stage,group=campp2_brca_1_meta$diagnosis,
-#' technology="seq")
-#'
 #' MakeHeatmap(data=campp2_brca_1_batchCorrected,
 #' group=campp2_brca_1_meta$subtype, prefix="test", viridis.palette = "turbo",
 #' data.type = "Feature counts")
@@ -43,9 +39,9 @@ MakeHeatmap <- function(data, groups, prefix, viridis.palette = "turbo", data.ty
     legend <- list(title=data.type, at=1:length(map$breaks), labels=map$breaks, col_fun=map$colors)
 
     htmap <- Heatmap(scale(data,scale=TRUE), col = viridis(300, option=viridis.palette), heatmap_legend_param = legend,
-                  row_names_side = "left", row_names_gp=gpar(cex=0.6), column_names_gp = gpar(cex=0),
-                  clustering_method_rows = "ward.D", column_title="Samples", row_title="Features",
-                  top_annotation=col_ha, column_km=length(unique(groups)))
+                     row_names_side = "left", row_names_gp=gpar(cex=0.6), column_names_gp = gpar(cex=0),
+                     clustering_method_rows = "ward.D", column_title="Samples", row_title="Features",
+                     top_annotation=col_ha, column_km=length(unique(groups)))
 
     draw(htmap)
     dev.off()

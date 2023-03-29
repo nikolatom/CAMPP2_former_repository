@@ -5,7 +5,7 @@
 \alias{campp2_brca_1_batchCorrected}
 \title{campp2_brca_1_batchCorrected - example data}
 \format{
-A matrix with 9046 rows (genes) and 30 columns (samples).
+A matrix with 8919 rows (genes) and 8 columns (samples).
 \describe{
 }
 }

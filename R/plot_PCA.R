@@ -20,10 +20,6 @@
 #' of contributions of variables to PC2; 4) 2D PCA plot projecting samples over
 #' first 2 principal components
 #' @examples {
-#' campp2_brca_1_batchCorrected<-BatchCorrect(data=campp2_brca_1_normalized,
-#' batch=campp2_brca_1_meta$tumor_stage,group=campp2_brca_1_meta$diagnosis,
-#' technology="seq")
-#'
 #' PCAPlot(campp2_brca_1_batchCorrected, as.factor(campp2_brca_1_meta$subtype), show.PCA.labels =FALSE, cols=NULL, prefix="test_PCA")
 #' }
 

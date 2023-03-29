@@ -34,7 +34,7 @@
 #' @param test.train.ratio a floating point number between 0 and 1 representing the ratio of samples to keep as validation dataset. For example, a test.train.ratio = 0.25 splits 25 percent of the data into a validation dataset, meaning 75 percent of the data will be kept as the training dataset.
 #' @export
 #' @return parsed arguments
-#' @examples {
+#' @examples \dontrun{
 #' ...
 #' }
 
@@ -181,10 +181,10 @@ parseArguments <- function(data1, data2, metadata1, metadata2, control.group, gr
             cutoff.FDR1 <- signif[2]
         }
         else if (length(signif) == 4) {
-            cutoff.logFC1 <- signif[1]
-            cutoff.FDR1 <- signif[2]
-            cutoff.logFC2 <- signif[3]
-            cutoff.FDR2 <- signif[4]
+            cutoff.logFC1 <- as.numeric(signif[1])
+            cutoff.FDR1 <- as.numeric(signif[2])
+            cutoff.logFC2 <- as.numeric(signif[3])
+            cutoff.FDR2 <- as.numeric(signif[4])
         }
         else {
             stop("If argument signif is set, it must be a vector of length 2 OR 2*2 = 4 , if two datasets are used, (with quotes and parenthesis!) where the first element specifies the cut-off for logFC and the second element specifies the cut-off for corrected p-value (fdr) for each set. If signif is not specified defaults will be used. Cutoffs will be set to -1 > logFC > 1 and corrected p-value (fdr) < 0.05.")
@@ -258,7 +258,7 @@ parseArguments <- function(data1, data2, metadata1, metadata2, control.group, gr
           paste0("num.km.clusters: ",num.km.clusters),"\n",
           paste0("cutoff.logFC1: ",cutoff.logFC1),"\n",
           paste0("cutoff.FDR1: ",cutoff.FDR1),"\n",
-          paste0("cutoff.logFC12: ",cutoff.logFC2),"\n",
+          paste0("cutoff.logFC2: ",cutoff.logFC2),"\n",
           paste0("cutoff.FDR2: ",cutoff.FDR2),"\n",
           paste0("blocks:", block),"\n",
           paste0("colors: ",colors),"\n",

@@ -25,17 +25,11 @@
 #' @import limma
 #' @return a list of up and donw-regulated features in limma format
 #' @examples {
-#' ###In this example, we create normalized data first, then, DEAFeature is run.
-#'
-#' campp2_brca_1_normalized<-NormalizeData(data=campp2_brca_1_zeroFix,
-#' group=campp2_brca_1_meta$diagnosis, standardize="TMM", transform="voom",
-#' technology="seq")
-#'
 #' DEA_one_comparison <-
 #' DEAFeature(contrast.matrix = campp2_brca_1_DEA$DEA.contrast.matrix[,1],
 #' data = campp2_brca_1_normalized,
 #' design.matrix = campp2_brca_1_DEA$DEA.design.matrix,
-#' cutoff.logFC =1, cutoff.FDR =0.01, block = campp2_brca_1_meta$subtype)
+#' cutoff.logFC =1, cutoff.FDR =0.05, block = NULL)
 #' }
 
 
@@ -50,7 +44,7 @@ DEAFeature <- function(contrast.matrix, data, design.matrix, cutoff.logFC = 1, c
     DEA.table <- topTreat(fit3, coef=1, adjust='fdr', number=nrow(data))
 
     up.reg <- DEA.table[DEA.table$logFC >= cutoff.logFC & DEA.table$adj.P.Val < cutoff.FDR, ]
-    down.reg <- DEA.table[DEA.table$logFC <= -cutoff.logFC & DEA.table$adj.P.Val < cutoff.FDR, ]
+    down.reg <- DEA.table[DEA.table$logFC <= -(cutoff.logFC) & DEA.table$adj.P.Val < cutoff.FDR, ]
 
     up.reg$name <- rownames(up.reg)
     down.reg$name <- rownames(down.reg)
