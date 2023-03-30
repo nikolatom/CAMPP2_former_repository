@@ -1,0 +1,15 @@
+citHeader("To cite CAMPP2 in publications use:")
+
+citEntry(entry = "article",
+         title = "CAncer bioMarker Prediction Pipeline (CAMPP)—A standardized framework for the analysis of quantitative biological data",
+         author = personList(as.person("Thilde Terkelsen"),
+                             as.person("Anders Krogh,"),
+                             as.person("Elena Papaleo ")),
+         journal = "PLOS Computational Biology",
+         year = "2020",
+	     volume = "16(3)",
+         textVersion =
+             paste("Terkelsen T., Krogh A., Papaleo E. (2020)",
+                   "CAncer bioMarker Prediction Pipeline (CAMPP) - ",
+                   "A standardized framework for the analysis of quantitative","biological data. PLoS Comput Biol 16(3): e1007665.",
+                   "https://doi.org/10.1371/journal.pcbi.1007665"))

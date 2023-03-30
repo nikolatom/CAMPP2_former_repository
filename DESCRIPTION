@@ -5,6 +5,7 @@ Version: 0.99.0
 Authors@R: c(
     person("Tom, Nikola", email = "ntom@cancer.dk", role = c("aut")),
     person("Nourbakhsh, Mona", email = "mon@cancer.dk", role = c("aut")),
+    person("Terkelsen, Thilde", role=c("aut")),
     person("Bechgaard, Mathilde Wismann", email = "mathilde@bechgaard.dk", role = c("aut")),
     person("Tiberti, Matteo", email = "tiberti@cancer.dk", role = c("cre", "aut")),
     person("Papaleo, Elena", email = "elenap@cancer.dk", role = c("aut")))
@@ -13,13 +14,15 @@ Description: The CAncer bioMarker Prediction Pipeline2 (CAMPP2) is a simple
   diagnostic and prognostic cancer biomarkers. The pipeline is versatile
   and may be used for analysis of a variety of quantitative biological
   data from high throughput platforms, including genes, proteins, small
-  RNAs, lipids and glycans. CAMPP2 currently supports; differential expression/
-  abundance analysis, LASSO/Elastic Net regression,Weighed
-  Gene Co-expression Network Analysis, Correlation analysis and Survival
-  analysis (Cox proportional hazard regression). 
-License: GPL
+  RNAs, lipids and glycans. CAMPP2 currently supports:
+  replacing missing values, data normalization, batch correction, 
+  distributional check, dimensionality reduction, clustering, 
+  differential expression/abundance analysis, LASSO/Elastic Net regression,
+  random forest, and visualisations
+License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
+BugReports: https://github.com/ELELAB/CAMPP2/issues
 RoxygenNote: 7.2.3
 biocViews: GeneExpression, DifferentialExpression, Annotation, Clustering, QualityControl, RNASeq, Metabolomics, SystemsBiology, Software, Transcription, Normalization, PrincipalComponent, Lipidomics, Visualization, Regression, DimensionReduction
 Depends: R (>= 4.1.0)
