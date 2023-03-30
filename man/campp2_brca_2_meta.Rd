@@ -6,11 +6,12 @@
 \title{campp2_brca_2_meta - example data}
 \format{
 A data frame with 8 rows (samples) and 10 columns.
-\describe{
-}
 }
 \usage{
-campp2_brca_2_meta
+data(campp2_brca_2_meta)
+}
+\value{
+A data frame with 8 rows (samples) and 10 columns.
 }
 \description{
 A metadata for campp2_brca_2 contains 9 variables for 8 samples in

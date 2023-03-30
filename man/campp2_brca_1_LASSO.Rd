@@ -9,11 +9,15 @@ a list of 3 data frame:
 1) (42x1) and 2 empty variables
 2) NA
 3) NA
-\describe{
-}
 }
 \usage{
-campp2_brca_1_LASSO
+data(campp2_brca_1_LASSO)
+}
+\value{
+#' a list of 3 data frame:
+1) (42x1) and 2 empty variables
+2) NA
+3) NA
 }
 \description{
 This object represents an output from runLASSO function. The list

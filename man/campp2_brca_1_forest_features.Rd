@@ -6,11 +6,12 @@
 \title{campp2_brca_1_forest_features.rda - example data}
 \format{
 a list containing four elements
-\describe{
-}
 }
 \usage{
-campp2_brca_1_forest_features
+data(campp2_brca_1_forest_features)
+}
+\value{
+a list containing four elements
 }
 \description{
 This object represents output from the

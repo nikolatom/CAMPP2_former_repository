@@ -12,14 +12,21 @@ expression/abundance results from limma.
 3) a character vector with unique feature names
 4) a design matrix (8x4)
 5) a contrast matrix (4x1)
-\describe{
-}
 }
 \usage{
-campp2_brca_1_DEA
+data(campp2_brca_1_DEA)
+}
+\value{
+a list of:
+1) a data frame (43 x 8) - re-formatted matrix of differential
+expression/abundance results from limma.
+2) a list of original results (a list) from limma
+3) a character vector with unique feature names
+4) a design matrix (8x4)
+5) a contrast matrix (4x1)
 }
 \description{
-A results from differential gene expression analysis provided by
+Results from differential gene expression analysis provided by
 RunDEA function using the provided example script:
 campp2_brca_1_DEA<-RunDEA(data=campp2_brca_1, metadata=campp2_brca_1_meta,
 group=campp2_brca_1_meta$subtype, prefix="test",
