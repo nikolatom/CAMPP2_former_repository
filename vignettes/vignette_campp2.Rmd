@@ -1268,5 +1268,8 @@ num.trees.iterat = 2000)
 ```
 \
 
-
+Session Information
+```{r sessionInfo}
+sessionInfo()
+```
 
