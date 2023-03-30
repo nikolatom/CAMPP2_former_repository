@@ -7,6 +7,23 @@ Cancer Structural Biology Group, Danish Cancer Society Research Center, Strandbo
 
 ### Installation instructions
 
+#### Installation from BioConductor 
+
+To install the CAMPP2 package from Bioconductor, you need to follow these steps:
+
+1. Install the Bioconductor package manager, BiocManager, if you don't have it already. 
+You can do this by running the following command in your R console:
+
+
+`if (!requireNamespace("BiocManager", quietly = TRUE))` <br/>
+    `install.packages("BiocManager")` 
+
+
+2. Install the CAMPP2 package using BiocManager by running the following command:
+
+`BiocManager::install("CAMPP2")` 
+
+
 #### Create and activate conda environment with R and devtools in your project directory
 
 If you don't have access to conda please see the Miniconda installer page (https://docs.conda.io/en/latest/miniconda.html) on instructions on how to install Miniconda.
