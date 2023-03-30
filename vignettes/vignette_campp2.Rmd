@@ -1268,6 +1268,12 @@ num.trees.iterat = 2000)
 ```
 \
 
+
+** Citation
+Tom, Nikola, Nourbakhsh, Mona, Bechgaard, Mathilde Wismann, Tiberti, Matteo, Papaleo, Elena (2023). CAMPP2: CAncer bioMarker
+Prediction Pipeline 2 (CAMPP2). R package version 0.99.0.
+
+
 Session Information
 ```{r sessionInfo}
 sessionInfo()
