@@ -21,6 +21,7 @@ Description: The CAncer bioMarker Prediction Pipeline2 (CAMPP2) is a simple
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
+BugReports: https://github.com/ELELAB/CAMPP2/issues
 RoxygenNote: 7.2.3
 biocViews: GeneExpression, DifferentialExpression, Annotation, Clustering, QualityControl, RNASeq, Metabolomics, SystemsBiology, Software, Transcription, Normalization, PrincipalComponent, Lipidomics, Visualization, Regression, DimensionReduction
 Depends: R (>= 4.1.0)
