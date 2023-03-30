@@ -40,7 +40,7 @@
 #' runCampp2(batches=c("tumor_stage","tumor_stage"),prefix="test_CAMPP2_distr", data1=campp2_brca_1, data2=campp2_brca_2, metadata1=campp2_brca_1_meta,metadata2=campp2_brca_2_meta, groups=c("IDs", "diagnosis","IDs", "diagnosis"), technology=c("seq","seq"), plot.PCA=TRUE, plot.DEA=TRUE, control.group = c("healthy","healthy"), plot.heatmap="DEA", data.check=TRUE,signif=c(1,0.05, 1,0.05))
 #' }
 
-runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology, groups, control.group=NULL, batches=NULL, data.check=TRUE, standardize=FALSE, transform=FALSE, plot.PCA=FALSE, plot.heatmap=FALSE, kmeans=FALSE, ensembl.version=104, plot.DEA=FALSE, heatmap.size=40, viridis.palette="turbo", num.km.clusters=NULL, signif=NULL, block=NULL, colors=NULL, prefix="Results", correlation=FALSE, WGCNA=FALSE, cutoff.WGCNA=NULL, survival=FALSE, covariates=NULL, stratify=NULL, surv.plot=50, PPint=FALSE, gene.miR.int=FALSE, show.PCA.labels=FALSE, alpha.lasso=FALSE, min.coef.lasso=NULL, nfolds.lasso=NULL, num.trees.init=NULL, num.trees.iterat=NULL, split.size=NULL, test.train.ratio=NULL){
+runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology, groups, control.group=NULL, batches=NULL, data.check=TRUE, standardize=FALSE, transform=FALSE, plot.PCA=FALSE, plot.heatmap=FALSE, kmeans=FALSE, ensembl.version=104, plot.DEA=FALSE, heatmap.size=40, viridis.palette="turbo", num.km.clusters=NULL, signif=NULL, block=NULL, colors=NULL, prefix="Results", covariates=NULL, show.PCA.labels=FALSE, alpha.lasso=FALSE, min.coef.lasso=NULL, nfolds.lasso=NULL, num.trees.init=NULL, num.trees.iterat=NULL, split.size=NULL, test.train.ratio=NULL){
 
     ###parse input arguments and assign updated values
     c(data1,data2,metadata1,metadata2,technology,groups,
@@ -511,7 +511,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
             print("ROC for dataset1 are not available")
 
         }
-        if(!is.na(LASSO2.results)){
+        if(!all(is.na(LASSO2.results))){
             if(!is.na(LASSO2.results$roc.res)){
                 write.table(LASSO2.results$roc.res, paste0(prefix,"_AUC2.txt"), row.names=FALSE, col.names = TRUE, quote = FALSE)
             }else{
@@ -528,7 +528,7 @@ runCampp2 <- function (data1, metadata1, data2=NULL, metadata2=NULL, technology,
             print("Cross validation error rate for dataset1 are not available")
         }
 
-        if(!is.na(LASSO2.results)){
+        if(!all(is.na(LASSO2.results))){
             if(!is.na(LASSO2.results$cv.error)){
                 write.table(LASSO2.results$cv.error, paste0(prefix,"_crossVal_error_2.txt"), row.names=FALSE, col.names = TRUE, quote = FALSE)
             }else{

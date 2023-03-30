@@ -6,11 +6,12 @@
 \title{campp2_brca_1_normalized - example data}
 \format{
 A Elist with 9626 rows (genes) and 8 columns (samples).
-\describe{
-}
 }
 \usage{
-campp2_brca_1_normalized
+data(campp2_brca_1_normalized)
+}
+\value{
+A Elist with 9626 rows (genes) and 8 columns (samples).
 }
 \description{
 A dataset with normalized and transformed gene counts data generated using

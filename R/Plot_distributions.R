@@ -4,8 +4,8 @@
 #' 1) Cullen and Frey graph
 #' 2) Histogram and theoretical densities
 #' 3) Empirical and theoretical CDFs
-#' 4) Q−Q plot
-#' 5) P−P plot
+#' 4) Q-Q plot
+#' 5) P-P plot
 #'
 #' For some of the figures, plotted distributions depends on the characteristics
 #' of the input data:
@@ -28,8 +28,8 @@
 #' 1) Cullen and Frey graph
 #' 2) Histogram and theoretical densities
 #' 3) Empirical and theoretical CDFs
-#' 4) Q−Q plot
-#' 5) P−P plot
+#' 4) Q-Q plot
+#' 5) P-P plot
 #' @examples {
 #' PlotDistributions(campp2_brca_1_batchCorrected[1:10,], campp2_brca_1_distributionsFit)
 #' }

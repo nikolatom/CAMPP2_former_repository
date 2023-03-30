@@ -6,11 +6,12 @@
 \title{campp2_brca_1_distributionsFit - example data}
 \format{
 A list of 10 lists describing fitting the normal distribution.
-\describe{
-}
 }
 \usage{
-campp2_brca_1_distributionsFit
+data(campp2_brca_1_distributionsFit)
+}
+\value{
+A list of 10 lists describing fitting the normal distribution.
 }
 \description{
 A results from FitDistributions function providing a list of distribution

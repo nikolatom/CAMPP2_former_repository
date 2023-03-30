@@ -6,11 +6,12 @@
 \title{campp2_brca_1_replacedNAs - example data}
 \format{
 A data frame with 10000 rows (genes) and 8 columns (samples).
-\describe{
-}
 }
 \usage{
-campp2_brca_1_replacedNAs
+data(campp2_brca_1_replacedNAs)
+}
+\value{
+A data frame with 10000 rows (genes) and 8 columns (samples).
 }
 \description{
 A dataset with replaced NA values. This dataset is based on

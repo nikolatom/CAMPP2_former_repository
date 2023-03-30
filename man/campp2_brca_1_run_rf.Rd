@@ -6,11 +6,12 @@
 \title{campp2_brca_1_run_rf.rda - example data}
 \format{
 a list containing two elements
-\describe{
-}
 }
 \usage{
-campp2_brca_1_run_rf
+data(campp2_brca_1_run_rf)
+}
+\value{
+a list containing two elements
 }
 \description{
 This object represents output from the

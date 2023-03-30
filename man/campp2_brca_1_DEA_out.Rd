@@ -12,14 +12,21 @@ expression/abundance results from limma.
 3) a character vector with unique feature names
 4) a design matrix
 5) a contrast matrix
-\describe{
-}
 }
 \usage{
-campp2_brca_1_DEA_out
+data(campp2_brca_1_DEA_out)
+}
+\value{
+a list of:
+1) a data frame (43 x 8) - re-formatted matrix of differential
+expression/abundance results from limma.
+2) a list of original results (a list) from limma
+3) a character vector with unique feature names
+4) a design matrix
+5) a contrast matrix
 }
 \description{
-A results from differential gene expression analysis provided by
+results from differential gene expression analysis provided by
 ExportDEA function using the provided example script:
 campp2_brca_1_DEA_out<-ExportDEA(res.DEA = campp2_brca_1_DEA$res.DEA,
                                  prefix="test")

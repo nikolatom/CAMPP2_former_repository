@@ -6,11 +6,12 @@
 \title{campp2_brca_1_DEA_LASSO_consensus - example data}
 \format{
 a data frame (7x8)
-\describe{
-}
 }
 \usage{
-campp2_brca_1_DEA_LASSO_consensus
+data(campp2_brca_1_DEA_LASSO_consensus)
+}
+\value{
+a data frame (7x8)
 }
 \description{
 This object represents a data frame output from

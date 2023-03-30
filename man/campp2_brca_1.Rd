@@ -5,12 +5,13 @@
 \alias{campp2_brca_1}
 \title{campp2_brca_1 - example data}
 \format{
-A data frame with 10000 rows (genes) and 8 columns (samples):
-\describe{
-}
+A data frame with 10000 rows (genes) and 8 columns (samples)
 }
 \usage{
-campp2_brca_1
+data(campp2_brca_1)
+}
+\value{
+A data frame with 10000 rows (genes) and 8 columns (samples)
 }
 \description{
 A campp2_brca_1 contains 10000 gene counts for 8 samples: 4 tumor (1

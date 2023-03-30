@@ -38,6 +38,7 @@
 #' @import pROC
 #' @import ggplot2
 #' @import grid
+#' @import nnet
 #' @return a list of:
 #' 1) VarSelect - a matrix of feature names having coefficients of best model
 #' passing the filters (threshold defined by min.coef)

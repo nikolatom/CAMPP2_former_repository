@@ -6,11 +6,12 @@
 \title{campp2_brca_1_batchCorrected - example data}
 \format{
 A matrix with 8919 rows (genes) and 8 columns (samples).
-\describe{
-}
 }
 \usage{
-campp2_brca_1_batchCorrected
+data(campp2_brca_1_batchCorrected)
+}
+\value{
+A matrix with 8919 rows (genes) and 8 columns (samples).
 }
 \description{
 A dataset with batch corrected data generated using "BatchCorrect" function.

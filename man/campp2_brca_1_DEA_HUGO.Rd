@@ -6,14 +6,15 @@
 \title{campp2_brca_1_DEA_HUGO - example data}
 \format{
 a data frame (43 x 9)
-\describe{
-}
 }
 \usage{
-campp2_brca_1_DEA_HUGO
+data(campp2_brca_1_DEA_HUGO)
+}
+\value{
+a data frame (43 x 9)
 }
 \description{
-A results from differential gene expression analysis provided by
+results from differential gene expression analysis provided by
 RunDEA, filtering on group comparisons and applying AddGeneName:
 step1:
 campp2_brca_1_DEA<-RunDEA(data=campp2_brca_1, metadata=campp2_brca_1_meta,

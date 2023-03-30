@@ -26,8 +26,6 @@
 #' @param num.trees.iterat an integer specifying number of trees to use for
 #' all additional forests in the feature selection process. Default is 2000.
 #' @export
-#' @import varSelRF
-#' @import randomForest
 #' @import caret
 #' @return a list containing two elements:
 #' 1) The first element is a list containing the output from the RFApply function

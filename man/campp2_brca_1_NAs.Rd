@@ -6,11 +6,12 @@
 \title{campp2_brca_1_NAs - example data}
 \format{
 A matrix with 10000 rows (genes) and 8 columns (samples).
-\describe{
-}
 }
 \usage{
-campp2_brca_1_NAs
+data(campp2_brca_1_NAs)
+}
+\value{
+A matrix with 10000 rows (genes) and 8 columns (samples).
 }
 \description{
 A dataset with randomly introduced 1000 NA values into every sample's genes
