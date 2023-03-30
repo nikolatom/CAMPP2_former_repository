@@ -29,7 +29,7 @@
 #' DEAFeature(contrast.matrix = campp2_brca_1_DEA$DEA.contrast.matrix[,1],
 #' data = campp2_brca_1_normalized,
 #' design.matrix = campp2_brca_1_DEA$DEA.design.matrix,
-#' cutoff.logFC =1, cutoff.FDR =0.01, block = campp2_brca_1_meta$subtype)
+#' cutoff.logFC =1, cutoff.FDR =0.05, block = NULL)
 #' }
 
 
@@ -44,7 +44,7 @@ DEAFeature <- function(contrast.matrix, data, design.matrix, cutoff.logFC = 1, c
     DEA.table <- topTreat(fit3, coef=1, adjust='fdr', number=nrow(data))
 
     up.reg <- DEA.table[DEA.table$logFC >= cutoff.logFC & DEA.table$adj.P.Val < cutoff.FDR, ]
-    down.reg <- DEA.table[DEA.table$logFC <= -cutoff.logFC & DEA.table$adj.P.Val < cutoff.FDR, ]
+    down.reg <- DEA.table[DEA.table$logFC <= -(cutoff.logFC) & DEA.table$adj.P.Val < cutoff.FDR, ]
 
     up.reg$name <- rownames(up.reg)
     down.reg$name <- rownames(down.reg)

@@ -5,7 +5,7 @@
 \alias{campp2_brca_1}
 \title{campp2_brca_1 - example data}
 \format{
-A data frame with 10000 rows (genes) and 30 columns (samples):
+A data frame with 10000 rows (genes) and 8 columns (samples):
 \describe{
 }
 }
@@ -13,8 +13,8 @@ A data frame with 10000 rows (genes) and 30 columns (samples):
 campp2_brca_1
 }
 \description{
-A campp2_brca_1 contains 10000 gene counts for 30 samples: 20 tumor (4
-subtypes, each subtype has 5 samples) x 10 normal samples). Data are derived
+A campp2_brca_1 contains 10000 gene counts for 8 samples: 4 tumor (1
+subtype) x 4 normal samples). Data are derived
 from TCGA dataset.
 }
 \keyword{datasets}

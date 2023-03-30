@@ -47,17 +47,15 @@
 #' 3) roc.res - AUC value (datasets of >20 samples)
 #' 4) cross validation error plot
 #' @examples {
-#' ##run regression using small batch corrected dataset - no double cross validation
-#' campp2_brca_1_LASSO<-runLASSO(data=campp2_brca_1_batchCorrected, group=campp2_brca_1_meta$diagnosis, alpha=0.5, min.coef=0, nfolds=10, prefix="test")
-#' ##run regression using large batch corrected dataset suitable for double cross validation
-#' ###create a large dataset
+#' ###LASSO can be run on data where there is at least 8 samples
+#' ###per group. Here we create a large dataset
 #' campp2_test_data_LASSO<-cbind(campp2_brca_1,campp2_brca_2)
 #' campp2_test_metadata_LASSO<-rbind(campp2_brca_1_meta, campp2_brca_2_meta)
 #' campp2_test_data_LASSO_replaceNAs<-ReplaceNAs(data=campp2_test_data_LASSO)
 #' campp2_test_data_LASSO_zeroFix<-FixZeros(data=campp2_test_data_LASSO_replaceNAs,group=campp2_test_metadata_LASSO$diagnosis, remove.sparse.features=TRUE)
 #' campp2_test_data_LASSO_normalized<-NormalizeData(data=campp2_test_data_LASSO_zeroFix,group=campp2_test_metadata_LASSO$diagnosis,standardize="TMM",transform="voom",technology="seq")
 #' campp2_test_data_LASSO_batchCorrected<-BatchCorrect(data=campp2_test_data_LASSO_normalized,batch=campp2_test_metadata_LASSO$tumor_stage,group=campp2_test_metadata_LASSO$diagnosis,technology="seq")
-#' ###run lasso on a large dataset
+###run lasso on a large dataset
 #' runLASSO(data=campp2_test_data_LASSO_batchCorrected, group=campp2_test_metadata_LASSO$diagnosis, alpha=0.5, min.coef=0, nfolds=10, prefix="test")
 #' }
 

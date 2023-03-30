@@ -9,7 +9,7 @@ MakeVolcano(
   prefix,
   cutoff.logFC = 1,
   cutoff.FDR = 0.01,
-  n.labeled.features = 15
+  n.labeled.features = 10
 )
 }
 \arguments{
@@ -18,14 +18,14 @@ corresponding AveExpr, logFC, p.value, adj.p.value ect. Mandatory columns
 are "logFC", "adj.P.Val" and "HUGO_ID." HUGO_ID could be obtained using
 AddGeneName function.}
 
-\item{prefix}{a prefix for the output filename.}
+\item{prefix}{a prefix for the output file name.}
 
 \item{cutoff.logFC}{a numeric value for logFC cutoff. Default = 1}
 
 \item{cutoff.FDR}{a numeric value for adj.P.Val cutoff. Default = 0.01}
 
 \item{n.labeled.features}{a number of the most up-/down- regulated features
-labeled in the volcano plot. Default = 15}
+labeled in the volcano plot. Default = 10}
 }
 \value{
 Volcano plot of differentially expressed features saved into .png
@@ -34,7 +34,7 @@ Volcano plot of differentially expressed features saved into .png
 A function for making volcano plots from DEA results.
 The input is typically an output from RunDEA (re-formatted matrix of
 differential expression/abundance results from limma, please, check RunDEA
-for more details). By default, top 15 up- and down-regulated features
+for more details). By default, top 10 up- and down-regulated features
 will be labeled on the Volcano plot. Important: Features are selected from
 the table with all the groups' comparisons.
 }
@@ -42,6 +42,6 @@ the table with all the groups' comparisons.
 {
 ##The input is made by example script from AddGeneName function
 MakeVolcano(campp2_brca_1_DEA_HUGO, prefix = "test_volcano",
-cutoff.logFC = 1, cutoff.FDR = 0.01, n.labeled.features = 15)
+cutoff.logFC = 1, cutoff.FDR = 0.05, n.labeled.features = 10)
 }
 }

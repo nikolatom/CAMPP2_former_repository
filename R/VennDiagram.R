@@ -11,6 +11,14 @@
 #' @import viridis
 #' @return Venn Diagram
 #' @examples {
+#' control.group="healthy"
+#' groups.full.list <- split.data.frame(campp2_brca_1_DEA_HUGO, campp2_brca_1_DEA_HUGO$comparison)
+#' campp2_brca_1_DEA_HUGO_features_per_group=list()
+#' for (features in groups.full.list){
+#'     campp2_brca_1_DEA_HUGO_features_per_group <- append(campp2_brca_1_DEA_HUGO_features_per_group,list(features$name))
+#' }
+#' names(campp2_brca_1_DEA_HUGO_features_per_group) <- gsub("-","",gsub(control.group,"",names(groups.full.list)))
+#'
 #' MakeVennDiagram("test_Venn", campp2_brca_1_DEA_HUGO_features_per_group)
 #' }
 

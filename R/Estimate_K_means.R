@@ -12,7 +12,7 @@
 #' the optimal BIC
 #' 2) an 'mclustBIC' object, which is the result of applying mclustBIC to data
 #' @examples {
-#' EstimateKmeans(t(campp2_brca_1_batchCorrected[1:2000,]))
+#' EstimateKmeans(t(campp2_brca_1_batchCorrected[1:3000,]))
 #' }
 
 EstimateKmeans <- function(data) {

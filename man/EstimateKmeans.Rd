@@ -24,6 +24,6 @@ the screen during the calculation.
 }
 \examples{
 {
-EstimateKmeans(t(campp2_brca_1_batchCorrected[1:2000,]))
+EstimateKmeans(t(campp2_brca_1_batchCorrected[1:3000,]))
 }
 }

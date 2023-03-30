@@ -5,7 +5,7 @@
 \alias{campp2_brca_1_NAs}
 \title{campp2_brca_1_NAs - example data}
 \format{
-A matrix with 10000 rows (genes) and 30 columns (samples).
+A matrix with 10000 rows (genes) and 8 columns (samples).
 \describe{
 }
 }

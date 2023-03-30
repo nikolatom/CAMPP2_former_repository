@@ -5,7 +5,7 @@
 \alias{campp2_brca_1_DEA_LASSO_consensus}
 \title{campp2_brca_1_DEA_LASSO_consensus - example data}
 \format{
-a data frame (39x8)
+a data frame (7x8)
 \describe{
 }
 }
@@ -23,7 +23,7 @@ EN/LASS/Ridge regression results:
 campp2_brca_1_DEA_diagnosis<-RunDEA(data=campp2_brca_1_normalized,
 metadata=campp2_brca_1_meta,
 group=campp2_brca_1_meta$diagnosis, prefix="test", batch=campp2_brca_1_meta$age,
-covarDEA = c("tumor_stage"), cutoff.logFC=1, cutoff.FDR=0.01)
+covarDEA = c("tumor_stage"), cutoff.logFC=1, cutoff.FDR=0.05)
 ##here we run RunDEA_LASSO_consensus function:
 campp2_brca_1_DEA_LASSO_consensus <- RunDEA_LASSO_consensus(
 campp2_brca_1_DEA_diagnosis$DEA.out,

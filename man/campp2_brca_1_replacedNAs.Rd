@@ -5,7 +5,7 @@
 \alias{campp2_brca_1_replacedNAs}
 \title{campp2_brca_1_replacedNAs - example data}
 \format{
-A data frame with 10000 rows (genes) and 30 columns (samples).
+A data frame with 10000 rows (genes) and 8 columns (samples).
 \describe{
 }
 }

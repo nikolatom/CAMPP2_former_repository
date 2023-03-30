@@ -24,7 +24,7 @@
 #' normalized and transformed feature counts data
 #' @examples {
 #' ###In this example, data with fixed zeros are used as an input.
-#' NormalizeData(data=campp2_brca_1_zeroFix,
+#' campp2_brca_1_normalized<-NormalizeData(data=campp2_brca_1_zeroFix,
 #' group=campp2_brca_1_meta$diagnosis, standardize="TMM", transform="voom",
 #' technology="seq")
 #' }

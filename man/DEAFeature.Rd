@@ -50,6 +50,6 @@ DEA_one_comparison <-
 DEAFeature(contrast.matrix = campp2_brca_1_DEA$DEA.contrast.matrix[,1],
 data = campp2_brca_1_normalized,
 design.matrix = campp2_brca_1_DEA$DEA.design.matrix,
-cutoff.logFC =1, cutoff.FDR =0.01, block = campp2_brca_1_meta$subtype)
+cutoff.logFC =1, cutoff.FDR =0.05, block = NULL)
 }
 }
