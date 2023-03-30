@@ -18,7 +18,7 @@ Description: The CAncer bioMarker Prediction Pipeline2 (CAMPP2) is a simple
   distributional check, dimensionality reduction, clustering, 
   differential expression/abundance analysis, LASSO/Elastic Net regression,
   random forest, and visualisations
-License: GPL
+License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.3
