@@ -325,8 +325,8 @@ As results, multiple plots are obtained for each feature:
 1) Cullen and Frey graph
 2) Histogram and theoretical densities
 3) Empirical and theoretical CDFs
-4) QQ plot
-5) PP plot
+4) Q-Q plot
+5) P-P plot
 
 For some of the figures, plotted distributions depends on the characteristics
 of the input data:
@@ -347,8 +347,8 @@ a .pdf file including multiple plots:
 1) Cullen and Frey graph
 2) Histogram and theoretical densities
 3) Empirical and theoretical CDFs
-4) QQ plot
-5) PP plot
+4) Q-Q plot
+5) P-P plot
 \
 **An example run:** \
 ##Plot distributions of the first 10 features from example batch corrected data.

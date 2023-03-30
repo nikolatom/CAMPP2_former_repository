@@ -18,6 +18,10 @@ from "seq", "array", "ms" or "other" technology (with feature IDs as row
 names and sample IDs as columns). It's recommended to import feature counts
 using function "import_counts".}
 
+\item{groups}{a factor specifying group for each sample (e.g. could be
+represented by a column from a metadata file). Group's information
+will be used in clustering the samples.}
+
 \item{prefix}{a character vector defining prefix of output file name.}
 
 \item{viridis.palette}{a character vector specifying color gradient to use for
@@ -26,10 +30,6 @@ options, see viridis vignette.}
 
 \item{data.type}{a character vector (used in the heatmap legend) describing
 type of the data being visualized. Default is "expression/abundance".}
-
-\item{group}{a factor specifying group for each sample (e.g. could be
-represented by a column from a metadata file). Group's information
-will be used in clustering the samples.}
 }
 \value{
 heatmap
@@ -42,7 +42,7 @@ visualise relations between them.
 \examples{
 {
 MakeHeatmap(data=campp2_brca_1_batchCorrected,
-group=campp2_brca_1_meta$subtype, prefix="test", viridis.palette = "turbo",
+groups=campp2_brca_1_meta$subtype, prefix="test", viridis.palette = "turbo",
 data.type = "Feature counts")
 }
 }

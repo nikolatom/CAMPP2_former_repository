@@ -6,11 +6,12 @@
 \title{campp2_brca_1_rf_apply.rda - example data}
 \format{
 a list containing eight elements
-\describe{
-}
 }
 \usage{
-campp2_brca_1_rf_apply
+data(campp2_brca_1_rf_apply)
+}
+\value{
+a list containing eight elements
 }
 \description{
 This object represents output from the

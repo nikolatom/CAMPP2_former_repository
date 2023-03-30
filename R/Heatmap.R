@@ -6,7 +6,7 @@
 #' from "seq", "array", "ms" or "other" technology (with feature IDs as row
 #' names and sample IDs as columns). It's recommended to import feature counts
 #' using function "import_counts".
-#' @param group a factor specifying group for each sample (e.g. could be
+#' @param groups a factor specifying group for each sample (e.g. could be
 #' represented by a column from a metadata file). Group's information
 #' will be used in clustering the samples.
 #' @param prefix a character vector defining prefix of output file name.
@@ -23,7 +23,7 @@
 #' @return heatmap
 #' @examples {
 #' MakeHeatmap(data=campp2_brca_1_batchCorrected,
-#' group=campp2_brca_1_meta$subtype, prefix="test", viridis.palette = "turbo",
+#' groups=campp2_brca_1_meta$subtype, prefix="test", viridis.palette = "turbo",
 #' data.type = "Feature counts")
 #' }
 

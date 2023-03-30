@@ -35,7 +35,7 @@
 #' all additional forests in the feature selection process. Default is 2000.
 #' @export
 #' @import varSelRF
-#' @import randomForest
+#' @importFrom randomForest randomForest predict
 #' @import caret
 #' @import rngtools
 #' @return a list of four elements: 1) a varSelRF object containing results of variable
