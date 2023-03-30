@@ -38,7 +38,7 @@
 #' 3) Upset plot showcasing the size of intersections of the features
 #' between the sample groups
 #' @examples {
-#' RunDEAVisuals(campp2_brca_1_DEA_HUGO, cutoff.FDR = 0.01, cutoff.logFC = 1,
+#' RunDEAVisuals(campp2_brca_1_DEA_HUGO, cutoff.FDR = 0.05, cutoff.logFC = 1,
 #' n.labeled.features = 15, control.group= "healthy", prefix="test_DEA_visuals")
 #' }
 

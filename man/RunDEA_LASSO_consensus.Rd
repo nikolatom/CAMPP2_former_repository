@@ -41,16 +41,9 @@ Additionally, a Venn diagram visualizing overlaps is generated.
 }
 \examples{
 {
-##here we prepare DEA results compatible (group="diagnosis) with
-##EN/LASS/Ridge regression results:
-campp2_brca_1_DEA_diagnosis<-RunDEA(data=campp2_brca_1_normalized,
-metadata=campp2_brca_1_meta,
-group=campp2_brca_1_meta$diagnosis, prefix="test", batch=campp2_brca_1_meta$age,
-covarDEA = c("tumor_stage"), cutoff.logFC=1, cutoff.FDR=0.01)
-##here we run RunDEA_LASSO_consensus function:
 campp2_brca_1_DEA_LASSO_consensus <- RunDEA_LASSO_consensus(
-campp2_brca_1_DEA_diagnosis$DEA.out,
-campp2_brca_1_LASSO, group=campp2_brca_1_meta$diagnosis,
-viridis.palette="turbo", "test")
+    campp2_brca_1_DEA$DEA.out,
+    campp2_brca_1_LASSO, group=campp2_brca_1_meta$diagnosis,
+   viridis.palette="turbo", "test")
 }
 }

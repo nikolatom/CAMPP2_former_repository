@@ -5,7 +5,7 @@
 \alias{campp2_brca_2_meta}
 \title{campp2_brca_2_meta - example data}
 \format{
-A data frame with 30 rows (samples) and 10 columns.
+A data frame with 8 rows (samples) and 10 columns.
 \describe{
 }
 }
@@ -13,7 +13,7 @@ A data frame with 30 rows (samples) and 10 columns.
 campp2_brca_2_meta
 }
 \description{
-A metadata for campp2_brca_2 contains 9 variables for 30 samples in
+A metadata for campp2_brca_2 contains 9 variables for 8 samples in
 campp2_brca_2 dataset. Data are derived from TCGA dataset.
 }
 \keyword{datasets}

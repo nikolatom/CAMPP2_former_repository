@@ -29,7 +29,6 @@ metadata table and selected column names (covariates) from the metadata.
 }
 \examples{
 {
-design.matrix<-Design.Matrix(campp2_brca_1_meta, campp2_brca_1_meta$diagnosis,
-batch=campp2_brca_1_meta$tumor_stage, covariates="vital_status")
+design.matrix<-Design.Matrix(campp2_brca_1_meta, campp2_brca_1_meta$diagnosis)
 }
 }

@@ -111,7 +111,7 @@ parsed arguments
 Parsing mandatory and optional arguments defined into the main function
 }
 \examples{
-{
+\dontrun{
 ...
 }
 }

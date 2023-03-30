@@ -98,8 +98,9 @@ A summary describing the best model is printed on the screen during
 calculation.
 }
 \examples{
-{
-runKmeans(campp2_brca_1_batchCorrected[1:2000,], num.subsets= NULL, subset.size=NULL, show.PCA.labels = FALSE, colors=NULL,
+\dontrun{
+runKmeans(campp2_brca_1_batchCorrected[1:3000,], num.subsets= NULL,
+subset.size=NULL, show.PCA.labels = FALSE, colors=NULL,
 prefix="test", num.km.clusters=NULL, seed=123, pca.scale=FALSE)
 
 }

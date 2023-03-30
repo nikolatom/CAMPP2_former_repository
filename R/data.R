@@ -1,10 +1,10 @@
 #' campp2_brca_1 - example data
 #'
-#' A campp2_brca_1 contains 10000 gene counts for 30 samples: 20 tumor (4
-#' subtypes, each subtype has 5 samples) x 10 normal samples). Data are derived
+#' A campp2_brca_1 contains 10000 gene counts for 8 samples: 4 tumor (1
+#' subtype) x 4 normal samples). Data are derived
 #' from TCGA dataset.
 #'
-#' @format A data frame with 10000 rows (genes) and 30 columns (samples):
+#' @format A data frame with 10000 rows (genes) and 8 columns (samples):
 #' \describe{
 #' }
 #'
@@ -13,11 +13,11 @@
 
 #' campp2_brca_2 - example data
 #'
-#' A campp2_brca_2 contains 10000 gene counts for 30 samples: 20 tumor (4
-#' subtypes, each subtype has 5 samples) x 10 normal samples). Data are derived
+#' A campp2_brca_2 contains 10000 gene counts for 8 samples: 4 tumor (1
+#' subtype) x 4 normal samples). Data are derived
 #' from TCGA dataset.
 #'
-#' @format A data frame with 10000 rows (genes) and 30 columns (samples):
+#' @format A data frame with 10000 rows (genes) and 8 columns (samples):
 #' \describe{
 #' }
 #'
@@ -26,10 +26,10 @@
 
 #' campp2_brca_1_meta - example data
 #'
-#' A metadata for campp2_brca_1 contains 9 variables for 30 samples in
+#' A metadata for campp2_brca_1 contains 9 variables for 8 samples in
 #' campp2_brca_1 dataset. Data are derived from TCGA dataset.
 #'
-#' @format A data frame with 30 rows (samples) and 10 columns.
+#' @format A data frame with 8 rows (samples) and 10 columns.
 #' \describe{
 #' }
 #'
@@ -38,10 +38,10 @@
 
 #' campp2_brca_2_meta - example data
 #'
-#' A metadata for campp2_brca_2 contains 9 variables for 30 samples in
+#' A metadata for campp2_brca_2 contains 9 variables for 8 samples in
 #' campp2_brca_2 dataset. Data are derived from TCGA dataset.
 #'
-#' @format A data frame with 30 rows (samples) and 10 columns.
+#' @format A data frame with 8 rows (samples) and 10 columns.
 #' \describe{
 #' }
 #'
@@ -54,7 +54,7 @@
 #' (10000). This dataset is based on "campp2_brca_1". For more details, see the
 #' vignette.
 #'
-#' @format A matrix with 10000 rows (genes) and 30 columns (samples).
+#' @format A matrix with 10000 rows (genes) and 8 columns (samples).
 #' \describe{
 #' }
 #'
@@ -66,7 +66,7 @@
 #' A dataset with replaced NA values. This dataset is based on
 #' "campp2_brca_1_NAs" dataset. For more details, see the vignette.
 #'
-#' @format A data frame with 10000 rows (genes) and 30 columns (samples).
+#' @format A data frame with 10000 rows (genes) and 8 columns (samples).
 #' \describe{
 #' }
 #'
@@ -78,7 +78,7 @@
 #' A dataset with fixed zero values generated using "FixZeros" function. This
 #' dataset is based on "campp2_brca_1_replacedNAs" data. For more details, see the vignette.
 #'
-#' @format A data frame with 9720 rows (genes) and 30 columns (samples).
+#' @format A data frame with 9720 rows (genes) and 8 columns (samples).
 #' \describe{
 #' }
 #'
@@ -91,7 +91,7 @@
 #' "NormalizeData" function. This dataset is based on "campp2_brca_1_zeroFix" data.
 #' For more details, see the vignette.
 #'
-#' @format A Elist with 9046 rows (genes) and 30 columns (samples).
+#' @format A Elist with 9626 rows (genes) and 8 columns (samples).
 #' \describe{
 #' }
 #'
@@ -104,7 +104,7 @@
 #' This dataset is based on "campp2_brca_1_normalized". For more details, see the
 #' vignette.
 #'
-#' @format A matrix with 9046 rows (genes) and 30 columns (samples).
+#' @format A matrix with 8919 rows (genes) and 8 columns (samples).
 #' \describe{
 #' }
 #'
@@ -130,7 +130,7 @@
 #' campp2_brca_1_batchCorrected_mean<-
 #' meanCounts(campp2_brca_1_batchCorrected, campp2_brca_1_meta$diagnosis)
 #' @format
-#' a list of 2 dataframes (both 9048 x 7)
+#' a list of 2 data frames (both 9048 x 7)
 #' \describe{
 #' }
 "campp2_brca_1_batchCorrected_mean"
@@ -143,15 +143,15 @@
 #' RunDEA function using the provided example script:
 #' campp2_brca_1_DEA<-RunDEA(data=campp2_brca_1, metadata=campp2_brca_1_meta,
 #' group=campp2_brca_1_meta$subtype, prefix="test",
-#' block=campp2_brca_1_meta$subtype, batch=campp2_brca_1_meta$age,
-#' covarDEA = c("tumor_stage"), cutoff.logFC=1, cutoff.FDR=0.01)
+#' block=NULL, batch=campp2_brca_1_meta$age,
+#' covarDEA = c("tumor_stage"), cutoff.logFC=1, cutoff.FDR=0.05)
 #' @format a list of:
-#' 1) a data frame (2670 x 8) - re-formatted matrix of differential
+#' 1) a data frame (43 x 8) - re-formatted matrix of differential
 #' expression/abundance results from limma.
 #' 2) a list of original results (a list) from limma
 #' 3) a character vector with unique feature names
-#' 4) a design matrix
-#' 5) a contrast matrix
+#' 4) a design matrix (8x4)
+#' 5) a contrast matrix (4x1)
 #' \describe{
 #' }
 #'
@@ -165,54 +165,62 @@
 #' step1:
 #' campp2_brca_1_DEA<-RunDEA(data=campp2_brca_1, metadata=campp2_brca_1_meta,
 #' group=campp2_brca_1_meta$subtype, prefix="test",
-#' block=campp2_brca_1_meta$subtype, batch=campp2_brca_1_meta$age,
-#' covarDEA = c("tumor_stage"), cutoff.logFC=1, cutoff.FDR=0.01)
+#' block=NULL, batch=campp2_brca_1_meta$age,
+#' covarDEA = c("tumor_stage"), cutoff.logFC=1, cutoff.FDR=0.05)
 #' step2:
 #' campp2_brca_1_DEA_HUGO<-subset(campp2_brca_1_DEA, grepl("healthy",
 #' comparison, fixed = TRUE))
 #' step3:
 #' campp2_brca_1_DEA_HUGO<-AddGeneName(campp2_brca_1_DEA_HUGO,ensembl.version)
 #' @format
-#' a data frame (2054 x 9)
+#' a data frame (43 x 9)
 #' \describe{
 #' }
 #'
 "campp2_brca_1_DEA_HUGO"
-
-
-#' campp2_brca_1_DEA_HUGO_features_per_group - example data
 #'
-#' This object represents a list of the features characteristic for each group
-#' and was created based on campp2_brca_1_DEA_HUGO (described above) following
-#' these steps:
-#' control.group="healthy"
-#' groups.full.list <- split.data.frame(campp2_brca_1_DEA_HUGO, campp2_brca_1_DEA_HUGO$comparison)
-#' campp2_brca_1_DEA_HUGO_features_per_group=list()
-#' for (features in groups.full.list){
-#'     campp2_brca_1_DEA_HUGO_features_per_group <- append(campp2_brca_1_DEA_HUGO_features_per_group,list(features$name))
-#' }
-#' names(campp2_brca_1_DEA_HUGO_features_per_group) <- gsub("-","",gsub(control.group,"",names(groups.full.list)))
-#' @format
-#' a list of 4 character vectors (1341, 395, 55, 263)
+#'
+#' campp2_brca_1_DEA_out - example data
+#'
+#' A results from differential gene expression analysis provided by
+#' ExportDEA function using the provided example script:
+#' campp2_brca_1_DEA_out<-ExportDEA(res.DEA = campp2_brca_1_DEA$res.DEA,
+#'                                  prefix="test")
+#' @format a list of:
+#' 1) a data frame (43 x 8) - re-formatted matrix of differential
+#' expression/abundance results from limma.
+#' 2) a list of original results (a list) from limma
+#' 3) a character vector with unique feature names
+#' 4) a design matrix
+#' 5) a contrast matrix
 #' \describe{
 #' }
 #'
-"campp2_brca_1_DEA_HUGO_features_per_group"
-
-
+"campp2_brca_1_DEA_out"
+#'
+#'
 #' campp2_brca_1_LASSO - example data
 #'
 #' This object represents an output from runLASSO function. The list
 #' includes a dataframe of feature names detected by both DEA and EN/LASSO/Ridge
 #' regression. Another 2 sub-objects from the list for cross validation error
-#' and roc. are empty because the input data (campp2_brca_1_batchCorrected)
+#' and roc. are empty because the input data
 #' is not large enough for the computation of those metrics.
-#' Data were generated by running:
-#' campp2_brca_1_LASSO<-runLASSO(data=campp2_brca_1_batchCorrected,
-#' group=campp2_brca_1_meta$diagnosis, alpha=0.5, min.coef=0, nfolds=10,
-#' prefix="test")
+#' Data were generated by running because LASSO can be run on data where there
+#' is at least 8 samples per group. Here we create a large dataset:
+#' campp2_test_data_LASSO<-cbind(campp2_brca_1,campp2_brca_2)
+#' campp2_test_metadata_LASSO<-rbind(campp2_brca_1_meta, campp2_brca_2_meta)
+#' campp2_test_data_LASSO_replaceNAs<-ReplaceNAs(data=campp2_test_data_LASSO)
+#' campp2_test_data_LASSO_zeroFix<-FixZeros(data=campp2_test_data_LASSO_replaceNAs,group=campp2_test_metadata_LASSO$diagnosis, remove.sparse.features=TRUE)
+#' campp2_test_data_LASSO_normalized<-NormalizeData(data=campp2_test_data_LASSO_zeroFix,group=campp2_test_metadata_LASSO$diagnosis,standardize="TMM",transform="voom",technology="seq")
+#' campp2_test_data_LASSO_batchCorrected<-BatchCorrect(data=campp2_test_data_LASSO_normalized,batch=campp2_test_metadata_LASSO$tumor_stage,group=campp2_test_metadata_LASSO$diagnosis,technology="seq")
+#' run lasso on a large dataset
+#' campp2_brca_1_LASSO<-runLASSO(data=campp2_test_data_LASSO_batchCorrected, group=campp2_test_metadata_LASSO$diagnosis, alpha=0.5, min.coef=0, nfolds=10, prefix="test")
 #' @format
-#' a list of dataframe (42x1) and 2 empty variables
+#' a list of 3 data frame:
+#' 1) (42x1) and 2 empty variables
+#' 2) NA
+#' 3) NA
 #' \describe{
 #' }
 #'
@@ -231,14 +239,14 @@
 #' campp2_brca_1_DEA_diagnosis<-RunDEA(data=campp2_brca_1_normalized,
 #' metadata=campp2_brca_1_meta,
 #' group=campp2_brca_1_meta$diagnosis, prefix="test", batch=campp2_brca_1_meta$age,
-#' covarDEA = c("tumor_stage"), cutoff.logFC=1, cutoff.FDR=0.01)
+#' covarDEA = c("tumor_stage"), cutoff.logFC=1, cutoff.FDR=0.05)
 #' ##here we run RunDEA_LASSO_consensus function:
 #' campp2_brca_1_DEA_LASSO_consensus <- RunDEA_LASSO_consensus(
 #' campp2_brca_1_DEA_diagnosis$DEA.out,
 #' campp2_brca_1_LASSO, group=campp2_brca_1_meta$diagnosis,
 #' viridis.palette="turbo", "test")
 #' @format
-#' a data frame (39x8)
+#' a data frame (7x8)
 #' \describe{
 #' }
 "campp2_brca_1_DEA_LASSO_consensus"

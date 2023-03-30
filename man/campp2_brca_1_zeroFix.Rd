@@ -5,7 +5,7 @@
 \alias{campp2_brca_1_zeroFix}
 \title{campp2_brca_1_zeroFix - example data}
 \format{
-A data frame with 9720 rows (genes) and 30 columns (samples).
+A data frame with 9720 rows (genes) and 8 columns (samples).
 \describe{
 }
 }

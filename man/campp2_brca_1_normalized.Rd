@@ -5,7 +5,7 @@
 \alias{campp2_brca_1_normalized}
 \title{campp2_brca_1_normalized - example data}
 \format{
-A Elist with 9046 rows (genes) and 30 columns (samples).
+A Elist with 9626 rows (genes) and 8 columns (samples).
 \describe{
 }
 }

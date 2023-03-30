@@ -53,7 +53,7 @@ parameter vector=TRUE, only features' IDs are output.
 {
 DEA_all_comparisons <- DEAFeatureApply(data = campp2_brca_1_normalized,
 design.matrix = campp2_brca_1_DEA$DEA.design.matrix, contrast.matrix =
-campp2_brca_1_DEA$DEA.contrast.matrix, cutoff.logFC =1, cutoff.FDR =0.01,
-block = campp2_brca_1_meta$subtype, vector = FALSE)
+campp2_brca_1_DEA$DEA.contrast.matrix, cutoff.logFC =1, cutoff.FDR =0.05,
+block = NULL, vector = FALSE)
 }
 }

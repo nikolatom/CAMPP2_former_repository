@@ -23,7 +23,8 @@ This function removes batch effects (using ComBat function) which could be causi
 }
 \examples{
 {
-###In this example, normalized data are corrected for a batch effect, in our case "tumor stage".
-BatchCorrect(data=campp2_brca_1_normalized,batch=campp2_brca_1_meta$tumor_stage,group=campp2_brca_1_meta$diagnosis,technology="seq")
+campp2_brca_1_batchCorrected<-BatchCorrect(data=campp2_brca_1_normalized,
+batch=campp2_brca_1_meta$tumor_stage,group=campp2_brca_1_meta$diagnosis,
+technology="seq")
 }
 }
