@@ -13,10 +13,11 @@ Description: The CAncer bioMarker Prediction Pipeline2 (CAMPP2) is a simple
   diagnostic and prognostic cancer biomarkers. The pipeline is versatile
   and may be used for analysis of a variety of quantitative biological
   data from high throughput platforms, including genes, proteins, small
-  RNAs, lipids and glycans. CAMPP2 currently supports; differential expression/
-  abundance analysis, LASSO/Elastic Net regression,Weighed
-  Gene Co-expression Network Analysis, Correlation analysis and Survival
-  analysis (Cox proportional hazard regression). 
+  RNAs, lipids and glycans. CAMPP2 currently supports:
+  replacing missing values, data normalization, batch correction, 
+  distributional check, dimensionality reduction, clustering, 
+  differential expression/abundance analysis, LASSO/Elastic Net regression,
+  random forest, and visualisations
 License: GPL
 Encoding: UTF-8
 LazyData: true
