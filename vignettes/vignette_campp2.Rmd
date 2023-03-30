@@ -70,6 +70,24 @@ The Pipeline relies on a variety of R-packages which are installed
 during CAMPP2 installation, those packages are defined in DESCRIPTION.
 
 
+# Installation instructions
+
+To install the CAMPP2 package from Bioconductor, you need to follow these steps:
+
+1. Install the Bioconductor package manager, BiocManager, if you don't have it already. 
+You can do this by running the following command in your R console:
+
+```{r, eval = TRUE}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+```
+
+2. Install the CAMPP2 package using BiocManager by running the following command:
+
+```{r, eval = TRUE}
+BiocManager::install("CAMPP2")
+```
+
 
 # CAMPP2 package
 
