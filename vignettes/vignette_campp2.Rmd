@@ -21,6 +21,158 @@ vignette: >
   %\VignetteIndexEntry{CAncer bioMarker Prediction Pipeline 2 (CAMPP2)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  
+
+
+references:
+- id: ref1
+  type: article
+  authors:
+  - family: Delignette-Muller
+    given: Marie-Laure
+  - family: Dutang
+    given: Christophe
+  issued:
+    year: 2015
+  title: fitdistrplus":" An R package for fitting distributions
+  container-title: Journal of Statistical Software
+  volume: 64
+  issue: 4
+  page: 1-34
+  url: https://www.jstatsoft.org/article/view/v064i04
+
+- id: ref2
+  type: article
+  authors:
+  - family: Garnier
+    given: Simon
+  issued:
+    year: 2018
+  title: viridis":" Default Color Maps from 'matplotlib'
+  container-title: R package version 0.5.1
+  url: https://CRAN.R-project.org/package=viridis
+
+- id: ref3
+  type: article
+  authors:
+  - family: Gu
+    given: Zuguang
+  - family: Eils
+    given: Roland
+  - family: Schlesner
+    given: Matthias
+  issued:
+    year: 2016
+  title: Complex heatmaps reveal patterns and correlations in multidimensional genomic data
+  container-title: Bioinformatics
+  volume: 32
+  issue: 18
+  page: 2847-2849
+  url: https://academic.oup.com/bioinformatics/article/32/18/2847/1743594
+
+
+- id: ref4
+  type: article
+  authors:
+  - family: Scrucca
+    given: Luca
+  - family: Fop
+    given: Michael
+  - family: Murphy
+    given: Thomas Brendan
+  - family: Raftery
+    given: Adrian E.
+  issued:
+    year: 2016
+  title: mclust 5":" clustering, classification and density estimation using Gaussian finite mixture models
+  container-title: The R Journal
+  volume: 8
+  issue: 1
+  page: 289
+  url: https://journal.r-project.org/archive/2016/RJ-2016-021/index.html
+
+
+- id: ref5
+  type: article
+  authors:
+  - family: Leek
+    given: Jeffrey T.
+  - family: Johnson
+    given: W. Evan
+  - family: Parker
+    given: Hilary S.
+  - family: Jaffe
+    given: Andrew E.
+  - family: Storey
+    given: John D.
+  issued:
+    year: 2019
+  title: sva":" Surrogate Variable Analysis
+  container-title: R package version 3.30.1
+  url: https://bioconductor.org/packages/release/bioc/html/sva.html
+
+- id: ref6
+  type: article
+  authors:
+  - family: Ritchie
+    given: Matthew E.
+  - family: Phipson
+    given: Belinda
+  - family: Wu
+    given: Di
+  - family: Hu
+    given: Yifang
+  - family: Law
+    given: Charity W.
+  - family: Shi
+    given: Wei
+  - family: Smyth
+    given: Gordon K.
+  issued:
+    year: 2015
+  title: limma powers differential expression analyses for RNA-sequencing and microarray studies
+  container-title: Nucleic Acids Research
+  volume: 43
+  issue: 7
+  page: e47
+  url: https://pubmed.ncbi.nlm.nih.gov/25605792/
+
+
+- id: ref7
+  type: article
+  authors:
+  - family: Friedman
+    given: Jerome
+  - family: Hastie
+    given: Trevor
+  - family: Tibshirani
+    given: Robert
+  issued:
+    year: 2010
+  title: Regularization paths for generalized linear models via coordinate descent
+  container-title: Journal of Statistical Software
+  volume: 33
+  issue: 1
+  page: 1
+  url: https://www.jstatsoft.org/v33/i01/
+  
+  
+- id: ref8
+  type: article
+  authors:
+  - family: Breiman
+    given: Leo
+  - family: Cutler
+    given: Adele
+  issued:
+    year: 2001
+  title: Random forests
+  container-title: Machine Learning
+  volume: 45
+  issue: 1
+  page: 5-32
+  url: https://link.springer.com/article/10.1023/A:1010933404324
+
 ---
 
 # Introduction
@@ -36,24 +188,26 @@ ReplaceNAs: Removes and replaces NA values, ensuring data quality.
 FixZeros: Detects and replaces zero/negative values in the data.
 NormalizeData: Normalizes and transforms feature counts depending on data types 
 and selected methods.
-BatchCorrect: Removes batch effects to reduce heterogeneity across data batches.
+BatchCorrect: Removes batch effects to reduce heterogeneity across data batches
+[@ref5].
 FitDistributions & PlotDistributions: Fits and plots data distributions to help 
-identify the best-fitting distribution.
+identify the best-fitting distribution [@ref1].
 PCAPlot: Calculates Principal Component Analysis (PCA) for dimensionality 
 reduction and visualization.
 runKmeans & EstimateKmeans: Executes K-means clustering and estimates the 
-optimal number of clusters.
+optimal number of clusters [@ref4].
 RunDEA, DEAFeatureApply, DEA_feature, ExportDEA, RunDEAVisuals, MakeVolcano, 
 MakeUpset, MakeVennDiagram: Perform and visualize differential 
-expression/abundance analysis.
+expression/abundance analysis [@ref2], [@ref6].
 RunHeatmap & MakeHeatmap: Create heatmaps to visualize differences in feature 
-expression/abundance across samples and sample groups.
+expression/abundance across samples and sample groups [@ref3].
 runLASSO & LASSOFeature: Perform LASSO/Elastic net/Ridge regression for feature
 selection and classification.
 RunDEA_LASSO_consensus: Creates a consensus between DEA and LASSO/Elastic 
-net/Ridge regression results.
+net/Ridge regression results [@ref7].
 RunRF, RFApply, ForestFeatures: Implement random forest classification and 
-variable selection, along with validation and feature intersection.
+variable selection, along with validation and feature intersection 
+[@ref8].
 These functions, when combined, form a comprehensive workflow that enables 
 non-bioinformaticians to perform complex data analysis tasks easily and 
 efficiently. This is particularly useful in the field of biology, where 
@@ -84,7 +238,7 @@ if (!requireNamespace("BiocManager", quietly = TRUE))
 
 2. Install the CAMPP2 package using BiocManager by running the following command:
 
-```{r, eval = TRUE}
+```{r, eval = FALSE}
 BiocManager::install("CAMPP2")
 ```
 
@@ -1269,7 +1423,7 @@ num.trees.iterat = 2000)
 \
 
 
-** Citation
+## Citation
 Tom, Nikola, Nourbakhsh, Mona, Bechgaard, Mathilde Wismann, Tiberti, Matteo, Papaleo, Elena (2023). CAMPP2: CAncer bioMarker
 Prediction Pipeline 2 (CAMPP2). R package version 0.99.0.
 
