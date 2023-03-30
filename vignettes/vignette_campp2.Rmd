@@ -234,7 +234,7 @@ To install the CAMPP2 package from Bioconductor, you need to follow these steps:
 1. Install the Bioconductor package manager, BiocManager, if you don't have it already. 
 You can do this by running the following command in your R console:
 
-```{r, eval = TRUE}
+```{r, eval = FALSE}
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 ```
@@ -394,7 +394,6 @@ n<-nrow(campp2_brca_1)
 # For testing of this function, 1000 genes is assegned with NA value. NA values are introduced randomly into each sample and all the 10000 genes (n=10000) are considered for the introduction of NA values.
 
 campp2_brca_1_NAs<-apply (campp2_brca_1, 2, function(x) {x[sample( c(1:n), floor(n/10))] <- NA; x} )
-``` 
 
 # create an object with replaced NAs; features having "NA" in more than 70% of the samples will be removed; samples having "NA" in more than 80% of the genes will be removed
 
@@ -516,8 +515,8 @@ As results, multiple plots are obtained for each feature:
 1) Cullen and Frey graph
 2) Histogram and theoretical densities
 3) Empirical and theoretical CDFs
-4) Q-Q plot
-5) P-P plot
+4) QQ plot
+5) PP plot
 
 For some of the figures, plotted distributions depends on the characteristics
 of the input data:
@@ -542,8 +541,8 @@ a .pdf file including multiple plots:
 1) Cullen and Frey graph
 2) Histogram and theoretical densities
 3) Empirical and theoretical CDFs
-4) Q-Q plot
-5) P-P plot
+4) QQ plot
+5) PP plot
 
 **An example run:** \
 
@@ -1594,7 +1593,7 @@ Pipeline (CAMPP)—A standardized framework for the analysis of
 quantitative biological data." _PLOS Computational Biology_, *16(3)*.
 
 # Session Information
-```{r sessionInfo}
+```{r, eval = TRUE}
 sessionInfo()
 ```
 
