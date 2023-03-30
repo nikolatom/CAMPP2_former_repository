@@ -5,6 +5,7 @@ Version: 0.99.0
 Authors@R: c(
     person("Tom, Nikola", email = "ntom@cancer.dk", role = c("aut")),
     person("Nourbakhsh, Mona", email = "mon@cancer.dk", role = c("aut")),
+    person("Terkelsen, Thilde", role=c("aut")),
     person("Bechgaard, Mathilde Wismann", email = "mathilde@bechgaard.dk", role = c("aut")),
     person("Tiberti, Matteo", email = "tiberti@cancer.dk", role = c("cre", "aut")),
     person("Papaleo, Elena", email = "elenap@cancer.dk", role = c("aut")))
