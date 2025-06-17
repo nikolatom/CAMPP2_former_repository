@@ -1,3 +1,9 @@
+**Acknowledgment:**  
+This pipeline was developed as a part of my postdoc under Cancer Systems Biology, DTU, led by Elena Papaleo.
+
+**Original repository:**  
+https://github.com/ELELAB/CAMPP2_former_repository
+
 Cancer Systems Biology, Section of Bioinformatics, Department of Health and Technology, Technical University of Denmark, 2800, Lyngby, Copenhagen, Denmark
 
 Cancer Structural Biology Group, Danish Cancer Society Research Center, Strandboulevarden 49, 2100, Copenhagen, Denmark
